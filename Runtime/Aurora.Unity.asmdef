@@ -1,0 +1,17 @@
+{
+    "name": "Aurora.Unity",
+    "rootNamespace": "Aurora.Unity",
+    "references": [
+        "Aurora",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

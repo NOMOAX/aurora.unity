@@ -1,0 +1,21 @@
+{
+    "name": "Aurora.UnityEditor",
+    "rootNamespace": "Aurora.UnityEditor",
+    "references": [
+        "Aurora",
+        "Aurora.Unity",
+        "UnityEngine.UI",
+        "UnityEditor.UI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

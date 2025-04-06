@@ -1,0 +1,214 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Aurora.Unity.UI
+{
+    /// <summary>
+    /// 圆。
+    /// </summary>
+    [RequireComponent(typeof(CanvasRenderer))]
+    public sealed class Circle : MaskableGraphic, ILayoutElement, ICanvasRaycastFilter
+    {
+        [SerializeField]
+        internal Texture texture;
+
+        [SerializeField]
+        [Range(SegmentsMinValue, SegmentsMaxValue)]
+        internal int segments = 32;
+
+        [SerializeField]
+        internal bool useExactRaycastLocation;
+
+        private readonly List<Vector2> _positions = new List<Vector2>();
+
+        private const int SegmentsMinValue = 3;
+
+        private const int SegmentsMaxValue = UnityUtility.VertexCountPerMeshMaxValue - 1;
+
+        private const int PositionCountMinValue = SegmentsMinValue;
+
+        private Circle()
+        {
+            useLegacyMeshGeneration = false;
+        }
+
+        /// <inheritdoc />
+        public override Texture mainTexture
+        {
+            get
+            {
+                if (texture != null)
+                {
+                    return texture;
+                }
+                return material != null && material.mainTexture != null ? material.mainTexture : s_WhiteTexture;
+            }
+        }
+
+        /// <summary>
+        /// 纹理。
+        /// </summary>
+        public Texture Texture
+        {
+            get => texture;
+            set
+            {
+                if (texture == value)
+                {
+                    return;
+                }
+                texture = value;
+                SetVerticesDirty();
+                SetMaterialDirty();
+            }
+        }
+
+        /// <summary>
+        /// 边数。
+        /// </summary>
+        public int Segments
+        {
+            get => segments;
+            set
+            {
+                value = Mathf.Clamp(value, SegmentsMinValue, SegmentsMaxValue);
+                if (segments == value)
+                {
+                    return;
+                }
+                segments = value;
+                SetVerticesDirty();
+            }
+        }
+
+        /// <summary>
+        /// 是否使用精确点击区域。
+        /// </summary>
+        public bool UseExactRaycastLocation
+        {
+            get => useExactRaycastLocation;
+            set
+            {
+                if (useExactRaycastLocation == value)
+                {
+                    return;
+                }
+                useExactRaycastLocation = value;
+                SetVerticesDirty();
+            }
+        }
+
+        /// <inheritdoc />
+        public override void SetNativeSize()
+        {
+            rectTransform.anchorMin = rectTransform.anchorMax = Vector2.one * 0.5f;
+            var t                                             = mainTexture;
+            rectTransform.sizeDelta = new Vector2(t.width, t.height);
+        }
+
+        /// <inheritdoc />
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            _positions.Clear();
+
+            vh.Clear();
+
+            var color32           = (Color32) color;
+            var pixelAdjustedRect = GetPixelAdjustedRect();
+            var center            = pixelAdjustedRect.center;
+            var halfSize          = pixelAdjustedRect.size * 0.5f;
+
+            // 添加圆心
+            vh.AddVert(center, color32, new Vector2(0.5f, 0.5f));
+
+            var stepAngle = 2f * Mathf.PI / segments;
+
+            // 添加圆周上各点
+            for (var i = 0; i < segments; i++)
+            {
+                var angle    = stepAngle * i;
+                var position = center + AuroraUnityMath.CosSin(angle) * halfSize;
+                if (useExactRaycastLocation)
+                {
+                    _positions.Add(position);
+                }
+                vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+            }
+
+            for (var index = 1; index < segments; index++)
+            {
+                vh.AddTriangle(index, 0, index + 1);
+            }
+            vh.AddTriangle(segments, 0, 1);
+
+            TrimExcess();
+        }
+
+        private void TrimExcess()
+        {
+            _positions.TrimExcess();
+        }
+
+        void ILayoutElement.CalculateLayoutInputHorizontal()
+        {
+        }
+
+        void ILayoutElement.CalculateLayoutInputVertical()
+        {
+        }
+
+        float ILayoutElement.minWidth => 0f;
+
+        float ILayoutElement.preferredWidth => texture == null ? 0f : texture.width;
+
+        float ILayoutElement.flexibleWidth => -1f;
+
+        float ILayoutElement.minHeight => 0f;
+
+        float ILayoutElement.preferredHeight => texture == null ? 0f : texture.height;
+
+        float ILayoutElement.flexibleHeight => -1f;
+
+        int ILayoutElement.layoutPriority => 0;
+
+        bool ICanvasRaycastFilter.IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+        {
+            if (!UnityEngine.RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rectTransform,
+                    screenPoint,
+                    eventCamera,
+                    out var localPoint
+                ))
+            {
+                return false;
+            }
+            if (!useExactRaycastLocation || _positions.Count < PositionCountMinValue)
+            {
+                return true;
+            }
+            return AuroraUnityMath.IsPointInsidePolygon(localPoint, _positions);
+        }
+
+        /// <inheritdoc />
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetMaterialDirty();
+            SetVerticesDirty();
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            segments = Mathf.Clamp(segments, SegmentsMinValue, SegmentsMaxValue);
+        }
+#endif
+
+        protected override void OnDisable()
+        {
+            _positions.Clear();
+            base.OnDisable();
+        }
+    }
+}
