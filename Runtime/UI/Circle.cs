@@ -128,12 +128,12 @@ namespace Aurora.Unity.UI
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;
-                var position = center + AuroraUnityMath.CosSin(angle) * halfSize;
+                var position = center + UnityMath.CosSin(angle) * halfSize;
                 if (useExactRaycastLocation)
                 {
                     _positions.Add(position);
                 }
-                vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+                vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
             }
 
             for (var index = 1; index < segments; index++)
@@ -187,7 +187,7 @@ namespace Aurora.Unity.UI
             {
                 return true;
             }
-            return AuroraUnityMath.IsPointInsidePolygon(localPoint, _positions);
+            return UnityMath.IsPointInsidePolygon(localPoint, _positions);
         }
 
         /// <inheritdoc />

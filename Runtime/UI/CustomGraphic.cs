@@ -115,7 +115,7 @@ namespace Aurora.Unity.UI
             foreach (var vertex in vertices)
             {
                 var normalizedPosition = vertex.normalizedPosition;
-                var position = AuroraUnityMath.NormalizedToPointUnclamped(pixelAdjustedRect, normalizedPosition);
+                var position           = UnityMath.NormalizedToPointUnclamped(pixelAdjustedRect, normalizedPosition);
                 vh.AddVert(position, color * vertex.color, normalizedPosition);
             }
             foreach (var triangle in triangles)

@@ -7,7 +7,7 @@ namespace Aurora.Unity
     /// <summary>
     /// 提供一组数学方法。
     /// </summary>
-    public static class AuroraUnityMath
+    public static class UnityMath
     {
         /// <summary>
         /// 获取一个平面向量，它的 <see cref="Vector2.x"/> 分量是指定角的余弦，<see cref="Vector2.y"/> 分量是指定角的正弦。
@@ -42,7 +42,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float InverseLerpUnclamped(float a, float b, float value)
         {
-            return a != b ? (value - a) / (b - a) : default;
+            return a != b ? (value - a) / (b - a) : 0f;
         }
 
         /// <summary>

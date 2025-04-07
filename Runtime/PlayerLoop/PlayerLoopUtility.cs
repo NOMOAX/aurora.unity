@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using UnityEngine.Assertions;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
@@ -16,69 +17,61 @@ namespace Aurora.Unity.PlayerLoop
 
         private static readonly Plan[] Plans =
         {
-            // FixedUpdating
             new Plan(
                 typeof(FixedUpdate),
                 typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
                 false,
-                typeof(AuroraUnityFixedUpdate.FixedUpdatingForPlayerLoopRunner),
-                typeof(AuroraUnityFixedUpdate.FixedUpdatingForContinuationRunner)
+                typeof(FixedUpdatingForPlayerLoopRunner),
+                typeof(FixedUpdatingForContinuationRunner)
             ),
-            // FixedUpdated
             new Plan(
                 typeof(FixedUpdate),
                 typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
                 true,
-                typeof(AuroraUnityFixedUpdate.FixedUpdatedForPlayerLoopRunner),
-                typeof(AuroraUnityFixedUpdate.FixedUpdatedForContinuationRunner)
+                typeof(FixedUpdatedForPlayerLoopRunner),
+                typeof(FixedUpdatedForContinuationRunner)
             ),
-            // Updating
             new Plan(
                 typeof(Update),
                 typeof(Update.ScriptRunBehaviourUpdate),
                 false,
-                typeof(AuroraUnityUpdate.UpdatingForPlayerLoopRunner),
-                typeof(AuroraUnityUpdate.UpdatingForContinuationRunner)
+                typeof(UpdatingForPlayerLoopRunner),
+                typeof(UpdatingForContinuationRunner)
             ),
-            // Updated
             new Plan(
                 typeof(Update),
                 typeof(Update.ScriptRunBehaviourUpdate),
                 true,
-                typeof(AuroraUnityUpdate.UpdatedForPlayerLoopRunner),
-                typeof(AuroraUnityUpdate.UpdatedForContinuationRunner)
+                typeof(UpdatedForPlayerLoopRunner),
+                typeof(UpdatedForContinuationRunner)
             ),
-            // UpdateYielded
             new Plan(
                 typeof(Update),
                 typeof(Update.ScriptRunDelayedDynamicFrameRate),
                 true,
-                typeof(AuroraUnityUpdate.UpdateYieldedForPlayerLoopRunner),
-                typeof(AuroraUnityUpdate.UpdateYieldedForContinuationRunner)
+                typeof(UpdateYieldedForPlayerLoopRunner),
+                typeof(UpdateYieldedForContinuationRunner)
             ),
-            // UpdatePosted
             new Plan(
                 typeof(Update),
                 typeof(Update.ScriptRunDelayedTasks),
                 true,
-                typeof(AuroraUnityUpdate.UpdatePostedForPlayerLoopRunner),
-                typeof(AuroraUnityUpdate.UpdatePostedForContinuationRunner)
+                typeof(UpdatePostedForPlayerLoopRunner),
+                typeof(UpdatePostedForContinuationRunner)
             ),
-            // LateUpdating
             new Plan(
                 typeof(PreLateUpdate),
                 typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
                 false,
-                typeof(AuroraUnityLateUpdate.LateUpdatingForPlayerLoopRunner),
-                typeof(AuroraUnityLateUpdate.LateUpdatingForContinuationRunner)
+                typeof(LateUpdatingForPlayerLoopRunner),
+                typeof(LateUpdatingForContinuationRunner)
             ),
-            // LateUpdated
             new Plan(
                 typeof(PreLateUpdate),
                 typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
                 true,
-                typeof(AuroraUnityLateUpdate.LateUpdatedForPlayerLoopRunner),
-                typeof(AuroraUnityLateUpdate.LateUpdatedForContinuationRunner)
+                typeof(LateUpdatedForPlayerLoopRunner),
+                typeof(LateUpdatedForContinuationRunner)
             )
         };
 
@@ -454,6 +447,86 @@ namespace Aurora.Unity.PlayerLoop
                 PlayerLoopSubsystemType   = playerLoopSubsystemType;
                 ContinuationSubsystemType = continuationSubsystemType;
             }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct FixedUpdatingForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct FixedUpdatingForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct FixedUpdatedForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct FixedUpdatedForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatingForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatingForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatedForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatedForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdateYieldedForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdateYieldedForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatePostedForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct UpdatePostedForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct LateUpdatingForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct LateUpdatingForContinuationRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct LateUpdatedForPlayerLoopRunner
+        {
+        }
+
+        [StructLayout(LayoutKind.Sequential, Size = 1)]
+        private struct LateUpdatedForContinuationRunner
+        {
         }
     }
 }

@@ -455,7 +455,7 @@ namespace Aurora.Unity.UI
                 for (var j = 0; j < segments + 1; j++)
                 {
                     var angle  = stepAngle * (firstVertexIndex + j);
-                    var cosSin = AuroraUnityMath.CosSin(angle);
+                    var cosSin = UnityMath.CosSin(angle);
 
                     #region 外层
 
@@ -465,7 +465,7 @@ namespace Aurora.Unity.UI
                     {
                         _outerPositions.Add(position);
                     }
-                    vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+                    vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
 
                     #endregion
 
@@ -477,7 +477,7 @@ namespace Aurora.Unity.UI
                     {
                         _innerPositions.Add(innerPosition);
                     }
-                    vh.AddVert(innerPosition, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, innerPosition));
+                    vh.AddVert(innerPosition, color32, UnityMath.GetUV(pixelAdjustedRect, innerPosition));
 
                     #endregion
                 }
@@ -546,8 +546,8 @@ namespace Aurora.Unity.UI
             {
                 return true;
             }
-            return AuroraUnityMath.IsPointInsidePolygon(localPoint, _outerPositions) &&
-                   !AuroraUnityMath.IsPointInsidePolygon(localPoint, _innerPositions);
+            return UnityMath.IsPointInsidePolygon(localPoint, _outerPositions) &&
+                   !UnityMath.IsPointInsidePolygon(localPoint, _innerPositions);
         }
 
         /// <inheritdoc />

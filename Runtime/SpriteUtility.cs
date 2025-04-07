@@ -30,7 +30,7 @@ namespace Aurora.Unity
         internal static Vector2 InternalNormalizedToLocalPosition(Sprite sprite, Vector2 normalizedPosition)
         {
             var rect                  = new Rect(-sprite.pivot, sprite.rect.size);
-            var localPositionInPixels = AuroraUnityMath.NormalizedToPointUnclamped(rect, normalizedPosition);
+            var localPositionInPixels = UnityMath.NormalizedToPointUnclamped(rect, normalizedPosition);
             return localPositionInPixels / sprite.pixelsPerUnit;
         }
     }

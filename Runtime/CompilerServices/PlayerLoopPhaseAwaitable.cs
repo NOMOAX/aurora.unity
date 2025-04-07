@@ -167,17 +167,9 @@ namespace Aurora.Unity.CompilerServices
 
             private bool IsCanceled => _cancellationToken.IsCancellationRequested;
 
-            private bool OnTargetPlayerLoopPhase
-            {
-                get
-                {
-                    var currentPlayerLoopPhase = PlayerLoopUtility.CurrentPlayerLoopPhase;
-                    return currentPlayerLoopPhase.HasValue && Array.IndexOf(
-                               _playerLoopPhases,
-                               currentPlayerLoopPhase.Value
-                           ) >= 0;
-                }
-            }
+            private bool OnTargetPlayerLoopPhase =>
+                PlayerLoopUtility.CurrentPlayerLoopPhase is { } currentPlayerLoopPhase &&
+                Array.IndexOf(_playerLoopPhases, currentPlayerLoopPhase) >= 0;
 
             /// <inheritdoc />
             public void OnCompleted(Action continuation)
@@ -205,30 +197,10 @@ namespace Aurora.Unity.CompilerServices
                 }
                 else
                 {
-                    var continuationInvocation = new OnceInvocation(new InvocationAction(continuation));
+                    var continuationInvocation = new OneTimeInvocation(new InvocationAction(continuation));
                     foreach (var playerLoopPhase in _playerLoopPhases)
                     {
                         PlayerLoopUtility.AddContinuation(continuationInvocation, playerLoopPhase);
-                    }
-                }
-            }
-
-            private sealed class OnceInvocation : Invocation
-            {
-                private Invocation _invocation;
-
-                internal OnceInvocation(Invocation invocation)
-                {
-                    _invocation = invocation;
-                }
-
-                public override void Invoke()
-                {
-                    var invocation = _invocation;
-                    if (invocation != null &&
-                        Interlocked.CompareExchange(ref _invocation, null, invocation) == invocation)
-                    {
-                        invocation.Invoke();
                     }
                 }
             }

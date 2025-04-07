@@ -394,13 +394,13 @@ namespace Aurora.Unity.UI
                 {
                     var angle = stepAngle * (firstVertexIndex + j);
                     // 此顶点到圆角圆心的相对位置
-                    var positionToCornerCenter = AuroraUnityMath.CosSin(angle) * cornerRadius;
+                    var positionToCornerCenter = UnityMath.CosSin(angle) * cornerRadius;
                     var position               = center + cornerCenterToCenter + positionToCornerCenter;
                     if (useExactRaycastLocation)
                     {
                         _positions.Add(position);
                     }
-                    vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+                    vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
                 }
             }
 
@@ -455,7 +455,7 @@ namespace Aurora.Unity.UI
             {
                 return true;
             }
-            return AuroraUnityMath.IsPointInsidePolygon(localPoint, _positions);
+            return UnityMath.IsPointInsidePolygon(localPoint, _positions);
         }
 
         /// <inheritdoc />

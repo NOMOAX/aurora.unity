@@ -172,23 +172,23 @@ namespace Aurora.Unity.UI
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;
-                var position = center + AuroraUnityMath.CosSin(angle) * halfSize * (1f - thickness);
+                var position = center + UnityMath.CosSin(angle) * halfSize * (1f - thickness);
                 if (useExactRaycastLocation)
                 {
                     _innerPositions.Add(position);
                 }
-                vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+                vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
             }
             // 添加外圆圆周上各点
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;
-                var position = center + AuroraUnityMath.CosSin(angle) * halfSize;
+                var position = center + UnityMath.CosSin(angle) * halfSize;
                 if (useExactRaycastLocation)
                 {
                     _outerPositions.Add(position);
                 }
-                vh.AddVert(position, color32, AuroraUnityMath.GetUV(pixelAdjustedRect, position));
+                vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
             }
 
             for (var index = 0; index < segments - 1; index++)
@@ -254,8 +254,8 @@ namespace Aurora.Unity.UI
             {
                 return true;
             }
-            return AuroraUnityMath.IsPointInsidePolygon(localPoint, _outerPositions) &&
-                   !AuroraUnityMath.IsPointInsidePolygon(localPoint, _innerPositions);
+            return UnityMath.IsPointInsidePolygon(localPoint, _outerPositions) &&
+                   !UnityMath.IsPointInsidePolygon(localPoint, _innerPositions);
         }
 
         /// <inheritdoc />

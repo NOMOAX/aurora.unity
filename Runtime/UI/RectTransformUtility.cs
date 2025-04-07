@@ -1212,7 +1212,7 @@ namespace Aurora.Unity.UI
         private static Vector2 InternalGetLocalPoint(RectTransform rectTransform, Vector2 normalizedRectCoordinates)
         {
             var rect       = rectTransform.rect;
-            var localPoint = AuroraUnityMath.NormalizedToPointUnclamped(rect, normalizedRectCoordinates);
+            var localPoint = UnityMath.NormalizedToPointUnclamped(rect, normalizedRectCoordinates);
             return localPoint;
         }
 
