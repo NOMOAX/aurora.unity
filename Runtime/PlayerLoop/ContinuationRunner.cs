@@ -44,7 +44,7 @@ namespace Aurora.Unity.PlayerLoop
 
         internal void Run()
         {
-            PlayerLoopUtility.CurrentPlayerLoopPhase = _playerLoopPhase;
+            PlayerLoopUtility.CurrentPhase = _playerLoopPhase;
             try
             {
                 while (_continuations.TryDequeue(out var invocation))
@@ -61,7 +61,7 @@ namespace Aurora.Unity.PlayerLoop
             }
             finally
             {
-                PlayerLoopUtility.CurrentPlayerLoopPhase = null;
+                PlayerLoopUtility.CurrentPhase = null;
             }
         }
     }

@@ -45,7 +45,7 @@ namespace Aurora.Unity.Threading.Tasks
             {
                 return Task.FromCanceled(cancellationToken);
             }
-            if (PlayerLoopUtility.CurrentPlayerLoopPhase == playerLoopPhase)
+            if (PlayerLoopUtility.CurrentPhase == playerLoopPhase)
             {
                 return Task.CompletedTask;
             }
@@ -108,9 +108,9 @@ namespace Aurora.Unity.Threading.Tasks
             {
                 return Task.FromCanceled(cancellationToken);
             }
-            if (PlayerLoopUtility.CurrentPlayerLoopPhase.HasValue && Array.IndexOf(
+            if (PlayerLoopUtility.CurrentPhase.HasValue && Array.IndexOf(
                     playerLoopPhases,
-                    PlayerLoopUtility.CurrentPlayerLoopPhase.Value
+                    PlayerLoopUtility.CurrentPhase.Value
                 ) >= 0)
             {
                 return Task.CompletedTask;

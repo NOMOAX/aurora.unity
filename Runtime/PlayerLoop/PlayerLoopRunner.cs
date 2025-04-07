@@ -2,46 +2,41 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Aurora.Collections;
 using Aurora.Diagnostics;
 using UnityEngine;
 
 namespace Aurora.Unity.PlayerLoop
 {
-    [DebuggerDisplay(nameof(PlayerLoopRunner) + " ({_playerLoopPhase})")]
+    [DebuggerDisplay(nameof(PlayerLoopRunner) + " ({_phase})")]
     internal sealed class PlayerLoopRunner
     {
-        private static readonly Predicate<Bucket> PredicateBucketWillBeRemoved = BucketWillBeRemoved;
+        private static readonly Predicate<object> IsNull = obj => obj is null;
 
-        private static readonly Func<Bucket, IPlayerLoopItem, bool> FuncBucketRemovableAndEqualToItem =
-            BucketRemovableAndEqualToItem;
+        private readonly PlayerLoopPhase _phase;
 
-        private readonly PlayerLoopPhase _playerLoopPhase;
+        private readonly List<IPlayerLoopItem> _items = new List<IPlayerLoopItem>();
 
-        private readonly List<Bucket> _buckets = new List<Bucket>();
-
-        internal PlayerLoopRunner(PlayerLoopPhase playerLoopPhase)
+        internal PlayerLoopRunner(PlayerLoopPhase phase)
         {
-            _playerLoopPhase = playerLoopPhase;
+            _phase = phase;
         }
 
         internal void Add(IPlayerLoopItem item)
         {
-            lock (_buckets)
+            lock (_items)
             {
-                _buckets.Add(new Bucket(item));
+                _items.Add(item);
             }
         }
 
         internal void Remove(IPlayerLoopItem item)
         {
-            lock (_buckets)
+            lock (_items)
             {
-                var bucket = _buckets.FindLast(FuncBucketRemovableAndEqualToItem, item);
-                // 允许在 Run 中调用 Remove，因此这里不执行移除，实际在 Run 中移除
-                if (bucket != null)
+                var index = _items.LastIndexOf(item);
+                if (index >= 0)
                 {
-                    bucket.MarkAsWillBeRemoved();
+                    _items[index] = null;
                 }
                 else
                 {
@@ -53,9 +48,9 @@ namespace Aurora.Unity.PlayerLoop
 #if UNITY_EDITOR
         internal void Clear()
         {
-            lock (_buckets)
+            lock (_items)
             {
-                foreach (var disposable in _buckets.Select(GetItem).OfType<IDisposable>())
+                foreach (var disposable in _items.OfType<IDisposable>())
                 {
                     try
                     {
@@ -66,81 +61,47 @@ namespace Aurora.Unity.PlayerLoop
                         Log.E(e);
                     }
                 }
-                _buckets.Clear();
-            }
-
-            static IPlayerLoopItem GetItem(Bucket bucket)
-            {
-                return bucket.Item;
+                _items.Clear();
             }
         }
-
 #endif
 
         internal void Run()
         {
-            PlayerLoopUtility.CurrentPlayerLoopPhase = _playerLoopPhase;
+            PlayerLoopUtility.CurrentPhase = _phase;
             try
             {
-                lock (_buckets)
+                lock (_items)
                 {
                     // 列表的长度可能会增加，不要改为 foreach 语句
                     // ReSharper disable once ForCanBeConvertedToForeach
-                    for (var i = 0; i < _buckets.Count; i++)
+                    for (var i = 0; i < _items.Count; i++)
                     {
-                        var bucket = _buckets[i];
-                        if (bucket.WillBeRemoved)
+                        var item = _items[i];
+                        if (item == null)
                         {
                             continue;
                         }
                         try
                         {
-                            bucket.Item.Run(_playerLoopPhase);
+                            item.Run(_phase);
                         }
                         catch (Exception e)
                         {
                             Log.E(e);
                         }
                     }
-                    // 删除被标记为将要被删除的元素
-                    _buckets.RemoveAll(PredicateBucketWillBeRemoved);
+                    _items.RemoveAll(IsNull);
 
                     if (Time.frameCount % 4096 == 0)
                     {
-                        _buckets.TrimExcess();
+                        _items.TrimExcess();
                     }
                 }
             }
             finally
             {
-                PlayerLoopUtility.CurrentPlayerLoopPhase = null;
-            }
-        }
-
-        private static bool BucketWillBeRemoved(Bucket e)
-        {
-            return e.WillBeRemoved;
-        }
-
-        private static bool BucketRemovableAndEqualToItem(Bucket bucket, IPlayerLoopItem item)
-        {
-            return !bucket.WillBeRemoved && bucket.Item == item;
-        }
-
-        private sealed class Bucket
-        {
-            internal readonly IPlayerLoopItem Item;
-
-            internal bool WillBeRemoved { get; private set; }
-
-            internal Bucket(IPlayerLoopItem item)
-            {
-                Item = item;
-            }
-
-            internal void MarkAsWillBeRemoved()
-            {
-                WillBeRemoved = true;
+                PlayerLoopUtility.CurrentPhase = null;
             }
         }
     }

@@ -102,15 +102,15 @@ namespace Aurora.Unity.PlayerLoop
         /// <summary>
         /// 当前播放器循环阶段。
         /// </summary>
-        public static PlayerLoopPhase? CurrentPlayerLoopPhase { get; internal set; }
+        public static PlayerLoopPhase? CurrentPhase { get; internal set; }
 
         /// <summary>
         /// 添加播放器更新循环操作。
         /// </summary>
         /// <param name="item">播放器更新循环操作。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="phase">播放器循环阶段。</param>
         /// <exception cref="InvalidOperationException">在编辑器环境下 <c>PlayerLoopUtility.IsClearing</c> 为 <see langword="true"/> 时调用此方法。</exception>
-        public static void AddPlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase playerLoopPhase)
+        public static void AddPlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
             if (IsClearing)
@@ -122,7 +122,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var playerLoopRunner = PlayerLoopRunners[(int) playerLoopPhase];
+            var playerLoopRunner = PlayerLoopRunners[(int) phase];
             playerLoopRunner.Add(item);
         }
 
@@ -130,9 +130,9 @@ namespace Aurora.Unity.PlayerLoop
         /// 移除播放器更新循环操作。
         /// </summary>
         /// <param name="item">播放器更新循环操作。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="phase">播放器循环阶段。</param>
         /// <exception cref="InvalidOperationException">在编辑器环境下 <c>PlayerLoopUtility.IsClearing</c> 为 <see langword="true"/> 时调用此方法。</exception>
-        public static void RemovePlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase playerLoopPhase)
+        public static void RemovePlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
             if (IsClearing)
@@ -144,7 +144,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var playerLoopRunner = PlayerLoopRunners[(int) playerLoopPhase];
+            var playerLoopRunner = PlayerLoopRunners[(int) phase];
             playerLoopRunner.Remove(item);
         }
 
@@ -152,9 +152,9 @@ namespace Aurora.Unity.PlayerLoop
         /// 添加延续操作。
         /// </summary>
         /// <param name="continuation">延续操作。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="phase">播放器循环阶段。</param>
         /// <exception cref="InvalidOperationException">在编辑器环境下 <c>PlayerLoopUtility.IsClearing</c> 为 <see langword="true"/> 时调用此方法。</exception>
-        public static void AddContinuation(Action continuation, PlayerLoopPhase playerLoopPhase)
+        public static void AddContinuation(Action continuation, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
             if (IsClearing)
@@ -166,7 +166,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var continuationRunner = ContinuationRunners[(int) playerLoopPhase];
+            var continuationRunner = ContinuationRunners[(int) phase];
             continuationRunner.Add(continuation);
         }
 
@@ -175,9 +175,9 @@ namespace Aurora.Unity.PlayerLoop
         /// </summary>
         /// <param name="continuation">延续操作。</param>
         /// <param name="state">由延续操作使用的参数。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="phase">播放器循环阶段。</param>
         /// <exception cref="InvalidOperationException">在编辑器环境下 <c>PlayerLoopUtility.IsClearing</c> 为 <see langword="true"/> 时调用此方法。</exception>
-        public static void AddContinuation(Action<object> continuation, object state, PlayerLoopPhase playerLoopPhase)
+        public static void AddContinuation(Action<object> continuation, object state, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
             if (IsClearing)
@@ -189,17 +189,17 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var continuationRunner = ContinuationRunners[(int) playerLoopPhase];
-            continuationRunner.Add(continuation, state);
+            var runner = ContinuationRunners[(int) phase];
+            runner.Add(continuation, state);
         }
 
         /// <summary>
         /// 添加延续操作。
         /// </summary>
         /// <param name="continuationInvocation">延续操作。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="phase">播放器循环阶段。</param>
         /// <exception cref="InvalidOperationException">在编辑器环境下 <c>PlayerLoopUtility.IsClearing</c> 为 <see langword="true"/> 时调用此方法。</exception>
-        public static void AddContinuation(Invocation continuationInvocation, PlayerLoopPhase playerLoopPhase)
+        public static void AddContinuation(Invocation continuationInvocation, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
             if (IsClearing)
@@ -211,7 +211,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var continuationRunner = ContinuationRunners[(int) playerLoopPhase];
+            var continuationRunner = ContinuationRunners[(int) phase];
             continuationRunner.Add(continuationInvocation);
         }
 

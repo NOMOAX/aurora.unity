@@ -1,18 +1,19 @@
 {
   "name": "com.kevin-games.aurora.unity",
-  "version": "1.0.0",
   "displayName": "Aurora Unity",
+  "version": "1.0.0",
+  "unity": "2020.3",
   "description": "High-performance, low-memory-consumption toolkit for Unity.\n\nDependencies:\n- Aurora (https://gitee.com/kevin-games/aurora_unitypackage.git)\n- Unity UI",
   "keywords": [
-    "am"
+    "aurora"
   ],
+  "dependencies": {
+    "com.kevin-games.aurora": "1.0.0",
+    "com.unity.ugui": "1.0.0"
+  },
   "author": {
     "name": "Kevin Games",
     "email": "844038603@qq.com",
     "url": "https://gitee.com/kevin-games"
-  },
-  "dependencies": {
-    "com.kevin-games.aurora": "1.0.0",
-    "com.unity.ugui": "1.0.0"
   }
 }

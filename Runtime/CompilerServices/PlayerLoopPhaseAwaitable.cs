@@ -60,7 +60,7 @@ namespace Aurora.Unity.CompilerServices
 
             private bool IsCanceled => _cancellationToken.IsCancellationRequested;
 
-            private bool OnTargetPlayerLoopPhase => _playerLoopPhase == PlayerLoopUtility.CurrentPlayerLoopPhase;
+            private bool OnTargetPlayerLoopPhase => _playerLoopPhase == PlayerLoopUtility.CurrentPhase;
 
             /// <inheritdoc />
             public void OnCompleted(Action continuation)
@@ -167,9 +167,8 @@ namespace Aurora.Unity.CompilerServices
 
             private bool IsCanceled => _cancellationToken.IsCancellationRequested;
 
-            private bool OnTargetPlayerLoopPhase =>
-                PlayerLoopUtility.CurrentPlayerLoopPhase is { } currentPlayerLoopPhase &&
-                Array.IndexOf(_playerLoopPhases, currentPlayerLoopPhase) >= 0;
+            private bool OnTargetPlayerLoopPhase => PlayerLoopUtility.CurrentPhase is { } currentPlayerLoopPhase &&
+                                                    Array.IndexOf(_playerLoopPhases, currentPlayerLoopPhase) >= 0;
 
             /// <inheritdoc />
             public void OnCompleted(Action continuation)

@@ -55,7 +55,7 @@ namespace Aurora.Unity.CompilerServices
 
         private readonly struct Awaiter : IAwaiter
         {
-            private static readonly Action<Task, object> ActionRunAction = RunAction;
+            private static readonly Action<Task, object> RunAction = (antecedent, state) => ((Action) state)();
 
             private readonly Task _task;
 
@@ -96,13 +96,8 @@ namespace Aurora.Unity.CompilerServices
                 }
                 else
                 {
-                    TaskUtility.ContinueWithSynchronously(_task, ActionRunAction, continuation);
+                    TaskUtility.ContinueWithSynchronously(_task, RunAction, continuation);
                 }
-            }
-
-            private static void RunAction(Task antecedent, object state)
-            {
-                ((Action) state)();
             }
         }
     }
