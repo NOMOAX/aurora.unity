@@ -7,8 +7,10 @@ using Aurora.Diagnostics;
 using Aurora.Pooling;
 using Aurora.Unity;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.UI;
+using Assembly = System.Reflection.Assembly;
 using Object = UnityEngine.Object;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 using RectTransformUtility = Aurora.Unity.UI.RectTransformUtility;
@@ -127,13 +129,34 @@ namespace Aurora.UnityEditor
 
             #endregion
 
+            #region Request Script Compilation
+
+            private const string RequestScriptCompilationName = "Request Script Compilation";
+
+            private const int RequestScriptCompilationPriority = ClearLogEntriesPriority + 1;
+
+            [MenuItem(DisplayName + "/" + RequestScriptCompilationName, priority = RequestScriptCompilationPriority)]
+            private static void RequestScriptCompilation()
+            {
+                CompilationPipeline.RequestScriptCompilation();
+            }
+
+            [MenuItem(DisplayName + "/" + RequestScriptCompilationName, true)]
+            private static bool ValidateRequestScriptCompilation()
+            {
+                return !EditorApplication.isCompiling && !EditorApplication.isUpdating &&
+                       !EditorApplication.isPlayingOrWillChangePlaymode;
+            }
+
+            #endregion
+
             #region Layout
 
             #region Ping Layout Root
 
             private const string PingLayoutRootName = "Layout/Ping Layout Root";
 
-            private const int PingLayoutRootPriority = ClearLogEntriesPriority + 1;
+            private const int PingLayoutRootPriority = RequestScriptCompilationPriority + 1;
 
             [MenuItem(DisplayName + "/" + PingLayoutRootName, priority = PingLayoutRootPriority)]
             private static void PingLayoutRoot()
