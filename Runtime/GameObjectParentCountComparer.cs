@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Aurora.Collections;
 using UnityEngine;
 
@@ -12,12 +13,20 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static GameObjectParentCountComparer Instance { get; } = new GameObjectParentCountComparer();
+        public static GameObjectParentCountComparer Instance
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        } = new GameObjectParentCountComparer();
 
         /// <summary>
         /// 获取单一实例，但比较结果与 <see cref="Instance"/> 相反。
         /// </summary>
-        public static IComparer<GameObject> InstanceReversed { get; } = new ReversedComparer<GameObject>(Instance);
+        public static IComparer<GameObject> InstanceReversed
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        } = new ReversedComparer<GameObject>(Instance);
 
         /// <inheritdoc />
         public int Compare(GameObject x, GameObject y)

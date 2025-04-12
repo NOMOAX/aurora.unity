@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -11,7 +12,11 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static UnityEngineObjectEqualityComparer Instance { get; } = new UnityEngineObjectEqualityComparer();
+        public static UnityEngineObjectEqualityComparer Instance
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        } = new UnityEngineObjectEqualityComparer();
 
         private UnityEngineObjectEqualityComparer()
         {
