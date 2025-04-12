@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using Aurora.Pooling;
 using Aurora.Unity;
 using Aurora.Unity.PlayerLoop;
 using UnityEditor;
@@ -11,27 +13,31 @@ namespace Aurora.UnityEditor
         [InitializeOnLoadMethod]
         internal static void Initialize()
         {
-            Debug.Log($"开始执行 {nameof(EditorInitialization)}.{nameof(Initialize)}");
+            var stringBuilder = PredefinedPools.StringBuilder.Get();
             try
             {
-                InternalInitialize();
+                stringBuilder.AppendLine(
+                    $"{nameof(Aurora)}.{nameof(UnityEditor)}.{nameof(EditorInitialization)}.{nameof(Initialize)}();"
+                );
+                InternalInitialize(stringBuilder);
+                Debug.Log(stringBuilder.ToString());
             }
             finally
             {
-                Debug.Log($"结束执行 {nameof(EditorInitialization)}.{nameof(Initialize)}");
+                PredefinedPools.StringBuilder.Return(stringBuilder);
             }
         }
 
-        private static void InternalInitialize()
+        private static void InternalInitialize(StringBuilder stringBuilder)
         {
-            RuntimeInitialization.SetIsSingleThreadEnvironment(false);
-            RuntimeInitialization.SetUnityConsoleLogger();
-            RuntimeInitialization.SetUnityMainThreadId();
-            RuntimeInitialization.SetUnitySynchronizationContext();
-            RuntimeInitialization.SetUnitySynchronizationContextTaskScheduler();
-            RuntimeInitialization.SetIsProSkin(EditorGUIUtility.isProSkin);
-            RuntimeInitialization.PlayerLoopUtilityInitialize();
-            RuntimeInitialization.RegisterPrefabLessViewHandler();
+            RuntimeInitialization.SetIsSingleThreadEnvironment(false, stringBuilder);
+            RuntimeInitialization.SetUnityConsoleLogger(stringBuilder);
+            RuntimeInitialization.SetUnityMainThreadId(stringBuilder);
+            RuntimeInitialization.SetUnitySynchronizationContext(stringBuilder);
+            RuntimeInitialization.SetUnitySynchronizationContextTaskScheduler(stringBuilder);
+            RuntimeInitialization.SetIsProSkin(EditorGUIUtility.isProSkin, stringBuilder);
+            RuntimeInitialization.PlayerLoopUtilityInitialize(stringBuilder);
+            RuntimeInitialization.RegisterPrefabLessViewHandler(stringBuilder);
 
             EditorApplication.playModeStateChanged -= OnEditorApplicationPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnEditorApplicationPlayModeStateChanged;
@@ -52,7 +58,7 @@ namespace Aurora.UnityEditor
                 case PlayModeStateChange.EnteredPlayMode:
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
-                    RuntimeInitialization.SetIsPlaying(false);
+                    RuntimeInitialization.SetIsPlaying(false, null);
                     PlayerLoopUtility.Clear();
                     break;
                 default:
