@@ -15,12 +15,12 @@ namespace Aurora.Unity.Pooling
         /// <summary>
         /// 获取或设置池化的字典的初始容量。
         /// </summary>
-        public int InitialCapacity { get; set; } = 13;
+        public int InitialCapacity { get; set; } = 17;
 
         /// <summary>
         /// 获取或设置允许被放入池的字典的最大长度。
         /// </summary>
-        public int MaximumRetainedCount { get; set; } = 251;
+        public int MaximumRetainedCount { get; set; } = 293;
 
         /// <inheritdoc />
         public Dictionary<TKey, TValue> Create()
@@ -29,7 +29,7 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <inheritdoc />
-        public void OnGet(Dictionary<TKey, TValue> obj)
+        public void Get(Dictionary<TKey, TValue> obj)
         {
         }
 

@@ -13,12 +13,12 @@ namespace Aurora.Unity.Pooling
         /// <summary>
         /// 获取或设置池化的哈希集的初始容量。
         /// </summary>
-        public int InitialCapacity { get; set; } = 13;
+        public int InitialCapacity { get; set; } = 17;
 
         /// <summary>
         /// 获取或设置允许被放入池的哈希集的最大长度。
         /// </summary>
-        public int MaximumRetainedCount { get; set; } = 251;
+        public int MaximumRetainedCount { get; set; } = 293;
 
         /// <inheritdoc />
         public HashSet<T> Create()
@@ -32,7 +32,7 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <inheritdoc />
-        public void OnGet(HashSet<T> obj)
+        public void Get(HashSet<T> obj)
         {
         }
 

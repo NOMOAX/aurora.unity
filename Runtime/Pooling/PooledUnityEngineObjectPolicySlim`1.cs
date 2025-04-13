@@ -61,7 +61,7 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <inheritdoc />
-        public void OnGet(T obj)
+        public void Get(T obj)
         {
         }
 
