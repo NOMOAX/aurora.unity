@@ -125,12 +125,10 @@ namespace Aurora.Unity.Threading.Tasks
         {
 #if UNITY_EDITOR
             if (!PlayerLoopUtility.IsClearing)
+#endif
             {
                 PlayerLoopUtility.RemovePlayerLoopItem(this, playerLoopPhase);
             }
-#else
-            PlayerLoopUtility.RemovePlayerLoopItem(this, playerLoopPhase);
-#endif
         }
     }
 }

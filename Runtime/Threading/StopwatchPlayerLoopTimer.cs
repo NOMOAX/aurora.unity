@@ -267,12 +267,10 @@ namespace Aurora.Unity.Threading
                     {
 #if UNITY_EDITOR
                         if (!PlayerLoopUtility.IsClearing)
+#endif
                         {
                             PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
                         }
-#else
-                        PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
-#endif
                         _scheduled = false;
                     }
                     _disposed = true;

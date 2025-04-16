@@ -137,12 +137,10 @@ namespace Aurora.Unity
             {
 #if UNITY_EDITOR
                 if (!PlayerLoopUtility.IsClearing)
+#endif
                 {
                     PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
                 }
-#else
-                PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
-#endif
             }
             _callback = null;
             _disposed = true;

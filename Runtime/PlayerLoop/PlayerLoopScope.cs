@@ -80,12 +80,10 @@ namespace Aurora.Unity.PlayerLoop
             _invocation = null;
 #if UNITY_EDITOR
             if (!PlayerLoopUtility.IsClearing)
+#endif
             {
                 PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
             }
-#else
-            PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
-#endif
         }
     }
 }
