@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,11 +10,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static PrefabLessViewHandler Instance
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get;
-        } = new PrefabLessViewHandler();
+        public static PrefabLessViewHandler Instance { get; } = new PrefabLessViewHandler();
 
         private PrefabLessViewHandler()
         {

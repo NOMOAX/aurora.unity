@@ -17,11 +17,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static UnityConsoleLogger Instance
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get;
-        } = new UnityConsoleLogger();
+        public static UnityConsoleLogger Instance { get; } = new UnityConsoleLogger();
 
         private UnityConsoleLogger()
         {
