@@ -27,18 +27,10 @@ namespace Aurora.Unity
                 {
                     return _cancellationTokenSource.Token;
                 }
-                if (!UnityEnvironment.IsPlaying || this == null)
-                {
-                    return new CancellationToken(true);
-                }
-                if (!enabled)
-                {
-                    Log.E(
+                if (!UnityEnvironment.IsPlaying || this == null || !Assume.IsTrue(
+                        enabled,
                         "Never disable this " + nameof(UnityEngine) + "." + nameof(Behaviour) + " instance directly!"
-                    );
-                    return new CancellationToken(true);
-                }
-                if (!gameObject.activeInHierarchy)
+                    ) || !gameObject.activeInHierarchy)
                 {
                     return new CancellationToken(true);
                 }
