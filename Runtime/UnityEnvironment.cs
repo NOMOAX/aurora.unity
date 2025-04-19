@@ -81,16 +81,6 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个 <see cref="Behaviour.isActiveAndEnabled"/> 始终为 <see langword="true"/> 的单一行为。
-        /// </summary>
-        /// <remarks>请不要改变返回值的 <see cref="Behaviour.isActiveAndEnabled"/> 值。</remarks>
-        public static MonoBehaviour AlwaysActiveAndEnabledMonoBehaviour
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => AlwaysActiveAndEnabled.InstanceAlreadyExists;
-        }
-
-        /// <summary>
         /// 结束此程序。
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

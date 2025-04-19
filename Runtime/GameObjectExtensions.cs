@@ -105,43 +105,20 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取与当前 <see cref="GameObject"/> 的生存状态关联的取消令牌。
-        /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <returns>与当前游戏物体的生存状态关联的取消令牌。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
-        public static CancellationToken GetDestroyCancellationToken(this GameObject gameObject)
-        {
-            if (gameObject is null)
-            {
-                throw new ArgumentNullException(nameof(gameObject));
-            }
-            if (gameObject == null)
-            {
-                return new CancellationToken(true);
-            }
-            var cancellationTokenProvider = InternalGetOrAddComponent<DestroyCancellationTokenProvider>(gameObject);
-            return cancellationTokenProvider.CancellationToken;
-        }
-
-        /// <summary>
         /// 获取与当前 <see cref="GameObject"/> 的激活状态关联的取消令牌。
         /// </summary>
         /// <param name="gameObject">此游戏物体。</param>
         /// <returns>与当前游戏物体的激活状态关联的取消令牌。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
-        public static CancellationToken GetDisableCancellationToken(this GameObject gameObject)
+        public static CancellationToken GetDisableToken(this GameObject gameObject)
         {
             if (gameObject is null)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
-            if (gameObject == null)
-            {
-                return new CancellationToken(true);
-            }
-            var cancellationTokenProvider = InternalGetOrAddComponent<DisableCancellationTokenProvider>(gameObject);
-            return cancellationTokenProvider.CancellationToken;
+            return gameObject == null
+                       ? new CancellationToken(true)
+                       : InternalGetOrAddComponent<DisableTokenProvider>(gameObject).CancellationToken;
         }
 
         /// <summary>

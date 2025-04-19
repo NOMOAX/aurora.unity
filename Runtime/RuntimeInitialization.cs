@@ -45,8 +45,8 @@ namespace Aurora.Unity
             SetIsProSkin(false, stringBuilder);
             PlayerLoopUtilityInitialize(stringBuilder);
             RegisterPrefabLessViewHandler(stringBuilder);
+            ApplicationQuitListener.EnsureInstanceExists();
 #endif
-            AlwaysActiveAndEnabled.EnsureInstanceExists();
         }
 
         internal static void SetIsSingleThreadEnvironment(bool value, StringBuilder stringBuilder)
