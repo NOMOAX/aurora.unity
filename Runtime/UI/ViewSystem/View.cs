@@ -1038,11 +1038,11 @@ namespace Aurora.Unity.UI.ViewSystem
                 return true;
             }
 
-            object IEnumerator.Current => Current;
+            readonly object IEnumerator.Current => Current;
 
-            View IEnumerator<View>.Current => Current;
+            readonly View IEnumerator<View>.Current => Current;
 
-            private View Current
+            private readonly View Current
             {
                 get
                 {

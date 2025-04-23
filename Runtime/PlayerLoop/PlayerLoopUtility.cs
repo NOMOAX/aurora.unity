@@ -450,82 +450,82 @@ namespace Aurora.Unity.PlayerLoop
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct FixedUpdatingForPlayerLoopRunner
+        private readonly struct FixedUpdatingForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct FixedUpdatingForContinuationRunner
+        private readonly struct FixedUpdatingForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct FixedUpdatedForPlayerLoopRunner
+        private readonly struct FixedUpdatedForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct FixedUpdatedForContinuationRunner
+        private readonly struct FixedUpdatedForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatingForPlayerLoopRunner
+        private readonly struct UpdatingForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatingForContinuationRunner
+        private readonly struct UpdatingForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatedForPlayerLoopRunner
+        private readonly struct UpdatedForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatedForContinuationRunner
+        private readonly struct UpdatedForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdateYieldedForPlayerLoopRunner
+        private readonly struct UpdateYieldedForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdateYieldedForContinuationRunner
+        private readonly struct UpdateYieldedForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatePostedForPlayerLoopRunner
+        private readonly struct UpdatePostedForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct UpdatePostedForContinuationRunner
+        private readonly struct UpdatePostedForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct LateUpdatingForPlayerLoopRunner
+        private readonly struct LateUpdatingForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct LateUpdatingForContinuationRunner
+        private readonly struct LateUpdatingForContinuationRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct LateUpdatedForPlayerLoopRunner
+        private readonly struct LateUpdatedForPlayerLoopRunner
         {
         }
 
         [StructLayout(LayoutKind.Sequential, Size = 1)]
-        private struct LateUpdatedForContinuationRunner
+        private readonly struct LateUpdatedForContinuationRunner
         {
         }
     }
