@@ -19,6 +19,8 @@ namespace Aurora.Unity
         /// <remarks>当这个值为 <see langword="false"/> 时，应跳过复杂与耗时的操作，让程序尽快结束。</remarks>
         public static bool IsPlaying { get; internal set; }
 
+        internal static CancellationTokenSource ExitTokenSource { get; set; }
+
         /// <summary>
         /// Unity 主线程 ID。
         /// </summary>
@@ -36,6 +38,25 @@ namespace Aurora.Unity
         /// </summary>
         /// <remarks>在 <see cref="UnitySynchronizationContext"/> 阶段被赋值。</remarks>
         public static TaskScheduler UnitySynchronizationContextTaskScheduler { get; internal set; }
+
+        /// <summary>
+        /// 在编辑器环境下，获取一个在进入播放模式时初始化、退出播放模式时发出取消通知的取消令牌，在其他情况下，将直接返回一个已取消的令牌；
+        /// <br/>
+        /// 在非编辑器环境下，获取一个在程序开始时初始化、程序结束时发出取消通知的取消令牌。
+        /// </summary>
+        public static CancellationToken ExitToken
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (ExitTokenSource == null)
+                {
+                    return new CancellationToken(true);
+                }
+#endif
+                return ExitTokenSource.Token;
+            }
+        }
 
         /// <summary>
         /// 获取一个值，这个值指示当前线程是否是 Unity 主线程。

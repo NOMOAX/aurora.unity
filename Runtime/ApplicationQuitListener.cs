@@ -9,7 +9,7 @@ namespace Aurora.Unity
     {
         private void OnApplicationQuit()
         {
-            RuntimeInitialization.SetIsPlaying(false, null);
+            RuntimeInitialization.ExitPlayMode(null);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Aurora.UnityEditor
                 case PlayModeStateChange.EnteredPlayMode:
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
-                    RuntimeInitialization.SetIsPlaying(false, null);
+                    RuntimeInitialization.ExitPlayMode(null);
                     PlayerLoopUtility.Clear();
                     break;
                 default:

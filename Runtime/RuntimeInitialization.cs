@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aurora.Diagnostics;
@@ -36,7 +37,7 @@ namespace Aurora.Unity
 #else
             SetIsSingleThreadEnvironment(false, stringBuilder);
 #endif
-            SetIsPlaying(true, stringBuilder);
+            EnterPlayMode(stringBuilder);
 #if !UNITY_EDITOR
             SetUnityConsoleLogger(stringBuilder);
             SetUnityMainThreadId(stringBuilder);
@@ -64,11 +65,43 @@ namespace Aurora.Unity
             }
         }
 
-        internal static void SetIsPlaying(bool value, StringBuilder stringBuilder)
+        /// <remarks>除非程序结束，否则应确保在调用 <see cref="EnterPlayMode"/> 之后无论隔多久总会调用一次 <see cref="ExitPlayMode"/>。</remarks>
+        private static void EnterPlayMode(StringBuilder stringBuilder)
         {
-            UnityEnvironment.IsPlaying = value;
+            UnityEnvironment.IsPlaying       = true;
+            UnityEnvironment.ExitTokenSource = new CancellationTokenSource();
 
-            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {value};";
+            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {true};";
+            if (stringBuilder != null)
+            {
+                stringBuilder.AppendLine($"    {message}");
+            }
+            else
+            {
+                Debug.Log(message);
+            }
+        }
+
+        /// <remarks>除非程序结束，否则应确保在调用 <see cref="EnterPlayMode"/> 之后无论隔多久总会调用一次 <see cref="ExitPlayMode"/>。</remarks>
+        internal static void ExitPlayMode(StringBuilder stringBuilder)
+        {
+            UnityEnvironment.IsPlaying = false;
+            try
+            {
+                UnityEnvironment.ExitTokenSource.Cancel();
+            }
+            catch (Exception e)
+            {
+                Log.E(e);
+                Log.W($"不应在 {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.ExitToken)} 令牌的回调函数中抛出异常。");
+            }
+            finally
+            {
+                UnityEnvironment.ExitTokenSource.Dispose();
+                UnityEnvironment.ExitTokenSource = null;
+            }
+
+            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {false};";
             if (stringBuilder != null)
             {
                 stringBuilder.AppendLine($"    {message}");
