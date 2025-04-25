@@ -12,10 +12,7 @@ namespace Aurora.Unity
         /// 初始化 <see cref="OverlyPreference{TValue}"/> 类的新实例。
         /// </summary>
         /// <inheritdoc />
-        public OverlyPreference(Preference<TValue> preference, TValue defaultValue = default) : base(
-            preference,
-            defaultValue
-        )
+        public OverlyPreference(Preference<TValue> preference, TValue defaultValue) : base(preference, defaultValue)
         {
         }
 

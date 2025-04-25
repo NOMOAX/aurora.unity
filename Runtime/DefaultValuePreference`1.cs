@@ -17,9 +17,7 @@ namespace Aurora.Unity
         /// <param name="preference">被包装的 <see cref="Preference{TValue}"/>。</param>
         /// <param name="defaultValue">指定的默认值。</param>
         /// <exception cref="ArgumentNullException"><paramref name="preference"/> 为 <see langword="null"/>。</exception>
-        protected DefaultValuePreference(Preference<TValue> preference, TValue defaultValue = default) : base(
-            preference
-        )
+        protected DefaultValuePreference(Preference<TValue> preference, TValue defaultValue) : base(preference)
         {
             _defaultValue = defaultValue;
         }

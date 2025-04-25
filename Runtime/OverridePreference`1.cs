@@ -14,10 +14,7 @@ namespace Aurora.Unity
         /// 初始化 <see cref="OverridePreference{TValue}"/> 类的新实例。
         /// </summary>
         /// <inheritdoc />
-        public OverridePreference(Preference<TValue> preference, TValue defaultValue = default) : base(
-            preference,
-            defaultValue
-        )
+        public OverridePreference(Preference<TValue> preference, TValue defaultValue) : base(preference, defaultValue)
         {
         }
 
