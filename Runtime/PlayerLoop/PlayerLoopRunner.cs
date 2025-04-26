@@ -39,6 +39,9 @@ namespace Aurora.Unity.PlayerLoop
                     _items[index] = null;
                 }
                 else
+#if UNITY_EDITOR
+                if (UnityEnvironment.IsPlaying)
+#endif
                 {
                     Log.W($"找不到要移除的 {nameof(IPlayerLoopItem)}");
                 }
