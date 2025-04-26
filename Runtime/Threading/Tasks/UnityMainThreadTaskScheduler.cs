@@ -105,7 +105,7 @@ namespace Aurora.Unity.Threading.Tasks
         {
             if (_tasks.Count == 0)
             {
-                RemovePlayerLoopItem(playerLoopPhase);
+                PlayerLoopUtility.RemovePlayerLoopItem(this, playerLoopPhase);
             }
             else if (BeginProcess && _tasks.TryDequeueFirst(out var task))
             {
@@ -116,18 +116,8 @@ namespace Aurora.Unity.Threading.Tasks
 
                 if (_tasks.Count == 0)
                 {
-                    RemovePlayerLoopItem(playerLoopPhase);
+                    PlayerLoopUtility.RemovePlayerLoopItem(this, playerLoopPhase);
                 }
-            }
-        }
-
-        private void RemovePlayerLoopItem(PlayerLoopPhase playerLoopPhase)
-        {
-#if UNITY_EDITOR
-            if (!PlayerLoopUtility.IsClearing)
-#endif
-            {
-                PlayerLoopUtility.RemovePlayerLoopItem(this, playerLoopPhase);
             }
         }
     }

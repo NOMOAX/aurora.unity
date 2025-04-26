@@ -78,12 +78,7 @@ namespace Aurora.Unity.PlayerLoop
                 return;
             }
             _invocation = null;
-#if UNITY_EDITOR
-            if (!PlayerLoopUtility.IsClearing)
-#endif
-            {
-                PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
-            }
+            PlayerLoopUtility.RemovePlayerLoopItem(this, _playerLoopPhase);
         }
     }
 }
