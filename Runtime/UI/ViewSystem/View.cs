@@ -16,53 +16,59 @@ namespace Aurora.Unity.UI.ViewSystem
     /// </summary>
     public abstract class View : MonoBehaviour2D, IEnumerable<View>
     {
-        private static RectTransform _rootViewContainer;
-
-        private static readonly List<View> RootViews = new List<View>();
+        private static readonly List<ViewContainer> Containers = new List<ViewContainer>();
 
         private static readonly Func<View, IEnumerable<View>> FuncGetChildren = GetChildrenAsEnumerable;
 
         /// <summary>
-        /// 根界面的容器。
+        /// 获取界面容器的数量。
         /// </summary>
-        public static RectTransform RootViewContainer
+        public static int ContainerCount => Containers.Count;
+
+        /// <summary>
+        /// 添加界面容器。
+        /// </summary>
+        /// <param name="rectTransform">一个矩形变换，它将作为界面的容器。</param>
+        public static void AddContainer(RectTransform rectTransform)
         {
-            get => _rootViewContainer;
-            set
+            if (rectTransform == null)
             {
-                if (_rootViewContainer == value)
-                {
-                    return;
-                }
-                if (value != null)
-                {
-                    if (!value.gameObject.activeSelf)
-                    {
-                        throw new ArgumentException(
-                            $"{value} 所在的游戏物体处于未激活状态",
-                            nameof(value),
-                            new GameObjectInactiveException(value.gameObject)
-                        );
-                    }
-                    if (value.gameObject.GetComponentInParent<Canvas>() == null)
-                    {
-                        throw new ArgumentException($"{value} 不是关联有 {nameof(Canvas)} 组件的物体或子物体", nameof(value));
-                    }
-                    foreach (var rootView in RootViews)
-                    {
-                        rootView.transform.SetParent(value, false);
-                        RectTransformUtility.AlignToParentEdges(rootView.RectTransform);
-                    }
-                }
-                else
-                {
-                    if (RootViews.Count > 0 && _rootViewContainer != null)
-                    {
-                        throw new ArgumentException("在将此属性设置为 null 之前，必须关闭所有根界面", nameof(value));
-                    }
-                }
-                _rootViewContainer = value;
+                throw new ArgumentNullException(nameof(rectTransform));
             }
+            var index = Containers.FindIndex(Match, rectTransform);
+            if (index >= 0)
+            {
+                throw new ArgumentException();
+            }
+            Containers.Add(new ViewContainer(rectTransform));
+
+            static bool Match(ViewContainer container, RectTransform rectTransform)
+            {
+                return ReferenceEquals(container.RectTransform, rectTransform);
+            }
+        }
+
+        /// <summary>
+        /// 移除位于指定索引处的界面容器。
+        /// </summary>
+        /// <param name="index">界面容器的索引。</param>
+        /// <exception cref="InvalidOperationException">要移除的界面容器下界面的数量不为 0。</exception>
+        public static void RemoveContainerAt(int index)
+        {
+            var container = Containers[index];
+            if (container.Views.Count != 0)
+            {
+                throw new InvalidOperationException("无法移除此界面容器，因为它仍然容纳着界面");
+            }
+        }
+
+        /// <summary>
+        /// 获取位于指定索引处的界面容器。
+        /// </summary>
+        /// <param name="index">界面容器的索引。</param>
+        public static ViewContainer GetContainer(int index)
+        {
+            return Containers[index];
         }
 
         private static IEnumerable<View> GetChildrenAsEnumerable(View view)
@@ -99,9 +105,9 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(view));
             }
-            return exclusions != null && exclusions.Length > 0
-                       ? InternalIsTopmost(view, exclusions)
-                       : InternalIsTopmost(view);
+            return exclusions == null || exclusions.Length == 0
+                       ? InternalIsTopmost(view)
+                       : InternalIsTopmost(view, exclusions);
         }
 
         private static bool InternalIsTopmost(Object view)
@@ -115,7 +121,7 @@ namespace Aurora.Unity.UI.ViewSystem
             var views = PredefinedPools<View>.List.Get();
             try
             {
-                GetViewsWithoutRoot(TreeEnumOrder.DepthFirstRld, views);
+                InternalGetViews(TreeEnumOrder.DepthFirstRld, views);
                 foreach (var exclusion in exclusions)
                 {
                     switch (exclusion)
@@ -167,9 +173,9 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <exception cref="ArgumentException"><paramref name="exclusions"/> 含有既不是 <see cref="View"/> 类型又不是 <see cref="Type"/> 类型的元素。</exception>
         public static View GetTopmostView(object[] exclusions)
         {
-            return exclusions != null && exclusions.Length > 0
-                       ? InternalGetTopmostView(exclusions)
-                       : InternalGetTopmostView();
+            return exclusions == null || exclusions.Length == 0
+                       ? InternalGetTopmostView()
+                       : InternalGetTopmostView(exclusions);
         }
 
         private static View InternalGetTopmostView()
@@ -177,12 +183,19 @@ namespace Aurora.Unity.UI.ViewSystem
             // return GetViewWithoutRoot<View>(TreeEnumOrder.DepthFirstRld);
             // 下面的实现消耗更少的内存和性能
 
-            var rootViewCount = RootViews.Count;
-            if (rootViewCount == 0)
+            var containersCount = Containers.Count;
+            if (containersCount == 0)
             {
                 return null;
             }
-            var topmostView = RootViews[rootViewCount - 1];
+            var container = Containers[containersCount - 1];
+            var views     = container.Views;
+            var viewCount = views.Count;
+            if (viewCount == 0)
+            {
+                return null;
+            }
+            var topmostView = views[viewCount - 1];
             for (var childCount = topmostView._children.Count; childCount > 0; childCount = topmostView._children.Count)
             {
                 topmostView = topmostView._children[childCount - 1];
@@ -195,7 +208,7 @@ namespace Aurora.Unity.UI.ViewSystem
             var views = PredefinedPools<View>.List.Get();
             try
             {
-                GetViewsWithoutRoot(TreeEnumOrder.DepthFirstRld, views);
+                InternalGetViews(TreeEnumOrder.DepthFirstRld, views);
                 foreach (var exclusion in exclusions)
                 {
                     switch (exclusion)
@@ -226,200 +239,166 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照 <see cref="TreeEnumOrder.DepthFirstRld"/> 顺序枚举指定的界面并获取指定类型的界面。
+        /// 按照 <see cref="TreeEnumOrder.DepthFirstRld"/> 枚举顺序枚举所有界面，并返回第一个满足指定类型的界面。
         /// </summary>
-        /// <param name="root">指定从该界面枚举并获取；如果为 <see langword="null"/>，则表示枚举各个根界面并获取。</param>
-        /// <typeparam name="T">要获取的界面的类型。</typeparam>
-        /// <returns>如果获取到了指定类型的界面，则为获取到的界面；否则为 <see langword="null"/>。</returns>
-        public static T GetView<T>(View root) where T : View
+        public static T GetView<T>() where T : class
         {
-            return GetView<T>(root, TreeEnumOrder.DepthFirstRld);
+            return InternalGetView<T>(TreeEnumOrder.DepthFirstRld);
         }
 
         /// <summary>
-        /// 按照指定的顺序枚举指定的界面并获取一个指定类型的界面。
+        /// 按照指定的枚举顺序枚举所有界面，并返回第一个满足指定类型的界面。
         /// </summary>
-        /// <param name="root">指定从该界面枚举并获取；如果为 <see langword="null"/>，则表示枚举各个根界面并获取。</param>
-        /// <param name="order">枚举顺序。</param>
-        /// <typeparam name="T">要获取的界面的类型。</typeparam>
-        /// <returns>如果获取到了指定类型的界面，则为获取到的界面；否则为 <see langword="null"/>。</returns>
-        public static T GetView<T>(View root, TreeEnumOrder order) where T : View
+        public static T GetView<T>(TreeEnumOrder order) where T : class
         {
-            return root == null ? GetViewFromRootViews<T>(order) : GetViewFromRoot<T>(root, order);
+            return InternalGetView<T>(order);
         }
 
-        /// <summary>
-        /// 按照 <see cref="TreeEnumOrder.DepthFirstRld"/> 顺序枚举指定的界面并获取指定类型的界面，并将结果存入指定的列表。
-        /// </summary>
-        /// <param name="root">指定从该界面枚举并获取；如果为 <see langword="null"/>，则表示枚举各个根界面并获取。</param>
-        /// <param name="results">用于存放结果的列表。</param>
-        /// <typeparam name="T">要获取的界面的类型。</typeparam>
-        /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
-        public static void GetViews<T>(View root, List<T> results) where T : View
-        {
-            GetViews(root, TreeEnumOrder.DepthFirstRld, results);
-        }
-
-        /// <summary>
-        /// 按照指定的顺序枚举指定的界面并获取指定类型的界面，并将结果存入指定的列表。
-        /// </summary>
-        /// <param name="root">指定从该界面枚举并获取；如果为 <see langword="null"/>，则表示枚举各个根界面并获取。</param>
-        /// <param name="order">枚举顺序。</param>
-        /// <param name="results">用于存放结果的列表。</param>
-        /// <typeparam name="T">要获取的界面的类型。</typeparam>
-        /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
-        public static void GetViews<T>(View root, TreeEnumOrder order, List<T> results) where T : View
-        {
-            if (results is null)
-            {
-                throw new ArgumentNullException(nameof(results));
-            }
-            if (root == null)
-            {
-                GetViewsWithoutRoot(order, results);
-            }
-            else
-            {
-                GetViewsWithRoot(root, order, results);
-            }
-        }
-
-        private static T GetViewFromRootViews<T>(TreeEnumOrder order) where T : View
+        private static T InternalGetView<T>(TreeEnumOrder order) where T : class
         {
             switch (order)
             {
                 case TreeEnumOrder.Default:
                 {
-                    foreach (var rootView in RootViews)
+                    foreach (var container in Containers)
                     {
-                        if (rootView is T t)
+                        if (container.GetViewFromContainer<T>(order) is { } t)
                         {
                             return t;
                         }
                     }
-                    break;
+                    return null;
                 }
                 case TreeEnumOrder.BreadthFirstLr:
                 {
                     var queue = PredefinedPools<View>.Queue.Get();
                     try
                     {
-                        foreach (var rootView in RootViews)
+                        foreach (var container in Containers)
                         {
-                            if (rootView is T t)
+                            var views = container.Views;
+                            foreach (var view in views)
                             {
-                                return t;
-                            }
-                            queue.Enqueue(rootView);
-                        }
-                        while (queue.Count > 0)
-                        {
-                            var dequeue = queue.Dequeue();
-                            foreach (var dequeueChild in dequeue._children)
-                            {
-                                if (dequeueChild is T t)
+                                if (view is T t)
                                 {
                                     return t;
                                 }
-                                queue.Enqueue(dequeueChild);
+                                queue.Enqueue(view);
                             }
                         }
+                        while (queue.Count > 0)
+                        {
+                            var view = queue.Dequeue();
+                            foreach (var child in view._children)
+                            {
+                                if (child is T t)
+                                {
+                                    return t;
+                                }
+                                queue.Enqueue(child);
+                            }
+                        }
+                        return null;
                     }
                     finally
                     {
                         PredefinedPools<View>.Queue.Return(queue);
                     }
-                    break;
                 }
                 case TreeEnumOrder.BreadthFirstRl:
                 {
                     var queue = PredefinedPools<View>.Queue.Get();
                     try
                     {
-                        for (var i = RootViews.Count - 1; i >= 0; i--)
+                        for (var i = Containers.Count - 1; i >= 0; i--)
                         {
-                            var rootView = RootViews[i];
-                            if (rootView is T t)
+                            var container = Containers[i];
+                            var views     = container.Views;
+                            for (var j = views.Count - 1; j >= 0; j--)
                             {
-                                return t;
-                            }
-                            queue.Enqueue(rootView);
-                        }
-                        while (queue.Count > 0)
-                        {
-                            var dequeue = queue.Dequeue();
-                            for (var i = dequeue._children.Count - 1; i >= 0; i--)
-                            {
-                                var dequeueChild = dequeue._children[i];
-                                if (dequeueChild is T t)
+                                var view = container.Views[j];
+                                if (view is T t)
                                 {
                                     return t;
                                 }
-                                queue.Enqueue(dequeueChild);
+                                queue.Enqueue(view);
                             }
                         }
+                        while (queue.Count > 0)
+                        {
+                            var view = queue.Dequeue();
+                            for (var i = view._children.Count - 1; i >= 0; i--)
+                            {
+                                var child = view._children[i];
+                                if (child is T t)
+                                {
+                                    return t;
+                                }
+                                queue.Enqueue(child);
+                            }
+                        }
+                        return null;
                     }
                     finally
                     {
                         PredefinedPools<View>.Queue.Return(queue);
                     }
-                    break;
                 }
                 case TreeEnumOrder.DepthFirstDlr:
                 case TreeEnumOrder.DepthFirstLrd:
                 {
-                    foreach (var rootView in RootViews)
+                    foreach (var container in Containers)
                     {
-                        var t = GetViewFromRoot<T>(rootView, order);
-                        if (t != null)
+                        if (container.GetViewFromContainer<T>(order) is { } t)
                         {
                             return t;
                         }
                     }
-                    break;
+                    return null;
                 }
                 case TreeEnumOrder.DepthFirstDrl:
                 case TreeEnumOrder.DepthFirstRld:
                 {
-                    for (var i = RootViews.Count - 1; i >= 0; i--)
+                    for (var i = Containers.Count - 1; i >= 0; i--)
                     {
-                        var rootView = RootViews[i];
-                        var t        = GetViewFromRoot<T>(rootView, order);
-                        if (t != null)
+                        var container = Containers[i];
+                        if (container.GetViewFromContainer<T>(order) is { } t)
                         {
                             return t;
                         }
                     }
-                    break;
+                    return null;
                 }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(order), order, null);
             }
-            return null;
         }
 
-        private static T GetViewFromRoot<T>(View root, TreeEnumOrder order) where T : View
+        /// <summary>
+        /// 按照指定的枚举顺序枚举所有界面，并将指定类型的界面存入指定的集合。
+        /// </summary>
+        public static void GetViews<T>(TreeEnumOrder order, ICollection<T> results) where T : class
         {
-            using var enumerator = root.InternalGetEnumerator(order);
-            while (enumerator.MoveNext())
+            if (results == null)
             {
-                if (enumerator.Current is T t)
-                {
-                    return t;
-                }
+                throw new ArgumentNullException(nameof(results));
             }
-            return null;
+            if (results.IsReadOnly)
+            {
+                throw new ArgumentException();
+            }
+            InternalGetViews(order, results);
         }
 
-        private static void GetViewsWithoutRoot<T>(TreeEnumOrder order, ICollection<T> results)
+        private static void InternalGetViews<T>(TreeEnumOrder order, ICollection<T> results) where T : class
         {
             switch (order)
             {
                 case TreeEnumOrder.Default:
                 {
-                    foreach (var rootView in RootViews)
+                    foreach (var container in Containers)
                     {
-                        if (rootView is T t)
+                        if (container.GetViewFromContainer<T>(order) is { } t)
                         {
                             results.Add(t);
                         }
@@ -431,20 +410,28 @@ namespace Aurora.Unity.UI.ViewSystem
                     var queue = PredefinedPools<View>.Queue.Get();
                     try
                     {
-                        foreach (var rootView in RootViews)
+                        foreach (var container in Containers)
                         {
-                            queue.Enqueue(rootView);
+                            var views = container.Views;
+                            foreach (var view in views)
+                            {
+                                if (view is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(view);
+                            }
                         }
                         while (queue.Count > 0)
                         {
-                            var dequeue = queue.Dequeue();
-                            foreach (var dequeueChild in dequeue._children)
+                            var view = queue.Dequeue();
+                            foreach (var child in view._children)
                             {
-                                queue.Enqueue(dequeueChild);
-                            }
-                            if (dequeue is T t)
-                            {
-                                results.Add(t);
+                                if (child is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(child);
                             }
                         }
                     }
@@ -452,7 +439,6 @@ namespace Aurora.Unity.UI.ViewSystem
                     {
                         PredefinedPools<View>.Queue.Return(queue);
                     }
-
                     break;
                 }
                 case TreeEnumOrder.BreadthFirstRl:
@@ -460,22 +446,31 @@ namespace Aurora.Unity.UI.ViewSystem
                     var queue = PredefinedPools<View>.Queue.Get();
                     try
                     {
-                        for (var i = RootViews.Count - 1; i >= 0; i--)
+                        for (var i = Containers.Count - 1; i >= 0; i--)
                         {
-                            var rootView = RootViews[i];
-                            queue.Enqueue(rootView);
+                            var container = Containers[i];
+                            var views     = container.Views;
+                            for (var j = views.Count - 1; j >= 0; j--)
+                            {
+                                var view = container.Views[j];
+                                if (view is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(view);
+                            }
                         }
                         while (queue.Count > 0)
                         {
-                            var dequeue = queue.Dequeue();
-                            for (var i = dequeue._children.Count - 1; i >= 0; i--)
+                            var view = queue.Dequeue();
+                            for (var i = view._children.Count - 1; i >= 0; i--)
                             {
-                                var dequeueChild = dequeue._children[i];
-                                queue.Enqueue(dequeueChild);
-                            }
-                            if (dequeue is T t)
-                            {
-                                results.Add(t);
+                                var child = view._children[i];
+                                if (child is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(child);
                             }
                         }
                     }
@@ -483,25 +478,24 @@ namespace Aurora.Unity.UI.ViewSystem
                     {
                         PredefinedPools<View>.Queue.Return(queue);
                     }
-
                     break;
                 }
                 case TreeEnumOrder.DepthFirstDlr:
                 case TreeEnumOrder.DepthFirstLrd:
                 {
-                    foreach (var rootView in RootViews)
+                    foreach (var container in Containers)
                     {
-                        GetViewsWithRoot(rootView, order, results);
+                        container.InternalGetViewsFromContainer(order, results);
                     }
                     break;
                 }
                 case TreeEnumOrder.DepthFirstDrl:
                 case TreeEnumOrder.DepthFirstRld:
                 {
-                    for (var i = RootViews.Count - 1; i >= 0; i--)
+                    for (var i = Containers.Count - 1; i >= 0; i--)
                     {
-                        var rootView = RootViews[i];
-                        GetViewsWithRoot(rootView, order, results);
+                        var container = Containers[i];
+                        container.InternalGetViewsFromContainer(order, results);
                     }
                     break;
                 }
@@ -510,25 +504,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
         }
 
-        private static void GetViewsWithRoot<T>(View root, TreeEnumOrder order, ICollection<T> results)
-        {
-            using var enumerator = root.InternalGetEnumerator(order);
-            while (enumerator.MoveNext())
-            {
-                if (enumerator.Current is T t)
-                {
-                    results.Add(t);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 异步创建“所关联的游戏物体处于未激活状态，或者其本身禁用”的界面。
-        /// </summary>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <returns>异步操作的任务对象，它的 <see cref="Task{TResult}.Result"/> 为创建出来的界面。</returns>
-        public static async Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken)
+        private static async Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken)
             where T : View
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -545,37 +521,166 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开界面。
+        /// 开始异步打开根界面。
         /// </summary>
-        /// <param name="openParameters">界面打开参数。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <exception cref="ArgumentNullException"><paramref name="openParameters"/> 为 <see langword="null"/>。</exception>
-        public static async void BeginOpen<T>(
-            OpenParameters    openParameters,
-            CancellationToken cancellationToken = default) where T : View
+        public static async void BeginOpen<T>(ViewContainer container) where T : View
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            _ = await InternalOpenAsync<T>(openParameters, cancellationToken);
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            _ = await InternalOpenAsync<T>(container, null, CancellationToken.None);
         }
 
         /// <summary>
-        /// 异步打开界面。
+        /// 开始异步打开根界面。
         /// </summary>
-        /// <param name="openParameters">界面打开参数。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <returns>异步操作的任务对象，它的 <see cref="Task{TResult}.Result"/> 为打开的界面。</returns>
-        public static Task<T> OpenAsync<T>(OpenParameters openParameters, CancellationToken cancellationToken = default)
+        public static async void BeginOpen<T>(ViewContainer container, CancellationToken cancellationToken)
             where T : View
         {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _ = await InternalOpenAsync<T>(container, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// 开始异步打开根界面。
+        /// </summary>
+        public static async void BeginOpen<T>(ViewContainer container, object state) where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            _ = await InternalOpenAsync<T>(container, state, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 开始异步打开根界面。
+        /// </summary>
+        public static async void BeginOpen<T>(
+            ViewContainer     container,
+            object            state,
+            CancellationToken cancellationToken) where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _ = await InternalOpenAsync<T>(container, state, cancellationToken);
+        }
+
+        /// <summary>
+        /// 开始异步打开界面。
+        /// </summary>
+        public static async void BeginOpen<T>(View parent) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            _ = await InternalOpenAsync<T>(parent, null, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 开始异步打开界面。
+        /// </summary>
+        public static async void BeginOpen<T>(View parent, CancellationToken cancellationToken) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _ = await InternalOpenAsync<T>(parent, null, cancellationToken);
+        }
+
+        /// <summary>
+        /// 开始异步打开界面。
+        /// </summary>
+        public static async void BeginOpen<T>(View parent, object state) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            _ = await InternalOpenAsync<T>(parent, state, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 开始异步打开界面。
+        /// </summary>
+        public static async void BeginOpen<T>(View parent, object state, CancellationToken cancellationToken)
+            where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _ = await InternalOpenAsync<T>(parent, state, cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步打开根界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(ViewContainer container) where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            return InternalOpenAsync<T>(container, null, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 异步打开根界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(ViewContainer container, CancellationToken cancellationToken) where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
             return !cancellationToken.IsCancellationRequested
-                       ? InternalOpenAsync<T>(openParameters, cancellationToken)
+                       ? InternalOpenAsync<T>(container, null, cancellationToken)
+                       : Task.FromCanceled<T>(cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步打开根界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(ViewContainer container, object state) where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            return InternalOpenAsync<T>(container, state, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 异步打开根界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(ViewContainer container, object state, CancellationToken cancellationToken)
+            where T : View
+        {
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            return !cancellationToken.IsCancellationRequested
+                       ? InternalOpenAsync<T>(container, state, cancellationToken)
                        : Task.FromCanceled<T>(cancellationToken);
         }
 
         private static async Task<T> InternalOpenAsync<T>(
-            OpenParameters    openParameters,
+            ViewContainer     container,
+            object            state,
             CancellationToken cancellationToken) where T : View
         {
             var view = await CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
@@ -592,21 +697,16 @@ namespace Aurora.Unity.UI.ViewSystem
                     $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面所关联的游戏物体处于激活状态并且界面启用"
                 );
             }
-            View   parent;
-            object state;
-            if (openParameters == null)
-            {
-                parent = null;
-                state  = null;
-            }
-            else
-            {
-                parent = openParameters.Parent;
-                state  = openParameters.State;
-            }
-            view.SetParent(parent);
-            view.transform.SetAsLastSibling();
+
+            view._container = container;
+            container.Views.Add(view);
+
+            var viewTransform = view.RectTransform;
+            viewTransform.SetParent(container.RectTransform, false);
+            RectTransformUtility.AlignToParentEdges(viewTransform);
+
             view.State = state;
+
             view.OnSettingActiveAndEnabling();
             if (!view.gameObject.activeSelf)
             {
@@ -616,40 +716,226 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 view.enabled = true;
             }
+
+            return view;
+        }
+
+        /// <summary>
+        /// 异步打开界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(View parent) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return InternalOpenAsync<T>(parent, null, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 异步打开界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(View parent, CancellationToken cancellationToken) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return !cancellationToken.IsCancellationRequested
+                       ? InternalOpenAsync<T>(parent, null, cancellationToken)
+                       : Task.FromCanceled<T>(cancellationToken);
+        }
+
+        /// <summary>
+        /// 异步打开界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(View parent, object state) where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return InternalOpenAsync<T>(parent, state, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 异步打开界面。
+        /// </summary>
+        public static Task<T> OpenAsync<T>(View parent, object state, CancellationToken cancellationToken)
+            where T : View
+        {
+            if (parent is null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+            return !cancellationToken.IsCancellationRequested
+                       ? InternalOpenAsync<T>(parent, state, cancellationToken)
+                       : Task.FromCanceled<T>(cancellationToken);
+        }
+
+        private static async Task<T> InternalOpenAsync<T>(
+            View              parent,
+            object            state,
+            CancellationToken cancellationToken) where T : View
+        {
+            var view = await CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
+            if (view == null)
+            {
+                throw new InvalidOperationException(
+                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面为 null"
+                );
+            }
+            if (view.gameObject.activeSelf && view.enabled)
+            {
+                throw new BehaviourActiveAndEnabledException(
+                    view,
+                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面所关联的游戏物体处于激活状态并且界面启用"
+                );
+            }
+
+            view._container = parent._container;
+            view._parent    = parent;
+            parent._children.Add(view);
+
+            var viewTransform = view.RectTransform;
+            viewTransform.SetParent(parent.ChildContainerOrRectTransformIfNull, false);
+            RectTransformUtility.AlignToParentEdges(viewTransform);
+
+            view.State = state;
+
+            view.OnSettingActiveAndEnabling();
+            if (!view.gameObject.activeSelf)
+            {
+                view.gameObject.SetActive(true);
+            }
+            if (!view.enabled)
+            {
+                view.enabled = true;
+            }
+
             return view;
         }
 
         private ViewHandler _handler;
+
+        private ViewContainer _container;
+
+        private View _parent;
 
         /// <summary>
         /// 子界面的容器。
         /// </summary>
         public RectTransform childContainer;
 
-        private View _parent;
-
         private readonly List<View> _children = new List<View>();
 
         /// <summary>
-        /// 由用户定义的数据。将在调用 <see cref="OpenAsync{T}"/> 时被赋值。
+        /// 由用户定义的数据。将在打开界面时赋值。
         /// </summary>
-        public abstract object State { get; set; }
+        public object State { get; private set; }
 
         /// <summary>
-        /// 由用户定义的数据。将在调用 <see cref="Close"/> 时被赋值。
+        /// 由用户定义的数据。将在关闭界面时赋值。
         /// </summary>
-        public abstract object CloseState { get; set; }
+        public object CloseState { get; private set; }
+
+        private RectTransform ChildContainerOrRectTransformIfNull => childContainer ?? RectTransform;
 
         /// <summary>
-        /// 获取子界面的容器。
+        /// 获取或设置容器。
         /// </summary>
-        /// <remarks>如果 <see cref="childContainer"/> 不为 <see langword="null"/>，则返回 <see cref="childContainer"/>；否则返回 <see cref="MonoBehaviour2D.RectTransform"/>。</remarks>
-        public RectTransform ChildContainerOrRectTransform => childContainer != null ? childContainer : RectTransform;
+        /// <remarks>不能设置为 <see langword="null"/>。</remarks>
+        public ViewContainer Container
+        {
+            get => _container;
+            set
+            {
+                if (ReferenceEquals(_container, value))
+                {
+                    return;
+                }
+                if (value is null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                if (_parent is null)
+                {
+                    _container.Views.Remove(this);
+                }
+                else
+                {
+                    _parent._children.Remove(this);
+                    _parent = null;
+                }
+                _container = value;
+                using (var enumerator = InternalGetEnumerator(TreeEnumOrder.DepthFirstDlr))
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        enumerator.Current!._container = _container;
+                    }
+                }
+                _container.Views.Add(this);
+                RectTransform.SetParent(_container.RectTransform, false);
+                RectTransform.SetAsLastSibling();
+                RectTransformUtility.AlignToParentEdges(RectTransform);
+            }
+        }
 
         /// <summary>
         /// 获取或设置父界面。
         /// </summary>
-        public View Parent { get => _parent; set => SetParent(value); }
+        public View Parent
+        {
+            get => _parent;
+            set
+            {
+                if (ReferenceEquals(_parent, value))
+                {
+                    return;
+                }
+                if (value is null)
+                {
+                    _parent._children.Remove(this);
+                    _parent = null;
+                    _container.Views.Add(this);
+                    RectTransform.SetParent(_container.RectTransform, false);
+                }
+                else
+                {
+                    if (ReferenceEquals(value, this))
+                    {
+                        throw new ArgumentException("不能设置自己为自己的父界面", nameof(value));
+                    }
+                    if (value.InternalIsChildOf(this))
+                    {
+                        throw new ArgumentException("不能设置子界面为父界面", nameof(value));
+                    }
+                    if (_parent is null)
+                    {
+                        _container.Views.Remove(this);
+                    }
+                    else
+                    {
+                        _parent._children.Remove(this);
+                    }
+                    var containerChanged = ReferenceEquals(_container, value._container);
+                    _container = value._container;
+                    _parent    = value;
+                    if (containerChanged)
+                    {
+                        using var enumerator = InternalGetEnumerator(TreeEnumOrder.DepthFirstDlr);
+                        while (enumerator.MoveNext())
+                        {
+                            enumerator.Current!._container = _container;
+                        }
+                    }
+                    RectTransform.SetParent(_parent.ChildContainerOrRectTransformIfNull, false);
+                }
+                RectTransform.SetAsLastSibling();
+                RectTransformUtility.AlignToParentEdges(RectTransform);
+            }
+        }
 
         /// <summary>
         /// 获取根界面。
@@ -688,65 +974,10 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 在执行 <see cref="OpenAsync{T}"/> 的最后一步“激活此界面所关联的游戏物体，并启用此界面”前调用此方法。
+        /// 在打开界面的最后一步“激活此界面所关联的游戏物体，并启用此界面”前调用此方法。
         /// </summary>
         protected virtual void OnSettingActiveAndEnabling()
         {
-        }
-
-        private void SetParent(View parent)
-        {
-            if (parent == null)
-            {
-                SetParentNull();
-            }
-            else
-            {
-                SetParentNotNull(parent);
-            }
-        }
-
-        private void SetParentNull()
-        {
-            if (_parent == null)
-            {
-                if (RootViews.Contains(this))
-                {
-                    return;
-                }
-            }
-            else
-            {
-                _parent._children.Remove(this);
-                _parent = null;
-            }
-            RootViews.Add(this);
-            RectTransform.SetParent(_rootViewContainer, false);
-            RectTransformUtility.AlignToParentEdges(RectTransform);
-        }
-
-        private void SetParentNotNull(View parent)
-        {
-            if (ReferenceEquals(_parent, parent))
-            {
-                return;
-            }
-            if (parent == this || parent.IsChildOf(this))
-            {
-                throw new ArgumentException($"{nameof(parent)} 不能是此实例本身，或此实例的子界面", nameof(parent));
-            }
-            if (_parent == null)
-            {
-                RootViews.Remove(this);
-            }
-            else
-            {
-                _parent._children.Remove(this);
-            }
-            _parent = parent;
-            _parent._children.Add(this);
-            RectTransform.SetParent(_parent.ChildContainerOrRectTransform, false);
-            RectTransformUtility.AlignToParentEdges(RectTransform);
         }
 
         /// <summary>
@@ -766,7 +997,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
         private bool InternalIsChildOf(Object view)
         {
-            if (view == this)
+            if (ReferenceEquals(view, this))
             {
                 return false;
             }
@@ -818,6 +1049,50 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
+        /// 按照指定的枚举顺序枚举此界面，并返回第一个满足指定类型的界面。
+        /// </summary>
+        public T GetViewFromThis<T>(TreeEnumOrder order) where T : class
+        {
+            using var enumerator = InternalGetEnumerator(order);
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current is T t)
+                {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 按照指定的枚举顺序枚举此界面，并将指定类型的界面存入指定的集合。
+        /// </summary>
+        public void GetViewsFromThis<T>(TreeEnumOrder order, ICollection<T> results)
+        {
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+            if (results.IsReadOnly)
+            {
+                throw new ArgumentException();
+            }
+            InternalGetViewsFromThis(order, results);
+        }
+
+        private void InternalGetViewsFromThis<T>(TreeEnumOrder order, ICollection<T> results)
+        {
+            using var enumerator = InternalGetEnumerator(order);
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current is T t)
+                {
+                    results.Add(t);
+                }
+            }
+        }
+
+        /// <summary>
         /// 关闭界面。
         /// </summary>
         /// <param name="closeState">由用户定义的数据，将赋值给 <see cref="View.CloseState"/>。</param>
@@ -828,7 +1103,6 @@ namespace Aurora.Unity.UI.ViewSystem
 
         private void InternalClose(object closeState)
         {
-            // 关闭子界面
             for (var i = _children.Count - 1; i >= 0; i--)
             {
                 var child = _children[i];
@@ -836,13 +1110,14 @@ namespace Aurora.Unity.UI.ViewSystem
                 child.InternalClose(null);
             }
 
-            // 如果是根界面，则从根界面列表中移除；否则，解除与父界面的关系
-            if (_parent == null)
+            if (_parent is null)
             {
-                RootViews.Remove(this);
+                _container.Views.Remove(this);
+                _container = null;
             }
             else
             {
+                _container = null;
                 _parent._children.Remove(this);
                 _parent = null;
             }
@@ -875,6 +1150,14 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
+        /// 获取枚举此 <see cref="View"/> 的直接子界面的枚举器。
+        /// </summary>
+        public IEnumerator<View> GetEnumerator()
+        {
+            return InternalGetEnumerator(TreeEnumOrder.Default);
+        }
+
+        /// <summary>
         /// 根据指定的枚举顺序，获取一个枚举此 <see cref="View"/> 的枚举器。
         /// </summary>
         /// <param name="order">枚举顺序。</param>
@@ -902,39 +1185,275 @@ namespace Aurora.Unity.UI.ViewSystem
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return InternalGetEnumerator(TreeEnumOrder.Default);
+            return GetEnumerator();
         }
 
         /// <inheritdoc />
-        public IEnumerator<View> GetEnumerator()
+        IEnumerator<View> IEnumerable<View>.GetEnumerator()
         {
-            return InternalGetEnumerator(TreeEnumOrder.Default);
+            return GetEnumerator();
         }
 
         /// <summary>
-        /// 界面打开参数。
+        /// 界面容器。
         /// </summary>
-        public sealed class OpenParameters
+        public sealed class ViewContainer
         {
-            /// <summary>
-            /// 将要打开界面的父界面；如果为 <see langword="null"/>，则表示将要打开界面为根界面。
-            /// </summary>
-            public readonly View Parent;
+            internal readonly RectTransform RectTransform;
 
-            /// <summary>
-            /// 由用户定义的数据，将赋值给将要打开界面的 <see cref="View.State"/>。
-            /// </summary>
-            public readonly object State;
+            internal readonly List<View> Views = new List<View>();
 
-            /// <summary>
-            /// 初始化 <see cref="OpenParameters"/> 类的新实例。
-            /// </summary>
-            /// <param name="parent">将要打开界面的父界面；如果为 <see langword="null"/>，则表示将要打开界面为根界面。</param>
-            /// <param name="state">由用户定义的数据，将赋值给将要打开界面的 <see cref="View.State"/>。</param>
-            public OpenParameters(View parent, object state = null)
+            internal ViewContainer(RectTransform rectTransform)
             {
-                Parent = parent;
-                State  = state;
+                if (rectTransform == null)
+                {
+                    throw new ArgumentNullException(nameof(rectTransform));
+                }
+                var gameObject = rectTransform.gameObject;
+                if (!gameObject.activeSelf)
+                {
+                    throw new GameObjectInactiveException(gameObject);
+                }
+                if (gameObject.GetComponentInParent<Canvas>() == null)
+                {
+                    throw new ComponentNotGotException(gameObject, GetComponentMethod.Parent, typeof(Canvas));
+                }
+                RectTransform = rectTransform;
+            }
+
+            /// <summary>
+            /// 按照指定的枚举顺序枚举此容器，并返回第一个满足指定类型的界面。
+            /// </summary>
+            public T GetViewFromContainer<T>(TreeEnumOrder order) where T : class
+            {
+                switch (order)
+                {
+                    case TreeEnumOrder.Default:
+                    {
+                        foreach (var view in Views)
+                        {
+                            if (view is T t)
+                            {
+                                return t;
+                            }
+                        }
+                        return null;
+                    }
+                    case TreeEnumOrder.BreadthFirstLr:
+                    {
+                        var queue = PredefinedPools<View>.Queue.Get();
+                        try
+                        {
+                            foreach (var view in Views)
+                            {
+                                if (view is T t)
+                                {
+                                    return t;
+                                }
+                                queue.Enqueue(view);
+                            }
+                            while (queue.Count > 0)
+                            {
+                                var view = queue.Dequeue();
+                                foreach (var child in view._children)
+                                {
+                                    if (child is T t)
+                                    {
+                                        return t;
+                                    }
+                                    queue.Enqueue(child);
+                                }
+                            }
+                            return null;
+                        }
+                        finally
+                        {
+                            PredefinedPools<View>.Queue.Return(queue);
+                        }
+                    }
+                    case TreeEnumOrder.BreadthFirstRl:
+                    {
+                        var queue = PredefinedPools<View>.Queue.Get();
+                        try
+                        {
+                            for (var i = Views.Count - 1; i >= 0; i--)
+                            {
+                                var view = Views[i];
+                                if (view is T t)
+                                {
+                                    return t;
+                                }
+                                queue.Enqueue(view);
+                            }
+                            while (queue.Count > 0)
+                            {
+                                var view = queue.Dequeue();
+                                for (var i = view._children.Count - 1; i >= 0; i--)
+                                {
+                                    var child = view._children[i];
+                                    if (child is T t)
+                                    {
+                                        return t;
+                                    }
+                                    queue.Enqueue(child);
+                                }
+                            }
+                            return null;
+                        }
+                        finally
+                        {
+                            PredefinedPools<View>.Queue.Return(queue);
+                        }
+                    }
+                    case TreeEnumOrder.DepthFirstDlr:
+                    case TreeEnumOrder.DepthFirstLrd:
+                    {
+                        foreach (var view in Views)
+                        {
+                            if (view.GetViewFromThis<T>(order) is { } t)
+                            {
+                                return t;
+                            }
+                        }
+                        return null;
+                    }
+                    case TreeEnumOrder.DepthFirstDrl:
+                    case TreeEnumOrder.DepthFirstRld:
+                    {
+                        for (var i = Views.Count - 1; i >= 0; i--)
+                        {
+                            var view = Views[i];
+                            if (view.GetViewFromThis<T>(order) is { } t)
+                            {
+                                return t;
+                            }
+                        }
+                        return null;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(order), order, null);
+                }
+            }
+
+            /// <summary>
+            /// 按照指定的枚举顺序枚举此容器，并将指定类型的界面存入指定的集合。
+            /// </summary>
+            public void GetViewsFromContainer<T>(TreeEnumOrder order, ICollection<T> results) where T : class
+            {
+                if (results == null)
+                {
+                    throw new ArgumentNullException(nameof(results));
+                }
+                if (results.IsReadOnly)
+                {
+                    throw new ArgumentException();
+                }
+                InternalGetViewsFromContainer(order, results);
+            }
+
+            internal void InternalGetViewsFromContainer<T>(TreeEnumOrder order, ICollection<T> results) where T : class
+            {
+                switch (order)
+                {
+                    case TreeEnumOrder.Default:
+                    {
+                        foreach (var view in Views)
+                        {
+                            if (view is T t)
+                            {
+                                results.Add(t);
+                            }
+                        }
+                        break;
+                    }
+                    case TreeEnumOrder.BreadthFirstLr:
+                    {
+                        var queue = PredefinedPools<View>.Queue.Get();
+                        try
+                        {
+                            foreach (var view in Views)
+                            {
+                                if (view is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(view);
+                            }
+                            while (queue.Count > 0)
+                            {
+                                var view = queue.Dequeue();
+                                foreach (var child in view._children)
+                                {
+                                    if (child is T t)
+                                    {
+                                        results.Add(t);
+                                    }
+                                    queue.Enqueue(child);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            PredefinedPools<View>.Queue.Return(queue);
+                        }
+                        break;
+                    }
+                    case TreeEnumOrder.BreadthFirstRl:
+                    {
+                        var queue = PredefinedPools<View>.Queue.Get();
+                        try
+                        {
+                            for (var i = Views.Count - 1; i >= 0; i--)
+                            {
+                                var view = Views[i];
+                                if (view is T t)
+                                {
+                                    results.Add(t);
+                                }
+                                queue.Enqueue(view);
+                            }
+                            while (queue.Count > 0)
+                            {
+                                var view = queue.Dequeue();
+                                for (var i = view._children.Count - 1; i >= 0; i--)
+                                {
+                                    var child = view._children[i];
+                                    if (child is T t)
+                                    {
+                                        results.Add(t);
+                                    }
+                                    queue.Enqueue(child);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            PredefinedPools<View>.Queue.Return(queue);
+                        }
+                        break;
+                    }
+                    case TreeEnumOrder.DepthFirstDlr:
+                    case TreeEnumOrder.DepthFirstLrd:
+                    {
+                        foreach (var view in Views)
+                        {
+                            view.InternalGetViewsFromThis(order, results);
+                        }
+                        break;
+                    }
+                    case TreeEnumOrder.DepthFirstDrl:
+                    case TreeEnumOrder.DepthFirstRld:
+                    {
+                        for (var i = Views.Count - 1; i >= 0; i--)
+                        {
+                            var view = Views[i];
+                            view.InternalGetViewsFromThis(order, results);
+                        }
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(order), order, null);
+                }
             }
         }
 

@@ -12,10 +12,6 @@ namespace Aurora.Unity.UI.ViewSystem
     {
         private Block _block;
 
-        public override object State { get; set; }
-
-        public override object CloseState { get; set; }
-
         /// <summary>
         /// 获取遮罩。
         /// </summary>

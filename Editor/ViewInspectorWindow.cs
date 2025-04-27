@@ -2,31 +2,76 @@
 using Aurora.Pooling;
 using Aurora.Unity.UI.ViewSystem;
 using UnityEditor;
+using UnityEngine;
 
 namespace Aurora.UnityEditor
 {
     internal sealed class ViewInspectorWindow : EditorWindow
     {
-        [MenuItem("Window/Aurora Unity/View Inspector")]
+        private const string Title = "View Inspector";
+
+        [MenuItem("Window" + "/" + UnityEditorUtility.DisplayName + "/" + Title)]
         public static void OpenWindow()
         {
-            GetWindow<ViewInspectorWindow>("View Inspector").ShowUtility();
+            GetWindow<ViewInspectorWindow>(Title).ShowUtility();
+        }
+
+        private void OnGUI()
+        {
+            var viewContainerCount = View.ContainerCount;
+            if (viewContainerCount == 0)
+            {
+                EditorGUILayout.HelpBox("There is nothing here.", MessageType.Info);
+            }
+            else
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    for (var i = 0; i < viewContainerCount; i++)
+                    {
+                        var viewContainer = View.GetContainer(i);
+                        HandleViewContainer(viewContainer);
+                    }
+                }
+            }
+        }
+
+        private static void HandleViewContainer(View.ViewContainer viewContainer)
+        {
+            EditorGUILayout.ObjectField(viewContainer.RectTransform, typeof(RectTransform), true);
+            var views = PredefinedPools<View>.List.Get();
+            try
+            {
+                viewContainer.GetViewsFromContainer(TreeEnumOrder.Default, views);
+                if (views.Count == 0)
+                {
+                    return;
+                }
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    foreach (var view in views)
+                    {
+                        HandleView(view);
+                    }
+                }
+            }
+            finally
+            {
+                PredefinedPools<View>.List.Return(views);
+            }
         }
 
         private static void HandleView(View view)
         {
-            if (view == null)
-            {
-                return;
-            }
-            using (new EditorGUI.DisabledScope(true))
-            {
-                EditorGUILayout.ObjectField(view, typeof(View), true);
-            }
+            EditorGUILayout.ObjectField(view, typeof(View), true);
             var children = PredefinedPools<View>.List.Get();
             try
             {
-                View.GetViews(view, TreeEnumOrder.Default, children);
+                view.GetViewsFromThis(TreeEnumOrder.Default, children);
+                if (children.Count == 0)
+                {
+                    return;
+                }
                 using (new EditorGUI.IndentLevelScope())
                 {
                     foreach (var child in children)
@@ -38,30 +83,6 @@ namespace Aurora.UnityEditor
             finally
             {
                 PredefinedPools<View>.List.Return(children);
-            }
-        }
-
-        private void OnGUI()
-        {
-            var views = PredefinedPools<View>.List.Get();
-            try
-            {
-                View.GetViews(null, TreeEnumOrder.Default, views);
-                if (views.Count == 0)
-                {
-                    EditorGUILayout.HelpBox("No views.", MessageType.Info);
-                }
-                else
-                {
-                    foreach (var view in views)
-                    {
-                        HandleView(view);
-                    }
-                }
-            }
-            finally
-            {
-                PredefinedPools<View>.List.Return(views);
             }
         }
     }

@@ -610,7 +610,7 @@ namespace Aurora.UnityEditor
             public static readonly Type Scene = UnityEditorAssembly.GetType("UnityEditor.SceneView");
         }
 
-        private const string DisplayName = "Aurora Unity";
+        internal const string DisplayName = "Aurora Unity";
 
         /// <summary>
         /// Unity 编辑器程序集。
