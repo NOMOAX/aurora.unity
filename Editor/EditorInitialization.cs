@@ -3,6 +3,7 @@ using System.Text;
 using Aurora.Pooling;
 using Aurora.Unity;
 using Aurora.Unity.PlayerLoop;
+using Aurora.Unity.UI.ViewSystem;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,6 +61,7 @@ namespace Aurora.UnityEditor
                 case PlayModeStateChange.ExitingPlayMode:
                     RuntimeInitialization.ExitPlayMode(null);
                     PlayerLoopUtility.Clear();
+                    View.ClearContainers();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);

@@ -71,6 +71,13 @@ namespace Aurora.Unity.UI.ViewSystem
             return Containers[index];
         }
 
+#if UNITY_EDITOR
+        internal static void ClearContainers()
+        {
+            Containers.Clear();
+        }
+#endif
+
         private static IEnumerable<View> GetChildrenAsEnumerable(View view)
         {
             return view._children;
