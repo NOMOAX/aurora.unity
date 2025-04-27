@@ -1199,7 +1199,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         public sealed class ViewContainer
         {
-            internal readonly RectTransform RectTransform;
+            public readonly RectTransform RectTransform;
 
             internal readonly List<View> Views = new List<View>();
 
