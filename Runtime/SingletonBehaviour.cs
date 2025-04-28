@@ -41,12 +41,9 @@ namespace Aurora.Unity
             if (!UnityEnvironment.IsPlaying)
             {
 #if UNITY_EDITOR
-
                 throw new InvalidOperationException("在编辑器环境下，并且不在播放模式中，不能执行此操作");
 #else
-                throw new InvalidOperationException(
-                    $"应用程序即将结束运行，不应该执行此操作；若要避免此异常，请确保 {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} 的值为 {bool.TrueString}"
-                );
+                throw new InvalidOperationException($"应用程序程序已结束，不应该执行此操作；若要避免此异常，请确保 {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} 的值为 {bool.TrueString}");
 #endif
             }
             var        type  = typeof(T);

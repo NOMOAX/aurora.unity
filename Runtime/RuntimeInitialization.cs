@@ -43,6 +43,9 @@ namespace Aurora.Unity
             SetUnityMainThreadId(stringBuilder);
             SetUnitySynchronizationContext(stringBuilder);
             SetUnitySynchronizationContextTaskScheduler(stringBuilder);
+            SetDefaultLayer(LayerMask.NameToLayer("Default"), stringBuilder);
+            SetIgnoreRaycastLayer(LayerMask.NameToLayer("Ignore Raycast"), stringBuilder);
+            SetUILayer(LayerMask.NameToLayer("UI"), stringBuilder);
             SetIsProSkin(false, stringBuilder);
             PlayerLoopUtilityInitialize(stringBuilder);
             RegisterPrefabLessViewHandler(stringBuilder);
@@ -168,6 +171,51 @@ namespace Aurora.Unity
 
             var message =
                 $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.UnitySynchronizationContextTaskScheduler)} = {nameof(TaskScheduler)}.{nameof(TaskScheduler.FromCurrentSynchronizationContext)}();";
+            if (stringBuilder != null)
+            {
+                stringBuilder.AppendLine($"    {message}");
+            }
+            else
+            {
+                Debug.Log(message);
+            }
+        }
+
+        internal static void SetDefaultLayer(int value, StringBuilder stringBuilder)
+        {
+            UnityEnvironment.DefaultLayer = value;
+
+            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.DefaultLayer)} = {value};";
+            if (stringBuilder != null)
+            {
+                stringBuilder.AppendLine($"    {message}");
+            }
+            else
+            {
+                Debug.Log(message);
+            }
+        }
+
+        internal static void SetIgnoreRaycastLayer(int value, StringBuilder stringBuilder)
+        {
+            UnityEnvironment.IgnoreRaycastLayer = value;
+
+            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IgnoreRaycastLayer)} = {value};";
+            if (stringBuilder != null)
+            {
+                stringBuilder.AppendLine($"    {message}");
+            }
+            else
+            {
+                Debug.Log(message);
+            }
+        }
+
+        internal static void SetUILayer(int value, StringBuilder stringBuilder)
+        {
+            UnityEnvironment.UILayer = value;
+
+            var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.UILayer)} = {value};";
             if (stringBuilder != null)
             {
                 stringBuilder.AppendLine($"    {message}");

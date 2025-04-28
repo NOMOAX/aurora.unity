@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Aurora.Unity.UI.ViewSystem
 {
     /// <summary>
@@ -5,5 +7,12 @@ namespace Aurora.Unity.UI.ViewSystem
     /// </summary>
     public abstract class PrefabLessView : View
     {
+        /// <summary>
+        /// 设置 <see cref="GameObject.layer"/> 为"UI"。
+        /// </summary>
+        protected virtual void Awake()
+        {
+            gameObject.layer = UnityEnvironment.UILayer;
+        }
     }
 }

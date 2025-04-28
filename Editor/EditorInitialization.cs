@@ -36,6 +36,9 @@ namespace Aurora.UnityEditor
             RuntimeInitialization.SetUnityMainThreadId(stringBuilder);
             RuntimeInitialization.SetUnitySynchronizationContext(stringBuilder);
             RuntimeInitialization.SetUnitySynchronizationContextTaskScheduler(stringBuilder);
+            RuntimeInitialization.SetDefaultLayer(LayerMask.NameToLayer("Default"), stringBuilder);
+            RuntimeInitialization.SetIgnoreRaycastLayer(LayerMask.NameToLayer("Ignore Raycast"), stringBuilder);
+            RuntimeInitialization.SetUILayer(LayerMask.NameToLayer("UI"), stringBuilder);
             RuntimeInitialization.SetIsProSkin(EditorGUIUtility.isProSkin, stringBuilder);
             RuntimeInitialization.PlayerLoopUtilityInitialize(stringBuilder);
             RuntimeInitialization.RegisterPrefabLessViewHandler(stringBuilder);

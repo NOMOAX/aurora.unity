@@ -9,7 +9,7 @@ using UnityEditor;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 运行环境。
+    /// 提供与 Unity 环境有关的值和方法。
     /// </summary>
     public static class UnityEnvironment
     {
@@ -71,6 +71,21 @@ namespace Aurora.Unity
         /// 获取一个值，这个值指示当前是否处于编辑器环境，且使用了专业版皮肤。
         /// </summary>
         public static bool IsProSkin { get; internal set; }
+
+        /// <summary>
+        /// “Default”层的值。
+        /// </summary>
+        public static int DefaultLayer { get; internal set; }
+
+        /// <summary>
+        /// “Ignore Raycast”层的值。
+        /// </summary>
+        public static int IgnoreRaycastLayer { get; internal set; }
+
+        /// <summary>
+        /// “UI”层的值。
+        /// </summary>
+        public static int UILayer { get; internal set; }
 
         /// <summary>
         /// 字符串剪贴板。
