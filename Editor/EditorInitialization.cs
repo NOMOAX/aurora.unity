@@ -65,6 +65,7 @@ namespace Aurora.UnityEditor
                     RuntimeInitialization.ExitPlayMode(null);
                     PlayerLoopUtility.Clear();
                     View.ClearContainers();
+                    CursorStack.Reset();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(playModeStateChange), playModeStateChange, null);
