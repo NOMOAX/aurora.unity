@@ -12,7 +12,7 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="status">按钮状态。</param>
         /// <returns><see cref="EnhancedButton.Status"/> 为 <paramref name="status"/> 的 <see cref="EnhancedButton"/> 是否可交互。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="status"/> 不是定义在 <see cref="EnhancedButtonStatus"/> 枚举中的成员。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="status"/> 不是在 <see cref="EnhancedButtonStatus"/> 枚举中定义的成员。</exception>
         public static bool IsInteractableStatus(this EnhancedButtonStatus status)
         {
             return status switch

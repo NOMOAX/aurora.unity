@@ -55,7 +55,7 @@ namespace Aurora.Unity.Threading
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
         /// <param name="playerLoopPhase">播放器循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 的值未定义。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
         public UnityTimePlayerLoopTimer(TimerCallback callback, object state, PlayerLoopPhase playerLoopPhase)
         {
 #if UNITY_EDITOR

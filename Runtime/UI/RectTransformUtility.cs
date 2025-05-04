@@ -456,7 +456,7 @@ namespace Aurora.Unity.UI
         /// <param name="edge">边。</param>
         /// <returns>矩形变换的边的位置（本地坐标系）。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="edge"/> 不是定义在 <see cref="RectTransform.Edge"/> 中的值。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="edge"/> 不是在 <see cref="RectTransform.Edge"/> 枚举中定义的成员。</exception>
         public static float GetEdge(RectTransform rectTransform, RectTransform.Edge edge)
         {
             if (rectTransform == null)

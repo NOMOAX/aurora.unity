@@ -1169,7 +1169,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         /// <param name="order">枚举顺序。</param>
         /// <returns>用于枚举此 <see cref="Node"/> 的枚举器。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="order"/> 的值未定义。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="order"/> 不是在 <see cref="TreeEnumOrder"/> 枚举中定义的成员。</exception>
         public IEnumerator<View> GetEnumerator(TreeEnumOrder order)
         {
             return InternalGetEnumerator(order);

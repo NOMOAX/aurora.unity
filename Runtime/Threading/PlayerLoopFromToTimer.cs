@@ -344,7 +344,7 @@ namespace Aurora.Unity.Threading
             var newTime = ClampTime(_time, _from, _to);
             if (SetValueAndRaiseEvent(this, causation, ref _time, newTime, TimeChangedEventHandler))
             {
-                var newTimeTruncated = System.Math.Truncate(_time);
+                var newTimeTruncated = Math.Truncate(_time);
                 SetValueAndRaiseEvent(
                     this,
                     causation,
@@ -372,7 +372,7 @@ namespace Aurora.Unity.Threading
             var newTime = ClampTime(_time, _from, _to);
             if (SetValueAndRaiseEvent(this, causation, ref _time, newTime, TimeChangedEventHandler))
             {
-                var newTimeTruncated = System.Math.Truncate(_time);
+                var newTimeTruncated = Math.Truncate(_time);
                 SetValueAndRaiseEvent(
                     this,
                     causation,
@@ -395,7 +395,7 @@ namespace Aurora.Unity.Threading
             var newTime = ClampTime(value, _from, _to);
             if (SetValueAndRaiseEvent(this, causation, ref _time, newTime, TimeChangedEventHandler))
             {
-                var newTimeTruncated = System.Math.Truncate(_time);
+                var newTimeTruncated = Math.Truncate(_time);
                 SetValueAndRaiseEvent(
                     this,
                     causation,
@@ -421,7 +421,7 @@ namespace Aurora.Unity.Threading
                 var newTime = Lerp(_from, _to, _progress);
                 if (SetValueAndRaiseEvent(this, causation, ref _time, newTime, TimeChangedEventHandler))
                 {
-                    var newTimeTruncated = System.Math.Truncate(_time);
+                    var newTimeTruncated = Math.Truncate(_time);
                     SetValueAndRaiseEvent(
                         this,
                         causation,
@@ -453,7 +453,7 @@ namespace Aurora.Unity.Threading
                 var newTime = MoveTowards(_time, _to, DeltaTime);
                 if (SetValueAndRaiseEvent(this, causation, ref _time, newTime, TimeChangedEventHandler))
                 {
-                    var newTimeTruncated = System.Math.Truncate(_time);
+                    var newTimeTruncated = Math.Truncate(_time);
                     SetValueAndRaiseEvent(
                         this,
                         causation,
@@ -493,7 +493,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double MoveTowards(double current, double target, double maxDelta)
         {
-            return System.Math.Abs(target - current) <= maxDelta ? target : current + Sign(target - current) * maxDelta;
+            return Math.Abs(target - current) <= maxDelta ? target : current + Sign(target - current) * maxDelta;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
