@@ -90,7 +90,7 @@ namespace Aurora.Unity.Threading.Tasks
             try
             {
                 Monitor.TryEnter(_tasks, ref lockTaken);
-                return lockTaken && _tasks.RemoveFirst(task);
+                return lockTaken && _tasks.Remove(task);
             }
             finally
             {
