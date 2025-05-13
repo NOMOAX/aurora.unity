@@ -120,7 +120,7 @@ namespace Aurora.Unity
         /// </summary>
         /// <param name="cancellationTokenSource">取消令牌源。</param>
         /// <param name="delay">发出取消请求前的等待时间。</param>
-        /// <returns>一个可释放对象，释放该对象以中止此方法。</returns>
+        /// <returns>一个可释放对象，释放该对象以终止此方法。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="cancellationTokenSource"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan"/>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
         public static IDisposable CancelAfter(CancellationTokenSource cancellationTokenSource, TimeSpan delay)

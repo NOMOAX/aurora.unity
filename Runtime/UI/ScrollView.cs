@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Aurora.Collections;
 using Aurora.Diagnostics;
 using Aurora.Interpolations;
+using Aurora.Unity.CompilerServices;
 using Aurora.Unity.PlayerLoop;
+using Aurora.Unity.Threading;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
@@ -16,6 +18,7 @@ namespace Aurora.Unity.UI
     /// <summary>
     /// 滚动视图。
     /// </summary>
+    /// <remarks>借助 <see cref="UnityEngine.UI.ScrollRect"/> 实现功能。</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(ScrollRect))]
@@ -25,6 +28,7 @@ namespace Aurora.Unity.UI
                                        IBeginDragHandler,
                                        IDragHandler,
                                        IEndDragHandler,
+                                       IScrollHandler,
                                        IPlayerLoopItem
     {
         private const string NotInitialized =
@@ -38,6 +42,10 @@ namespace Aurora.Unity.UI
 
         private static readonly ParameterizedPredicate<ScrollViewItem, int> IndexEqualTo = (scrollViewItem, index) =>
             scrollViewItem.index == index;
+
+        [SerializeField]
+        [Tooltip("required")]
+        internal ScrollRect scrollRect;
 
         [SerializeField]
         internal RectOffset padding = new RectOffset();
@@ -68,25 +76,46 @@ namespace Aurora.Unity.UI
         public float speedLimit;
 
         /// <summary>
-        /// 控制中止补间动画的行为。
+        /// 控制终止补间动画的行为。
         /// </summary>
-        public ScrollerStopTween stopTween;
+        /// <remarks>无论如何，当即将开始播放新的补间动画时，一定会终止现有的补间动画。</remarks>
+        public ScrollerStopTween stopTween = ScrollerStopTween.OnPointerDown | ScrollerStopTween.OnBeginDrag;
 
         /// <summary>
         /// 自动吸附的触发条件。
         /// </summary>
         public ScrollViewSnapTrigger snapTrigger;
 
+        /// <summary>
+        /// 当标准化滚动位置改变时，如果速率小于这个值，将触发自动吸附。
+        /// </summary>
+        [Min(0)]
+        public float snapSpeedThreshold = 200;
+
+        /// <summary>
+        /// 用于参与“自动吸附的目标位置”的计算，它表示寻找最靠近此 <see cref="ScrollView"/> 的标准化位置的项。
+        /// </summary>
         [Range(0, 1)]
         public float snapFindNormalizedPosition = 0.5f;
 
-        [Range(0, 1)]
-        public float snapJumpToNormalizedPosition = 0.5f;
+        /// <summary>
+        /// 用于参与“自动吸附的目标位置”的计算，它表示在计算项的开始位置和结束位置时，是否还应该考虑项之前和之后的空白。
+        /// <br/>
+        /// 项之前或之后的空白，是指，如果项是第一项，那么项之前的空白是前内边距，否则是间距，如果项是最后一项，那么项之后的空白是后内边距，否则是间距。
+        /// </summary>
+        public bool snapIncludingSpacing;
 
+        /// <summary>
+        /// 用于参与“自动吸附的目标位置”的计算，它表示在寻找到要自动吸附的项时，对项的开始位置和结束位置使用此权重进行线性插值，以计算目标位置。
+        /// </summary>
         [Range(0, 1)]
-        public float snapNormalizedCellPosition = 0.5f;
+        public float snapNormalizedItemPosition = 0.5f;
 
-        public bool snapIncludingPaddingOrSpacingBeforeAndAfterCell;
+        /// <summary>
+        /// 用于参与“自动吸附的目标位置”的计算，它表示将目标位置逐渐“吸附”到此 <see cref="ScrollView"/> 的该标准化位置。
+        /// </summary>
+        [Range(0, 1)]
+        public float snapJumpNormalizedPosition = 0.5f;
 
         /// <summary>
         /// 如何计算自动吸附的耗时。
@@ -98,14 +127,16 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <remarks>当 <see cref="snapDurationMode"/> 为 <see cref="ScrollViewSnapDurationMode.Fixed"/> 时，将使用此值。</remarks>
         [Min(0)]
-        public float snapDuration;
+        public float snapDuration = 0.25f;
 
         /// <summary>
         /// 自动吸附的速度。
         /// </summary>
         /// <remarks>当 <see cref="snapDurationMode"/> 为 <see cref="ScrollViewSnapDurationMode.Dynamic"/> 时，将使用此值。</remarks>
         [Min(0)]
-        public float snapSpeed;
+        public float snapSpeed = 1000;
+
+        public Interpolation snapInterpolation = Interpolation.OutCubic;
 
         [SerializeField]
         internal ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.OnlyIfNeeded;
@@ -140,6 +171,10 @@ namespace Aurora.Unity.UI
 
         private int _itemCount;
 
+        private ScrollRect.MovementType _scrollRectMovementTypeBeforeTween;
+
+        private bool _scrollRectInertiaBeforeTween;
+
         /// <summary>
         /// 全体项的开始处和结尾处的内容位置。内部排列如下：
         /// <list type="bullet">
@@ -165,10 +200,17 @@ namespace Aurora.Unity.UI
         /// </summary>
         private readonly List<ScrollViewItem> _recycledItems = new List<ScrollViewItem>();
 
+        private ITimer _timer;
+
         /// <summary>
         /// 获取一个值，这个值指示此实例是否已初始化。
         /// </summary>
         public bool Initialized => _initialized;
+
+        /// <summary>
+        /// 获取滚动区域。
+        /// </summary>
+        public ScrollRect ScrollRect => _scrollRect;
 
         /// <summary>
         /// 获取此 <see cref="ScrollView"/> 的控制器。
@@ -213,6 +255,28 @@ namespace Aurora.Unity.UI
                     throw new InvalidOperationException(NotInitialized);
                 }
                 SetContentPosition(value);
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置此 <see cref="ScrollView"/> 的标准化滚动位置。
+        /// </summary>
+        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
+        /// <remarks>
+        /// 标准化滚动位置通常在 [0, 1] 范围内，使用 <see cref="double"/> 类型以提供更大的精度。
+        /// <br/>
+        /// 内部计算时，不会使用 <see cref="ScrollRect.normalizedPosition"/>，因为 <see cref="ScrollRect.normalizedPosition"/> 的精度不够。
+        /// </remarks>
+        public double NormalizedScrollPosition
+        {
+            get => !_initialized ? throw new InvalidOperationException(NotInitialized) : GetNormalizedScrollPosition();
+            set
+            {
+                if (!_initialized)
+                {
+                    throw new InvalidOperationException(NotInitialized);
+                }
+                SetNormalizedScrollPosition(value);
             }
         }
 
@@ -271,25 +335,6 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置此 <see cref="ScrollView"/> 的标准化滚动位置。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public float NormalizedScrollPosition
-        {
-            get => !_initialized
-                       ? throw new InvalidOperationException(NotInitialized)
-                       : InternalConvertContentPositionToNormalizedScrollPosition(GetContentPosition());
-            set
-            {
-                if (!_initialized)
-                {
-                    throw new InvalidOperationException(NotInitialized);
-                }
-                SetContentPosition(InternalConvertNormalizedScrollPositionToContentPosition(value));
-            }
-        }
-
-        /// <summary>
         /// 获取一个值，这个值表示此 <see cref="ScrollView"/> 是否正在被拖拽。
         /// </summary>
         public bool Dragging => _dragging;
@@ -297,7 +342,7 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 获取一个值，这个值表示此 <see cref="ScrollView"/> 是否正在播放补间动画。
         /// </summary>
-        public bool Tweening => _tweenTokenSource != null;
+        public bool Tweening => IsTweening();
 
         /// <summary>
         /// 获取第一个活动项的索引。如果没有活动项，则返回 -1。
@@ -564,14 +609,7 @@ namespace Aurora.Unity.UI
                 }
             }
 
-            // 确保已经赋值，如果仍然存在错误，要确保错误不进入发布环境
-            Assert.IsNotNull(_rectTransform);
-            Assert.IsNotNull(_scrollRect);
-            Assert.IsNotNull(_contentRectTransform);
-            Assert.IsNotNull(_inactiveContainer);
-            Assert.IsNotNull(_leadingPlaceholder);
-            Assert.IsNotNull(_trailingPlaceholder);
-            Assert.IsNotNull(_contentHorizontalOrVerticalLayoutGroup);
+            _timer = new UnityUnscaledTimePlayerLoopTimer(OnTimerCallback, this, PlayerLoopPhase.LateUpdating);
 
             _initialized = true;
             if (_enabled && !_eventSubscribed)
@@ -604,6 +642,16 @@ namespace Aurora.Unity.UI
         private void SetContentPosition(float contentPosition)
         {
             _contentRectTransform.anchoredPosition = Set(_contentRectTransform.anchoredPosition, contentPosition);
+        }
+
+        private double GetNormalizedScrollPosition()
+        {
+            return InternalConvertContentPositionToNormalizedScrollPosition(GetContentPosition());
+        }
+
+        private void SetNormalizedScrollPosition(double normalizedScrollPosition)
+        {
+            SetContentPosition(InternalConvertNormalizedScrollPositionToContentPosition(normalizedScrollPosition));
         }
 
         /// <summary>
@@ -695,6 +743,7 @@ namespace Aurora.Unity.UI
 
         private void InternalReload()
         {
+            InternalStopTween();
             ReturnAllItems();
             ReloadItemCountAndBeginEndPositions();
             RefreshContentSize();
@@ -705,6 +754,7 @@ namespace Aurora.Unity.UI
 
         private void InternalReloadWithContentPosition(float contentPosition)
         {
+            InternalStopTween();
             ReturnAllItems();
             ReloadItemCountAndBeginEndPositions();
             RefreshContentSize();
@@ -713,12 +763,13 @@ namespace Aurora.Unity.UI
             RefreshScrollbarVisibility();
         }
 
-        private void InternalReloadWithNormalizedScrollPosition(float normalizedScrollPosition)
+        private void InternalReloadWithNormalizedScrollPosition(double normalizedScrollPosition)
         {
+            InternalStopTween();
             ReturnAllItems();
             ReloadItemCountAndBeginEndPositions();
             RefreshContentSize();
-            NormalizedScrollPosition = normalizedScrollPosition;
+            SetNormalizedScrollPosition(normalizedScrollPosition);
             AddItems();
             RefreshScrollbarVisibility();
         }
@@ -788,8 +839,15 @@ namespace Aurora.Unity.UI
                 }
                 _itemCount = itemCount;
                 _itemPositions.Clear();
+                /*
+                 * 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失。
+                 * 别小看了这里的作用，如果每次计算新的位置的时候都使用列表中最后一项作为基础，当项的数量很多、在编辑器中拖动修改间距的时候，将产生明显的抖动现象
+                 */
+                double position = 0; // 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失
                 for (var itemIndex = 0; itemIndex < _itemCount; itemIndex++)
                 {
+                    _itemPositions.Add((float) (position += itemIndex == 0 ? FirstPaddingAlongAxis : spacing));
+
                     float itemSize;
                     {
                         var itemSizeFromController = _controller.GetItemSize(this, itemIndex);
@@ -805,13 +863,7 @@ namespace Aurora.Unity.UI
                             );
                         }
                     }
-
-                    var beginPosition =
-                        itemIndex == 0 ? FirstPaddingAlongAxis : _itemPositions[itemIndex * 2 - 1] + spacing;
-                    _itemPositions.Add(beginPosition);
-
-                    var endPosition = beginPosition + itemSize;
-                    _itemPositions.Add(endPosition);
+                    _itemPositions.Add((float) (position += itemSize));
                 }
             }
         }
@@ -872,16 +924,16 @@ namespace Aurora.Unity.UI
             if (_activeItems.Count == 0)
             {
                 leadingPlaceholderActive  = false;
-                leadingPlaceholderSize    = 0f;
+                leadingPlaceholderSize    = 0;
                 trailingPlaceholderActive = false;
-                trailingPlaceholderSize   = 0f;
+                trailingPlaceholderSize   = 0;
             }
             else
             {
                 if (_activeItems.PeekFirst().index is var firstActiveIndex && firstActiveIndex == 0)
                 {
                     leadingPlaceholderActive = false;
-                    leadingPlaceholderSize   = 0f;
+                    leadingPlaceholderSize   = 0;
                 }
                 else
                 {
@@ -892,7 +944,7 @@ namespace Aurora.Unity.UI
                 if (_activeItems.PeekLast().index is var lastActiveIndex && lastActiveIndex == _itemCount - 1)
                 {
                     trailingPlaceholderActive = false;
-                    trailingPlaceholderSize   = 0f;
+                    trailingPlaceholderSize   = 0;
                 }
                 else
                 {
@@ -933,15 +985,28 @@ namespace Aurora.Unity.UI
         /// </summary>
         public void StopTween()
         {
-            if (_tweenTokenSource == null)
+            InternalStopTween();
+        }
+
+        private void InternalStopTween()
+        {
+            if (!IsTweening())
             {
                 return;
+            }
+            if (this)
+            {
+                _scrollRect.movementType = _scrollRectMovementTypeBeforeTween;
+                _scrollRect.inertia      = _scrollRectInertiaBeforeTween;
             }
             Log.V("终止补间动画");
             try
             {
-                _tweenTokenSource.Cancel();
-                _tweenTokenSource.Dispose();
+                if (UnityEnvironment.IsPlaying)
+                {
+                    _tweenTokenSource.Cancel();
+                    _tweenTokenSource.Dispose();
+                }
             }
             finally
             {
@@ -949,63 +1014,171 @@ namespace Aurora.Unity.UI
             }
         }
 
+        private bool IsTweening()
+        {
+            return _tweenTokenSource != null;
+        }
+
         /// <summary>
         /// 吸附。
         /// </summary>
         public void Snap()
         {
-            StopTween();
+            InternalStopTween();
             InternalBeginSnap();
         }
 
-        private void SnapIfTweenNotExists()
+        private void SnapIfNotTweening()
         {
-            if (_tweenTokenSource == null)
+            if (IsTweening())
             {
-                InternalBeginSnap();
+                return;
             }
+            InternalBeginSnap();
         }
 
         private async void InternalBeginSnap()
         {
-            Assert.IsNull(_tweenTokenSource);
+            Assert.IsFalse(IsTweening());
 
-            var contentPosition1 = ConvertNormalizedPositionToContentPosition(snapFindNormalizedPosition);
-
-            var       exitToken        = UnityEnvironment.ExitToken;
-            var       disableToken     = gameObject.GetDisableToken();
-            using var tweenTokenSource = CancellationTokenSource.CreateLinkedTokenSource(exitToken, disableToken);
-            var       tweenToken       = tweenTokenSource.Token;
-            _tweenTokenSource = tweenTokenSource;
-            try
-            {
-                await InternalSnapAsync(tweenToken);
-            }
-            catch (OperationCanceledException)
-            {
-                Log.V("补间动画已终止");
-            }
-            finally
-            {
-                if (_tweenTokenSource == tweenTokenSource)
-                {
-                    _tweenTokenSource = null;
-                }
-            }
-        }
-
-        private async Task InternalSnapAsync(CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var nearestIndex =
-                InternalFindClosestIndex(ConvertNormalizedPositionToContentPosition(snapFindNormalizedPosition));
-            if (nearestIndex < 0)
+            var index = InternalFindClosestIndex(
+                ConvertNormalizedPositionToContentPosition(snapFindNormalizedPosition)
+            );
+            if (index < 0)
             {
                 return;
             }
+            var overflowedContentSize = GetOverflowedContentSize();
+            // 如果“内容大小”小于或等于“滚动视图自身大小”，且内容超出滚动视图时会受到严格限制或弹性限制，执行吸附没有意义
+            if (overflowedContentSize == 0 && _scrollRect.movementType != ScrollRect.MovementType.Unrestricted)
+            {
+                Log.V("无需博方补间动画");
+                return;
+            }
+            var contentPositionBegin = GetContentPosition();
+            var itemBeginPosition    = _itemPositions[index * 2];
+            var itemEndPosition      = _itemPositions[index * 2 + 1];
+            if (snapIncludingSpacing)
+            {
+                itemBeginPosition -= index == 0 ? FirstPaddingAlongAxis : spacing;
+                itemEndPosition   += index == _itemCount - 1 ? LastPaddingAlongAxis : spacing;
+            }
+            // 限制内容位置的值，确保内容不会超出滚动视图
+            var contentPositionEnd = Mathf.Clamp(
+                (float) InterpolationUtility.LinearInterpolate(
+                    itemBeginPosition,
+                    itemEndPosition,
+                    snapNormalizedItemPosition
+                ) - snapJumpNormalizedPosition * GetSize(),
+                0,
+                overflowedContentSize
+            );
+            var duration = snapDurationMode switch
+            {
+                ScrollViewSnapDurationMode.Fixed => snapDuration,
+                ScrollViewSnapDurationMode.Dynamic =>
+                    Mathf.Abs((contentPositionEnd - contentPositionBegin) / snapSpeed),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            if (duration > 0 && duration != float.PositiveInfinity)
+            {
+                var       exitToken        = UnityEnvironment.ExitToken;
+                var       disableToken     = gameObject.GetDisableToken();
+                using var tweenTokenSource = CancellationTokenSource.CreateLinkedTokenSource(exitToken, disableToken);
+                var       tweenToken       = tweenTokenSource.Token;
+                _tweenTokenSource = tweenTokenSource;
+                try
+                {
+                    if (_scrollRect.movementType == ScrollRect.MovementType.Elastic &&
+                        GetNormalizedScrollPosition() is var normalizedScrollPosition &&
+                        (normalizedScrollPosition < 0 || normalizedScrollPosition > 1))
+                    {
+                        _scrollRect.velocity = Set(_scrollRect.velocity, 0);
+                    }
 
-            // TODO
+                    _scrollRectMovementTypeBeforeTween = _scrollRect.movementType;
+                    if (_scrollRect.movementType == ScrollRect.MovementType.Elastic)
+                    {
+                        _scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+                    }
+
+                    _scrollRectInertiaBeforeTween = _scrollRect.inertia;
+                    _scrollRect.inertia           = false;
+
+                    await InternalSnapAsync(
+                        contentPositionBegin,
+                        contentPositionEnd,
+                        duration,
+                        snapInterpolation,
+                        tweenToken
+                    );
+
+                    _scrollRect.movementType = _scrollRectMovementTypeBeforeTween;
+                    _scrollRect.inertia      = _scrollRectInertiaBeforeTween;
+
+                    _tweenTokenSource = null;
+
+                    Log.V("补间动画播放完毕");
+                }
+                catch (OperationCanceledException)
+                {
+                    Log.V("补间动画已终止");
+                }
+            }
+            else
+            {
+                SetContentPosition(contentPositionEnd);
+                _scrollRect.velocity = Set(_scrollRect.velocity, 0);
+
+                Log.V("补间动画播放完毕");
+            }
+        }
+
+        private async Task InternalSnapAsync(
+            float             contentPositionBegin,
+            float             contentPositionEnd,
+            float             duration,
+            Interpolation     interpolation,
+            CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var timeBegin = Time.timeAsDouble;
+            var timeEnd   = Time.timeAsDouble + duration;
+            do
+            {
+                await new DelayFrameAwaitable(1, PlayerLoopPhase.LateUpdating, cancellationToken);
+                var deltaTime = Time.deltaTime;
+                if (deltaTime > 0)
+                {
+                    var timeCurrent = Time.timeAsDouble;
+                    var weight = Clamp01(
+                        InterpolationUtility.InverseLinearInterpolate(timeBegin, timeEnd, timeCurrent)
+                    );
+                    SetContentPosition(
+                        (float) InterpolationUtility.Interpolate(
+                            interpolation,
+                            contentPositionBegin,
+                            contentPositionEnd,
+                            weight
+                        )
+                    );
+                }
+            } while (Time.timeAsDouble < timeEnd);
+
+            SetContentPosition(contentPositionEnd);
+            _scrollRect.velocity = Set(_scrollRect.velocity, 0);
+            // 占据任务到 ScrollRect.LateUpdate 之后，防止在 OnScrollRectValueChange 中再次触发自动吸附
+            await new PlayerLoopPhaseAwaitable(PlayerLoopPhase.LateUpdated, cancellationToken);
+
+            static double Clamp01(double value)
+            {
+                return value < 0
+                           ? 0
+                           : value > 1
+                               ? 1
+                               : value;
+            }
         }
 
         private int InternalFindFirstIndex(float contentPosition)
@@ -1290,7 +1463,7 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 将此 <see cref="ScrollView"/> 的内容位置转换为此 <see cref="ScrollView"/> 的标准化滚动位置。
         /// </summary>
-        public float ConvertContentPositionToNormalizedScrollPosition(float contentPosition)
+        public double ConvertContentPositionToNormalizedScrollPosition(float contentPosition)
         {
             return InternalConvertContentPositionToNormalizedScrollPosition(contentPosition);
         }
@@ -1298,7 +1471,7 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 将此 <see cref="ScrollView"/> 的标准化滚动位置转换为此 <see cref="ScrollView"/> 的内容位置。
         /// </summary>
-        public float ConvertNormalizedScrollPositionToContentPosition(float normalizedScrollPosition)
+        public float ConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
         {
             return InternalConvertNormalizedScrollPositionToContentPosition(normalizedScrollPosition);
         }
@@ -1317,57 +1490,105 @@ namespace Aurora.Unity.UI
             return (float) InterpolationUtility.LinearInterpolate(begin, end, normalizedPosition);
         }
 
-        private float InternalConvertContentPositionToNormalizedScrollPosition(float contentPosition)
+        private double InternalConvertContentPositionToNormalizedScrollPosition(float contentPosition)
         {
             var overflowedContentSize = GetOverflowedContentSize();
             return overflowedContentSize == 0 ? 0 : contentPosition / overflowedContentSize;
         }
 
-        private float InternalConvertNormalizedScrollPositionToContentPosition(float normalizedScrollPosition)
+        private float InternalConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
         {
             var overflowedContentSize = GetOverflowedContentSize();
-            return overflowedContentSize == 0 ? 0 : overflowedContentSize * normalizedScrollPosition;
+            return (float) (overflowedContentSize == 0 ? 0 : overflowedContentSize * normalizedScrollPosition);
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             if ((stopTween & ScrollerStopTween.OnPointerDown) != 0)
             {
-                StopTween();
+                InternalStopTween();
             }
+
+            _timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            Log.D(nameof(IPointerDownHandler.OnPointerDown));
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            // TODO
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            if (!_dragging && (snapTrigger & ScrollViewSnapTrigger.OnPointerUpWithLowSpeed) != 0 &&
+                Mathf.Abs(Get(_scrollRect.velocity)) is var speed && speed < 1)
+            {
+                SnapIfNotTweening();
+            }
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             if (!_dragging)
             {
                 _dragging = true;
 
                 if ((stopTween & ScrollerStopTween.OnBeginDrag) != 0)
                 {
-                    StopTween();
+                    InternalStopTween();
                 }
             }
+
+            _timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+            }
+
             // 暂时没有逻辑。
             // 不过，为了让 OnBeginDrag 和 OnEndDrag 执行，必须实现 OnDrag，因此保留此实现是合理的，即使什么也不做。
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             if (_dragging)
             {
                 _dragging = false;
+                if ((snapTrigger & ScrollViewSnapTrigger.OnEndDrag) != 0)
+                {
+                    SnapIfNotTweening();
+                }
             }
         }
+
+        void IScrollHandler.OnScroll(PointerEventData eventData)
+        {
+            InternalStopTween();
+
+            _scrolledThisFrame = true;
+            _timer.Change(TimeSpan.FromSeconds(0.3), Timeout.InfiniteTimeSpan);
+        }
+
+        private bool _scrolledThisFrame;
 
         void IPlayerLoopItem.Run(PlayerLoopPhase playerLoopPhase)
         {
@@ -1390,6 +1611,7 @@ namespace Aurora.Unity.UI
                  * 注意，在回收项的时候，它们依然会立即设为不可见，然后设为不活动
                  */
                 RefreshItemsVisibleState();
+                _scrolledThisFrame = false;
             }
         }
 
@@ -1451,13 +1673,34 @@ namespace Aurora.Unity.UI
             }
         }
 
+        private static void OnTimerCallback(ITimer timer, object state)
+        {
+            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            var scrollView = (ScrollView) state;
+
+            Assert.IsFalse(scrollView.IsTweening());
+
+            if (!scrollView._dragging &&
+                (scrollView.snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
+                scrollView.snapSpeedThreshold > 0 &&
+                Mathf.Abs(scrollView.Get(scrollView._scrollRect.velocity)) is var speed &&
+                speed < scrollView.snapSpeedThreshold)
+            {
+                scrollView.InternalBeginSnap();
+            }
+        }
+
         /// <param name="value"><see cref="ScrollRect.normalizedPosition"/>。</param>
         /// <remarks><see cref="ScrollRect"/> 在 <see cref="ScrollRect.LateUpdate"/> 检测到任何更改时引发此事件。</remarks>
         private void OnScrollRectValueChanged(Vector2 value)
         {
-            if ((snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0)
+            if (!_dragging && !_scrolledThisFrame &&
+                (snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
+                snapSpeedThreshold > 0 && Mathf.Abs(Get(_scrollRect.velocity)) is var speed &&
+                speed < snapSpeedThreshold)
             {
-                SnapIfTweenNotExists();
+                SnapIfNotTweening();
             }
             InternalRefresh();
         }
@@ -1496,11 +1739,17 @@ namespace Aurora.Unity.UI
 
         private void OnDisable()
         {
-            _enabled = false;
-            if (_initialized && _eventSubscribed)
+            _enabled  = false;
+            _dragging = false;
+            InternalStopTween();
+            if (_initialized)
             {
-                UnsubscribeEvent();
-                _eventSubscribed = false;
+                if (_eventSubscribed)
+                {
+                    UnsubscribeEvent();
+                    _eventSubscribed = false;
+                }
+                _timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
             }
         }
     }

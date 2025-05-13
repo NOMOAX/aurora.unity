@@ -14,23 +14,19 @@ namespace Aurora.Unity.UI
         None = 0,
 
         /// <summary>
-        /// 允许在拖拽中触发由其它 <see cref="ScrollViewSnapTrigger"/> 值定义的自动吸附。
+        /// 当结束拖拽时自动吸附。
         /// </summary>
-        AllowWhileDragging = 1 << 0,
+        OnEndDrag = 1 << 0,
 
         /// <summary>
-        /// 当标准化滚动位置改变时自动吸附。
+        /// 当不在拖拽中，且标准化滚动位置改变且速度小于阈值时自动吸附。
         /// </summary>
+        /// <remarks></remarks>
         OnNormalizedScrollPositionChanged = 1 << 1,
 
         /// <summary>
-        /// 当结束拖拽时自动吸附。
+        /// 当不在拖拽中，当指针抬起时并且 <see cref="ScrollView"/> 的速度很低时自动吸附。
         /// </summary>
-        OnEndDrag = 1 << 2,
-
-        /// <summary>
-        /// 当指针抬起时自动吸附。
-        /// </summary>
-        OnPointerUp = 1 << 3
+        OnPointerUpWithLowSpeed = 1 << 2
     }
 }
