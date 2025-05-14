@@ -12,7 +12,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
-using TimerCallback = Aurora.Unity.Threading.TimerCallback;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -29,8 +28,26 @@ namespace Aurora.Unity
             RegexOptions.Compiled
         );
 
-        private static readonly TimerCallback
-            TimerCallbackCancelCancellationTokenSource = CancelCancellationTokenSource;
+        private static readonly TimerTriggerCallback CancelCancellationTokenSource = (timer, state) =>
+        {
+            timer.Dispose();
+            var cancellationTokenSource = (CancellationTokenSource) state;
+            if (CancellationTokenSourceUtility.IsDisposed(cancellationTokenSource))
+            {
+                return;
+            }
+            try
+            {
+                cancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+                if (!CancellationTokenSourceUtility.IsDisposed(cancellationTokenSource))
+                {
+                    throw;
+                }
+            }
+        };
 
         /// <summary>
         /// 连击时，两次点击的最大间隔时间。
@@ -144,34 +161,13 @@ namespace Aurora.Unity
                 return NullDisposable.Instance;
             }
             var timer = new StopwatchPlayerLoopTimer(
-                TimerCallbackCancelCancellationTokenSource,
+                CancelCancellationTokenSource,
                 cancellationTokenSource,
                 delay,
                 Timeout.InfiniteTimeSpan,
                 PlayerLoopPhase.Updating
             );
             return timer;
-        }
-
-        private static void CancelCancellationTokenSource(ITimer timer, object state)
-        {
-            timer.Dispose();
-            var cancellationTokenSource = (CancellationTokenSource) state;
-            if (CancellationTokenSourceUtility.IsDisposed(cancellationTokenSource))
-            {
-                return;
-            }
-            try
-            {
-                cancellationTokenSource.Cancel();
-            }
-            catch (ObjectDisposedException)
-            {
-                if (!CancellationTokenSourceUtility.IsDisposed(cancellationTokenSource))
-                {
-                    throw;
-                }
-            }
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace Aurora.Unity.Threading
 
         private volatile bool _disposed;
 
-        private TimerCallback _callback;
+        private TimerTriggerCallback _callback;
 
         private object _state;
 
@@ -51,12 +51,12 @@ namespace Aurora.Unity.Threading
         /// <summary>
         /// 初始化 <see cref="UnityTimePlayerLoopTimer"/> 类的新实例。
         /// </summary>
-        /// <param name="callback">回调方法。</param>
+        /// <param name="callback">当计时器触发时执行的方法。</param>
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
         /// <param name="playerLoopPhase">播放器循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
-        public UnityTimePlayerLoopTimer(TimerCallback callback, object state, PlayerLoopPhase playerLoopPhase)
+        public UnityTimePlayerLoopTimer(TimerTriggerCallback callback, object state, PlayerLoopPhase playerLoopPhase)
         {
 #if UNITY_EDITOR
             ThrowIfNotPlaying();
@@ -79,34 +79,34 @@ namespace Aurora.Unity.Threading
         /// <summary>
         /// 初始化 <see cref="UnityTimePlayerLoopTimer"/> 类的新实例。
         /// </summary>
-        /// <param name="callback">回调方法。</param>
+        /// <param name="callback">当计时器触发时执行的方法。</param>
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
         /// <param name="dueTime">
-        /// 启动时间。
+        /// 计时器首次触发前的等待时间。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
         /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后立即启用计时器</description></item>
-        /// <item><term>大于 <see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后在指定的时间后启用计时器</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器并立即触发</description></item>
+        /// <item><term>大于 <see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器，计时器将在指定的时间后触发（实际等待时间受计时器精度影响）</description></item>
         /// </list>
         /// </param>
         /// <param name="period">
-        /// 调用计时器回调方法之间的时间间隔。
+        /// 计时器再次触发前的等待时间。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>在首次执行计时器回调方法后禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在首次执行计时器回调方法后每间隔该时间再执行一次回调方法（实际间隔时间受到计时器精度的影响）</description></item>
+        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>在计时器首次触发后禁用计时器</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在计时器触发后，将在指定的时间后再次触发，反复如此，直至计时器被禁用（实际等待时间受计时器精度影响）</description></item>
         /// </list>
         /// </param>
         /// <param name="playerLoopPhase">播放器循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueTime"/> 或 <paramref name="period"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它们的毫秒数不在 [0, 4294967294] 范围内；或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
         public UnityTimePlayerLoopTimer(
-            TimerCallback   callback,
-            object          state,
-            TimeSpan        dueTime,
-            TimeSpan        period,
-            PlayerLoopPhase playerLoopPhase)
+            TimerTriggerCallback callback,
+            object               state,
+            TimeSpan             dueTime,
+            TimeSpan             period,
+            PlayerLoopPhase      playerLoopPhase)
         {
 #if UNITY_EDITOR
             ThrowIfNotPlaying();
@@ -152,7 +152,7 @@ namespace Aurora.Unity.Threading
             if (_dueTime == TimeSpan.Zero)
             {
                 var version = _version;
-                InvokeCallback();
+                Trigger();
                 if (_disposed || version != _version)
                 {
                     return false;
@@ -192,7 +192,7 @@ namespace Aurora.Unity.Threading
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void InvokeCallback()
+        private void Trigger()
         {
             _callback(this, _state);
         }
@@ -224,7 +224,7 @@ namespace Aurora.Unity.Threading
                         return;
                     }
                     var version = _version;
-                    InvokeCallback();
+                    Trigger();
                     if (_disposed || version != _version)
                     {
                         return;
@@ -247,7 +247,7 @@ namespace Aurora.Unity.Threading
                         return;
                     }
                     var version = _version;
-                    InvokeCallback();
+                    Trigger();
                     if (_disposed || version != _version)
                     {
                         return;

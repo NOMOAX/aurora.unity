@@ -12,6 +12,8 @@ namespace Aurora.UnityEditor.UI
 
         private ScrollView _scrollView;
 
+        private SerializedProperty _scrollRect;
+
         private SerializedProperty _spacing;
 
         private SerializedProperty _itemForceExpand;
@@ -21,8 +23,6 @@ namespace Aurora.UnityEditor.UI
         private SerializedProperty _trailingActiveOffset;
 
         private SerializedProperty _speedLimit;
-
-        private SerializedProperty _stopTween;
 
         private SerializedProperty _snapTrigger;
 
@@ -54,12 +54,12 @@ namespace Aurora.UnityEditor.UI
 
             _scrollView = (ScrollView) target;
 
+            _scrollRect                 = serializedObject.FindProperty(nameof(ScrollView.scrollRect));
             _spacing                    = serializedObject.FindProperty(nameof(ScrollView.spacing));
             _itemForceExpand            = serializedObject.FindProperty(nameof(ScrollView.itemForceExpand));
             _leadingActiveOffset        = serializedObject.FindProperty(nameof(ScrollView.leadingActiveOffset));
             _trailingActiveOffset       = serializedObject.FindProperty(nameof(ScrollView.trailingActiveOffset));
             _speedLimit                 = serializedObject.FindProperty(nameof(ScrollView.speedLimit));
-            _stopTween                  = serializedObject.FindProperty(nameof(ScrollView.stopTween));
             _snapTrigger                = serializedObject.FindProperty(nameof(ScrollView.snapTrigger));
             _snapSpeedThreshold         = serializedObject.FindProperty(nameof(ScrollView.snapSpeedThreshold));
             _snapFindNormalizedPosition = serializedObject.FindProperty(nameof(ScrollView.snapFindNormalizedPosition));
@@ -97,6 +97,8 @@ namespace Aurora.UnityEditor.UI
             var initialized = _scrollView.Initialized;
 
             serializedObject.Update();
+
+            EditorGUILayout.PropertyField(_scrollRect);
 
             // Due to the particularity of RectOffset, have to draw manually if want to limit its value.
             if (_showPadding = EditorGUILayout.Foldout(_showPadding, nameof(ScrollView.Padding)))
@@ -144,8 +146,6 @@ namespace Aurora.UnityEditor.UI
             EditorGUILayout.PropertyField(_trailingActiveOffset);
 
             EditorGUILayout.PropertyField(_speedLimit);
-
-            EditorGUILayout.PropertyField(_stopTween);
 
             EditorGUILayout.PropertyField(_snapTrigger);
 

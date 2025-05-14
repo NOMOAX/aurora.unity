@@ -9,23 +9,23 @@ namespace Aurora.Unity.Threading
     public interface ITimer : IDisposable
     {
         /// <summary>
-        /// 更新计时器的启动时间和调用计时器回调方法之间的时间间隔。
+        /// 更新计时器首次以及再次触发前的等待时间。
         /// </summary>
         /// <param name="dueTime">
-        /// 启动时间。
+        /// 计时器首次触发前的等待时间。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
         /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后立即启用计时器</description></item>
-        /// <item><term>大于 <see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后在指定的时间后启用计时器</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器并立即触发</description></item>
+        /// <item><term>大于 <see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器，计时器将在指定的时间后触发（实际等待时间受计时器精度影响）</description></item>
         /// </list>
         /// </param>
         /// <param name="period">
-        /// 调用计时器回调方法之间的时间间隔。
+        /// 计时器再次触发前的等待时间。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>在首次执行计时器回调方法后禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在首次执行计时器回调方法后每间隔该时间再执行一次回调方法（实际间隔时间受到计时器精度的影响）</description></item>
+        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>在计时器首次触发后禁用计时器</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在计时器触发后，将在指定的时间后再次触发，反复如此，直至计时器被禁用（实际等待时间受计时器精度影响）</description></item>
         /// </list>
         /// </param>
         /// <returns>如果更新计时器成功，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>

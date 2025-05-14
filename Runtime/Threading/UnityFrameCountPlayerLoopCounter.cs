@@ -18,7 +18,7 @@ namespace Aurora.Unity.Threading
 
         private volatile bool _disposed;
 
-        private CounterCallback _callback;
+        private CounterTriggerCallback _callback;
 
         private object _state;
 
@@ -51,12 +51,15 @@ namespace Aurora.Unity.Threading
         /// <summary>
         /// 初始化 <see cref="UnityFrameCountPlayerLoopCounter"/> 类的新实例。
         /// </summary>
-        /// <param name="callback">回调方法。</param>
+        /// <param name="callback">当计数器触发时执行的方法。</param>
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
         /// <param name="playerLoopPhase">播放器循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
-        public UnityFrameCountPlayerLoopCounter(CounterCallback callback, object state, PlayerLoopPhase playerLoopPhase)
+        public UnityFrameCountPlayerLoopCounter(
+            CounterTriggerCallback callback,
+            object                 state,
+            PlayerLoopPhase        playerLoopPhase)
         {
 #if UNITY_EDITOR
             ThrowIfNotPlaying();
@@ -79,34 +82,34 @@ namespace Aurora.Unity.Threading
         /// <summary>
         /// 初始化 <see cref="UnityFrameCountPlayerLoopCounter"/> 类的新实例。
         /// </summary>
-        /// <param name="callback">回调方法。</param>
+        /// <param name="callback">当计数器触发时执行的方法。</param>
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
         /// <param name="dueCount">
-        /// 启动个数。
+        /// 计数器首次触发所需的个数。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
         /// <item><term>-1</term><description>禁用计数器</description></item>
-        /// <item><term>0</term><description>禁用计数器，然后立即启用计数器</description></item>
-        /// <item><term>大于 0</term><description>禁用计数器，然后在指定的个数后启用计数器</description></item>
+        /// <item><term>0</term><description>禁用计数器，然后启用计数器并立即触发</description></item>
+        /// <item><term>大于 0</term><description>禁用计数器，然后启用计数器，计数器将在指定的个数后触发</description></item>
         /// </list>
         /// </param>
         /// <param name="period">
-        /// 调用计数器回调方法之间的个数间隔。
+        /// 计数器再次触发所需的个数。
         /// <list type="table">
         /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term>-1</term><description>在首次执行计数器回调方法后禁用计数器</description></item>
-        /// <item><term>0 以及大于 0</term><description>在首次执行计数器回调方法后每间隔该个数再执行一次回调方法（实际间隔次数受到计数器精度的影响，且至少为 1）</description></item>
+        /// <item><term>-1</term><description>在计数器首次触发后禁用计数器</description></item>
+        /// <item><term>0 以及大于 0</term><description>在计数器触发后，将在指定的个数后再次触发，反复如此，直至计器被禁用（实际个数受计数器精度影响，且至少为 1）</description></item>
         /// </list>
         /// </param>
         /// <param name="playerLoopPhase">播放器循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueCount"/> 或 <paramref name="period"/> 小于 0，但不为 -1；或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
         public UnityFrameCountPlayerLoopCounter(
-            CounterCallback callback,
-            object          state,
-            int             dueCount,
-            int             period,
-            PlayerLoopPhase playerLoopPhase)
+            CounterTriggerCallback callback,
+            object                 state,
+            int                    dueCount,
+            int                    period,
+            PlayerLoopPhase        playerLoopPhase)
         {
 #if UNITY_EDITOR
             ThrowIfNotPlaying();
@@ -157,7 +160,7 @@ namespace Aurora.Unity.Threading
             if (_dueCount == 0)
             {
                 var version = _version;
-                InvokeCallback();
+                Trigger();
                 if (_disposed || version != _version)
                 {
                     return false;
@@ -197,7 +200,7 @@ namespace Aurora.Unity.Threading
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void InvokeCallback()
+        private void Trigger()
         {
             _callback(this, _state);
         }
@@ -230,7 +233,7 @@ namespace Aurora.Unity.Threading
                         return;
                     }
                     var version = _version;
-                    InvokeCallback();
+                    Trigger();
                     if (_disposed || version != _version)
                     {
                         return;
@@ -253,7 +256,7 @@ namespace Aurora.Unity.Threading
                         return;
                     }
                     var version = _version;
-                    InvokeCallback();
+                    Trigger();
                     if (_disposed || version != _version)
                     {
                         return;
