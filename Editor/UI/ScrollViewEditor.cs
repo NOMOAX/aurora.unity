@@ -8,15 +8,101 @@ namespace Aurora.UnityEditor.UI
     [CustomEditor(typeof(ScrollView), true)]
     internal class ScrollViewEditor : Editor
     {
+        private const string ScrollRectName = nameof(ScrollView.scrollRect);
+
+        private const string InactiveContainerName = nameof(ScrollView.inactiveContainer);
+
+        private const string ViewportName = nameof(ScrollView.viewport);
+
+        private const string ContentName = nameof(ScrollView.content);
+
+        private const string ContentLayoutGroupName = nameof(ScrollView.contentLayoutGroup);
+
+        private const string PaddingName = nameof(ScrollView.padding);
+
+        private const string RectOffsetLeftName = "m_Left";
+
+        private const string RectOffsetRightName = "m_Right";
+
+        private const string RectOffsetTopName = "m_Top";
+
+        private const string RectOffsetBottomName = "m_Bottom";
+
+        private const string SpacingName = nameof(ScrollView.spacing);
+
+        private const string ChildForceExpandSizeName = nameof(ScrollView.childForceExpandSize);
+
+        private const string LeadingPlaceholderName = nameof(ScrollView.leadingPlaceholder);
+
+        private const string TrailingPlaceholderName = nameof(ScrollView.trailingPlaceholder);
+
+        private const string ScrollbarName = nameof(ScrollView.scrollbar);
+
+        private const string ScrollbarVisibilityName = nameof(ScrollView.scrollbarVisibility);
+
+        private const string LeadingActiveOffsetName = nameof(ScrollView.leadingActiveOffset);
+
+        private const string TrailingActiveOffsetName = nameof(ScrollView.trailingActiveOffset);
+
+        private const string SpeedLimitName = nameof(ScrollView.speedLimit);
+
+        private const string SnapTriggerName = nameof(ScrollView.snapTrigger);
+
+        private const string SnapSpeedThresholdName = nameof(ScrollView.snapSpeedThreshold);
+
+        private const string SnapFindNormalizedViewportPositionName =
+            nameof(ScrollView.snapFindNormalizedViewportPosition);
+
+        private const string SnapIncludingSpacingName = nameof(ScrollView.snapIncludingSpacing);
+
+        private const string SnapNormalizedItemPositionName = nameof(ScrollView.snapNormalizedItemPosition);
+
+        private const string SnapJumpNormalizedViewportPositionName =
+            nameof(ScrollView.snapJumpNormalizedViewportPosition);
+
+        private const string SnapDurationModeName = nameof(ScrollView.snapDurationMode);
+
+        private const string SnapSpeedName = nameof(ScrollView.snapSpeed);
+
+        private const string SnapDurationName = nameof(ScrollView.snapDuration);
+
+        private const string SnapInterpolationName = nameof(ScrollView.snapInterpolation);
+
         private int _frameCount;
 
         private ScrollView _scrollView;
 
         private SerializedProperty _scrollRect;
 
+        private SerializedProperty _inactiveContainer;
+
+        private SerializedProperty _viewport;
+
+        private SerializedProperty _content;
+
+        private SerializedProperty _contentLayoutGroup;
+
+        private SerializedProperty _padding;
+
+        private SerializedProperty _paddingLeft;
+
+        private SerializedProperty _paddingRight;
+
+        private SerializedProperty _paddingTop;
+
+        private SerializedProperty _paddingBottom;
+
         private SerializedProperty _spacing;
 
-        private SerializedProperty _itemForceExpand;
+        private SerializedProperty _childForceExpandSize;
+
+        private SerializedProperty _leadingPlaceholder;
+
+        private SerializedProperty _trailingPlaceholder;
+
+        private SerializedProperty _scrollbar;
+
+        private SerializedProperty _scrollbarVisibility;
 
         private SerializedProperty _leadingActiveOffset;
 
@@ -28,25 +114,23 @@ namespace Aurora.UnityEditor.UI
 
         private SerializedProperty _snapSpeedThreshold;
 
-        private SerializedProperty _snapFindNormalizedPosition;
+        private SerializedProperty _snapFindNormalizedViewportPosition;
 
         private SerializedProperty _snapIncludingSpacing;
 
         private SerializedProperty _snapNormalizedItemPosition;
 
-        private SerializedProperty _snapJumpNormalizedPosition;
+        private SerializedProperty _snapJumpNormalizedViewportPosition;
 
         private SerializedProperty _snapDurationMode;
 
-        private SerializedProperty _snapDuration;
-
         private SerializedProperty _snapSpeed;
 
-        private SerializedProperty _scrollbarVisibility;
+        private SerializedProperty _snapDuration;
+
+        private SerializedProperty _snapInterpolation;
 
         private AnimBool _showSnapSpeedThreshold;
-
-        private static bool _showPadding = true;
 
         private void OnEnable()
         {
@@ -54,22 +138,35 @@ namespace Aurora.UnityEditor.UI
 
             _scrollView = (ScrollView) target;
 
-            _scrollRect                 = serializedObject.FindProperty(nameof(ScrollView.scrollRect));
-            _spacing                    = serializedObject.FindProperty(nameof(ScrollView.spacing));
-            _itemForceExpand            = serializedObject.FindProperty(nameof(ScrollView.itemForceExpand));
-            _leadingActiveOffset        = serializedObject.FindProperty(nameof(ScrollView.leadingActiveOffset));
-            _trailingActiveOffset       = serializedObject.FindProperty(nameof(ScrollView.trailingActiveOffset));
-            _speedLimit                 = serializedObject.FindProperty(nameof(ScrollView.speedLimit));
-            _snapTrigger                = serializedObject.FindProperty(nameof(ScrollView.snapTrigger));
-            _snapSpeedThreshold         = serializedObject.FindProperty(nameof(ScrollView.snapSpeedThreshold));
-            _snapFindNormalizedPosition = serializedObject.FindProperty(nameof(ScrollView.snapFindNormalizedPosition));
-            _snapIncludingSpacing       = serializedObject.FindProperty(nameof(ScrollView.snapIncludingSpacing));
-            _snapNormalizedItemPosition = serializedObject.FindProperty(nameof(ScrollView.snapNormalizedItemPosition));
-            _snapJumpNormalizedPosition = serializedObject.FindProperty(nameof(ScrollView.snapJumpNormalizedPosition));
-            _snapDurationMode           = serializedObject.FindProperty(nameof(ScrollView.snapDurationMode));
-            _snapDuration               = serializedObject.FindProperty(nameof(ScrollView.snapDuration));
-            _snapSpeed                  = serializedObject.FindProperty(nameof(ScrollView.snapSpeed));
-            _scrollbarVisibility        = serializedObject.FindProperty(nameof(ScrollView.scrollbarVisibility));
+            _scrollRect                         = serializedObject.FindProperty(ScrollRectName);
+            _inactiveContainer                  = serializedObject.FindProperty(InactiveContainerName);
+            _viewport                           = serializedObject.FindProperty(ViewportName);
+            _content                            = serializedObject.FindProperty(ContentName);
+            _contentLayoutGroup                 = serializedObject.FindProperty(ContentLayoutGroupName);
+            _padding                            = serializedObject.FindProperty(PaddingName);
+            _paddingLeft                        = _padding.FindPropertyRelative(RectOffsetLeftName);
+            _paddingRight                       = _padding.FindPropertyRelative(RectOffsetRightName);
+            _paddingTop                         = _padding.FindPropertyRelative(RectOffsetTopName);
+            _paddingBottom                      = _padding.FindPropertyRelative(RectOffsetBottomName);
+            _spacing                            = serializedObject.FindProperty(SpacingName);
+            _childForceExpandSize               = serializedObject.FindProperty(ChildForceExpandSizeName);
+            _leadingPlaceholder                 = serializedObject.FindProperty(LeadingPlaceholderName);
+            _trailingPlaceholder                = serializedObject.FindProperty(TrailingPlaceholderName);
+            _scrollbar                          = serializedObject.FindProperty(ScrollbarName);
+            _scrollbarVisibility                = serializedObject.FindProperty(ScrollbarVisibilityName);
+            _leadingActiveOffset                = serializedObject.FindProperty(LeadingActiveOffsetName);
+            _trailingActiveOffset               = serializedObject.FindProperty(TrailingActiveOffsetName);
+            _speedLimit                         = serializedObject.FindProperty(SpeedLimitName);
+            _snapTrigger                        = serializedObject.FindProperty(SnapTriggerName);
+            _snapSpeedThreshold                 = serializedObject.FindProperty(SnapSpeedThresholdName);
+            _snapFindNormalizedViewportPosition = serializedObject.FindProperty(SnapFindNormalizedViewportPositionName);
+            _snapIncludingSpacing               = serializedObject.FindProperty(SnapIncludingSpacingName);
+            _snapNormalizedItemPosition         = serializedObject.FindProperty(SnapNormalizedItemPositionName);
+            _snapJumpNormalizedViewportPosition = serializedObject.FindProperty(SnapJumpNormalizedViewportPositionName);
+            _snapDurationMode                   = serializedObject.FindProperty(SnapDurationModeName);
+            _snapSpeed                          = serializedObject.FindProperty(SnapSpeedName);
+            _snapDuration                       = serializedObject.FindProperty(SnapDurationName);
+            _snapInterpolation                  = serializedObject.FindProperty(SnapInterpolationName);
 
             _showSnapSpeedThreshold = new AnimBool(RepaintIfFrameCountDifferent);
             SetAnimBool(true);
@@ -94,51 +191,63 @@ namespace Aurora.UnityEditor.UI
             SetAnimBool(false);
 
             _frameCount = Time.frameCount;
-            var initialized = _scrollView.Initialized;
 
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_scrollRect);
 
-            // Due to the particularity of RectOffset, have to draw manually if want to limit its value.
-            if (_showPadding = EditorGUILayout.Foldout(_showPadding, nameof(ScrollView.Padding)))
+            EditorGUILayout.PropertyField(_inactiveContainer);
+
+            EditorGUILayout.PropertyField(_viewport);
+
+            EditorGUILayout.PropertyField(_content);
+
+            EditorGUILayout.PropertyField(_contentLayoutGroup);
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(_padding);
+            if (EditorGUI.EndChangeCheck())
             {
-                var padding = _scrollView.padding ?? new RectOffset();
-                EditorGUI.BeginChangeCheck();
-                EditorGUI.indentLevel++;
-                padding.left   = Mathf.Max(EditorGUILayout.IntField("Left",   padding.left),   0);
-                padding.right  = Mathf.Max(EditorGUILayout.IntField("Right",  padding.right),  0);
-                padding.top    = Mathf.Max(EditorGUILayout.IntField("Top",    padding.top),    0);
-                padding.bottom = Mathf.Max(EditorGUILayout.IntField("Bottom", padding.bottom), 0);
-                EditorGUI.indentLevel--;
-                if (EditorGUI.EndChangeCheck())
-                {
-                    // Can't actually undo this when scroll view is initialized.
-                    if (!initialized)
-                    {
-                        Undo.RecordObject(_scrollView, $"Set {nameof(ScrollView.Padding)}");
-                    }
-                    _scrollView.Padding = padding;
-                    EditorUtility.SetDirty(_scrollView);
-                }
+                Undo.RecordObject(_scrollView, $"set {nameof(ScrollView.Padding)}");
+                var left   = _paddingLeft.intValue = Mathf.Max(_paddingLeft.intValue,     0);
+                var right  = _paddingRight.intValue = Mathf.Max(_paddingRight.intValue,   0);
+                var top    = _paddingTop.intValue = Mathf.Max(_paddingTop.intValue,       0);
+                var bottom = _paddingBottom.intValue = Mathf.Max(_paddingBottom.intValue, 0);
+                _scrollView.Padding = new RectOffset(left, right, top, bottom);
+                EditorUtility.SetDirty(_scrollView);
             }
 
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(_spacing);
             if (EditorGUI.EndChangeCheck())
             {
-                // Can't actually undo this when scroll view is initialized.
-                if (!initialized)
-                {
-                    Undo.RecordObject(_scrollView, $"Set {nameof(ScrollView.Spacing)}");
-                }
+                Undo.RecordObject(_scrollView, $"set {nameof(ScrollView.Spacing)}");
                 _scrollView.Spacing = _spacing.floatValue;
                 EditorUtility.SetDirty(_scrollView);
             }
 
-            using (new EditorGUI.DisabledScope(initialized))
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(_childForceExpandSize);
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUILayout.PropertyField(_itemForceExpand);
+                Undo.RecordObject(_scrollView, $"set {nameof(ScrollView.ChildForceExpandSize)}");
+                _scrollView.ChildForceExpandSize = _childForceExpandSize.boolValue;
+                EditorUtility.SetDirty(_scrollView);
+            }
+
+            EditorGUILayout.PropertyField(_leadingPlaceholder);
+
+            EditorGUILayout.PropertyField(_trailingPlaceholder);
+
+            EditorGUILayout.PropertyField(_scrollbar);
+
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(_scrollbarVisibility);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(_scrollView, $"set {nameof(ScrollView.ScrollbarVisibility)}");
+                _scrollView.ScrollbarVisibility = (ScrollbarVisibility) _scrollbarVisibility.intValue;
+                EditorUtility.SetDirty(_scrollView);
             }
 
             EditorGUILayout.PropertyField(_leadingActiveOffset);
@@ -155,13 +264,13 @@ namespace Aurora.UnityEditor.UI
             }
             EditorGUILayout.EndFadeGroup();
 
-            EditorGUILayout.PropertyField(_snapFindNormalizedPosition);
+            EditorGUILayout.PropertyField(_snapFindNormalizedViewportPosition);
 
             EditorGUILayout.PropertyField(_snapIncludingSpacing);
 
             EditorGUILayout.PropertyField(_snapNormalizedItemPosition);
 
-            EditorGUILayout.PropertyField(_snapJumpNormalizedPosition);
+            EditorGUILayout.PropertyField(_snapJumpNormalizedViewportPosition);
 
             EditorGUILayout.PropertyField(_snapDurationMode);
 
@@ -174,18 +283,13 @@ namespace Aurora.UnityEditor.UI
                     EditorGUILayout.PropertyField(_snapSpeed);
                     break;
                 default:
-
                     EditorGUILayout.PropertyField(_snapDuration);
+
                     EditorGUILayout.PropertyField(_snapSpeed);
                     break;
             }
 
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(_scrollbarVisibility);
-            if (EditorGUI.EndChangeCheck())
-            {
-                _scrollView.ScrollbarVisibility = (ScrollbarVisibility) _scrollbarVisibility.intValue;
-            }
+            EditorGUILayout.PropertyField(_snapInterpolation);
 
             serializedObject.ApplyModifiedProperties();
 
@@ -193,41 +297,43 @@ namespace Aurora.UnityEditor.UI
             {
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.Toggle(nameof(ScrollView.Initialized), initialized);
-                    if (initialized)
+                    EditorGUILayout.FloatField("Viewport Size", _scrollView.ViewportSize);
+
+                    if (EditorGUILayout.FloatField("Content Size", _scrollView.ContentSize) >= 10000000)
                     {
-                        EditorGUILayout.FloatField(nameof(ScrollView.Size), _scrollView.Size);
-                        if (EditorGUILayout.FloatField("Content Size", _scrollView.ContentSize) >= 10000000)
-                        {
-                            EditorGUILayout.HelpBox("Avoid making the content size too large!", MessageType.Warning);
-                        }
-                        EditorGUILayout.FloatField("Overflowed Content Size", _scrollView.OverflowedContentSize);
-                        EditorGUILayout.FloatField("Content Position",        _scrollView.ContentPosition);
-                        EditorGUILayout.DoubleField("Normalized Scroll Position", _scrollView.NormalizedScrollPosition);
-                        EditorGUILayout.Toggle(nameof(ScrollView.Dragging), _scrollView.Dragging);
-                        EditorGUILayout.Toggle(nameof(ScrollView.Tweening), _scrollView.Tweening);
-
-                        EditorGUILayout.Space();
-
-                        EditorGUILayout.FloatField(nameof(ScrollView.ItemCount), _scrollView.ItemCount);
-
-                        var firstActiveIndex = _scrollView.FirstActiveIndex;
-                        DrawScrollViewItemGui("First Active Item", firstActiveIndex);
-
-                        var firstVisibleIndex = _scrollView.FirstVisibleIndex;
-                        DrawScrollViewItemGui("First Visible Item", firstVisibleIndex);
-
-                        var closestToCenterIndex = _scrollView.FindClosestIndex(
-                            _scrollView.ConvertNormalizedPositionToContentPosition(0.5f)
-                        );
-                        DrawScrollViewItemGui("Item Closest to Center", closestToCenterIndex);
-
-                        var lastVisibleIndex = _scrollView.LastVisibleIndex;
-                        DrawScrollViewItemGui("Last Visible Item", lastVisibleIndex);
-
-                        var lastActiveIndex = _scrollView.LastActiveIndex;
-                        DrawScrollViewItemGui("Last Active Item", lastActiveIndex);
+                        EditorGUILayout.HelpBox("Avoid making the content size too large!", MessageType.Warning);
                     }
+
+                    EditorGUILayout.FloatField("Overflowed Content Size", _scrollView.OverflowedContentSize);
+
+                    EditorGUILayout.FloatField("Content Position", _scrollView.ContentPosition);
+
+                    EditorGUILayout.DoubleField("Normalized Scroll Position", _scrollView.NormalizedScrollPosition);
+
+                    EditorGUILayout.Toggle(nameof(ScrollView.Dragging), _scrollView.Dragging);
+
+                    EditorGUILayout.Toggle(nameof(ScrollView.Tweening), _scrollView.Tweening);
+
+                    EditorGUILayout.Space();
+
+                    EditorGUILayout.FloatField("Item Count", _scrollView.ItemCount);
+
+                    var firstActiveIndex = _scrollView.FirstActiveIndex;
+                    DrawScrollViewItemGui("First Active Item", firstActiveIndex);
+
+                    var firstVisibleIndex = _scrollView.FirstVisibleIndex;
+                    DrawScrollViewItemGui("First Visible Item", firstVisibleIndex);
+
+                    var closestToCenterIndex = _scrollView.FindClosestIndex(
+                        _scrollView.ConvertNormalizedViewportPositionToContentPosition(0.5f)
+                    );
+                    DrawScrollViewItemGui("Item Closest to Center", closestToCenterIndex);
+
+                    var lastVisibleIndex = _scrollView.LastVisibleIndex;
+                    DrawScrollViewItemGui("Last Visible Item", lastVisibleIndex);
+
+                    var lastActiveIndex = _scrollView.LastActiveIndex;
+                    DrawScrollViewItemGui("Last Active Item", lastActiveIndex);
                 }
             }
         }
@@ -261,7 +367,7 @@ namespace Aurora.UnityEditor.UI
             );
         }
 
-        private void SetAnimBool(AnimBool animBool, bool value, bool instant)
+        private static void SetAnimBool(AnimBool animBool, bool value, bool instant)
         {
             if (instant)
             {

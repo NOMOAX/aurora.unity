@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Aurora.Unity.UI
@@ -10,24 +9,6 @@ namespace Aurora.Unity.UI
     public sealed class HorizontalScrollView : ScrollView
     {
         /// <inheritdoc />
-        protected override Vector2 ContentRectTransformAnchorMin => new Vector2(0f, 0f);
-
-        /// <inheritdoc />
-        protected override Vector2 ContentRectTransformAnchorMax => new Vector2(0f, 1f);
-
-        /// <inheritdoc />
-        protected override Vector2 ContentRectTransformPivot => new Vector2(0f, 0.5f);
-
-        /// <inheritdoc />
-        protected override Type ContentHorizontalOrVerticalLayoutGroupType => typeof(HorizontalLayoutGroup);
-
-        /// <inheritdoc />
-        protected override bool ScrollRectHorizontal => true;
-
-        /// <inheritdoc />
-        protected override bool ScrollRectVertical => false;
-
-        /// <inheritdoc />
         protected override float PaddingAlongAxis => padding.horizontal;
 
         /// <inheritdoc />
@@ -37,9 +18,9 @@ namespace Aurora.Unity.UI
         protected override float LastPaddingAlongAxis => padding.right;
 
         /// <inheritdoc />
-        protected override void Set(LayoutElement layoutElement, float size)
+        protected override void SetMinSize(LayoutElement layoutElement, float minSize)
         {
-            layoutElement.minWidth = size;
+            layoutElement.minWidth = minSize;
         }
 
         /// <inheritdoc />
@@ -55,22 +36,17 @@ namespace Aurora.Unity.UI
             return vector2;
         }
 
-        /// <inheritdoc />
-        protected override bool CanExpandItemWidth => false;
-
-        /// <inheritdoc />
-        protected override bool CanExpandItemHeight => true;
-
-        /// <inheritdoc />
-        protected override Scrollbar GetScrollbar(ScrollRect scrollRect)
+        protected override void SetLayoutGroupChildForceExpandSize(
+            HorizontalOrVerticalLayoutGroup horizontalOrVerticalLayoutGroup,
+            bool                            forceExpand)
         {
-            return scrollRect.horizontalScrollbar;
+            horizontalOrVerticalLayoutGroup.childForceExpandHeight = forceExpand;
         }
 
         /// <inheritdoc />
-        protected override void SetScrollbar(ScrollRect scrollRect, Scrollbar scrollbar)
+        protected override void SetScrollRectScrollbar(ScrollRect rect, Scrollbar bar)
         {
-            scrollRect.horizontalScrollbar = scrollbar;
+            rect.horizontalScrollbar = bar;
         }
     }
 }

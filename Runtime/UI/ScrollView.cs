@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Aurora.Collections;
@@ -12,6 +13,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Aurora.Unity.UI
 {
@@ -22,7 +26,7 @@ namespace Aurora.Unity.UI
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(ScrollRect))]
-    public abstract class ScrollView : MonoBehaviour,
+    public abstract class ScrollView : UIBehaviour,
                                        IPointerDownHandler,
                                        IPointerUpHandler,
                                        IBeginDragHandler,
@@ -31,9 +35,6 @@ namespace Aurora.Unity.UI
                                        IScrollHandler,
                                        IPlayerLoopItem
     {
-        private const string NotInitialized =
-            "The instance has not been initialized. Ensure " + nameof(Initialize) + " has been called.";
-
         private const string ControllerUnset = "The controller has not been set. Call " +
                                                nameof(SetControllerAndReload) + " before using this method.";
 
@@ -43,9 +44,22 @@ namespace Aurora.Unity.UI
         private static readonly ParameterizedPredicate<ScrollViewItem, int> IndexEqualTo = (scrollViewItem, index) =>
             scrollViewItem.index == index;
 
+        private IScrollViewController _controller;
+
         [SerializeField]
-        [Tooltip("required")]
         internal ScrollRect scrollRect;
+
+        [SerializeField]
+        internal Transform inactiveContainer;
+
+        [SerializeField]
+        internal RectTransform viewport;
+
+        [SerializeField]
+        internal RectTransform content;
+
+        [SerializeField]
+        internal HorizontalOrVerticalLayoutGroup contentLayoutGroup;
 
         [SerializeField]
         internal RectOffset padding = new RectOffset();
@@ -55,7 +69,19 @@ namespace Aurora.Unity.UI
         internal float spacing;
 
         [SerializeField]
-        internal bool itemForceExpand;
+        internal bool childForceExpandSize;
+
+        [SerializeField]
+        internal LayoutElement leadingPlaceholder;
+
+        [SerializeField]
+        internal LayoutElement trailingPlaceholder;
+
+        [SerializeField]
+        internal Scrollbar scrollbar;
+
+        [SerializeField]
+        internal ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.OnlyIfNeeded;
 
         /// <summary>
         /// 前方活动偏移量。
@@ -87,10 +113,10 @@ namespace Aurora.Unity.UI
         public float snapSpeedThreshold = 300;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示寻找最靠近此 <see cref="ScrollView"/> 的标准化位置的项。
+        /// 用于参与“自动吸附的目标位置”的计算，它表示寻找最靠近此标准化视口位置的项。
         /// </summary>
         [Range(0, 1)]
-        public float snapFindNormalizedPosition = 0.5f;
+        public float snapFindNormalizedViewportPosition = 0.5f;
 
         /// <summary>
         /// 用于参与“自动吸附的目标位置”的计算，它表示在计算项的开始位置和结束位置时，是否还应该考虑项之前和之后的空白。
@@ -106,10 +132,10 @@ namespace Aurora.Unity.UI
         public float snapNormalizedItemPosition = 0.5f;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示将目标位置逐渐“吸附”到此 <see cref="ScrollView"/> 的该标准化位置。
+        /// 用于参与“自动吸附的目标位置”的计算，它表示将目标位置逐渐“吸附”到此标准化视口位置。
         /// </summary>
         [Range(0, 1)]
-        public float snapJumpNormalizedPosition = 0.5f;
+        public float snapJumpNormalizedViewportPosition = 0.5f;
 
         /// <summary>
         /// 如何计算自动吸附的耗时。
@@ -128,37 +154,12 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <remarks>当 <see cref="snapDurationMode"/> 为 <see cref="ScrollViewSnapDurationMode.Dynamic"/> 时，将使用此值。</remarks>
         [Min(0)]
-        public float snapSpeed = 1000;
+        public float snapSpeed = 900;
 
+        /// <summary>
+        /// 自动吸附过程所使用的插值类型。
+        /// </summary>
         public Interpolation snapInterpolation = Interpolation.OutCubic;
-
-        [SerializeField]
-        internal ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.OnlyIfNeeded;
-
-        private bool _initialized;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private RectTransform _rectTransform;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private RectTransform _inactiveContainer;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private RectTransform _contentRectTransform;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private LayoutElement _leadingPlaceholder;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private LayoutElement _trailingPlaceholder;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private HorizontalOrVerticalLayoutGroup _contentHorizontalOrVerticalLayoutGroup;
-
-        /// <remarks>在 <see cref="Initialize"/> 中赋值。</remarks>
-        private Scrollbar _scrollbar;
-
-        private IScrollViewController _controller;
 
         private CancellationTokenSource _tweenTokenSource;
 
@@ -174,13 +175,13 @@ namespace Aurora.Unity.UI
         [NonSerialized]
         private bool _scrolling;
 
-        private int _itemCount;
-
         [NonSerialized]
         private ScrollRect.MovementType _scrollRectMovementTypeBeforeTween;
 
         [NonSerialized]
         private bool _scrollRectInertiaBeforeTween;
+
+        private int _itemCount;
 
         /// <summary>
         /// 全体项的开始处和结尾处的内容位置。内部排列如下：
@@ -207,7 +208,7 @@ namespace Aurora.Unity.UI
         /// </summary>
         private readonly List<ScrollViewItem> _recycledItems = new List<ScrollViewItem>();
 
-        /// <remarks>当内容大小较大、<see cref="snapSpeedThreshold"/> 较小时，<see cref="ScrollRect.onValueChanged"/> 不再每帧触发，不可靠，因此趁它还在触发的时候开启计数器，并且在速度降低到阈值之前持续刷新计数器，这样才可以实现当速度低于阈值时吸附（当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时）。</remarks>
+        /// <remarks>当内容大小较大、<see cref="snapSpeedThreshold"/> 较小时，<see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>不再每帧触发，不可靠，因此趁它还在触发的时候开启计数器，并且在速度降低到阈值之前持续刷新计数器，这样才可以实现当速度低于阈值时吸附（当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时）。</remarks>
         private ICounter _valueChangeCounter;
 
         private ITimer _scrollTimer;
@@ -215,65 +216,65 @@ namespace Aurora.Unity.UI
         private const double ScrollDelay = 0.3;
 
         /// <summary>
-        /// 获取一个值，这个值指示此实例是否已初始化。
+        /// 获取控制器。
         /// </summary>
-        public bool Initialized => _initialized;
+        public IScrollViewController Controller
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _controller;
+        }
 
         /// <summary>
         /// 获取滚动区域。
         /// </summary>
-        public ScrollRect ScrollRect => scrollRect;
-
-        /// <summary>
-        /// 获取此 <see cref="ScrollView"/> 的控制器。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public IScrollViewController Controller =>
-            !_initialized ? throw new InvalidOperationException(NotInitialized) : _controller;
-
-        /// <summary>
-        /// 获取此 <see cref="ScrollView"/> 的大小。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public float Size => !_initialized ? throw new InvalidOperationException(NotInitialized) : GetSize();
-
-        /// <summary>
-        /// 获取此 <see cref="ScrollView"/> 的内容大小。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public float ContentSize => !_initialized
-                                        ? throw new InvalidOperationException(NotInitialized)
-                                        : GetContentSize();
-
-        /// <summary>
-        /// 获取此 <see cref="ScrollView"/> 的内容超出此 <see cref="ScrollView"/> 的大小。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public float OverflowedContentSize => !_initialized
-                                                  ? throw new InvalidOperationException(NotInitialized)
-                                                  : GetOverflowedContentSize();
-
-        /// <summary>
-        /// 获取或设置此 <see cref="ScrollView"/> 的内容位置。
-        /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public float ContentPosition
+        public ScrollRect ScrollRect
         {
-            get => !_initialized ? throw new InvalidOperationException(NotInitialized) : GetContentPosition();
-            set
-            {
-                if (!_initialized)
-                {
-                    throw new InvalidOperationException(NotInitialized);
-                }
-                SetContentPosition(value);
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => scrollRect;
         }
 
         /// <summary>
-        /// 获取或设置此 <see cref="ScrollView"/> 的标准化滚动位置。
+        /// 获取视口大小。
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
+        public float ViewportSize
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetViewportSize();
+        }
+
+        /// <summary>
+        /// 获取内容大小。
+        /// </summary>
+        public float ContentSize
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetContentSize();
+        }
+
+        /// <summary>
+        /// 获取内容超出视口的大小。
+        /// </summary>
+        /// <remarks>如果 <see cref="ContentSize"/> 小于或等于 <see cref="ViewportSize"/>，则为 0。</remarks>
+        public float OverflowedContentSize
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetOverflowedContentSize();
+        }
+
+        /// <summary>
+        /// 获取或设置内容位置。
+        /// </summary>
+        public float ContentPosition
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetContentPosition();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => SetContentPosition(value);
+        }
+
+        /// <summary>
+        /// 获取或设置标准化滚动位置。
+        /// </summary>
         /// <remarks>
         /// 标准化滚动位置通常在 [0, 1] 范围内，使用 <see cref="double"/> 类型以提供更大的精度。
         /// <br/>
@@ -281,25 +282,22 @@ namespace Aurora.Unity.UI
         /// </remarks>
         public double NormalizedScrollPosition
         {
-            get => !_initialized ? throw new InvalidOperationException(NotInitialized) : GetNormalizedScrollPosition();
-            set
-            {
-                if (!_initialized)
-                {
-                    throw new InvalidOperationException(NotInitialized);
-                }
-                SetNormalizedScrollPosition(value);
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetNormalizedScrollPosition();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => SetNormalizedScrollPosition(value);
         }
 
         /// <summary>
-        /// 获取或设置此 <see cref="ScrollView"/> 的内容的内边距。
+        /// 获取或设置内容的内边距。
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 有至少一个分量为负数。</exception>
         public RectOffset Padding
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => padding;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if (value == null)
@@ -310,23 +308,43 @@ namespace Aurora.Unity.UI
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
-                // 直接赋值，不做相等性检查，因为 RectOffset 是引用类型，可以在实例不变的情况下修改其成员
+                // 由于 RectOffset 是引用类型，可以直接修改其内部成员，因此跳过相等性检查
                 padding = value;
-                if (_initialized)
-                {
-                    _contentHorizontalOrVerticalLayoutGroup.padding = padding;
-                    InternalReloadWithNormalizedScrollPosition(NormalizedScrollPosition);
-                }
+#if UNITY_EDITOR
+                Undo.RecordObject(contentLayoutGroup, $"set {nameof(LayoutGroup.padding)}");
+#endif
+                contentLayoutGroup.padding.left   = padding.left;
+                contentLayoutGroup.padding.right  = padding.right;
+                contentLayoutGroup.padding.top    = padding.top;
+                contentLayoutGroup.padding.bottom = padding.bottom;
+                InternalReloadWithNormalizedScrollPosition(NormalizedScrollPosition);
             }
         }
 
         /// <summary>
-        /// 获取或设置此 <see cref="ScrollView"/> 中各项的间距。
+        /// 返回滚动方向的内边距。
+        /// </summary>
+        protected abstract float PaddingAlongAxis { get; }
+
+        /// <summary>
+        /// 返回滚动方向的前半部分内边距。
+        /// </summary>
+        protected abstract float FirstPaddingAlongAxis { get; }
+
+        /// <summary>
+        /// 返回滚动方向的后半部分内边距。
+        /// </summary>
+        protected abstract float LastPaddingAlongAxis { get; }
+
+        /// <summary>
+        /// 获取或设置各项的间距。
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不满足“大于或等于 0”。</exception>
         public float Spacing
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => spacing;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if (!(value >= 0))
@@ -338,80 +356,89 @@ namespace Aurora.Unity.UI
                     return;
                 }
                 spacing = value;
-                if (_initialized)
-                {
-                    _contentHorizontalOrVerticalLayoutGroup.spacing = spacing;
-                    InternalReloadWithNormalizedScrollPosition(NormalizedScrollPosition);
-                }
+#if UNITY_EDITOR
+                Undo.RecordObject(contentLayoutGroup, $"set {nameof(HorizontalOrVerticalLayoutGroup.spacing)}");
+#endif
+                contentLayoutGroup.spacing = spacing;
+                InternalReloadWithNormalizedScrollPosition(NormalizedScrollPosition);
             }
         }
 
         /// <summary>
-        /// 获取一个值，这个值表示此 <see cref="ScrollView"/> 是否正在被拖拽。
+        /// 获取或设置一个值，这个值指示是否要在非滚动方向上让项占满内容。
         /// </summary>
-        public bool Dragging => _dragging;
-
-        /// <summary>
-        /// 获取一个值，这个值表示此 <see cref="ScrollView"/> 是否正在播放补间动画。
-        /// </summary>
-        public bool Tweening => IsTweening();
+        /// <remarks>如果是水平滚动视图，则让项的高度占满内容的高度；如果是垂直滚动视图，则让项的宽度占满内容的宽度。</remarks>
+        public bool ChildForceExpandSize
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => childForceExpandSize;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                if (childForceExpandSize == value)
+                {
+                    return;
+                }
+                childForceExpandSize = value;
+                SetLayoutGroupChildForceExpandSize(contentLayoutGroup, childForceExpandSize);
+            }
+        }
 
         /// <summary>
         /// 获取第一个活动项的索引。如果没有活动项，则返回 -1。
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public int FirstActiveIndex => !_initialized
-                                           ? throw new InvalidOperationException(NotInitialized)
-                                           : _activeItems.TryPeekFirst(out var item)
-                                               ? item.index
-                                               : -1;
+        public int FirstActiveIndex
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _activeItems.TryPeekFirst(out var item) ? item.index : -1;
+        }
 
         /// <summary>
         /// 获取第一个可见项的索引。如果没有可见项，则返回 -1.
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public int FirstVisibleIndex => !_initialized
-                                            ? throw new InvalidOperationException(NotInitialized)
-                                            : InternalFindFirstIndex(ConvertNormalizedPositionToContentPosition(0));
+        public int FirstVisibleIndex
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => InternalFindFirstIndex(ConvertNormalizedViewportPositionToContentPosition(0));
+        }
 
         /// <summary>
         /// 获取最后一个可见项的索引。如果没有可见项，则返回 -1.
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public int LastVisibleIndex => !_initialized
-                                           ? throw new InvalidOperationException(NotInitialized)
-                                           : InternalFindLastIndex(ConvertNormalizedPositionToContentPosition(1));
+        public int LastVisibleIndex
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => InternalFindLastIndex(ConvertNormalizedViewportPositionToContentPosition(1));
+        }
 
         /// <summary>
         /// 获取最后一个活动项的索引。如果没有活动项，则返回 -1。
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public int LastActiveIndex => !_initialized
-                                          ? throw new InvalidOperationException(NotInitialized)
-                                          : _activeItems.TryPeekLast(out var item)
-                                              ? item.index
-                                              : -1;
+        public int LastActiveIndex
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _activeItems.TryPeekLast(out var item) ? item.index : -1;
+        }
 
         /// <summary>
-        /// 项的数量。
+        /// 获取项的数量。
         /// </summary>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
-        public int ItemCount => !_initialized ? throw new InvalidOperationException(NotInitialized) : _itemCount;
+        public int ItemCount
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _itemCount;
+        }
 
         /// <summary>
         /// 获取位于指定索引处的项。
         /// </summary>
         /// <param name="index">索引。</param>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
         public ScrollViewItem this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (!_initialized)
-                {
-                    throw new InvalidOperationException(NotInitialized);
-                }
                 if (index < 0 || index >= _itemCount)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);
@@ -425,7 +452,9 @@ namespace Aurora.Unity.UI
         /// </summary>
         public ScrollbarVisibility ScrollbarVisibility
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => scrollbarVisibility;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if (scrollbarVisibility == value)
@@ -433,241 +462,149 @@ namespace Aurora.Unity.UI
                     return;
                 }
                 scrollbarVisibility = value;
-                if (_initialized)
-                {
-                    RefreshScrollbarVisibility();
-                }
+                RefreshScrollbarVisibility();
             }
         }
 
         /// <summary>
-        /// 返回应设置内容矩形变换的 <see cref="RectTransform.anchorMin"/> 为的值。
+        /// 是否正在被拖拽。
         /// </summary>
-        protected abstract Vector2 ContentRectTransformAnchorMin { get; }
+        public bool Dragging
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _dragging;
+        }
 
         /// <summary>
-        /// 返回应设置内容矩形变换的 <see cref="RectTransform.anchorMax"/> 为的值。
+        /// 是否正在播放补间动画。
         /// </summary>
-        protected abstract Vector2 ContentRectTransformAnchorMax { get; }
+        public bool Tweening
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsTweening();
+        }
 
         /// <summary>
-        /// 返回应设置内容矩形变换的 <see cref="RectTransform.pivot"/> 为的值。
-        /// </summary>
-        protected abstract Vector2 ContentRectTransformPivot { get; }
-
-        /// <summary>
-        /// 返回要添加到内容游戏物体上的 <see cref="HorizontalOrVerticalLayoutGroup"/> 具体组件类型。
-        /// </summary>
-        protected abstract Type ContentHorizontalOrVerticalLayoutGroupType { get; }
-
-        /// <summary>
-        /// 返回应设置 <see cref="ScrollRect.horizontal"/> 为的值。
-        /// </summary>
-        protected abstract bool ScrollRectHorizontal { get; }
-
-        /// <summary>
-        /// 返回应设置 <see cref="ScrollRect.vertical"/> 为的值。
-        /// </summary>
-        protected abstract bool ScrollRectVertical { get; }
-
-        /// <summary>
-        /// 返回沿轴向的内边距。
-        /// </summary>
-        protected abstract float PaddingAlongAxis { get; }
-
-        /// <summary>
-        /// 返回沿轴向的前半部分内边距。
-        /// </summary>
-        protected abstract float FirstPaddingAlongAxis { get; }
-
-        /// <summary>
-        /// 返回沿轴向的后半部分内边距。
-        /// </summary>
-        protected abstract float LastPaddingAlongAxis { get; }
-
-        /// <summary>
-        /// 将 <paramref name="layoutElement"/> 的 <see cref="LayoutElement.minWidth"/> 或 <see cref="LayoutElement.minHeight"/> 设置为 <paramref name="size"/>。
-        /// </summary>
-        protected abstract void Set(LayoutElement layoutElement, float size);
-
-        /// <summary>
-        /// 返回 <paramref name="vector2"/> 的沿轴向分量。
+        /// 返回 <paramref name="vector2"/> 的滚动方向分量。
         /// </summary>
         protected abstract float Get(Vector2 vector2);
 
         /// <summary>
-        /// 将 <paramref name="vector2"/> 的沿轴向分量设置为 <paramref name="value"/>，然后返回设置后的值。
+        /// 将 <paramref name="vector2"/> 的滚动方向分量设置为 <paramref name="value"/>，然后返回设置后的值。
         /// </summary>
         protected abstract Vector2 Set(Vector2 vector2, float value);
 
         /// <summary>
-        /// 是否允许扩展项的宽度。
+        /// 设置 <paramref name="layoutElement"/> 在滚动方向上的最小大小。
         /// </summary>
-        protected abstract bool CanExpandItemWidth { get; }
+        protected abstract void SetMinSize(LayoutElement layoutElement, float minSize);
 
         /// <summary>
-        /// 是否允许扩展项的高度。
+        /// 设置是否要在非滚动方向上让项占满内容。
         /// </summary>
-        protected abstract bool CanExpandItemHeight { get; }
+        protected abstract void SetLayoutGroupChildForceExpandSize(
+            HorizontalOrVerticalLayoutGroup horizontalOrVerticalLayoutGroup,
+            bool                            forceExpand);
 
         /// <summary>
-        /// 返回沿轴向的滚动条。
+        /// 设置滚动条。
         /// </summary>
-        protected abstract Scrollbar GetScrollbar(ScrollRect scrollRect);
+        /// <remarks>执行此操作通常是为了防止 <see cref="UnityEngine.UI.ScrollRect"/> 修改滚动条的可见性。</remarks>
+        protected abstract void SetScrollRectScrollbar(ScrollRect rect, Scrollbar bar);
 
-        /// <summary>
-        /// 设置沿轴向的滚动条。
-        /// </summary>
-        protected abstract void SetScrollbar(ScrollRect scrollRect, Scrollbar scrollbar);
-
-        /// <summary>
-        /// 初始化此 <see cref="ScrollView"/>。
-        /// </summary>
-        public void Initialize()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float GetViewportSize()
         {
-            if (_initialized)
-            {
-                return;
-            }
-
-            scrollRect.horizontal = ScrollRectHorizontal;
-            scrollRect.vertical   = ScrollRectVertical;
-
-            _rectTransform = (RectTransform) scrollRect.transform;
-
-            var inactiveContainerGameObject = new GameObject("Inactive Container (Generated)");
-            inactiveContainerGameObject.SetActive(false);
-            _inactiveContainer = inactiveContainerGameObject.AddComponent<RectTransform>();
-            _inactiveContainer.SetParent(_rectTransform, false);
-            _inactiveContainer.localPosition    = Vector3.zero;
-            _inactiveContainer.localRotation    = Quaternion.identity;
-            _inactiveContainer.localScale       = Vector3.one;
-            _inactiveContainer.anchorMin        = new Vector2(0.5f, 0.5f);
-            _inactiveContainer.anchorMax        = new Vector2(0.5f, 0.5f);
-            _inactiveContainer.anchoredPosition = Vector2.zero;
-            _inactiveContainer.sizeDelta        = Vector2.zero;
-            _inactiveContainer.pivot            = new Vector2(0.5f, 0.5f);
-
-            if (scrollRect.content != null)
-            {
-                DestroyImmediate(scrollRect.content.gameObject);
-            }
-
-            var contentGameObject = new GameObject("Content (Generated)");
-            {
-                _contentRectTransform = contentGameObject.AddComponent<RectTransform>();
-                _contentRectTransform.SetParent(_rectTransform, false);
-                _contentRectTransform.localPosition    = Vector3.zero;
-                _contentRectTransform.localRotation    = Quaternion.identity;
-                _contentRectTransform.localScale       = Vector3.one;
-                _contentRectTransform.anchorMin        = ContentRectTransformAnchorMin;
-                _contentRectTransform.anchorMax        = ContentRectTransformAnchorMax;
-                _contentRectTransform.anchoredPosition = Vector2.zero;
-                _contentRectTransform.sizeDelta        = Vector2.zero;
-                _contentRectTransform.pivot            = ContentRectTransformPivot;
-
-                scrollRect.content = _contentRectTransform;
-
-                {
-                    var leadingPlaceholderGameObject = new GameObject("Leading Placeholder (Generated)");
-                    leadingPlaceholderGameObject.SetActive(false);
-                    var leadingPlaceholderRectTransform = leadingPlaceholderGameObject.AddComponent<RectTransform>();
-                    leadingPlaceholderRectTransform.SetParent(_contentRectTransform, false);
-                    leadingPlaceholderRectTransform.SetAsFirstSibling();
-                    leadingPlaceholderRectTransform.localPosition = Vector3.zero;
-                    leadingPlaceholderRectTransform.localRotation = Quaternion.identity;
-                    leadingPlaceholderRectTransform.localScale = Vector3.one;
-                    _leadingPlaceholder = leadingPlaceholderGameObject.AddComponent<LayoutElement>();
-                    Set(_leadingPlaceholder, 0);
-
-                    var trailingPlaceholderGameObject = new GameObject("Trailing Placeholder (Generated)");
-                    trailingPlaceholderGameObject.SetActive(false);
-                    var trailingPlaceholderRectTransform = trailingPlaceholderGameObject.AddComponent<RectTransform>();
-                    trailingPlaceholderRectTransform.SetParent(_contentRectTransform, false);
-                    trailingPlaceholderRectTransform.SetAsLastSibling();
-                    trailingPlaceholderRectTransform.localPosition = Vector3.zero;
-                    trailingPlaceholderRectTransform.localRotation = Quaternion.identity;
-                    trailingPlaceholderRectTransform.localScale = Vector3.one;
-                    _trailingPlaceholder = trailingPlaceholderGameObject.AddComponent<LayoutElement>();
-                    Set(_trailingPlaceholder, 0);
-                }
-            }
-
-            _contentHorizontalOrVerticalLayoutGroup =
-                (HorizontalOrVerticalLayoutGroup) contentGameObject.AddComponent(
-                    ContentHorizontalOrVerticalLayoutGroupType
-                );
-            _contentHorizontalOrVerticalLayoutGroup.padding                = padding;
-            _contentHorizontalOrVerticalLayoutGroup.spacing                = spacing;
-            _contentHorizontalOrVerticalLayoutGroup.childAlignment         = TextAnchor.UpperLeft;
-            _contentHorizontalOrVerticalLayoutGroup.childForceExpandWidth  = itemForceExpand && CanExpandItemWidth;
-            _contentHorizontalOrVerticalLayoutGroup.childForceExpandHeight = itemForceExpand && CanExpandItemHeight;
-
-            _scrollbar = GetScrollbar(scrollRect);
-            if (_scrollbar)
-            {
-                switch (scrollbarVisibility)
-                {
-                    case ScrollbarVisibility.Never:
-                    case ScrollbarVisibility.OnlyIfNeeded:
-                        _scrollbar.gameObject.SetActive(false);
-                        SetScrollbar(scrollRect, null); // 防止 ScrollRect 设置 ScrollBar 为活动
-                        break;
-                    case ScrollbarVisibility.Always:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            _initialized = true;
+            return Get(viewport.rect.size);
         }
 
-        private float GetSize()
-        {
-            return Get(_rectTransform.rect.size);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetContentSize()
         {
-            return Get(_contentRectTransform.rect.size);
+            return Get(content.rect.size);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetOverflowedContentSize()
         {
-            return Mathf.Max(GetContentSize() - GetSize(), 0);
+            return Mathf.Max(GetContentSize() - GetViewportSize(), 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetContentPosition()
         {
-            return Get(_contentRectTransform.anchoredPosition);
+            return Get(content.anchoredPosition);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetContentPosition(float contentPosition)
         {
-            _contentRectTransform.anchoredPosition = Set(_contentRectTransform.anchoredPosition, contentPosition);
+            content.anchoredPosition = Set(content.anchoredPosition, contentPosition);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private double GetNormalizedScrollPosition()
         {
             return InternalConvertContentPositionToNormalizedScrollPosition(GetContentPosition());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetNormalizedScrollPosition(double normalizedScrollPosition)
         {
             SetContentPosition(InternalConvertNormalizedScrollPositionToContentPosition(normalizedScrollPosition));
         }
 
         /// <summary>
+        /// 获取位于指定索引处的项的开始（内容）位置。
+        /// </summary>
+        /// <param name="index">索引。</param>
+        /// <returns>项的开始（内容）位置。</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float GetItemBeginPosition(int index)
+        {
+            if (index < 0 || index >= _itemCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index, null);
+            }
+            return InternalGetItemBeginPosition(index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float InternalGetItemBeginPosition(int index)
+        {
+            return _itemPositions[index * 2];
+        }
+
+        /// <summary>
+        /// 获取位于指定索引处的项的结束（内容）位置。
+        /// </summary>
+        /// <param name="index">索引。</param>
+        /// <returns>项的结束（内容）位置。</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float GetItemEndPosition(int index)
+        {
+            if (index < 0 || index >= _itemCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index, null);
+            }
+            return InternalGetItemEndPosition(index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float InternalGetItemEndPosition(int index)
+        {
+            return _itemPositions[index * 2 + 1];
+        }
+
+        /// <summary>
         /// 设置控制器，保持当前内容位置，重新加载。
         /// </summary>
         /// <param name="controller">控制器。</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReload(IScrollViewController controller)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             _controller = controller;
             InternalReload();
         }
@@ -677,12 +614,9 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="controller">控制器。</param>
         /// <param name="contentPosition">内容位置。</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReloadWithContentPosition(IScrollViewController controller, float contentPosition)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             _controller = controller;
             InternalReloadWithContentPosition(contentPosition);
         }
@@ -692,14 +626,11 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="controller">控制器。</param>
         /// <param name="normalizedScrollPosition">标准化滚动位置。</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReloadWithNormalizedScrollPosition(
             IScrollViewController controller,
             float                 normalizedScrollPosition)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             _controller = controller;
             InternalReloadWithNormalizedScrollPosition(normalizedScrollPosition);
         }
@@ -708,12 +639,9 @@ namespace Aurora.Unity.UI
         /// 保持当前内容位置，重新加载。
         /// </summary>
         /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reload()
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             InternalReload();
         }
 
@@ -722,12 +650,9 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="contentPosition">内容位置。</param>
         /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReloadWithContentPosition(float contentPosition)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             InternalReloadWithContentPosition(contentPosition);
         }
 
@@ -736,12 +661,9 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="normalizedScrollPosition">标准化滚动位置。</param>
         /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReloadWithNormalizedScrollPosition(float normalizedScrollPosition)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             InternalReloadWithNormalizedScrollPosition(normalizedScrollPosition);
         }
 
@@ -782,16 +704,18 @@ namespace Aurora.Unity.UI
         /// 回收超出范围的项、添加新进入范围的项。
         /// </summary>
         /// <remarks>此方法将在 <see cref="ScrollRect.onValueChanged"/> 事件引发时调用。</remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Refresh()
         {
             InternalRefresh();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void InternalRefresh()
         {
-            var beginActiveContentPosition = InternalConvertNormalizedPositionToContentPosition(0) -
+            var beginActiveContentPosition = InternalConvertNormalizedViewportPositionToContentPosition(0) -
                                              (leadingActiveOffset >= 0 ? leadingActiveOffset : 0);
-            var endActiveContentPosition = InternalConvertNormalizedPositionToContentPosition(1) +
+            var endActiveContentPosition = InternalConvertNormalizedViewportPositionToContentPosition(1) +
                                            (trailingActiveOffset >= 0 ? trailingActiveOffset : 0);
             var firstActiveIndex = InternalFindFirstIndex(beginActiveContentPosition);
             var lastActiveIndex  = InternalFindLastIndex(endActiveContentPosition);
@@ -812,6 +736,7 @@ namespace Aurora.Unity.UI
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ReturnAllItems()
         {
             if (_activeItems.TryDequeueLast(out var item))
@@ -844,10 +769,10 @@ namespace Aurora.Unity.UI
                 _itemCount = itemCount;
                 _itemPositions.Clear();
                 /*
-                 * 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失。
+                 * 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失
                  * 别小看了这里的作用，如果每次计算新的位置的时候都使用列表中最后一项作为基础，当项的数量很多、在编辑器中拖动修改间距的时候，将产生明显的抖动现象
                  */
-                double position = 0; // 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失
+                double position = 0;
                 for (var itemIndex = 0; itemIndex < _itemCount; itemIndex++)
                 {
                     _itemPositions.Add((float) (position += itemIndex == 0 ? FirstPaddingAlongAxis : spacing));
@@ -872,19 +797,21 @@ namespace Aurora.Unity.UI
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RefreshContentSize()
         {
             var contentSize = _itemCount == 0
                                   ? PaddingAlongAxis
-                                  : _itemPositions[_itemCount * 2 - 1] + LastPaddingAlongAxis;
-            _contentRectTransform.sizeDelta = Set(_contentRectTransform.sizeDelta, contentSize);
+                                  : InternalGetItemEndPosition(_itemCount - 1) + LastPaddingAlongAxis;
+            content.sizeDelta = Set(content.sizeDelta, contentSize);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddItems()
         {
-            var beginActiveContentPosition = InternalConvertNormalizedPositionToContentPosition(0) -
+            var beginActiveContentPosition = InternalConvertNormalizedViewportPositionToContentPosition(0) -
                                              (leadingActiveOffset >= 0 ? leadingActiveOffset : 0);
-            var endActiveContentPosition = InternalConvertNormalizedPositionToContentPosition(1) +
+            var endActiveContentPosition = InternalConvertNormalizedViewportPositionToContentPosition(1) +
                                            (trailingActiveOffset >= 0 ? trailingActiveOffset : 0);
             var firstActiveIndex = InternalFindFirstIndex(beginActiveContentPosition);
             var lastActiveIndex  = InternalFindLastIndex(endActiveContentPosition);
@@ -942,7 +869,8 @@ namespace Aurora.Unity.UI
                 else
                 {
                     leadingPlaceholderActive = true;
-                    leadingPlaceholderSize   = _itemPositions[firstActiveIndex * 2] - _itemPositions[0] - spacing;
+                    leadingPlaceholderSize = InternalGetItemBeginPosition(firstActiveIndex) -
+                                             InternalGetItemBeginPosition(0) - spacing;
                 }
 
                 if (_activeItems.PeekLast().index is var lastActiveIndex && lastActiveIndex == _itemCount - 1)
@@ -953,47 +881,55 @@ namespace Aurora.Unity.UI
                 else
                 {
                     trailingPlaceholderActive = true;
-                    trailingPlaceholderSize = _itemPositions[_itemCount * 2 - 1] -
-                                              _itemPositions[lastActiveIndex * 2 + 1] - spacing;
+                    trailingPlaceholderSize = InternalGetItemEndPosition(_itemCount - 1) -
+                                              InternalGetItemEndPosition(lastActiveIndex) - spacing;
                 }
             }
 
-            _leadingPlaceholder.gameObject.SetActive(leadingPlaceholderActive);
-            Set(_leadingPlaceholder, leadingPlaceholderSize);
-            _trailingPlaceholder.gameObject.SetActive(trailingPlaceholderActive);
-            Set(_trailingPlaceholder, trailingPlaceholderSize);
+            leadingPlaceholder.gameObject.SetActive(leadingPlaceholderActive);
+            SetMinSize(leadingPlaceholder, leadingPlaceholderSize);
+            trailingPlaceholder.gameObject.SetActive(trailingPlaceholderActive);
+            SetMinSize(trailingPlaceholder, trailingPlaceholderSize);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RefreshScrollbarVisibility()
         {
-            if (_scrollbar)
+            if (!scrollbar)
             {
-                SetScrollbar(scrollRect, _scrollbar);
-                var scrollbarActive = scrollbarVisibility switch
-                {
-                    ScrollbarVisibility.Never        => false,
-                    ScrollbarVisibility.OnlyIfNeeded => GetOverflowedContentSize() > 0,
-                    ScrollbarVisibility.Always       => true,
-                    _                                => throw new ArgumentOutOfRangeException()
-                };
-                _scrollbar.gameObject.SetActive(scrollbarActive);
-                if (!scrollbarActive)
-                {
-                    SetScrollbar(scrollRect, null); // 防止 ScrollRect 设置 ScrollBar 为活动
-                }
+                return;
+            }
+            SetScrollRectScrollbar(scrollRect, scrollbar);
+            var scrollbarActive = scrollbarVisibility switch
+            {
+                ScrollbarVisibility.Never        => false,
+                ScrollbarVisibility.OnlyIfNeeded => GetOverflowedContentSize() > 0,
+                ScrollbarVisibility.Always       => true,
+                _                                => throw new ArgumentOutOfRangeException()
+            };
+            scrollbar.gameObject.SetActive(scrollbarActive);
+            if (!scrollbarActive)
+            {
+                SetScrollRectScrollbar(scrollRect, null); // 防止 ScrollRect 设置 ScrollBar 为活动
             }
         }
 
         /// <summary>
         /// 终止补间动画。
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StopTween()
         {
             InternalStopTween();
+            if (!IsActive())
+            {
+                return;
+            }
             DisableValueChangeCounter();
             DisableScrollTimer();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void InternalStopTween()
         {
             if (!IsTweening())
@@ -1005,20 +941,15 @@ namespace Aurora.Unity.UI
                 scrollRect.movementType = _scrollRectMovementTypeBeforeTween;
                 scrollRect.inertia      = _scrollRectInertiaBeforeTween;
             }
-            try
+            if (UnityEnvironment.IsPlaying)
             {
-                if (UnityEnvironment.IsPlaying)
-                {
-                    _tweenTokenSource.Cancel();
-                }
-                _tweenTokenSource.Dispose();
+                _tweenTokenSource.Cancel();
             }
-            finally
-            {
-                _tweenTokenSource = null;
-            }
+            _tweenTokenSource.Dispose();
+            _tweenTokenSource = null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsTweening()
         {
             return _tweenTokenSource != null;
@@ -1027,9 +958,22 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 吸附。
         /// </summary>
+        /// <seealso cref="snapFindNormalizedViewportPosition"/>
+        /// <seealso cref="snapIncludingSpacing"/>
+        /// <seealso cref="snapNormalizedItemPosition"/>
+        /// <seealso cref="snapJumpNormalizedViewportPosition"/>
+        /// <seealso cref="snapDurationMode"/>
+        /// <seealso cref="snapSpeed"/>
+        /// <seealso cref="snapDuration"/>
+        /// <seealso cref="snapInterpolation"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Snap()
         {
             InternalStopTween();
+            if (!IsActive())
+            {
+                return;
+            }
             DisableValueChangeCounter();
             DisableScrollTimer();
             InternalBeginSnap();
@@ -1040,7 +984,7 @@ namespace Aurora.Unity.UI
             Assert.IsFalse(IsTweening());
 
             var index = InternalFindClosestIndex(
-                ConvertNormalizedPositionToContentPosition(snapFindNormalizedPosition)
+                ConvertNormalizedViewportPositionToContentPosition(snapFindNormalizedViewportPosition)
             );
             if (index < 0)
             {
@@ -1055,8 +999,8 @@ namespace Aurora.Unity.UI
                 return;
             }
             var contentPositionBegin = GetContentPosition();
-            var itemBeginPosition    = _itemPositions[index * 2];
-            var itemEndPosition      = _itemPositions[index * 2 + 1];
+            var itemBeginPosition    = InternalGetItemBeginPosition(index);
+            var itemEndPosition      = InternalGetItemEndPosition(index);
             if (snapIncludingSpacing)
             {
                 itemBeginPosition -= index == 0 ? FirstPaddingAlongAxis : spacing;
@@ -1068,7 +1012,7 @@ namespace Aurora.Unity.UI
                     itemBeginPosition,
                     itemEndPosition,
                     snapNormalizedItemPosition
-                ) - snapJumpNormalizedPosition * GetSize(),
+                ) - snapJumpNormalizedViewportPosition * GetViewportSize(),
                 0,
                 overflowedContentSize
             );
@@ -1123,7 +1067,6 @@ namespace Aurora.Unity.UI
             }
             else
             {
-                Log.D($"{index} {overflowedContentSize} {duration}");
                 SetContentPosition(contentPositionEnd);
                 scrollRect.velocity = Set(scrollRect.velocity, 0);
             }
@@ -1152,10 +1095,10 @@ namespace Aurora.Unity.UI
                     );
                     SetContentPosition(
                         (float) InterpolationUtility.Interpolate(
-                            interpolation,
                             contentPositionBegin,
                             contentPositionEnd,
-                            weight
+                            weight,
+                            interpolation
                         )
                     );
                 }
@@ -1176,31 +1119,38 @@ namespace Aurora.Unity.UI
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnableValueChangeCounter()
         {
             _valueChangeCounter.Change(1, -1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DisableValueChangeCounter()
         {
             _valueChangeCounter.Change(-1, -1);
         }
 
-        /// <remarks>
-        /// 在这些时机被调用：
-        /// <list type="bullet">
-        /// <item><description>滚动鼠标滚轮</description></item>
-        /// <item><description>操作与 <see cref="UnityEngine.UI.ScrollRect"/> 关联的 <see cref="UnityEngine.UI.Scrollbar"/></description></item>
-        /// </list>
-        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnableScrollTimer()
         {
             _scrollTimer.Change(TimeSpan.FromSeconds(ScrollDelay), Timeout.InfiniteTimeSpan);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void DisableScrollTimer()
         {
             _scrollTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        /// <summary>
+        /// 寻找第一个开始（内容）位置大于或等于指定内容位置的项的索引。
+        /// </summary>
+        /// <param name="contentPosition">内容位置。</param>
+        /// <returns>如果找到了第一个开始（内容）位置大于或等于指定内容位置的项，则为该项的索引；否则为 -1.</returns>
+        public int FindFirstIndex(float contentPosition)
+        {
+            return InternalFindFirstIndex(contentPosition);
         }
 
         private int InternalFindFirstIndex(float contentPosition)
@@ -1228,6 +1178,16 @@ namespace Aurora.Unity.UI
             }
             var insertPositionIndex = ~matchPositionIndex;
             return insertPositionIndex != positionCount ? insertPositionIndex / 2 : -1;
+        }
+
+        /// <summary>
+        /// 寻找第一个结束（内容）位置大于或等于指定内容位置的项的索引。
+        /// </summary>
+        /// <param name="contentPosition">内容位置。</param>
+        /// <returns>如果找到了第一个结束（内容）位置大于或等于指定内容位置的项，则为该项的索引；否则为 -1.</returns>
+        public int FindLastIndex(float contentPosition)
+        {
+            return InternalFindLastIndex(contentPosition);
         }
 
         private int InternalFindLastIndex(float contentPosition)
@@ -1258,17 +1218,13 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 寻找最靠近指定的此 <see cref="ScrollView"/> 的内容位置的项的索引。
+        /// 寻找最靠近指定内容位置的项的索引。
         /// </summary>
         /// <param name="contentPosition">内容位置。</param>
         /// <returns>如果项的数量大于 0，则为最靠近 <paramref name="contentPosition"/> 的项的索引；否则为 -1.</returns>
-        /// <exception cref="InvalidOperationException">此实例未初始化。</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindClosestIndex(float contentPosition)
         {
-            if (!_initialized)
-            {
-                throw new InvalidOperationException(NotInitialized);
-            }
             return InternalFindClosestIndex(contentPosition);
         }
 
@@ -1340,12 +1296,12 @@ namespace Aurora.Unity.UI
 #if UNITY_EDITOR
                 var prefabName = prefab.name;
 #endif
-                var item = Instantiate(prefab, _inactiveContainer, false); // 确保不活动
+                var item = Instantiate(prefab, inactiveContainer, false); // 确保不活动
 #if UNITY_EDITOR
                 item.name = prefabName;
 #endif
                 item.gameObject.SetActive(false);
-                item.transform.SetParent(_contentRectTransform, false);
+                item.transform.SetParent(content, false);
                 item.transform.localPosition = Vector3.zero;
                 item.transform.localRotation = Quaternion.identity;
                 item.transform.localScale    = Vector3.one;
@@ -1357,6 +1313,7 @@ namespace Aurora.Unity.UI
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ReturnItemsBefore(int index)
         {
             if (_activeItems.TryPeekFirst(out var item) && item.index < index)
@@ -1371,6 +1328,7 @@ namespace Aurora.Unity.UI
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool ReturnItemsAfter(int index)
         {
             if (_activeItems.TryPeekLast(out var item) && item.index > index)
@@ -1400,7 +1358,7 @@ namespace Aurora.Unity.UI
             }
 #endif
             item.index = index;
-            Set(
+            SetMinSize(
                 item.TryGetComponent(out LayoutElement layoutElement)
                     ? layoutElement
                     : item.gameObject.AddComponent<LayoutElement>(),
@@ -1409,6 +1367,7 @@ namespace Aurora.Unity.UI
             return item;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddFirstItem(int index)
         {
             var item = GetItem(index, out var isNewCreated);
@@ -1418,6 +1377,7 @@ namespace Aurora.Unity.UI
             item.OnGet(this, isNewCreated);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddLastItem(int index)
         {
             var item = GetItem(index, out var isNewCreated);
@@ -1427,6 +1387,7 @@ namespace Aurora.Unity.UI
             item.OnGet(this, isNewCreated);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ReturnItem(ScrollViewItem item, bool calledFromOnDestroy)
         {
             if (item.visible)
@@ -1450,6 +1411,7 @@ namespace Aurora.Unity.UI
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string GetItemNameSafe(ScrollViewItem item)
         {
             if (!item)
@@ -1467,57 +1429,65 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 将此 <see cref="ScrollView"/> 的内容位置转换为此 <see cref="ScrollView"/> 的标准化位置。
+        /// 将内容位置转换为标准化视口位置。
         /// </summary>
-        public float ConvertContentPositionToNormalizedPosition(float contentPosition)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float ConvertContentPositionToNormalizedViewportPosition(float contentPosition)
         {
-            return InternalConvertContentPositionToNormalizedPosition(contentPosition);
+            return InternalConvertContentPositionToNormalizedViewportPosition(contentPosition);
         }
 
         /// <summary>
-        /// 将此 <see cref="ScrollView"/> 的标准化位置转换为此 <see cref="ScrollView"/> 的内容位置。
+        /// 将标准化视口位置转换为内容位置。
         /// </summary>
-        public float ConvertNormalizedPositionToContentPosition(float normalizedPosition)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float ConvertNormalizedViewportPositionToContentPosition(float normalizedViewportPosition)
         {
-            return InternalConvertNormalizedPositionToContentPosition(normalizedPosition);
+            return InternalConvertNormalizedViewportPositionToContentPosition(normalizedViewportPosition);
         }
 
         /// <summary>
-        /// 将此 <see cref="ScrollView"/> 的内容位置转换为此 <see cref="ScrollView"/> 的标准化滚动位置。
+        /// 将内容位置转换为标准化滚动位置。
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double ConvertContentPositionToNormalizedScrollPosition(float contentPosition)
         {
             return InternalConvertContentPositionToNormalizedScrollPosition(contentPosition);
         }
 
         /// <summary>
-        /// 将此 <see cref="ScrollView"/> 的标准化滚动位置转换为此 <see cref="ScrollView"/> 的内容位置。
+        /// 将标准化滚动位置转换为内容位置。
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float ConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
         {
             return InternalConvertNormalizedScrollPositionToContentPosition(normalizedScrollPosition);
         }
 
-        private float InternalConvertContentPositionToNormalizedPosition(float contentPosition)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float InternalConvertContentPositionToNormalizedViewportPosition(float contentPosition)
         {
             var begin = GetContentPosition();
-            var end   = begin + GetSize();
+            var end   = begin + GetViewportSize();
             return (float) InterpolationUtility.InverseLinearInterpolate(begin, end, contentPosition);
         }
 
-        private float InternalConvertNormalizedPositionToContentPosition(float normalizedPosition)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float InternalConvertNormalizedViewportPositionToContentPosition(float normalizedViewportPosition)
         {
             var begin = GetContentPosition();
-            var end   = begin + GetSize();
-            return (float) InterpolationUtility.LinearInterpolate(begin, end, normalizedPosition);
+            var end   = begin + GetViewportSize();
+            return (float) InterpolationUtility.LinearInterpolate(begin, end, normalizedViewportPosition);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private double InternalConvertContentPositionToNormalizedScrollPosition(float contentPosition)
         {
             var overflowedContentSize = GetOverflowedContentSize();
             return overflowedContentSize == 0 ? 0 : contentPosition / overflowedContentSize;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float InternalConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
         {
             var overflowedContentSize = GetOverflowedContentSize();
@@ -1554,7 +1524,7 @@ namespace Aurora.Unity.UI
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
+            if (eventData.button != PointerEventData.InputButton.Left || !IsActive())
             {
                 return;
             }
@@ -1568,25 +1538,26 @@ namespace Aurora.Unity.UI
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-            {
-                return;
-            }
-            if (_dragging)
-            {
-                // 暂时没有逻辑。
-                // 不过，为了让 OnBeginDrag 和 OnEndDrag 执行，必须实现 OnDrag，因此保留此实现是合理的，即使什么也不做。
-            }
+            // if (!_dragging || eventData.button != PointerEventData.InputButton.Left || !IsActive())
+            // {
+            //     return;
+            // }
+
+            /*
+             * 这里暂时没有逻辑
+             * 不过，为了让 OnBeginDrag 和 OnEndDrag 执行，必须实现 OnDrag
+             */
         }
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
+            if (eventData.button != PointerEventData.InputButton.Left || !IsActive())
             {
                 return;
             }
 
             _dragging = false;
+
             if ((snapTrigger & ScrollViewSnapTrigger.OnEndDrag) != 0 && !IsTweening())
             {
                 DisableValueChangeCounter();
@@ -1597,11 +1568,13 @@ namespace Aurora.Unity.UI
 
         void IScrollHandler.OnScroll(PointerEventData eventData)
         {
-            if (!eventData.IsScrolling())
+            if (!IsActive() || !eventData.IsScrolling())
             {
                 return;
             }
+
             _scrolling = true;
+
             InternalStopTween();
             DisableValueChangeCounter();
             EnableScrollTimer();
@@ -1632,6 +1605,7 @@ namespace Aurora.Unity.UI
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LimitSpeed()
         {
             if (speedLimit > 0 && Get(scrollRect.velocity) is var velocity // 速度
@@ -1649,8 +1623,8 @@ namespace Aurora.Unity.UI
                 return;
             }
 
-            var beginContentPosition = InternalConvertNormalizedPositionToContentPosition(0);
-            var endContentPosition   = InternalConvertNormalizedPositionToContentPosition(1);
+            var beginContentPosition = InternalConvertNormalizedViewportPositionToContentPosition(0);
+            var endContentPosition   = InternalConvertNormalizedViewportPositionToContentPosition(1);
             var firstVisibleIndex    = InternalFindFirstIndex(beginContentPosition);
             var lastVisibleIndex     = InternalFindLastIndex(endContentPosition);
             if (firstVisibleIndex >= 0 && lastVisibleIndex >= 0 && firstVisibleIndex <= lastVisibleIndex)
@@ -1733,7 +1707,7 @@ namespace Aurora.Unity.UI
         {
             if (!_dragging && !_scrolling && !IsTweening())
             {
-                if (_scrollbar && _scrollbar.IsActive() && SelectableUtility.IsPressed(_scrollbar))
+                if (scrollbar && scrollbar.IsActive() && SelectableUtility.IsPressed(scrollbar))
                 {
                     DisableValueChangeCounter();
                     EnableScrollTimer();
@@ -1751,16 +1725,20 @@ namespace Aurora.Unity.UI
             InternalRefresh();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             while (_activeItems.TryDequeueLast(out var item))
             {
                 ReturnItem(item, true);
             }
+
+            base.OnDestroy();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             PlayerLoopUtility.AddPlayerLoopItem(this, PlayerLoopPhase.LateUpdating);
             PlayerLoopUtility.AddPlayerLoopItem(this, PlayerLoopPhase.LateUpdated);
             scrollRect.onValueChanged.AddListener(OnScrollRectValueChanged);
@@ -1777,7 +1755,7 @@ namespace Aurora.Unity.UI
             );
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             PlayerLoopUtility.RemovePlayerLoopItem(this, PlayerLoopPhase.LateUpdating);
             PlayerLoopUtility.RemovePlayerLoopItem(this, PlayerLoopPhase.LateUpdated);
@@ -1789,6 +1767,8 @@ namespace Aurora.Unity.UI
             _scrollTimer = null;
 
             InternalStopTween();
+
+            base.OnDisable();
         }
     }
 }

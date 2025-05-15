@@ -15,39 +15,27 @@ namespace Aurora.UnityEditor
         public static void AddHorizontalScrollView(MenuCommand menuCommand)
         {
             var parentGameObject = menuCommand.context as GameObject;
-            if (parentGameObject == null)
+            if (!parentGameObject)
             {
-                Log.W($"Operate under {nameof(Canvas)}.");
+                Log.W($"You can only do this operation under a {nameof(Canvas)}.");
                 return;
             }
             var canvas = parentGameObject.GetComponentInParent<Canvas>(true);
-            if (canvas == null)
+            if (!canvas)
             {
-                Log.W($"Operate under {nameof(Canvas)}.");
+                Log.W($"You can only do this operation under a {nameof(Canvas)}.");
                 return;
             }
             var parent = parentGameObject.transform;
 
-            var gameObject = new GameObject("Horizontal Scroll View");
-            var transform  = gameObject.AddComponent<RectTransform>();
-            transform.sizeDelta = Vector2.one * 200;
-            {
-                var image = gameObject.AddComponent<Image>();
-                image.color = new Color(0.125f, 0.125f, 0.125f);
-            }
-            ScrollRect scrollRect;
-            ScrollView scrollView;
-            {
-                scrollRect = gameObject.AddComponent<ScrollRect>();
-                scrollView = gameObject.AddComponent<ScrollView>();
-            }
-            {
-                var layoutElement = gameObject.AddComponent<LayoutElement>();
-                layoutElement.minWidth        = 200;
-                layoutElement.minHeight       = 200;
-                layoutElement.preferredWidth  = 200;
-                layoutElement.preferredHeight = 200;
-            }
+            CreateScrollView(
+                "Horizontal Scroll View",
+                parent,
+                new Vector2(200f, 200f),
+                20f,
+                300f,
+                RectTransform.Axis.Horizontal
+            );
         }
 
         private const int AddVerticalScrollViewPriority = AddHorizontalScrollViewPriority + 1;
@@ -56,22 +44,39 @@ namespace Aurora.UnityEditor
         public static void AddVerticalScrollView(MenuCommand menuCommand)
         {
             var parentGameObject = menuCommand.context as GameObject;
-            if (parentGameObject == null)
+            if (!parentGameObject)
             {
-                Log.W($"Operate under {nameof(Canvas)}.");
+                Log.W($"You can only do this operation under a {nameof(Canvas)}.");
                 return;
             }
             var canvas = parentGameObject.GetComponentInParent<Canvas>(true);
-            if (canvas == null)
+            if (!canvas)
             {
-                Log.W($"Operate under {nameof(Canvas)}.");
+                Log.W($"You can only do this operation under a {nameof(Canvas)}.");
                 return;
             }
             var parent = parentGameObject.transform;
 
-            var gameObject = new GameObject("Vertical Scroll View");
+            CreateScrollView(
+                "Vertical Scroll View",
+                parent,
+                new Vector2(200f, 200f),
+                20f,
+                300f,
+                RectTransform.Axis.Vertical
+            );
+        }
 
-            var transform = gameObject.AddComponent<RectTransform>();
+        private static void CreateScrollView(
+            string             name,
+            Transform          parent,
+            Vector2            size,
+            float              scrollbarThickness,
+            float              contentSize,
+            RectTransform.Axis axis)
+        {
+            var gameObject = new GameObject(name);
+            var transform  = gameObject.AddComponent<RectTransform>();
             transform.SetParent(parent, false);
             transform.localPosition    = Vector3.zero;
             transform.localRotation    = Quaternion.identity;
@@ -79,137 +84,323 @@ namespace Aurora.UnityEditor
             transform.anchorMin        = new Vector2(0.5f, 0.5f);
             transform.anchorMax        = new Vector2(0.5f, 0.5f);
             transform.anchoredPosition = Vector2.zero;
-            transform.sizeDelta        = new Vector2(200f, 200f);
+            transform.sizeDelta        = size;
             transform.pivot            = new Vector2(0.5f, 0.5f);
 
             var image = gameObject.AddComponent<Image>();
-            image.color         = new Color(1f, 1f, 1f, 0.125f);
-            image.raycastTarget = false;
+            image.color = new Color(1f, 1f, 1f, 0.125f);
+
+            var inactiveContainer = CreateInactiveContainer(transform);
+
+            var viewportTransform = CreateViewport(transform, scrollbarThickness, axis);
+
+            var (contentTransform, contentLayoutGroup) = CreateContent(viewportTransform, contentSize, axis);
+
+            var leadingPlaceholder = CreatePlaceholder(
+                "Leading Placeholder",
+                contentTransform,
+                RectTransform.Axis.Vertical
+            );
+
+            var trailingPlaceholder = CreatePlaceholder(
+                "Trailing Placeholder",
+                contentTransform,
+                RectTransform.Axis.Vertical
+            );
+
+            var scrollbar = CreateScrollbar(transform, scrollbarThickness, axis);
+            scrollbar.gameObject.SetActive(false);
 
             var scrollRect = gameObject.AddComponent<ScrollRect>();
-            scrollRect.horizontal        = false;
-            scrollRect.vertical          = true;
-            scrollRect.scrollSensitivity = 32f;
+            scrollRect.content = contentTransform;
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                    scrollRect.horizontal        = true;
+                    scrollRect.vertical          = false;
+                    scrollRect.scrollSensitivity = -32f;
+                    break;
+                case RectTransform.Axis.Vertical:
+                    scrollRect.horizontal        = false;
+                    scrollRect.vertical          = true;
+                    scrollRect.scrollSensitivity = 32f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            }
+            scrollRect.viewport = viewportTransform;
+            // switch (axis)
+            // {
+            //     case RectTransform.Axis.Horizontal:
+            //         scrollRect.horizontalScrollbar = scrollbar;
+            //         break;
+            //     case RectTransform.Axis.Vertical:
+            //         scrollRect.verticalScrollbar = scrollbar;
+            //         break;
+            //     default:
+            //         throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            // }
 
-            var viewportGameObject = new GameObject("Viewport");
-            var viewportTransform  = viewportGameObject.AddComponent<RectTransform>();
-            viewportTransform.SetParent(transform, false);
-            viewportTransform.localPosition    = Vector3.zero;
-            viewportTransform.localRotation    = Quaternion.identity;
-            viewportTransform.localScale       = Vector3.one;
-            viewportTransform.anchorMin        = Vector2.zero;
-            viewportTransform.anchorMax        = Vector2.one;
-            viewportTransform.anchoredPosition = Vector2.zero;
-            viewportTransform.sizeDelta        = new Vector2(-10f, 0f);
-            viewportTransform.pivot            = new Vector2(0f,   1f);
-            viewportGameObject.AddComponent<Image>();
-            var viewportMask = viewportGameObject.AddComponent<Mask>();
-            viewportMask.showMaskGraphic = false;
+            ScrollView scrollView = axis switch
+            {
+                RectTransform.Axis.Horizontal => gameObject.AddComponent<HorizontalScrollView>(),
+                RectTransform.Axis.Vertical   => gameObject.AddComponent<VerticalScrollView>(),
+                _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+            };
+            scrollView.scrollRect          = scrollRect;
+            scrollView.viewport            = viewportTransform;
+            scrollView.inactiveContainer   = inactiveContainer;
+            scrollView.content             = contentTransform;
+            scrollView.leadingPlaceholder  = leadingPlaceholder;
+            scrollView.trailingPlaceholder = trailingPlaceholder;
+            scrollView.contentLayoutGroup  = contentLayoutGroup;
+            scrollView.scrollbar           = scrollbar;
+        }
 
-            var contentGameObject = new GameObject("Content");
-            var contentTransform  = contentGameObject.AddComponent<RectTransform>();
-            contentTransform.SetParent(viewportTransform);
-            contentTransform.localPosition    = Vector3.zero;
-            contentTransform.localRotation    = Quaternion.identity;
-            contentTransform.localScale       = Vector3.one;
-            contentTransform.anchorMin        = new Vector2(0f, 1f);
-            contentTransform.anchorMax        = new Vector2(1f, 1f);
-            contentTransform.anchoredPosition = Vector2.zero;
-            contentTransform.sizeDelta        = new Vector2(0f, 300f);
-            contentTransform.pivot            = new Vector2(0f, 1f);
+        private static Transform CreateInactiveContainer(Transform parent)
+        {
+            var gameObject = new GameObject("Inactive Container");
+            gameObject.SetActive(false);
+            var transform = gameObject.AddComponent<RectTransform>();
+            transform.SetParent(parent, false);
+            transform.localPosition    = Vector3.zero;
+            transform.localRotation    = Quaternion.identity;
+            transform.localScale       = Vector3.one;
+            transform.anchorMin        = Vector2.zero;
+            transform.anchorMax        = Vector2.one;
+            transform.anchoredPosition = Vector2.zero;
+            transform.sizeDelta        = Vector2.zero;
+            transform.pivot            = new Vector2(0.5f, 0.5f);
 
-            var scrollBarGameObject = new GameObject("Scrollbar");
-            var scrollbarTransform  = scrollBarGameObject.AddComponent<RectTransform>();
-            scrollbarTransform.SetParent(transform, false);
-            scrollbarTransform.localPosition    = Vector3.zero;
-            scrollbarTransform.localRotation    = Quaternion.identity;
-            scrollbarTransform.localScale       = Vector3.one;
-            scrollbarTransform.anchorMin        = new Vector2(1f, 0f);
-            scrollbarTransform.anchorMax        = new Vector2(1f, 1f);
-            scrollbarTransform.anchoredPosition = Vector2.zero;
-            scrollbarTransform.sizeDelta        = new Vector2(10f, 0f);
-            scrollbarTransform.pivot            = new Vector2(1f,  1f);
+            return transform;
+        }
 
-            var scrollBarImage = scrollBarGameObject.AddComponent<Image>();
-            scrollBarImage.color = new Color(0.125f, 0.125f, 0.125f);
+        private static RectTransform CreateViewport(Transform parent, float padding, RectTransform.Axis axis)
+        {
+            var gameObject = new GameObject("Viewport");
+            var transform  = gameObject.AddComponent<RectTransform>();
+            transform.SetParent(parent, false);
+            transform.localPosition    = Vector3.zero;
+            transform.localRotation    = Quaternion.identity;
+            transform.localScale       = Vector3.one;
+            transform.anchorMin        = Vector2.zero;
+            transform.anchorMax        = Vector2.one;
+            transform.anchoredPosition = Vector2.zero;
+            transform.sizeDelta = axis switch
+            {
+                RectTransform.Axis.Horizontal => new Vector2(0f,       -padding),
+                RectTransform.Axis.Vertical   => new Vector2(-padding, 0f),
+                _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+            };
+            transform.pivot = new Vector2(0f, 1f);
 
-            var scrollbar = scrollBarGameObject.AddComponent<Scrollbar>();
-            scrollbar.direction = Scrollbar.Direction.BottomToTop;
+            gameObject.AddComponent<Image>();
 
-            var slidingAreaGameObject = new GameObject("Sliding Area");
-            var slidingAreaTransform  = slidingAreaGameObject.AddComponent<RectTransform>();
-            slidingAreaTransform.SetParent(scrollbarTransform, false);
-            slidingAreaTransform.localPosition    = Vector3.zero;
-            slidingAreaTransform.localRotation    = Quaternion.identity;
-            slidingAreaTransform.localScale       = Vector3.one;
-            slidingAreaTransform.anchorMin        = Vector2.zero;
-            slidingAreaTransform.anchorMax        = Vector2.one;
-            slidingAreaTransform.anchoredPosition = Vector2.zero;
-            slidingAreaTransform.sizeDelta        = new Vector2(0f, -10f);
+            var mask = gameObject.AddComponent<Mask>();
+            mask.showMaskGraphic = false;
 
-            var handleObject    = new GameObject("Handle");
-            var handleTransform = handleObject.AddComponent<RectTransform>();
-            handleTransform.SetParent(slidingAreaTransform, false);
-            handleTransform.localPosition    = Vector3.zero;
-            handleTransform.localRotation    = Quaternion.identity;
-            handleTransform.localScale       = Vector3.one;
-            handleTransform.anchoredPosition = Vector2.zero;
-            handleTransform.sizeDelta        = new Vector2(0f, 10f);
+            return transform;
+        }
 
-            var handleImage = handleObject.AddComponent<Image>();
+        private static (RectTransform, HorizontalOrVerticalLayoutGroup) CreateContent(
+            Transform          parent,
+            float              size,
+            RectTransform.Axis axis)
+        {
+            var gameObject = new GameObject("Content");
+            var transform  = gameObject.AddComponent<RectTransform>();
+            transform.SetParent(parent, false);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale    = Vector3.one;
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                    transform.anchorMin = new Vector2(0f, 0f);
+                    transform.anchorMax = new Vector2(0f, 1f);
+                    break;
+                case RectTransform.Axis.Vertical:
+                    transform.anchorMin = new Vector2(0f, 1f);
+                    transform.anchorMax = new Vector2(1f, 1f);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            }
+            transform.anchoredPosition = Vector2.zero;
+            transform.sizeDelta = axis switch
+            {
+                RectTransform.Axis.Horizontal => new Vector2(size, 0f),
+                RectTransform.Axis.Vertical   => new Vector2(0f,   size),
+                _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+            };
+            transform.pivot = new Vector2(0f, 1f);
+
+            HorizontalOrVerticalLayoutGroup horizontalOrVerticalLayoutGroup = axis switch
+            {
+                RectTransform.Axis.Horizontal => gameObject.AddComponent<HorizontalLayoutGroup>(),
+                RectTransform.Axis.Vertical   => gameObject.AddComponent<VerticalLayoutGroup>(),
+                _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+            };
+            horizontalOrVerticalLayoutGroup.childControlWidth      = true;
+            horizontalOrVerticalLayoutGroup.childControlHeight     = true;
+            horizontalOrVerticalLayoutGroup.childForceExpandWidth  = false;
+            horizontalOrVerticalLayoutGroup.childForceExpandHeight = false;
+
+            return (transform, horizontalOrVerticalLayoutGroup);
+        }
+
+        private static LayoutElement CreatePlaceholder(string name, Transform parent, RectTransform.Axis axis)
+        {
+            var gameObject = new GameObject(name);
+            gameObject.SetActive(false);
+            var transform = gameObject.AddComponent<RectTransform>();
+            transform.SetParent(parent, false);
+            transform.localPosition    = Vector3.zero;
+            transform.localRotation    = Quaternion.identity;
+            transform.localScale       = Vector3.one;
+            transform.anchorMin        = new Vector2(0f, 1f);
+            transform.anchorMax        = new Vector2(0f, 1f);
+            transform.anchoredPosition = Vector2.zero;
+            transform.sizeDelta        = Vector2.zero;
+            transform.pivot            = new Vector2(0f, 1f);
+
+            var layoutElement = gameObject.AddComponent<LayoutElement>();
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                    layoutElement.minWidth = 0f;
+                    break;
+                case RectTransform.Axis.Vertical:
+                    layoutElement.minHeight = 0f;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            }
+
+            return layoutElement;
+        }
+
+        private static Scrollbar CreateScrollbar(Transform parent, float thickness, RectTransform.Axis axis)
+        {
+            var gameObject = new GameObject("Scrollbar");
+            var transform  = gameObject.AddComponent<RectTransform>();
+            transform.SetParent(parent, false);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale    = Vector3.one;
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                    transform.anchorMin        = new Vector2(0f, 0f);
+                    transform.anchorMax        = new Vector2(1f, 0f);
+                    transform.anchoredPosition = Vector2.zero;
+                    transform.sizeDelta        = new Vector2(0f, thickness);
+                    transform.pivot            = new Vector2(0f, 0f);
+                    break;
+                case RectTransform.Axis.Vertical:
+                    transform.anchorMin        = new Vector2(1f, 0f);
+                    transform.anchorMax        = new Vector2(1f, 1f);
+                    transform.anchoredPosition = Vector2.zero;
+                    transform.sizeDelta        = new Vector2(thickness, 0f);
+                    transform.pivot            = new Vector2(1f,        1f);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            }
+
+            var roundedRectangle = gameObject.AddComponent<RoundedRectangle>();
+            roundedRectangle.color                             = new Color(1f, 1f, 1f, 0.125f);
+            roundedRectangle.topLeftCornerRadiusNormalized     = true;
+            roundedRectangle.topLeftCornerRadius               = 1f;
+            roundedRectangle.topRightCornerRadiusNormalized    = true;
+            roundedRectangle.topRightCornerRadius              = 1f;
+            roundedRectangle.bottomLeftCornerRadiusNormalized  = true;
+            roundedRectangle.bottomLeftCornerRadius            = 1f;
+            roundedRectangle.bottomRightCornerRadiusNormalized = true;
+            roundedRectangle.bottomRightCornerRadius           = 1f;
+
+            var scrollbar = gameObject.AddComponent<Scrollbar>();
+            scrollbar.direction = axis switch
+            {
+                RectTransform.Axis.Horizontal => Scrollbar.Direction.LeftToRight,
+                RectTransform.Axis.Vertical   => Scrollbar.Direction.BottomToTop,
+                _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+            };
+
+            var slidingArea = CreateScrollbarSlidingArea(transform, thickness, axis);
+            var (handleImage, handleTransform) = CreateScrollbarHandle(slidingArea, thickness, axis);
+
             scrollbar.targetGraphic = handleImage;
             scrollbar.handleRect    = handleTransform;
 
-            var inactiveContainerGameObject = new GameObject("Inactive Container");
-            inactiveContainerGameObject.SetActive(false);
-            var inactiveContainer = inactiveContainerGameObject.AddComponent<RectTransform>();
-            inactiveContainer.SetParent(transform, false);
-            inactiveContainer.localPosition    = Vector3.zero;
-            inactiveContainer.localRotation    = Quaternion.identity;
-            inactiveContainer.localScale       = Vector3.one;
-            inactiveContainer.anchorMin        = Vector2.zero;
-            inactiveContainer.anchorMax        = Vector2.one;
-            inactiveContainer.anchoredPosition = Vector2.zero;
-            inactiveContainer.sizeDelta        = Vector2.zero;
-            inactiveContainer.pivot            = new Vector2(0.5f, 0.5f);
+            scrollbar.SetValueWithoutNotify(
+                axis switch
+                {
+                    RectTransform.Axis.Horizontal => 0f,
+                    RectTransform.Axis.Vertical   => 1f,
+                    _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+                }
+            );
 
-            var verticalLayoutGroup = contentGameObject.AddComponent<VerticalLayoutGroup>();
-            verticalLayoutGroup.childForceExpandWidth  = false;
-            verticalLayoutGroup.childForceExpandHeight = false;
+            return scrollbar;
 
-            var leadingPlaceholderGameObject = new GameObject("Leading Placeholder");
-            leadingPlaceholderGameObject.SetActive(false);
-            var leadingPlaceholderTransform = leadingPlaceholderGameObject.AddComponent<RectTransform>();
-            leadingPlaceholderTransform.SetParent(contentTransform, false);
-            leadingPlaceholderTransform.localPosition    = Vector3.zero;
-            leadingPlaceholderTransform.localRotation    = Quaternion.identity;
-            leadingPlaceholderTransform.localScale       = Vector3.one;
-            leadingPlaceholderTransform.anchorMin        = new Vector2(0f, 1f);
-            leadingPlaceholderTransform.anchorMax        = new Vector2(0f, 1f);
-            leadingPlaceholderTransform.anchoredPosition = Vector2.zero;
-            leadingPlaceholderTransform.sizeDelta        = Vector2.zero;
-            leadingPlaceholderTransform.pivot            = new Vector2(0f, 1f);
+            static Transform CreateScrollbarSlidingArea(
+                Transform          parent,
+                float              scrollbarThickness,
+                RectTransform.Axis axis)
+            {
+                var gameObject = new GameObject("Sliding Area");
+                var transform  = gameObject.AddComponent<RectTransform>();
+                transform.SetParent(parent, false);
+                transform.localPosition    = Vector3.zero;
+                transform.localRotation    = Quaternion.identity;
+                transform.localScale       = Vector3.one;
+                transform.anchorMin        = Vector2.zero;
+                transform.anchorMax        = Vector2.one;
+                transform.anchoredPosition = Vector2.zero;
+                transform.sizeDelta = axis switch
+                {
+                    RectTransform.Axis.Horizontal => new Vector2(-scrollbarThickness, 0f),
+                    RectTransform.Axis.Vertical   => new Vector2(0f,                  -scrollbarThickness),
+                    _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+                };
 
-            var leadingPlaceholder = leadingPlaceholderGameObject.AddComponent<LayoutElement>();
-            leadingPlaceholder.minHeight = 0;
+                return transform;
+            }
 
-            var trailingPlaceholderGameObject = new GameObject("Trailing Placeholder");
-            trailingPlaceholderGameObject.SetActive(false);
-            var trailingPlaceholderTransform = trailingPlaceholderGameObject.AddComponent<RectTransform>();
-            trailingPlaceholderTransform.SetParent(contentTransform, false);
-            trailingPlaceholderTransform.localPosition    = Vector3.zero;
-            trailingPlaceholderTransform.localRotation    = Quaternion.identity;
-            trailingPlaceholderTransform.localScale       = Vector3.one;
-            trailingPlaceholderTransform.anchorMin        = new Vector2(0f, 1f);
-            trailingPlaceholderTransform.anchorMax        = new Vector2(0f, 1f);
-            trailingPlaceholderTransform.anchoredPosition = Vector2.zero;
-            trailingPlaceholderTransform.sizeDelta        = Vector2.zero;
-            trailingPlaceholderTransform.pivot            = new Vector2(0f, 1f);
+            static (Graphic, RectTransform) CreateScrollbarHandle(
+                Transform          parent,
+                float              scrollbarThickness,
+                RectTransform.Axis axis)
+            {
+                var gameObject = new GameObject("Handle");
+                var transform  = gameObject.AddComponent<RectTransform>();
+                transform.SetParent(parent, false);
+                transform.localPosition    = Vector3.zero;
+                transform.localRotation    = Quaternion.identity;
+                transform.localScale       = Vector3.one;
+                transform.anchorMin        = Vector2.zero;
+                transform.anchorMax        = Vector2.one;
+                transform.anchoredPosition = Vector2.zero;
+                transform.sizeDelta = axis switch
+                {
+                    RectTransform.Axis.Horizontal => new Vector2(scrollbarThickness, 0f),
+                    RectTransform.Axis.Vertical   => new Vector2(0f,                 scrollbarThickness),
+                    _                             => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+                };
 
-            var trailingPlaceholder = trailingPlaceholderGameObject.AddComponent<LayoutElement>();
-            trailingPlaceholder.minHeight = 0;
+                var roundedRectangle = gameObject.AddComponent<RoundedRectangle>();
+                roundedRectangle.topLeftCornerRadiusNormalized     = true;
+                roundedRectangle.topLeftCornerRadius               = 1f;
+                roundedRectangle.topRightCornerRadiusNormalized    = true;
+                roundedRectangle.topRightCornerRadius              = 1f;
+                roundedRectangle.bottomLeftCornerRadiusNormalized  = true;
+                roundedRectangle.bottomLeftCornerRadius            = 1f;
+                roundedRectangle.bottomRightCornerRadiusNormalized = true;
+                roundedRectangle.bottomRightCornerRadius           = 1f;
 
-            var scrollView = gameObject.AddComponent<VerticalScrollView>();
+                return (roundedRectangle, transform);
+            }
         }
     }
 }

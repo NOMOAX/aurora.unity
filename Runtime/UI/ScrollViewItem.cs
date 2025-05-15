@@ -26,6 +26,7 @@ namespace Aurora.Unity.UI
         /// 标识符，用于区分不同类型的 <see cref="ScrollViewItem"/>。
         /// </summary>
         /// <remarks>请在编辑时设置好，不要在运行时更改。</remarks>
+        [Tooltip("Don't forget to assign")]
         public string identifier;
 
         /// <summary>
