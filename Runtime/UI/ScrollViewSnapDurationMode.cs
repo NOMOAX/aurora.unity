@@ -8,11 +8,13 @@
         /// <summary>
         /// 使用固定的吸附时间。
         /// </summary>
+        /// <seealso cref="ScrollView.snapDuration"/>
         Fixed,
 
         /// <summary>
         /// 根据距离和速度计算吸附时间。
         /// </summary>
+        /// <seealso cref="ScrollView.snapSpeed"/>
         Dynamic
     }
 }

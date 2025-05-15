@@ -11,8 +11,9 @@
         Never,
 
         /// <summary>
-        /// 仅当内容大小大于可见区域大小时可见。
+        /// 仅当内容大小大于视口大小时可见。
         /// </summary>
+        /// <seealso cref="ScrollView.OverflowedContentSize"/>
         OnlyIfNeeded,
 
         /// <summary>

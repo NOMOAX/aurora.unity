@@ -25,13 +25,14 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 标识符，用于区分不同类型的 <see cref="ScrollViewItem"/>。
         /// </summary>
-        /// <remarks>请在编辑时设置好，不要在运行时更改。</remarks>
-        [Tooltip("Don't forget to assign")]
-        public string identifier;
+        /// <remarks>别忘了在编辑时赋值，并且不要在运行时修改。</remarks>
+        [Tooltip("Don't forget to assign!")]
+        public string identifier = string.Empty;
 
         /// <summary>
         /// 滚动视图。
         /// </summary>
+        /// <returns>在首次执行 <see cref="OnGet"/> 之前赋值。</returns>
         public ScrollView ScrollView => scrollView;
 
         /// <summary>
@@ -47,33 +48,29 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 在使用此 <see cref="ScrollViewItem"/> 时执行。
         /// </summary>
-        /// <param name="enhancer">拥有此 <see cref="ScrollViewItem"/> 的 <see cref="ScrollView"/>。</param>
         /// <param name="isNewCreated">如果是新创建的，则为 <see langword="true"/>；否则为 <see langword="false"/>。暴露此行为有助于对新创建的项做一些额外操作。</param>
-        protected internal virtual void OnGet(ScrollView enhancer, bool isNewCreated)
+        protected internal virtual void OnGet(bool isNewCreated)
         {
         }
 
         /// <summary>
         /// 在将此 <see cref="ScrollViewItem"/> 放入缓存时执行。
         /// </summary>
-        /// <param name="enhancer">拥有此 <see cref="ScrollViewItem"/> 的 <see cref="ScrollView"/>。</param>
-        protected internal virtual void OnReturn(ScrollView enhancer)
+        protected internal virtual void OnReturn()
         {
         }
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 进入 <see cref="ScrollView"/>。
+        /// 此 <see cref="ScrollViewItem"/> 进入 <see cref="ScrollView"/> 的视口。
         /// </summary>
-        /// <param name="enhancer">拥有此 <see cref="ScrollViewItem"/> 的 <see cref="ScrollView"/>。</param>
-        protected internal virtual void OnVisible(ScrollView enhancer)
+        protected internal virtual void OnVisible()
         {
         }
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 离开 <see cref="ScrollView"/>。
+        /// 此 <see cref="ScrollViewItem"/> 离开 <see cref="ScrollView"/> 的视口。
         /// </summary>
-        /// <param name="enhancer">拥有此 <see cref="ScrollViewItem"/> 的 <see cref="ScrollView"/>。</param>
-        protected internal virtual void OnInvisible(ScrollView enhancer)
+        protected internal virtual void OnInvisible()
         {
         }
     }

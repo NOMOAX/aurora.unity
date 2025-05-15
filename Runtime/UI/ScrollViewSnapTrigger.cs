@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.UI;
 
 namespace Aurora.Unity.UI
 {
@@ -19,13 +20,14 @@ namespace Aurora.Unity.UI
         OnEndDrag = 1 << 0,
 
         /// <summary>
-        /// 当不在拖拽中，且标准化滚动位置改变且速度小于阈值时自动吸附。
+        /// 当不在拖拽中，标准化滚动位置改变，并且速度小于阈值时自动吸附。
         /// </summary>
-        /// <remarks></remarks>
+        /// <seealso cref="ScrollView.snapSpeedThreshold"/>
+        /// <seealso cref="ScrollView.scrollSnapDelay"/>
         OnNormalizedScrollPositionChanged = 1 << 1,
 
         /// <summary>
-        /// 当不在拖拽中，当指针抬起时并且 <see cref="ScrollView"/> 的速度很低时自动吸附。
+        /// 当不在拖拽中，指针抬起，并且 <see cref="ScrollRect"/> 的速度很低时自动吸附。
         /// </summary>
         OnPointerUpWithLowSpeed = 1 << 2
     }

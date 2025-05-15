@@ -35,8 +35,7 @@ namespace Aurora.Unity.UI
                                        IScrollHandler,
                                        IPlayerLoopItem
     {
-        private const string ControllerUnset = "The controller has not been set. Call " +
-                                               nameof(SetControllerAndReload) + " before using this method.";
+        private const string ControllerUnset = "The controller has not been set.";
 
         private static readonly ParameterizedPredicate<ScrollViewItem, ScrollViewItem> AreIdentifierEqual =
             (a, b) => a.identifier == b.identifier;
@@ -84,14 +83,16 @@ namespace Aurora.Unity.UI
         internal ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.OnlyIfNeeded;
 
         /// <summary>
-        /// 前方活动偏移量。
+        /// 前方活动（内容位置）偏移量。用于提前加载。
         /// </summary>
+        /// <remarks>设置为大于或等于 0 的值。设置后，将在下一次刷新后生效。</remarks>
         [Min(0)]
         public float leadingActiveOffset;
 
         /// <summary>
-        /// 后方活动偏移量。
+        /// 后方活动（内容位置）偏移量。用于提前加载。
         /// </summary>
+        /// <remarks>设置为大于或等于 0 的值。设置后，将在下一次刷新后生效。</remarks>
         [Min(0)]
         public float trailingActiveOffset;
 
@@ -157,9 +158,15 @@ namespace Aurora.Unity.UI
         public float snapSpeed = 900;
 
         /// <summary>
-        /// 自动吸附过程所使用的插值类型。
+        /// 在自动吸附过程中使用的插值类型。
         /// </summary>
         public Interpolation snapInterpolation = Interpolation.OutCubic;
+
+        /// <summary>
+        /// 当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时，如果标准化滚动位置的改变是因操作鼠标滚轮、操作滚动条引起的，将在这个延迟时间后执行吸附，而不是在每帧立即吸附。
+        /// </summary>
+        [Range(0.2f, 0.4f)]
+        public float scrollSnapDelay = 0.3f;
 
         private CancellationTokenSource _tweenTokenSource;
 
@@ -212,8 +219,6 @@ namespace Aurora.Unity.UI
         private ICounter _valueChangeCounter;
 
         private ITimer _scrollTimer;
-
-        private const double ScrollDelay = 0.3;
 
         /// <summary>
         /// 获取控制器。
@@ -292,7 +297,7 @@ namespace Aurora.Unity.UI
         /// 获取或设置内容的内边距。
         /// </summary>
         /// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 有至少一个分量为负数。</exception>
+        /// <exception cref="NotSupportedException"><paramref name="value"/> 有至少一个分量为负数。</exception>
         public RectOffset Padding
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -306,7 +311,7 @@ namespace Aurora.Unity.UI
                 }
                 if (value.left < 0 || value.right < 0 || value.top < 0 || value.bottom < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
+                    throw new NotSupportedException();
                 }
                 // 由于 RectOffset 是引用类型，可以直接修改其内部成员，因此跳过相等性检查
                 padding = value;
@@ -339,7 +344,7 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 获取或设置各项的间距。
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不满足“大于或等于 0”。</exception>
+        /// <exception cref="NotSupportedException"><paramref name="value"/> 不满足“大于或等于 0”。</exception>
         public float Spacing
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -349,7 +354,7 @@ namespace Aurora.Unity.UI
             {
                 if (!(value >= 0))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
+                    throw new NotSupportedException();
                 }
                 if (spacing.Equals(value))
                 {
@@ -430,24 +435,6 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取位于指定索引处的项。
-        /// </summary>
-        /// <param name="index">索引。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
-        public ScrollViewItem this[int index]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                if (index < 0 || index >= _itemCount)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index), index, null);
-                }
-                return _activeItems.Find(IndexEqualTo, index);
-            }
-        }
-
-        /// <summary>
         /// 获取或设置滚动条的可见性。
         /// </summary>
         public ScrollbarVisibility ScrollbarVisibility
@@ -510,7 +497,7 @@ namespace Aurora.Unity.UI
         /// 设置滚动条。
         /// </summary>
         /// <remarks>执行此操作通常是为了防止 <see cref="UnityEngine.UI.ScrollRect"/> 修改滚动条的可见性。</remarks>
-        protected abstract void SetScrollRectScrollbar(ScrollRect rect, Scrollbar bar);
+        protected abstract void SetScrollRectScrollbar(ScrollRect sr, Scrollbar sb);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetViewportSize()
@@ -552,6 +539,50 @@ namespace Aurora.Unity.UI
         private void SetNormalizedScrollPosition(double normalizedScrollPosition)
         {
             SetContentPosition(InternalConvertNormalizedScrollPositionToContentPosition(normalizedScrollPosition));
+        }
+
+        /// <summary>
+        /// 获取位于指定索引处的项。
+        /// </summary>
+        /// <param name="index">索引。</param>
+        /// <returns>如果位于指定索引处的项是活动的，则为该项；否则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
+        /// <remarks>活动的项在此类注册到 <see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>的回调中刷新；如果你在调用 <see cref="set_ContentPosition"/>、<see cref="set_NormalizedScrollPosition"/> 后需要立即获取最新的活动的项，请使用 <see cref="Refresh"/> 手动刷新。</remarks>
+        public ScrollViewItem this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (index < 0 || index >= _itemCount)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), index, null);
+                }
+                return _activeItems.Find(IndexEqualTo, index);
+            }
+        }
+
+        /// <summary>
+        /// 获取所有指定类型的活动的项，将他们存入指定的集合。
+        /// </summary>
+        /// <param name="results">用于存放结果的集合。</param>
+        /// <typeparam name="T">要获取的项的类型。</typeparam>
+        public void GetActiveItems<T>(ICollection<T> results)
+        {
+            if (results == null)
+            {
+                throw new ArgumentNullException(nameof(results));
+            }
+            if (results.IsReadOnly)
+            {
+                throw new ArgumentException();
+            }
+            foreach (var item in _activeItems)
+            {
+                if (item is T t)
+                {
+                    results.Add(t);
+                }
+            }
         }
 
         /// <summary>
@@ -920,13 +951,12 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StopTween()
         {
-            InternalStopTween();
-            if (!IsActive())
+            if (IsActive())
             {
-                return;
+                DisableValueChangeCounter();
+                DisableScrollTimer();
             }
-            DisableValueChangeCounter();
-            DisableScrollTimer();
+            InternalStopTween();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -969,14 +999,16 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Snap()
         {
-            InternalStopTween();
-            if (!IsActive())
+            if (IsActive())
             {
-                return;
+                DisableValueChangeCounter();
+                DisableScrollTimer();
             }
-            DisableValueChangeCounter();
-            DisableScrollTimer();
-            InternalBeginSnap();
+            InternalStopTween();
+            if (IsActive())
+            {
+                InternalBeginSnap();
+            }
         }
 
         private async void InternalBeginSnap()
@@ -1134,7 +1166,7 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnableScrollTimer()
         {
-            _scrollTimer.Change(TimeSpan.FromSeconds(ScrollDelay), Timeout.InfiniteTimeSpan);
+            _scrollTimer.Change(TimeSpan.FromSeconds(scrollSnapDelay), Timeout.InfiniteTimeSpan);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1374,7 +1406,7 @@ namespace Aurora.Unity.UI
             item.transform.SetSiblingIndex(1); // after _leadingPlaceholder
             _activeItems.EnqueueFirst(item);
             item.gameObject.SetActive(true);
-            item.OnGet(this, isNewCreated);
+            item.OnGet(isNewCreated);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1384,7 +1416,7 @@ namespace Aurora.Unity.UI
             item.transform.SetSiblingIndex(item.transform.parent.childCount - 2); // before _trailingPlaceholder
             _activeItems.EnqueueLast(item);
             item.gameObject.SetActive(true);
-            item.OnGet(this, isNewCreated);
+            item.OnGet(isNewCreated);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1393,9 +1425,9 @@ namespace Aurora.Unity.UI
             if (item.visible)
             {
                 item.visible = false;
-                item.OnInvisible(this);
+                item.OnInvisible();
             }
-            item.OnReturn(this);
+            item.OnReturn();
             item.index = -1;
             if (calledFromOnDestroy)
             {
@@ -1411,6 +1443,7 @@ namespace Aurora.Unity.UI
 #endif
         }
 
+#if UNITY_EDITOR
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string GetItemNameSafe(ScrollViewItem item)
         {
@@ -1427,6 +1460,7 @@ namespace Aurora.Unity.UI
                 return null;
             }
         }
+#endif
 
         /// <summary>
         /// 将内容位置转换为标准化视口位置。
@@ -1637,7 +1671,7 @@ namespace Aurora.Unity.UI
                         if (!item.visible)
                         {
                             item.visible = true;
-                            item.OnVisible(this);
+                            item.OnVisible();
                         }
                     }
                     else
@@ -1645,7 +1679,7 @@ namespace Aurora.Unity.UI
                         if (item.visible)
                         {
                             item.visible = false;
-                            item.OnInvisible(this);
+                            item.OnInvisible();
                         }
                     }
                 }
@@ -1657,7 +1691,7 @@ namespace Aurora.Unity.UI
                     if (item.visible)
                     {
                         item.visible = false;
-                        item.OnInvisible(this);
+                        item.OnInvisible();
                     }
                 }
             }
@@ -1665,48 +1699,51 @@ namespace Aurora.Unity.UI
 
         private static void OnValueChangeCounterTriggered(ICounter counter, object state)
         {
-            var scrollView = (ScrollView) state;
+            ((ScrollView) state).OnValueChangeCounterTriggered();
+        }
 
-            Assert.IsFalse(scrollView.IsTweening());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnValueChangeCounterTriggered()
+        {
+            Assert.IsFalse(IsTweening());
 
-            if (!scrollView._dragging &&
-                (scrollView.snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
-                scrollView.snapSpeedThreshold > 0 &&
-                Mathf.Abs(scrollView.Get(scrollView.scrollRect.velocity)) is var speed)
+            if (!_dragging && (snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
+                snapSpeedThreshold > 0 && Mathf.Abs(Get(scrollRect.velocity)) is var speed)
             {
-                if (speed < scrollView.snapSpeedThreshold)
+                if (speed < snapSpeedThreshold)
                 {
-                    scrollView.InternalBeginSnap();
+                    InternalBeginSnap();
                 }
                 else
                 {
-                    scrollView.EnableValueChangeCounter();
+                    EnableValueChangeCounter();
                 }
             }
         }
 
         private static void OnScrollTimerTriggered(ITimer timer, object state)
         {
-            var scrollView = (ScrollView) state;
+            ((ScrollView) state).OnScrollTimerTriggered();
+        }
 
-            Assert.IsFalse(scrollView.IsTweening());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnScrollTimerTriggered()
+        {
+            Assert.IsFalse(IsTweening());
 
-            if (!scrollView._dragging &&
-                (scrollView.snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
-                scrollView.snapSpeedThreshold > 0 &&
-                Mathf.Abs(scrollView.Get(scrollView.scrollRect.velocity)) is var speed &&
-                speed < scrollView.snapSpeedThreshold)
+            if (!_dragging && (snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
+                snapSpeedThreshold > 0 && Mathf.Abs(Get(scrollRect.velocity)) is var speed &&
+                speed < snapSpeedThreshold)
             {
-                scrollView.InternalBeginSnap();
+                InternalBeginSnap();
             }
         }
 
-        /// <param name="value"><see cref="ScrollRect.normalizedPosition"/>。</param>
-        /// <remarks><see cref="ScrollRect"/> 在 <see cref="ScrollRect.LateUpdate"/> 检测到任何更改时引发此事件。</remarks>
         private void OnScrollRectValueChanged(Vector2 value)
         {
             if (!_dragging && !_scrolling && !IsTweening())
             {
+                // 此回调函数是由于操作了滚动条而触发的
                 if (scrollbar && scrollbar.IsActive() && SelectableUtility.IsPressed(scrollbar))
                 {
                     DisableValueChangeCounter();
@@ -1715,6 +1752,7 @@ namespace Aurora.Unity.UI
                 else if ((snapTrigger & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0 &&
                          snapSpeedThreshold > 0 && Mathf.Abs(Get(scrollRect.velocity)) is var speed)
                 {
+                    // ScrollRect.onValueChanged 不可靠，趁速度不小于阈值，赶紧启用计数器，将在计数器的回调方法中检测是否满足吸附条件
                     if (!(speed < snapSpeedThreshold))
                     {
                         EnableValueChangeCounter();

@@ -68,6 +68,8 @@ namespace Aurora.UnityEditor.UI
 
         private const string SnapInterpolationName = nameof(ScrollView.snapInterpolation);
 
+        private const string ScrollSnapDelayName = nameof(ScrollView.scrollSnapDelay);
+
         private int _frameCount;
 
         private ScrollView _scrollView;
@@ -130,6 +132,8 @@ namespace Aurora.UnityEditor.UI
 
         private SerializedProperty _snapInterpolation;
 
+        private SerializedProperty _scrollSnapDelay;
+
         private AnimBool _showSnapSpeedThreshold;
 
         private void OnEnable()
@@ -167,6 +171,7 @@ namespace Aurora.UnityEditor.UI
             _snapSpeed                          = serializedObject.FindProperty(SnapSpeedName);
             _snapDuration                       = serializedObject.FindProperty(SnapDurationName);
             _snapInterpolation                  = serializedObject.FindProperty(SnapInterpolationName);
+            _scrollSnapDelay                    = serializedObject.FindProperty(ScrollSnapDelayName);
 
             _showSnapSpeedThreshold = new AnimBool(RepaintIfFrameCountDifferent);
             SetAnimBool(true);
@@ -193,6 +198,23 @@ namespace Aurora.UnityEditor.UI
             _frameCount = Time.frameCount;
 
             serializedObject.Update();
+
+            if (EditorApplication.isPlaying)
+            {
+                var controller = _scrollView.Controller;
+                if (controller is MonoBehaviour controllerBehaviour && controllerBehaviour)
+                {
+                    using (new EditorGUI.DisabledScope(true))
+                    {
+                        EditorGUILayout.ObjectField(
+                            nameof(ScrollView.Controller),
+                            controllerBehaviour,
+                            typeof(MonoBehaviour),
+                            true
+                        );
+                    }
+                }
+            }
 
             EditorGUILayout.PropertyField(_scrollRect);
 
@@ -290,6 +312,8 @@ namespace Aurora.UnityEditor.UI
             }
 
             EditorGUILayout.PropertyField(_snapInterpolation);
+
+            EditorGUILayout.PropertyField(_scrollSnapDelay);
 
             serializedObject.ApplyModifiedProperties();
 

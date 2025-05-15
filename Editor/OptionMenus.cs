@@ -9,10 +9,10 @@ namespace Aurora.UnityEditor
 {
     internal static class OptionMenus
     {
-        private const int AddHorizontalScrollViewPriority = 19950321;
+        private const int CreateHorizontalScrollViewPriority = 19950321;
 
-        [MenuItem("GameObject/UI/Horizontal Scroll View", priority = AddHorizontalScrollViewPriority)]
-        public static void AddHorizontalScrollView(MenuCommand menuCommand)
+        [MenuItem("GameObject/UI/Horizontal Scroll View", priority = CreateHorizontalScrollViewPriority)]
+        public static void CreateHorizontalScrollView(MenuCommand menuCommand)
         {
             var parentGameObject = menuCommand.context as GameObject;
             if (!parentGameObject)
@@ -38,10 +38,10 @@ namespace Aurora.UnityEditor
             );
         }
 
-        private const int AddVerticalScrollViewPriority = AddHorizontalScrollViewPriority + 1;
+        private const int CreateVerticalScrollViewPriority = CreateHorizontalScrollViewPriority + 1;
 
-        [MenuItem("GameObject/UI/Vertical Scroll View", priority = AddVerticalScrollViewPriority)]
-        public static void AddVerticalScrollView(MenuCommand menuCommand)
+        [MenuItem("GameObject/UI/Vertical Scroll View", priority = CreateVerticalScrollViewPriority)]
+        public static void CreateVerticalScrollView(MenuCommand menuCommand)
         {
             var parentGameObject = menuCommand.context as GameObject;
             if (!parentGameObject)

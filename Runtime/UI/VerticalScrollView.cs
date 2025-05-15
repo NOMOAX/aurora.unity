@@ -18,12 +18,6 @@ namespace Aurora.Unity.UI
         protected override float LastPaddingAlongAxis => padding.bottom;
 
         /// <inheritdoc />
-        protected override void SetMinSize(LayoutElement layoutElement, float minSize)
-        {
-            layoutElement.minHeight = minSize;
-        }
-
-        /// <inheritdoc />
         protected override float Get(Vector2 vector2)
         {
             return vector2.y;
@@ -36,6 +30,13 @@ namespace Aurora.Unity.UI
             return vector2;
         }
 
+        /// <inheritdoc />
+        protected override void SetMinSize(LayoutElement layoutElement, float minSize)
+        {
+            layoutElement.minHeight = minSize;
+        }
+
+        /// <inheritdoc />
         protected override void SetLayoutGroupChildForceExpandSize(
             HorizontalOrVerticalLayoutGroup horizontalOrVerticalLayoutGroup,
             bool                            forceExpand)
@@ -44,9 +45,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <inheritdoc />
-        protected override void SetScrollRectScrollbar(ScrollRect rect, Scrollbar bar)
+        protected override void SetScrollRectScrollbar(ScrollRect sr, Scrollbar sb)
         {
-            rect.verticalScrollbar = bar;
+            sr.verticalScrollbar = sb;
         }
     }
 }

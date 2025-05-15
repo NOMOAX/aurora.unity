@@ -26,7 +26,7 @@ namespace Aurora.Unity.UI
         /// 判断 <see cref="Selectable"/> 是否已被按下。
         /// </summary>
         /// <param name="selectable">可选择对象。</param>
-        /// <returns>如果 <paramref name="selectable"/> 已被按下，则为 <see langword="true"/>;否则为 <see langword="false"/>。</returns>
+        /// <returns>如果 <paramref name="selectable"/> 已被按下，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="selectable"/> 为 <see langword="null"/>。</exception>
         public static bool IsPressed(Selectable selectable)
         {
