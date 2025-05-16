@@ -27,7 +27,6 @@ namespace Aurora.Unity.UI
         /// 标识符，用于区分不同类型的 <see cref="ScrollViewItem"/>。
         /// </summary>
         /// <remarks>别忘了在编辑时赋值，并且不要在运行时修改。</remarks>
-        [Tooltip("Don't forget to assign!")]
         public string identifier = string.Empty;
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace Aurora.Unity.UI
         public int Index => index;
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 是否进入了 <see cref="ScrollView"/>。
+        /// 此 <see cref="ScrollViewItem"/> 是否已进入 <see cref="ScrollView"/> 的视口。
         /// </summary>
         public bool Visible => visible;
 
