@@ -1303,20 +1303,20 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取一个已回收的项，或实例化 <paramref name="prefab"/> 以创建一个新项。
+        /// 获取一个已回收的项，或实例化 <paramref name="itemPrefab"/> 以创建一个新项。
         /// </summary>
-        /// <param name="prefab">一个预制体。如果在已回收的项中没有寻找到与 <paramref name="prefab"/> 的 <see cref="ScrollViewItem.identifier"/> 相等的项，将会实例化该预制体以创建一个新项。</param>
+        /// <param name="itemPrefab">项的预制体。如果在已回收的项中没有寻找到与 <paramref name="itemPrefab"/> 的 <see cref="ScrollViewItem.identifier"/> 相等的项，将会实例化该预制体以创建一个新项。</param>
         /// <param name="isNewCreated">项是否是新创建的。</param>
         /// <returns>从已回收的项中获取的或者新创建的项。</returns>
         /// <remarks>此方法仅由 <see cref="IScrollViewController.GetItem"/> 的实现调用。</remarks>
-        public ScrollViewItem GetRecycledOrCreateNewItem(ScrollViewItem prefab, out bool isNewCreated)
+        public ScrollViewItem GetRecycledOrCreateNewItem(ScrollViewItem itemPrefab, out bool isNewCreated)
         {
-            if (prefab == null)
+            if (itemPrefab == null)
             {
-                throw new ArgumentNullException(nameof(prefab));
+                throw new ArgumentNullException(nameof(itemPrefab));
             }
 
-            if (_recycledItems.FindLastIndex(AreIdentifierEqual, prefab) is var index && index >= 0)
+            if (_recycledItems.FindLastIndex(AreIdentifierEqual, itemPrefab) is var index && index >= 0)
             {
                 var item = _recycledItems[index];
                 _recycledItems.RemoveAt(index);
@@ -1326,11 +1326,11 @@ namespace Aurora.Unity.UI
             }
             {
 #if UNITY_EDITOR
-                var prefabName = prefab.name;
+                var itemPrefabName = itemPrefab.name;
 #endif
-                var item = Instantiate(prefab, inactiveContainer, false); // 确保不活动
+                var item = Instantiate(itemPrefab, inactiveContainer, false); // 确保不活动
 #if UNITY_EDITOR
-                item.name = prefabName;
+                item.name = itemPrefabName;
 #endif
                 item.gameObject.SetActive(false);
                 item.transform.SetParent(content, false);

@@ -29,12 +29,14 @@
         /// <returns>项。</returns>
         ScrollViewItem GetItem(ScrollView scrollView, int index, out bool isNewCreated);
 
+#if UNITY_EDITOR
         /// <summary>
-        /// 获取指定项的名称，用于在编辑器环境中设置项的名称，以便于调试。
+        /// （仅编辑器环境下）获取指定项的名称，用于在编辑器环境中设置项的名称，以便于调试。
         /// </summary>
         /// <param name="item">项。</param>
         /// <returns>项的名称。</returns>
         /// <remarks>若不需要支持此行为，可返回 <see langword="null"/> 或抛出异常，方法的调用者会妥善处理。</remarks>
         string GetItemName(ScrollViewItem item);
+#endif
     }
 }

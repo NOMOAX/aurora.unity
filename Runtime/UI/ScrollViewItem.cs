@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Aurora.Unity.UI
 {
@@ -8,7 +9,7 @@ namespace Aurora.Unity.UI
     /// <remarks>不同类型的 <see cref="ScrollViewItem"/> 使用 <see cref="identifier"/> 来区分。</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
-    public class ScrollViewItem : MonoBehaviour
+    public class ScrollViewItem : UIBehaviour
     {
         [SerializeField]
         [GuiDisable]
@@ -75,8 +76,10 @@ namespace Aurora.Unity.UI
         }
 
 #if UNITY_EDITOR
-        protected virtual void OnValidate()
+        protected override void OnValidate()
         {
+            base.OnValidate();
+
             if (string.IsNullOrEmpty(identifier))
             {
                 identifier = GetType().FullName;
