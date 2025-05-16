@@ -704,7 +704,7 @@ namespace Aurora.Unity.UI
             ReturnAllItems();
             ReloadItemCountAndBeginEndPositions();
             RefreshContentSize();
-            SetContentPosition(0);
+            SetContentPosition(GetContentPosition());
             AddItems();
             RefreshScrollbarVisibility();
         }
