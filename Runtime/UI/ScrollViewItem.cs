@@ -73,5 +73,15 @@ namespace Aurora.Unity.UI
         protected internal virtual void OnInvisible()
         {
         }
+
+#if UNITY_EDITOR
+        protected virtual void OnValidate()
+        {
+            if (string.IsNullOrEmpty(identifier))
+            {
+                identifier = GetType().FullName;
+            }
+        }
+#endif
     }
 }
