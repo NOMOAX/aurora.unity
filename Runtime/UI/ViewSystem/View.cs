@@ -7,6 +7,7 @@ using Aurora.Collections;
 using Aurora.Diagnostics;
 using Aurora.Pooling;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Object = UnityEngine.Object;
 
 namespace Aurora.Unity.UI.ViewSystem
@@ -14,7 +15,9 @@ namespace Aurora.Unity.UI.ViewSystem
     /// <summary>
     /// 界面。
     /// </summary>
-    public abstract class View : MonoBehaviour2D, IEnumerable<View>
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
+    public abstract class View : UIBehaviour, IEnumerable<View>
     {
         private static readonly List<ViewContainer> Containers = new List<ViewContainer>();
 
@@ -823,6 +826,8 @@ namespace Aurora.Unity.UI.ViewSystem
             return view;
         }
 
+        private RectTransform _rectTransform;
+
         private ViewHandler _handler;
 
         private ViewContainer _container;
@@ -835,6 +840,12 @@ namespace Aurora.Unity.UI.ViewSystem
         public RectTransform childContainer;
 
         private readonly List<View> _children = new List<View>();
+
+        /// <summary>
+        /// 获取与此实例关联的矩形变换。
+        /// </summary>
+        public RectTransform RectTransform =>
+            _rectTransform ? _rectTransform : _rectTransform = (RectTransform) transform;
 
         /// <summary>
         /// 由用户定义的数据。将在打开界面时赋值。

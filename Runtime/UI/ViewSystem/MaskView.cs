@@ -33,8 +33,10 @@ namespace Aurora.Unity.UI.ViewSystem
             }
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _block = gameObject.AddComponent<Block>();
             _block.color = State switch
             {
@@ -45,10 +47,12 @@ namespace Aurora.Unity.UI.ViewSystem
             };
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             Destroy(_block);
             _block = null;
+
+            base.OnDisable();
         }
 
         /// <summary>

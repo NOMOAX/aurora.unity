@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// <see cref="UI.ScrollView"/> 的项。
+    /// 滚动视图的项。
     /// </summary>
     /// <remarks>不同类型的 <see cref="ScrollViewItem"/> 使用 <see cref="identifier"/> 来区分。</remarks>
     [DisallowMultipleComponent]

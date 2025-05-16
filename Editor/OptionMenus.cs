@@ -87,8 +87,8 @@ namespace Aurora.UnityEditor
             transform.sizeDelta        = size;
             transform.pivot            = new Vector2(0.5f, 0.5f);
 
-            var image = gameObject.AddComponent<Image>();
-            image.color = new Color(1f, 1f, 1f, 0.125f);
+            Graphic graphic = gameObject.AddComponent<Block>();
+            graphic.color = new Color(1f, 1f, 1f, 0.125f);
 
             var inactiveContainer = CreateInactiveContainer(transform);
 
@@ -194,7 +194,7 @@ namespace Aurora.UnityEditor
             };
             transform.pivot = new Vector2(0f, 1f);
 
-            gameObject.AddComponent<Image>();
+            gameObject.AddComponent<Block>();
 
             var mask = gameObject.AddComponent<Mask>();
             mask.showMaskGraphic = false;

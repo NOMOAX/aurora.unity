@@ -1,7 +1,7 @@
 ﻿namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// <see cref="ScrollView"/> 的控制器。
+    /// 滚动视图的控制器。
     /// </summary>
     public interface IScrollViewController
     {

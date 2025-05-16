@@ -10,8 +10,10 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 设置 <see cref="GameObject.layer"/> 为"UI"。
         /// </summary>
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             gameObject.layer = UnityEnvironment.UILayer;
         }
     }
