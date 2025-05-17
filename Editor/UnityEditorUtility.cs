@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,7 @@ using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.UI;
 using Assembly = System.Reflection.Assembly;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 using RectTransformUtility = Aurora.Unity.UI.RectTransformUtility;
@@ -569,6 +571,28 @@ namespace Aurora.UnityEditor
             private static bool ValidateCaptureScreenshotToDesktop()
             {
                 return !EditorApplication.isCompiling;
+            }
+
+            #endregion
+
+            #region Open Persistent Data Path
+
+            private const string OpenPersistentDataPathName = "Open Persistent Data Path";
+
+            private const int OpenPersistentDataPathPriority = CaptureScreenshotToDesktopPriority + 1;
+
+            [MenuItem(DisplayName + "/" + OpenPersistentDataPathName, priority = OpenPersistentDataPathPriority)]
+            private static void OpenPersistentDataPath()
+            {
+                var persistentDataPath = Application.persistentDataPath.ReplaceBackslashWithSlash();
+                Process.Start(persistentDataPath);
+            }
+
+            [MenuItem(DisplayName + "/" + OpenPersistentDataPathName, true)]
+            private static bool ValidateOpenPersistentDataPath()
+            {
+                var persistentDataPath = Application.persistentDataPath.ReplaceBackslashWithSlash();
+                return Directory.Exists(persistentDataPath);
             }
 
             #endregion

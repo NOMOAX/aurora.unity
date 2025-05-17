@@ -76,29 +76,29 @@ namespace Aurora.Unity.Pooling
             {
                 return false;
             }
-            OnSettingTransformParent(obj);
+            OnReturning(obj);
             obj.transform.SetParent(_container, false);
-            OnSetTransformParent(obj);
+            OnReturn(obj);
             return true;
         }
 
         /// <summary>
-        /// 在将组件放入池时，将与组件关联的变换的父变换设置为在构造函数中传入的容器之前执行此方法。
+        /// 在将组件放入池之前执行。
         /// <br/>
-        /// 你可以重写此方法，以执行一些初始化操作。
+        /// 重写此方法，以执行额外清理操作。
         /// </summary>
         /// <param name="obj">组件。</param>
-        protected virtual void OnSettingTransformParent(T obj)
+        protected virtual void OnReturning(T obj)
         {
         }
 
         /// <summary>
-        /// 在将组件放入池时，将与组件关联的变换的父变换设置为在构造函数中传入的容器之后执行此方法。
+        /// 在将组件放入池之后执行。
         /// <br/>
-        /// 你可以重写此方法，以执行一些初始化操作。
+        /// 重写此方法，以执行额外清理操作。
         /// </summary>
         /// <param name="obj">组件。</param>
-        protected virtual void OnSetTransformParent(T obj)
+        protected virtual void OnReturn(T obj)
         {
         }
 
