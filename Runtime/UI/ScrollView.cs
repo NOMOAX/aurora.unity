@@ -410,7 +410,21 @@ namespace Aurora.Unity.UI
         public int FirstVisibleIndex
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => InternalFindFirstIndex(ConvertNormalizedViewportPositionToContentPosition(0));
+            get
+            {
+                var contentBeginPosition = InternalConvertNormalizedViewportPositionToContentPosition(0);
+                var firstVisibleIndex    = InternalFindFirstIndex(contentBeginPosition);
+
+                if (firstVisibleIndex < 0)
+                {
+                    return firstVisibleIndex;
+                }
+
+                var contentEndPosition = InternalConvertNormalizedViewportPositionToContentPosition(1);
+                var lastVisibleIndex   = InternalFindLastIndex(contentEndPosition);
+
+                return lastVisibleIndex >= 0 && firstVisibleIndex <= lastVisibleIndex ? firstVisibleIndex : -1;
+            }
         }
 
         /// <summary>
@@ -419,7 +433,21 @@ namespace Aurora.Unity.UI
         public int LastVisibleIndex
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => InternalFindLastIndex(ConvertNormalizedViewportPositionToContentPosition(1));
+            get
+            {
+                var contentEndPosition = InternalConvertNormalizedViewportPositionToContentPosition(1);
+                var lastVisibleIndex   = InternalFindLastIndex(contentEndPosition);
+
+                if (lastVisibleIndex < 0)
+                {
+                    return lastVisibleIndex;
+                }
+
+                var contentBeginPosition = InternalConvertNormalizedViewportPositionToContentPosition(0);
+                var firstVisibleIndex    = InternalFindFirstIndex(contentBeginPosition);
+
+                return firstVisibleIndex >= 0 && firstVisibleIndex <= lastVisibleIndex ? lastVisibleIndex : -1;
+            }
         }
 
         /// <summary>
@@ -1024,7 +1052,7 @@ namespace Aurora.Unity.UI
             Assert.IsFalse(IsTweening());
 
             var index = InternalFindClosestIndex(
-                ConvertNormalizedViewportPositionToContentPosition(snapFindNormalizedViewportPosition)
+                InternalConvertNormalizedViewportPositionToContentPosition(snapFindNormalizedViewportPosition)
             );
             if (index < 0)
             {
