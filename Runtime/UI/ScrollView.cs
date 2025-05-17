@@ -1445,16 +1445,16 @@ namespace Aurora.Unity.UI
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReturnItem(ScrollViewItem item, bool calledFromOnDestroy)
+        private void ReturnItem(ScrollViewItem item, bool isBeingDestroyed)
         {
             if (item.visible)
             {
                 item.visible = false;
                 item.OnInvisible();
             }
-            item.OnReturn();
+            item.OnReturn(isBeingDestroyed);
             item.index = -1;
-            if (calledFromOnDestroy)
+            if (isBeingDestroyed)
             {
                 return;
             }
@@ -1782,7 +1782,6 @@ namespace Aurora.Unity.UI
             // 确保 ScrollViewItem.OnInvisible 和 ScrollViewItem.OnReturn 的执行分别与 ScrollViewItem.OnVisible 和 ScrollViewItem.OnGet 成对出现
             while (_activeItems.TryDequeueLast(out var item))
             {
-                // 告诉 ReturnItem 是从 OnDestroy 中调用的，ReturnItem 会避免执行多余操作
                 ReturnItem(item, true);
             }
 

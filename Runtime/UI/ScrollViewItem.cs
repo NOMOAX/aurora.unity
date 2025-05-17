@@ -54,9 +54,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 在将此 <see cref="ScrollViewItem"/> 放入缓存时执行。
+        /// 在将此 <see cref="ScrollViewItem"/> 放入缓存时以及因滚动视图正在销毁时执行。
         /// </summary>
-        protected internal virtual void OnReturn()
+        /// <param name="isScrollViewBeingDestroyed">如果滚动视图正在被销毁，则为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
+        protected internal virtual void OnReturn(bool isScrollViewBeingDestroyed)
         {
         }
 
