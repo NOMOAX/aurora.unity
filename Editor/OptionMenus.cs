@@ -28,14 +28,7 @@ namespace Aurora.UnityEditor
             }
             var parent = parentGameObject.transform;
 
-            CreateScrollView(
-                "Horizontal Scroll View",
-                parent,
-                new Vector2(200f, 200f),
-                20f,
-                300f,
-                RectTransform.Axis.Horizontal
-            );
+            CreateScrollView("Scroll View", parent, new Vector2(200f, 200f), 20f, 300f, RectTransform.Axis.Horizontal);
         }
 
         private const int CreateVerticalScrollViewPriority = CreateHorizontalScrollViewPriority + 1;
@@ -57,14 +50,7 @@ namespace Aurora.UnityEditor
             }
             var parent = parentGameObject.transform;
 
-            CreateScrollView(
-                "Vertical Scroll View",
-                parent,
-                new Vector2(200f, 200f),
-                20f,
-                300f,
-                RectTransform.Axis.Vertical
-            );
+            CreateScrollView("Scroll View", parent, new Vector2(200f, 200f), 20f, 300f, RectTransform.Axis.Vertical);
         }
 
         private static void CreateScrollView(
