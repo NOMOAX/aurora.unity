@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,6 +20,8 @@ namespace Aurora.Unity
         /// </summary>
         /// <remarks>当这个值为 <see langword="false"/> 时，应跳过复杂与耗时的操作，让程序尽快结束。</remarks>
         public static bool IsPlaying { get; internal set; }
+
+        internal static readonly Stack<IDisposable> Disposables = new Stack<IDisposable>();
 
         internal static CancellationTokenSource ExitTokenSource { get; set; }
 
@@ -141,6 +145,26 @@ namespace Aurora.Unity
 #else
             Application.Quit(exitCode);
 #endif
+        }
+
+        /// <summary>
+        /// 添加一个在程序结束时释放的实例。
+        /// </summary>
+        /// <param name="disposable">要在程序结束时释放的实例。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="disposable"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="InvalidOperationException">程序未运行（<see cref="IsPlaying"/> 为 <see langword="false"/>）。</exception>
+        /// <remarks>多个通过 <see cref="DisposeOnApplicationQuit"/> 添加的 <see cref="IDisposable"/> 实例将在程序结束时按照先进后出的顺序释放。</remarks>
+        public static void DisposeOnApplicationQuit(IDisposable disposable)
+        {
+            if (disposable == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (!IsPlaying)
+            {
+                throw new InvalidOperationException();
+            }
+            Disposables.Push(disposable);
         }
     }
 }

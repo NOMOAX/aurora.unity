@@ -89,6 +89,18 @@ namespace Aurora.Unity
         internal static void ExitPlayMode(StringBuilder stringBuilder)
         {
             UnityEnvironment.IsPlaying = false;
+            while (UnityEnvironment.Disposables.Count != 0)
+            {
+                var disposable = UnityEnvironment.Disposables.Pop();
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Log.E(e);
+                }
+            }
             try
             {
                 UnityEnvironment.ExitTokenSource.Cancel();
