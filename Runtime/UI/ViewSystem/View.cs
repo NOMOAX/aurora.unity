@@ -1478,40 +1478,41 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 界面范围。
         /// </summary>
-        /// <remarks><see cref="Scope"/> 实现 <see cref="IDisposable"/>，调用 <see cref="Dispose"/> 会关闭界面。</remarks>
-        public sealed class Scope : IDisposable
+        /// <typeparam name="T">界面的类型。</typeparam>
+        /// <remarks><see cref="Scope{T}"/> 实现 <see cref="IDisposable"/>，调用 <see cref="Dispose"/> 会关闭界面。</remarks>
+        public sealed class Scope<T> : IDisposable where T : View
         {
-            private View _view;
+            private T _view;
 
             private Invocation<object> _closeStateGetter;
 
             /// <summary>
-            /// 初始化 <see cref="Scope"/> 类的新实例。
+            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
             /// </summary>
             /// <param name="view">界面。</param>
-            public Scope(View view)
+            public Scope(T view)
             {
                 _view             = view;
                 _closeStateGetter = null;
             }
 
             /// <summary>
-            /// 初始化 <see cref="Scope"/> 类的新实例。
+            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
             /// </summary>
             /// <param name="view">界面。</param>
             /// <param name="closeState">由用户定义的数据。将赋值给 <see cref="CloseState"/>。</param>
-            public Scope(View view, object closeState)
+            public Scope(T view, object closeState)
             {
                 _view             = view;
                 _closeStateGetter = Invocation<object>.FromResult(closeState);
             }
 
             /// <summary>
-            /// 初始化 <see cref="Scope"/> 类的新实例。
+            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
             /// </summary>
             /// <param name="view">界面。</param>
             /// <param name="closeStateGetter">一个调用，可以通过它获取到由用户定义的数据。该数据将赋值给 <see cref="CloseState"/>。</param>
-            public Scope(View view, Invocation<object> closeStateGetter)
+            public Scope(T view, Invocation<object> closeStateGetter)
             {
                 _view             = view;
                 _closeStateGetter = closeStateGetter;
@@ -1524,7 +1525,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 var view             = _view;
                 var closeStateGetter = _closeStateGetter;
-                if (view == null)
+                if (!view)
                 {
                     return;
                 }
@@ -1532,6 +1533,11 @@ namespace Aurora.Unity.UI.ViewSystem
                 _closeStateGetter = null;
                 view.InternalClose(closeStateGetter?.Invoke());
             }
+
+            /// <summary>
+            /// 获取界面。
+            /// </summary>
+            public T View => _view;
         }
 
         private struct DirectChildEnumerator : IEnumerator<View>
