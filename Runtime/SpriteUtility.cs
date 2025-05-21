@@ -19,7 +19,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizedToLocalPosition(Sprite sprite, Vector2 normalizedPosition)
         {
-            if (sprite == null)
+            if (!sprite)
             {
                 throw new ArgumentNullException(nameof(sprite));
             }

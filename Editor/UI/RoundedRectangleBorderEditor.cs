@@ -177,7 +177,7 @@ namespace Aurora.UnityEditor.UI
             _thicknessNormalizedGUIContents = new GUIContent("Normalized", "是否使用标准化长度表示粗细");
             _thicknessValueGUIContent = new GUIContent("Value", "粗细");
             _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "使用精确点击区域");
-            SetShowNativeSize(_texture.objectReferenceValue != null, true);
+            SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 
         public override void OnInspectorGUI()
@@ -190,7 +190,7 @@ namespace Aurora.UnityEditor.UI
             RaycastControlsGUI();
             MaskableControlsGUI();
             EditorGUILayout.PropertyField(_useExactRaycastLocation, _useExactRaycastLocationGUIContent);
-            SetShowNativeSize(_texture.objectReferenceValue != null, false);
+            SetShowNativeSize(_texture.objectReferenceValue, false);
             NativeSizeButtonGUI();
             serializedObject.ApplyModifiedProperties();
         }
@@ -295,11 +295,11 @@ namespace Aurora.UnityEditor.UI
                             EditorUtility.SetDirty(roundedRectangle);
                         }
                     }
-                    const float leftValue = 0f;
+                    const float leftValue = 0;
                     var rightValue = normalized.boolValue switch
                     {
                         false => halfMinSide,
-                        true  => 1f
+                        true  => 1
                     };
                     EditorGUILayout.Slider(value, leftValue, rightValue, valueGUIContent);
                 }

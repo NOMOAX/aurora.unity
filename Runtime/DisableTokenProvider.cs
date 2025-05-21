@@ -27,7 +27,7 @@ namespace Aurora.Unity
                 {
                     return _cancellationTokenSource.Token;
                 }
-                if (!UnityEnvironment.IsPlaying || this == null || !Assume.IsTrue(
+                if (!UnityEnvironment.IsPlaying || !this || !Assume.IsTrue(
                         enabled,
                         "Never disable this " + nameof(UnityEngine) + "." + nameof(Behaviour) + " instance directly!"
                     ) || !gameObject.activeInHierarchy)

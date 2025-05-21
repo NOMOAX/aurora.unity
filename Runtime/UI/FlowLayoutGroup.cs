@@ -19,11 +19,11 @@ namespace Aurora.Unity.UI
         [SerializeField]
         private Vector2 spacing;
 
-        private readonly Dictionary<RectTransform, Vector2> _dictionary = new Dictionary<RectTransform, Vector2>(
+        private readonly Dictionary<RectTransform, Vector2> _dictionary = new(
             UnityEngineObjectEqualityComparer.Instance
         );
 
-        private readonly List<List<RectTransform>> _lines = new List<List<RectTransform>>();
+        private readonly List<List<RectTransform>> _lines = new();
 
         /// <summary>
         /// 主轴。
@@ -59,7 +59,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="layoutChild"/> 为 <see langword="null"/>。</exception>
         public bool TryGetIndexOf(RectTransform layoutChild, out int indexAloneAxis, out int indexAloneOtherAxis)
         {
-            if (layoutChild == null)
+            if (!layoutChild)
             {
                 throw new ArgumentNullException(nameof(layoutChild));
             }
@@ -197,7 +197,7 @@ namespace Aurora.Unity.UI
                     throw new ArgumentOutOfRangeException();
             }
 
-            SetLayoutInputForAxis(-1f, totalPreferredSize, -1f, 0);
+            SetLayoutInputForAxis(-1, totalPreferredSize, -1, 0);
         }
 
         /// <inheritdoc />
@@ -231,7 +231,7 @@ namespace Aurora.Unity.UI
                     throw new ArgumentOutOfRangeException();
             }
 
-            SetLayoutInputForAxis(-1f, totalPreferredSize, -1f, 1);
+            SetLayoutInputForAxis(-1, totalPreferredSize, -1, 1);
         }
 
         /// <inheritdoc />
@@ -258,7 +258,7 @@ namespace Aurora.Unity.UI
                                 position,
                                 Mathf.Min(
                                     preferredSize[0],
-                                    Mathf.Max(rectTransform.rect.size[0] - padding.horizontal, 0f)
+                                    Mathf.Max(rectTransform.rect.size[0] - padding.horizontal, 0)
                                 )
                             );
                             position += preferredSize[0];
@@ -335,10 +335,7 @@ namespace Aurora.Unity.UI
                                 child,
                                 1,
                                 position,
-                                Mathf.Min(
-                                    preferredSize[1],
-                                    Mathf.Max(rectTransform.rect.size[1] - padding.vertical, 0f)
-                                )
+                                Mathf.Min(preferredSize[1], Mathf.Max(rectTransform.rect.size[1] - padding.vertical, 0))
                             );
                             position += preferredSize[1];
                         }

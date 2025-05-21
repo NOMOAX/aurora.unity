@@ -20,11 +20,10 @@ namespace Aurora.Unity.EventSystems
         /// <param name="eventData">事件数据。</param>
         protected void SendToParent(BaseEventData eventData)
         {
-            if (transform.parent == null)
+            if (transform.parent)
             {
-                return;
+                ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, CallbackEventFunction);
             }
-            ExecuteEvents.ExecuteHierarchy(transform.parent.gameObject, eventData, CallbackEventFunction);
         }
     }
 }

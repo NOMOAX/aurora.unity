@@ -21,7 +21,7 @@ namespace Aurora.Unity
         /// <remarks>当这个值为 <see langword="false"/> 时，应跳过复杂与耗时的操作，让程序尽快结束。</remarks>
         public static bool IsPlaying { get; internal set; }
 
-        internal static readonly Stack<IDisposable> Disposables = new Stack<IDisposable>();
+        internal static readonly Stack<IDisposable> Disposables = new();
 
         internal static CancellationTokenSource ExitTokenSource { get; set; }
 
@@ -108,7 +108,7 @@ namespace Aurora.Unity
         public static Vector2Int ScreenSize
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new Vector2Int(Screen.width, Screen.height);
+            get => new(Screen.width, Screen.height);
         }
 
         /// <summary>

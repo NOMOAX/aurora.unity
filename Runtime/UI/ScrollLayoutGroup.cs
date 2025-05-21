@@ -32,7 +32,7 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 此组件所在游戏物体上的二维矩形遮罩。
         /// </summary>
-        public RectMask2D RectMask2D => _rectMask2D != null ? _rectMask2D : _rectMask2D = GetComponent<RectMask2D>();
+        public RectMask2D RectMask2D => _rectMask2D ??= GetComponent<RectMask2D>();
 
         /// <summary>
         /// 参与布局的子物体数量。
@@ -97,7 +97,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="System.ArgumentException"><paramref name="child"/> 不是布局元素，或不是这个矩形变换的子物体。</exception>
         public int GetLayoutChildIndex(RectTransform child)
         {
-            if (child == null)
+            if (!child)
             {
                 throw new ArgumentNullException(nameof(child));
             }

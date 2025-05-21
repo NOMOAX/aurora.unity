@@ -19,15 +19,15 @@ namespace Aurora.Unity.UI
         internal int segments = SegmentsDefaultValue;
 
         [SerializeField]
-        [Range(0f, 1f)]
+        [Range(0, 1)]
         internal float thickness = ThicknessDefaultValue;
 
         [SerializeField]
         internal bool useExactRaycastLocation;
 
-        private readonly List<Vector2> _innerPositions = new List<Vector2>();
+        private readonly List<Vector2> _innerPositions = new();
 
-        private readonly List<Vector2> _outerPositions = new List<Vector2>();
+        private readonly List<Vector2> _outerPositions = new();
 
         private const int SegmentsMinValue = 3;
 
@@ -51,11 +51,11 @@ namespace Aurora.Unity.UI
         {
             get
             {
-                if (texture != null)
+                if (texture)
                 {
                     return texture;
                 }
-                return material != null && material.mainTexture != null ? material.mainTexture : s_WhiteTexture;
+                return material && material.mainTexture ? material.mainTexture : s_WhiteTexture;
             }
         }
 
@@ -108,7 +108,7 @@ namespace Aurora.Unity.UI
             get => thickness;
             set
             {
-                if (!(value >= 0f) || !(value <= 1f))
+                if (value is < 0 or > 1 or float.NaN)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -155,7 +155,7 @@ namespace Aurora.Unity.UI
             vh.Clear();
 
             // 粗细为 0，图形消失
-            if (thickness == 0f)
+            if (thickness == 0)
             {
                 TrimExcess();
                 return;
@@ -166,13 +166,13 @@ namespace Aurora.Unity.UI
             var center            = pixelAdjustedRect.center;
             var halfSize          = pixelAdjustedRect.size * 0.5f;
 
-            var stepAngle = 2f * Mathf.PI / segments;
+            var stepAngle = 2 * Mathf.PI / segments;
 
             // 添加内圆圆周上各点
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;
-                var position = center + UnityMath.CosSin(angle) * halfSize * (1f - thickness);
+                var position = center + UnityMath.CosSin(angle) * halfSize * (1 - thickness);
                 if (useExactRaycastLocation)
                 {
                     _innerPositions.Add(position);
@@ -216,17 +216,17 @@ namespace Aurora.Unity.UI
         {
         }
 
-        float ILayoutElement.minWidth => 0f;
+        float ILayoutElement.minWidth => 0;
 
-        float ILayoutElement.preferredWidth => texture == null ? 0f : texture.width;
+        float ILayoutElement.preferredWidth => texture ? texture.width : 0;
 
-        float ILayoutElement.flexibleWidth => -1f;
+        float ILayoutElement.flexibleWidth => -1;
 
-        float ILayoutElement.minHeight => 0f;
+        float ILayoutElement.minHeight => 0;
 
-        float ILayoutElement.preferredHeight => texture == null ? 0f : texture.height;
+        float ILayoutElement.preferredHeight => texture ? texture.height : 0;
 
-        float ILayoutElement.flexibleHeight => -1f;
+        float ILayoutElement.flexibleHeight => -1;
 
         int ILayoutElement.layoutPriority => 0;
 
@@ -245,7 +245,7 @@ namespace Aurora.Unity.UI
             {
                 return true;
             }
-            if (thickness == 0f)
+            if (thickness == 0)
             {
                 return false;
             }

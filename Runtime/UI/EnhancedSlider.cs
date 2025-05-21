@@ -38,7 +38,7 @@ namespace Aurora.Unity.UI
         private Slider.Direction direction;
 
         [SerializeField]
-        [Range(0f, 1f)]
+        [Range(0, 1)]
         private float value;
 
         private Vector2 _offset;
@@ -189,11 +189,11 @@ namespace Aurora.Unity.UI
         private void UpdateDrag(PointerEventData eventData)
         {
             RectTransform rectTransform;
-            if (_handleParent != null)
+            if (_handleParent)
             {
                 rectTransform = _handleParent;
             }
-            else if (_fillParent != null)
+            else if (_fillParent)
             {
                 rectTransform = _fillParent;
             }
@@ -203,7 +203,7 @@ namespace Aurora.Unity.UI
             }
             var axisInt           = (int) Axis;
             var rectTransformSize = rectTransform.rect.size[axisInt];
-            if (rectTransformSize <= 0f)
+            if (rectTransformSize <= 0)
             {
                 return;
             }
@@ -220,7 +220,7 @@ namespace Aurora.Unity.UI
             var v = Mathf.Clamp01((localPoint - _offset)[axisInt] / rectTransformSize);
             if (ReverseValue)
             {
-                v = 1f - v;
+                v = 1 - v;
             }
             SetValue(v, true);
         }
@@ -266,14 +266,14 @@ namespace Aurora.Unity.UI
             _tracker.Clear();
             var reverseValue = ReverseValue;
             var axisInt      = (int) Axis;
-            if (_fillParent != null)
+            if (_fillParent)
             {
                 _tracker.Add(this, fill, DrivenTransformProperties.Anchors);
                 var anchorMin = Vector2.zero;
                 var anchorMax = Vector2.one;
                 if (reverseValue)
                 {
-                    anchorMin[axisInt] = 1f - value;
+                    anchorMin[axisInt] = 1 - value;
                 }
                 else
                 {
@@ -282,12 +282,12 @@ namespace Aurora.Unity.UI
                 fill.anchorMin = anchorMin;
                 fill.anchorMax = anchorMax;
             }
-            if (_handleParent != null)
+            if (_handleParent)
             {
                 _tracker.Add(this, handle, DrivenTransformProperties.Anchors);
                 var anchorMin                           = Vector2.zero;
                 var anchorMax                           = Vector2.one;
-                anchorMin[axisInt] = anchorMax[axisInt] = reverseValue ? 1f - value : value;
+                anchorMin[axisInt] = anchorMax[axisInt] = reverseValue ? 1 - value : value;
                 handle.anchorMin   = anchorMin;
                 handle.anchorMax   = anchorMax;
             }
@@ -295,7 +295,7 @@ namespace Aurora.Unity.UI
 
         private void UpdateCachedReferences()
         {
-            if (fill != null && fill != transform)
+            if (fill && fill != transform)
             {
                 _fillParent = fill.parent as RectTransform;
             }
@@ -304,7 +304,7 @@ namespace Aurora.Unity.UI
                 fill        = null;
                 _fillParent = null;
             }
-            if (handle != null && handle != transform)
+            if (handle && handle != transform)
             {
                 _handleParent = handle.parent as RectTransform;
             }
@@ -362,7 +362,7 @@ namespace Aurora.Unity.UI
             }
             _isOperating = true;
             _offset      = Vector2.zero;
-            if (_handleParent != null && UnityEngine.RectTransformUtility.RectangleContainsScreenPoint(
+            if (_handleParent && UnityEngine.RectTransformUtility.RectangleContainsScreenPoint(
                     handle,
                     eventData.pointerPressRaycast.screenPosition,
                     eventData.enterEventCamera

@@ -19,7 +19,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="component"/> 为 <see langword="null"/>。</exception>
         public static T GetOrAddComponent<T>(this Component component) where T : Component
         {
-            if (component == null)
+            if (!component)
             {
                 throw new ArgumentNullException(nameof(component));
             }
@@ -36,7 +36,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="component"/> 为 <see langword="null"/>。</exception>
         public static void RemoveComponent<T>(this Component component) where T : Component
         {
-            if (component == null)
+            if (!component)
             {
                 throw new ArgumentNullException(nameof(component));
             }

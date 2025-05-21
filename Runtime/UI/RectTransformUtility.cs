@@ -104,11 +104,11 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void AlignToParentEdges(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            if (!(rectTransform.parent is RectTransform))
+            if (rectTransform.parent is not RectTransform)
             {
                 return;
             }
@@ -130,7 +130,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Rect GetRect(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -145,7 +145,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetAnchorMin(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -160,7 +160,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetAnchorMax(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -175,7 +175,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetAnchoredPosition(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -191,7 +191,7 @@ namespace Aurora.Unity.UI
         /// <remarks>如果矩形变换没有父变换，或父变换不是矩形变换，则认为由锚点定义的矩形的大小为 (0, 0)，此时获取到的是矩形变换的大小。</remarks>
         public static Vector2 GetSizeDelta(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -206,7 +206,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetPivot(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -221,7 +221,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetAnchorReferencePoint(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -239,7 +239,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector3 GetAnchoredPosition3D(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -254,7 +254,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetOffsetMin(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -269,7 +269,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetOffsetMax(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -288,7 +288,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchorMin(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -303,7 +303,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchorMax(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -318,7 +318,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchoredPosition(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -333,7 +333,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetSizeDelta(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -348,7 +348,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetPivot(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -363,7 +363,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchoredPosition3D(RectTransform rectTransform, Vector3 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -378,7 +378,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetOffsetMin(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -393,7 +393,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetOffsetMax(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -412,7 +412,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static float GetWidth(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -427,7 +427,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static float GetHeight(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -442,7 +442,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetSize(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -459,7 +459,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="edge"/> 不是在 <see cref="RectTransform.Edge"/> 枚举中定义的成员。</exception>
         public static float GetEdge(RectTransform rectTransform, RectTransform.Edge edge)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -482,7 +482,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector2 GetLocalPoint(RectTransform rectTransform, Vector2 normalizedRectCoordinates)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -498,7 +498,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static Vector3 GetWorldPoint(RectTransform rectTransform, Vector2 normalizedRectCoordinates)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -518,7 +518,7 @@ namespace Aurora.Unity.UI
             Vector2       normalizedRectCoordinates,
             Vector2       localPointOffset)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -538,11 +538,11 @@ namespace Aurora.Unity.UI
             Vector2       normalizedRectCoordinates,
             Camera        camera)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            if (camera == null)
+            if (!camera)
             {
                 throw new ArgumentNullException(nameof(camera));
             }
@@ -565,11 +565,11 @@ namespace Aurora.Unity.UI
             Camera                       camera,
             Camera.MonoOrStereoscopicEye eye)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            if (camera == null)
+            if (!camera)
             {
                 throw new ArgumentNullException(nameof(camera));
             }
@@ -594,11 +594,11 @@ namespace Aurora.Unity.UI
             Vector2       localPointOffset,
             Vector3       worldPointOffset)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            if (camera == null)
+            if (!camera)
             {
                 throw new ArgumentNullException(nameof(camera));
             }
@@ -625,11 +625,11 @@ namespace Aurora.Unity.UI
             Vector2                      localPointOffset,
             Vector3                      worldPointOffset)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            if (camera == null)
+            if (!camera)
             {
                 throw new ArgumentNullException(nameof(camera));
             }
@@ -646,7 +646,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static float GetInspectorPosX(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -666,7 +666,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static float GetInspectorPosY(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -685,7 +685,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static float GetInspectorPosZ(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -701,7 +701,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static float GetInspectorLeft(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -721,7 +721,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static float GetInspectorRight(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -741,7 +741,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static float GetInspectorBottom(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -761,7 +761,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static float GetInspectorTop(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -781,7 +781,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static float GetInspectorWidth(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -801,7 +801,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static float GetInspectorHeight(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -820,7 +820,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static RectTransform GetLayoutRoot(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -828,9 +828,7 @@ namespace Aurora.Unity.UI
             try
             {
                 var layoutRoot = rectTransform;
-                for (var parent = layoutRoot.parent as RectTransform;
-                     parent != null;
-                     parent = parent.parent as RectTransform)
+                for (var parent = layoutRoot.parent as RectTransform; parent; parent = parent.parent as RectTransform)
                 {
                     parent.GetComponents(typeof(ILayoutGroup), components);
                     if (ContainsActiveAndEnabledBehaviour(components))
@@ -867,7 +865,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetWidth(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -882,7 +880,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetHeight(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -897,7 +895,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetSize(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -915,7 +913,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchorMinSmart(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -924,7 +922,7 @@ namespace Aurora.Unity.UI
                 return;
             }
             var parent = rectTransform.parent as RectTransform;
-            if (parent == null)
+            if (!parent)
             {
                 rectTransform.anchorMin = value;
                 return;
@@ -955,7 +953,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetAnchorMaxSmart(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -964,7 +962,7 @@ namespace Aurora.Unity.UI
                 return;
             }
             var parent = rectTransform.parent as RectTransform;
-            if (parent == null)
+            if (!parent)
             {
                 rectTransform.anchorMax = value;
                 return;
@@ -995,7 +993,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetPivotSmart(RectTransform rectTransform, Vector2 value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -1022,7 +1020,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static void SetInspectorPosX(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1044,7 +1042,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static void SetInspectorPosY(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1065,7 +1063,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> 为 <see langword="null"/>。</exception>
         public static void SetInspectorPosZ(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1083,7 +1081,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static void SetInspectorLeft(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1105,7 +1103,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static void SetInspectorRight(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1127,7 +1125,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static void SetInspectorBottom(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1149,7 +1147,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static void SetInspectorTop(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1171,7 +1169,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.x"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.x"/> 分量。</exception>
         public static void SetInspectorWidth(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1193,7 +1191,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="rectTransform"/> 的 <see cref="RectTransform.anchorMin"/> 的 <see cref="Vector2.y"/> 分量不等于 <see cref="RectTransform.anchorMax"/> 的 <see cref="Vector2.y"/> 分量。</exception>
         public static void SetInspectorHeight(RectTransform rectTransform, float value)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -1231,14 +1229,13 @@ namespace Aurora.Unity.UI
         private static Vector2 GetParentSize(RectTransform rectTransform)
         {
             var parentRect = rectTransform.parent as RectTransform;
-            return parentRect != null ? parentRect.rect.size : Vector2.zero;
+            return parentRect ? parentRect.rect.size : Vector2.zero;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool ShouldDoIntSnapping(Component component)
         {
-            var canvas = component.GetComponentInParent<Canvas>();
-            return canvas != null && canvas.renderMode != RenderMode.WorldSpace;
+            return component.GetComponentInParent<Canvas>() is { renderMode: not RenderMode.WorldSpace };
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1257,7 +1254,7 @@ namespace Aurora.Unity.UI
 
         private static bool IsActiveAndEnabledBehaviour(Component component)
         {
-            return component != null && component is Behaviour { isActiveAndEnabled: true };
+            return component is Behaviour { isActiveAndEnabled: true };
         }
     }
 }

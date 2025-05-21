@@ -20,11 +20,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系。</exception>
         public static void SwapSibling(this Transform transform, Transform sibling)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
-            if (sibling == null)
+            if (!sibling)
             {
                 throw new ArgumentNullException(nameof(sibling));
             }
@@ -59,11 +59,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系，或者 <paramref name="transform"/> 与 <paramref name="sibling"/> 为相同实例。</exception>
         public static void SetBeforeSibling(this Transform transform, Transform sibling)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
-            if (sibling == null)
+            if (!sibling)
             {
                 throw new ArgumentNullException(nameof(sibling));
             }
@@ -89,11 +89,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系，或者 <paramref name="transform"/> 与 <paramref name="sibling"/> 为相同实例。</exception>
         public static void SetAfterSibling(this Transform transform, Transform sibling)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
-            if (sibling == null)
+            if (!sibling)
             {
                 throw new ArgumentNullException(nameof(sibling));
             }
@@ -118,7 +118,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="result"/> 为 <see langword="null"/>。</exception>
         public static void GetHierarchies(this Transform transform, List<Transform> result)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
@@ -133,7 +133,7 @@ namespace Aurora.Unity
                 {
                     list.Add(transform);
                     transform = transform.parent;
-                } while (transform != null);
+                } while (transform);
                 list.Reverse();
                 result.AddRange(list);
             }
@@ -151,7 +151,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="result"/> 为 <see langword="null"/>。</exception>
         public static void GetHierarchyNames(this Transform transform, List<string> result)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
@@ -166,7 +166,7 @@ namespace Aurora.Unity
                 {
                     list.Add(transform.name);
                     transform = transform.parent;
-                } while (transform != null);
+                } while (transform);
                 list.Reverse();
                 result.AddRange(list);
             }
@@ -184,7 +184,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="transform"/> 为 <see langword="null"/>。</exception>
         public static string GetFullName(this Transform transform)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
@@ -195,7 +195,7 @@ namespace Aurora.Unity
                 {
                     list.Add(transform.name);
                     transform = transform.parent;
-                } while (transform != null);
+                } while (transform);
                 list.Reverse();
                 return string.Join("/", list);
             }
@@ -213,7 +213,7 @@ namespace Aurora.Unity
         /// <remarks>销毁按倒序进行，即首先销毁最后的子变换，最后销毁第一个子变换。</remarks>
         public static void DestroyChildren(this Transform transform)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }
@@ -233,7 +233,7 @@ namespace Aurora.Unity
         /// <remarks>销毁按倒序进行，即首先销毁最后的子变换，最后销毁第一个子变换。</remarks>
         public static void DestroyChildrenImmediate(this Transform transform)
         {
-            if (transform == null)
+            if (!transform)
             {
                 throw new ArgumentNullException(nameof(transform));
             }

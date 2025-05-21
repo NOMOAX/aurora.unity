@@ -19,7 +19,7 @@ namespace Aurora.UnityEditor
 
         private static int GetComponentIndex(Component component)
         {
-            if (component == null)
+            if (!component)
             {
                 throw new ArgumentNullException(nameof(component));
             }
@@ -137,7 +137,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceButtonWithEnhancedButton(MenuCommand menuCommand)
         {
             var button = menuCommand.context as Button;
-            if (button == null)
+            if (!button)
             {
                 return;
             }
@@ -158,7 +158,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceEnhancedButtonWithButton(MenuCommand menuCommand)
         {
             var enhancedButton = menuCommand.context as EnhancedButton;
-            if (enhancedButton == null)
+            if (!enhancedButton)
             {
                 return;
             }
@@ -179,12 +179,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithRawImage(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var rawImage = ReplaceMaskableGraphic<RawImage>(image);
 
@@ -196,7 +196,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithClear(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
@@ -208,7 +208,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithBlock(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
@@ -220,12 +220,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithCircle(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var circle = ReplaceMaskableGraphic<Circle>(image);
 
@@ -237,12 +237,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithAnnulus(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var annulus = ReplaceMaskableGraphic<Annulus>(image);
 
@@ -254,12 +254,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithRoundedRectangle(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var roundedRectangle = ReplaceMaskableGraphic<RoundedRectangle>(image);
 
@@ -271,12 +271,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var roundedRectangleBorder = ReplaceMaskableGraphic<RoundedRectangleBorder>(image);
 
@@ -288,12 +288,12 @@ namespace Aurora.UnityEditor
         private static void ReplaceImageWithCustomGraphic(MenuCommand menuCommand)
         {
             var image = menuCommand.context as Image;
-            if (image == null)
+            if (!image)
             {
                 return;
             }
 
-            var texture = image.sprite != null ? image.sprite.texture : null;
+            var texture = image.sprite ? image.sprite.texture : null;
 
             var customGraphic = ReplaceMaskableGraphic<CustomGraphic>(image);
 
@@ -309,7 +309,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithImage(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -321,7 +321,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithClear(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -333,7 +333,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithBlock(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -345,7 +345,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithCircle(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -362,7 +362,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithAnnulus(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -379,7 +379,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithRoundedRectangle(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -396,7 +396,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -413,7 +413,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRawImageWithCustomGraphic(MenuCommand menuCommand)
         {
             var rawImage = menuCommand.context as RawImage;
-            if (rawImage == null)
+            if (!rawImage)
             {
                 return;
             }
@@ -434,7 +434,7 @@ namespace Aurora.UnityEditor
         private static void DeleteClearUselessProperties(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -449,7 +449,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithImage(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -461,7 +461,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithRawImage(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -473,7 +473,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithBlock(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -485,7 +485,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithCircle(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -497,7 +497,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithAnnulus(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -509,7 +509,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithRoundedRectangle(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -521,7 +521,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -533,7 +533,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceClearWithCustomGraphic(MenuCommand menuCommand)
         {
             var clear = menuCommand.context as Clear;
-            if (clear == null)
+            if (!clear)
             {
                 return;
             }
@@ -549,7 +549,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithImage(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -561,7 +561,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithRawImage(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -573,7 +573,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithClear(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -585,7 +585,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithCircle(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -597,7 +597,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithAnnulus(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -609,7 +609,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithRoundedRectangle(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -621,7 +621,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -633,7 +633,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceBlockWithCustomGraphic(MenuCommand menuCommand)
         {
             var block = menuCommand.context as Block;
-            if (block == null)
+            if (!block)
             {
                 return;
             }
@@ -649,7 +649,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithImage(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -661,7 +661,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithRawImage(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -678,7 +678,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithClear(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -690,7 +690,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithBlock(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -702,7 +702,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithAnnulus(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -719,7 +719,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithRoundedRectangle(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -736,7 +736,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -753,7 +753,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCircleWithCustomGraphic(MenuCommand menuCommand)
         {
             var circle = menuCommand.context as Circle;
-            if (circle == null)
+            if (!circle)
             {
                 return;
             }
@@ -774,7 +774,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithImage(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -786,7 +786,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithRawImage(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -803,7 +803,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithClear(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -815,7 +815,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithBlock(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -827,7 +827,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithCircle(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -844,7 +844,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithRoundedRectangle(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -861,7 +861,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceAnnulusWithCustomGraphic(MenuCommand menuCommand)
         {
             var annulus = menuCommand.context as Annulus;
-            if (annulus == null)
+            if (!annulus)
             {
                 return;
             }
@@ -882,7 +882,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithImage(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -894,7 +894,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithRawImage(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -911,7 +911,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithClear(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -923,7 +923,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithBlock(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -935,7 +935,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithCircle(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -952,7 +952,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithAnnulus(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -969,7 +969,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -1025,7 +1025,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleWithCustomGraphic(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as RoundedRectangle;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -1046,7 +1046,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithImage(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1058,7 +1058,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithRawImage(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1075,7 +1075,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithClear(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1087,7 +1087,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithBlock(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1099,7 +1099,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithCircle(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1116,7 +1116,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithAnnulus(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1133,7 +1133,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceRoundedRectangleBorderWithRoundedRectangle(MenuCommand menuCommand)
         {
             var roundedRectangleBorder = menuCommand.context as RoundedRectangleBorder;
-            if (roundedRectangleBorder == null)
+            if (!roundedRectangleBorder)
             {
                 return;
             }
@@ -1181,7 +1181,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithImage(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as CustomGraphic;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -1193,7 +1193,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithRawImage(MenuCommand menuCommand)
         {
             var roundedRectangle = menuCommand.context as CustomGraphic;
-            if (roundedRectangle == null)
+            if (!roundedRectangle)
             {
                 return;
             }
@@ -1210,7 +1210,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithClear(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1222,7 +1222,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithBlock(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1234,7 +1234,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithCircle(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1251,7 +1251,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithAnnulus(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1268,7 +1268,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithRoundedRectangle(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1285,7 +1285,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceCustomGraphicWithRoundedRectangleBorder(MenuCommand menuCommand)
         {
             var customGraphic = menuCommand.context as CustomGraphic;
-            if (customGraphic == null)
+            if (!customGraphic)
             {
                 return;
             }
@@ -1355,7 +1355,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceHorizontalLayoutGroupWithVerticalLayoutGroup(MenuCommand menuCommand)
         {
             var horizontalLayoutGroup = menuCommand.context as HorizontalLayoutGroup;
-            if (horizontalLayoutGroup == null)
+            if (!horizontalLayoutGroup)
             {
                 return;
             }
@@ -1371,7 +1371,7 @@ namespace Aurora.UnityEditor
         private static void ReplaceVerticalLayoutGroupWithHorizontalLayoutGroup(MenuCommand menuCommand)
         {
             var verticalLayoutGroup = menuCommand.context as VerticalLayoutGroup;
-            if (verticalLayoutGroup == null)
+            if (!verticalLayoutGroup)
             {
                 return;
             }

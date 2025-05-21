@@ -166,7 +166,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal PlayerLoopPhasePromiseWithCancellation(
                 PlayerLoopPhase   playerLoopPhase,
@@ -267,7 +267,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class AsyncOperationPromise : TaskCompletionSource<VoidResult>
         {
             private static readonly Action<Task, object> PromiseCompleteOrRegister =
-                (antecedent, state) => ((AsyncOperationPromise) state).CompleteOrRegister();
+                (_, state) => ((AsyncOperationPromise) state).CompleteOrRegister();
 
             private readonly AsyncOperation _asyncOperation;
 
@@ -333,7 +333,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal AsyncOperationPromiseWithCancellation(
                 AsyncOperation    asyncOperation,
@@ -412,7 +412,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class DelayPromise : TaskCompletionSource<VoidResult>
         {
             private static readonly TimerTriggerCallback PromiseComplete =
-                (timer, state) => ((DelayPromise) state).Complete();
+                (_, state) => ((DelayPromise) state).Complete();
 
             private readonly ITimer _timer;
 
@@ -463,7 +463,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal DelayPromiseWithCancellation(
                 TimeSpan          delay,
@@ -549,7 +549,7 @@ namespace Aurora.Unity.Threading.Tasks
 
         private class DelayUnityTimePromise : TaskCompletionSource<VoidResult>
         {
-            private static readonly TimerTriggerCallback PromiseComplete = (timer, state) =>
+            private static readonly TimerTriggerCallback PromiseComplete = (_, state) =>
                 ((DelayUnityTimePromise) state).Complete();
 
             private readonly ITimer _timer;
@@ -612,7 +612,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal DelayUnityTimePromiseWithCancellation(
                 TimeSpan          delay,
@@ -695,7 +695,7 @@ namespace Aurora.Unity.Threading.Tasks
 
         private class DelayFramePromise : TaskCompletionSource<VoidResult>
         {
-            private static readonly CounterTriggerCallback PromiseComplete = (counter, state) =>
+            private static readonly CounterTriggerCallback PromiseComplete = (_, state) =>
                 ((DelayFramePromise) state).Complete();
 
             private readonly ICounter _counter;
@@ -740,7 +740,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal DelayFramePromiseWithCancellation(
                 int               frameCount,
@@ -915,7 +915,7 @@ namespace Aurora.Unity.Threading.Tasks
                 }
             };
 
-            private CancellationTokenRegistration _cancellationTokenRegistration;
+            private readonly CancellationTokenRegistration _cancellationTokenRegistration;
 
             internal FileCreatedOrChangedPromiseWithCancellation(
                 string            directoryName,

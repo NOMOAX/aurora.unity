@@ -26,7 +26,7 @@ namespace Aurora.Unity.Pooling
         /// <exception cref="ArgumentNullException"><paramref name="original"/> 为 <see langword="null"/>。</exception>
         public PooledUnityEngineObjectPolicySlim(T original, Transform container, bool optimizeName)
         {
-            if (original == null)
+            if (!original)
             {
                 throw new ArgumentNullException(nameof(original));
             }
@@ -68,7 +68,7 @@ namespace Aurora.Unity.Pooling
         /// <inheritdoc />
         public bool Return(T obj)
         {
-            return UnityEnvironment.IsPlaying && obj != null;
+            return UnityEnvironment.IsPlaying && obj;
         }
 
         /// <inheritdoc />
@@ -78,7 +78,7 @@ namespace Aurora.Unity.Pooling
             {
                 return;
             }
-            if (obj == null)
+            if (!obj)
             {
                 return;
             }

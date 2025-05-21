@@ -17,7 +17,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static UnityConsoleLogger Instance { get; } = new UnityConsoleLogger();
+        public static UnityConsoleLogger Instance { get; } = new();
 
         private UnityConsoleLogger()
         {

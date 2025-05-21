@@ -19,7 +19,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
         public static void SetLayerRecursively(this GameObject gameObject, int layer)
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
@@ -46,7 +46,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
         public static void SetTagRecursively(this GameObject gameObject, string tag)
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
@@ -74,7 +74,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
         public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
@@ -94,7 +94,7 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
         public static void RemoveComponent<T>(this GameObject gameObject) where T : Component
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
@@ -116,7 +116,7 @@ namespace Aurora.Unity
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
-            return gameObject == null
+            return !gameObject
                        ? new CancellationToken(true)
                        : InternalGetOrAddComponent<DisableTokenProvider>(gameObject).CancellationToken;
         }
@@ -129,7 +129,7 @@ namespace Aurora.Unity
         /// <remarks>销毁按倒序进行，即首先销毁最后的子游戏物体，最后销毁第一个子游戏物体。</remarks>
         public static void DestroyChildren(this GameObject gameObject)
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }
@@ -150,7 +150,7 @@ namespace Aurora.Unity
         /// <remarks>销毁按倒序进行，即首先销毁最后的子游戏物体，最后销毁第一个子游戏物体。</remarks>
         public static void DestroyChildrenImmediate(this GameObject gameObject)
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 throw new ArgumentNullException(nameof(gameObject));
             }

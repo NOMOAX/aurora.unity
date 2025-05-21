@@ -12,8 +12,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static IdentityPreferenceConverterPair<T> Instance { get; } =
-            new IdentityPreferenceConverterPair<T>(obj => obj);
+        public static IdentityPreferenceConverterPair<T> Instance { get; } = new(obj => obj);
 
         private IdentityPreferenceConverterPair(Converter<T, T> converter) : base(converter, converter)
         {

@@ -22,7 +22,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool IsRedQuestionMarkTexture(Texture2D texture)
         {
-            if (texture == null)
+            if (!texture)
             {
                 throw new ArgumentNullException(nameof(texture));
             }

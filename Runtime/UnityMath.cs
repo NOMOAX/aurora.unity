@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Aurora.Interpolations;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -30,33 +31,6 @@ namespace Aurora.Unity
         public static Vector4 GetUV(Rect pixelAdjustedRect, Vector2 point)
         {
             return PointToNormalizedUnclamped(pixelAdjustedRect, point);
-        }
-
-        /// <summary>
-        /// 与 <see cref="Mathf.InverseLerp"/> 类似，但不会将返回值限制在 [0, 1] 范围内。
-        /// </summary>
-        /// <param name="a">范围的开始值。</param>
-        /// <param name="b">范围的结束值。</param>
-        /// <param name="value">要计算在 [<paramref name="a"/>, <paramref name="b"/>] 范围内的插值的值。</param>
-        /// <returns><paramref name="value"/> 在 [<paramref name="a"/>, <paramref name="b"/>] 范围内的插值。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float InverseLerpUnclamped(float a, float b, float value)
-        {
-            return a != b ? (value - a) / (b - a) : 0f;
-        }
-
-        /// <summary>
-        /// 与 <see cref="Mathf.InverseLerp"/> 类似，但不会将返回值限制在 [0, 1] 范围内。
-        /// </summary>
-        /// <param name="a">范围的开始值。</param>
-        /// <param name="b">范围的结束值。</param>
-        /// <param name="value">要计算在 [<paramref name="a"/>, <paramref name="b"/>] 范围内的插值的值。</param>
-        /// <param name="returnValueWhenAEqualToB">当 <paramref name="a"/> 等于 <paramref name="b"/> 时，返回此值。</param>
-        /// <returns><paramref name="value"/> 在 [<paramref name="a"/>, <paramref name="b"/>] 范围内的插值。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float InverseLerpUnclamped(float a, float b, float value, float returnValueWhenAEqualToB)
-        {
-            return a != b ? (value - a) / (b - a) : returnValueWhenAEqualToB;
         }
 
         /// <summary>
@@ -126,8 +100,8 @@ namespace Aurora.Unity
         public static Vector2 PointToNormalizedUnclamped(Rect rectangle, Vector2 point)
         {
             return new Vector2(
-                InverseLerpUnclamped(rectangle.xMin, rectangle.xMax, point.x),
-                InverseLerpUnclamped(rectangle.yMin, rectangle.yMax, point.y)
+                (float) InterpolationUtility.InverseLinearInterpolate(rectangle.xMin, rectangle.xMax, point.x),
+                (float) InterpolationUtility.InverseLinearInterpolate(rectangle.yMin, rectangle.yMax, point.y)
             );
         }
 
@@ -151,7 +125,7 @@ namespace Aurora.Unity
             var w     = p - a;
             var gamma = Vector3.Dot(Vector3.Cross(u, w), n) / n.sqrMagnitude;
             var beta  = Vector3.Dot(Vector3.Cross(w, v), n) / n.sqrMagnitude;
-            var alpha = 1f - gamma - beta;
+            var alpha = 1 - gamma - beta;
             return new Vector3(alpha, beta, gamma);
         }
 
@@ -175,8 +149,8 @@ namespace Aurora.Unity
             var alpha = barycentricCoordinates.x;
             var beta  = barycentricCoordinates.y;
             var gamma = barycentricCoordinates.z;
-            return -error <= alpha && alpha <= 1f + error && -error <= beta && beta <= 1f + error && -error <= gamma &&
-                   gamma <= 1f + error;
+            return -error <= alpha && alpha <= 1 + error && -error <= beta && beta <= 1 + error && -error <= gamma &&
+                   gamma <= 1 + error;
         }
 
         /// <summary>

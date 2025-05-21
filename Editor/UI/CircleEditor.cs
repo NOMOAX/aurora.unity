@@ -36,7 +36,7 @@ namespace Aurora.UnityEditor.UI
             _textureGUIContent                 = new GUIContent("Texture",                    "纹理");
             _segmentsGUIContent                = new GUIContent("Segments",                   "边数");
             _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "使用精确点击区域");
-            SetShowNativeSize(_texture.objectReferenceValue != null, true);
+            SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 
         public override void OnInspectorGUI()
@@ -48,7 +48,7 @@ namespace Aurora.UnityEditor.UI
             RaycastControlsGUI();
             MaskableControlsGUI();
             EditorGUILayout.PropertyField(_useExactRaycastLocation, _useExactRaycastLocationGUIContent);
-            SetShowNativeSize(_texture.objectReferenceValue != null, false);
+            SetShowNativeSize(_texture.objectReferenceValue, false);
             NativeSizeButtonGUI();
             serializedObject.ApplyModifiedProperties();
         }

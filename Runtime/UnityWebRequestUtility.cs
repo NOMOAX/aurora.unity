@@ -280,7 +280,7 @@ namespace Aurora.Unity
 
         private static bool IsSuccessStatusCode(HttpStatusCode statusCode)
         {
-            return statusCode >= HttpStatusCode.OK && statusCode <= (HttpStatusCode) 299;
+            return statusCode is >= HttpStatusCode.OK and <= (HttpStatusCode) 299;
         }
     }
 }

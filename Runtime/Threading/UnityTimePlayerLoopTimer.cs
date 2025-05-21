@@ -14,7 +14,7 @@ namespace Aurora.Unity.Threading
     /// </summary>
     public sealed class UnityTimePlayerLoopTimer : ITimer, IPlayerLoopItem
     {
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
 
         private volatile bool _disposed;
 

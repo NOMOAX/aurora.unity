@@ -36,7 +36,7 @@ namespace Aurora.UnityEditor.UI
             _textureGUIContent   = new GUIContent("Texture",   "纹理");
             _verticesGUIContent  = new GUIContent("Vertices",  "顶点");
             _trianglesGUIContent = new GUIContent("Triangles", "三角形");
-            SetShowNativeSize(_texture.objectReferenceValue != null, true);
+            SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 
         public override void OnInspectorGUI()
@@ -48,7 +48,7 @@ namespace Aurora.UnityEditor.UI
             EditorGUILayout.PropertyField(_triangles, _trianglesGUIContent);
             RaycastControlsGUI();
             MaskableControlsGUI();
-            SetShowNativeSize(_texture.objectReferenceValue != null, false);
+            SetShowNativeSize(_texture.objectReferenceValue, false);
             NativeSizeButtonGUI();
             serializedObject.ApplyModifiedProperties();
         }

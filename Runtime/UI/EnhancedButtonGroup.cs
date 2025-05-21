@@ -14,8 +14,7 @@ namespace Aurora.Unity.UI
         private static readonly IPool<HashSet<EnhancedButton>> EnhancedButtonHashSetPool =
             new Pool<HashSet<EnhancedButton>>(new PooledHashSetPolicy<EnhancedButton>(), 4);
 
-        private readonly HashSet<EnhancedButton> _buttons =
-            new HashSet<EnhancedButton>(UnityEngineObjectEqualityComparer.Instance);
+        private readonly HashSet<EnhancedButton> _buttons = new(UnityEngineObjectEqualityComparer.Instance);
 
         /// <summary>
         /// 获取一个值，这个值指示是否有至少一个按钮处于开启状态。
@@ -76,13 +75,13 @@ namespace Aurora.Unity.UI
             try
             {
                 buttons.UnionWith(_buttons);
-                if (except != null)
+                if (except is not null)
                 {
                     buttons.Remove(except);
                 }
                 foreach (var button in buttons)
                 {
-                    if (button == null)
+                    if (!button)
                     {
                         continue;
                     }
@@ -111,20 +110,18 @@ namespace Aurora.Unity.UI
 
         internal void RegisterButton(EnhancedButton button)
         {
-            if (button == null)
+            if (button)
             {
-                return;
+                _buttons.Add(button);
             }
-            _buttons.Add(button);
         }
 
         internal void UnregisterButton(EnhancedButton button)
         {
-            if (button == null)
+            if (button)
             {
-                return;
+                _buttons.Remove(button);
             }
-            _buttons.Remove(button);
         }
     }
 }

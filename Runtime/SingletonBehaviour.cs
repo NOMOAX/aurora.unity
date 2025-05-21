@@ -14,7 +14,7 @@ namespace Aurora.Unity
         /// 获取 <typeparamref name="T"/> 的单一实例，若不存在则寻找或创建新的。
         /// </summary>
         /// <exception cref="InvalidOperationException">应用程序即将结束运行，或者在编辑器环境下并且不在播放模式中。</exception>
-        public static T Instance => InstanceAlreadyExists != null
+        public static T Instance => InstanceAlreadyExists
                                         ? InstanceAlreadyExists
                                         : InstanceAlreadyExists = FetchOrCreateInstance();
 
@@ -29,11 +29,10 @@ namespace Aurora.Unity
         /// <exception cref="InvalidOperationException">应用程序即将结束运行，或者在编辑器环境下并且不在播放模式中。</exception>
         public static void EnsureInstanceExists()
         {
-            if (InstanceAlreadyExists != null)
+            if (!InstanceAlreadyExists)
             {
-                return;
+                InstanceAlreadyExists = FetchOrCreateInstance();
             }
-            InstanceAlreadyExists = FetchOrCreateInstance();
         }
 
         private static T FetchOrCreateInstance()
@@ -50,7 +49,7 @@ namespace Aurora.Unity
             var        found = FindObjectOfType<T>();
             GameObject gameObject;
             T          instance;
-            if (found != null)
+            if (found)
             {
                 gameObject = found.gameObject;
                 instance   = found;

@@ -13,7 +13,7 @@ namespace Aurora.Unity.Threading.Tasks
     /// </summary>
     public class UnityMainThreadTaskScheduler : TaskScheduler, IPlayerLoopItem
     {
-        private readonly Deque<Task> _tasks = new Deque<Task>();
+        private readonly Deque<Task> _tasks = new();
 
         private const PlayerLoopPhase PlayerLoopPhase = PlayerLoop.PlayerLoopPhase.UpdateYielded;
 

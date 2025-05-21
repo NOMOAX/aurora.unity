@@ -20,7 +20,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 NormalizedToWorldPosition(SpriteRenderer spriteRenderer, Vector2 normalizedPosition)
         {
-            if (spriteRenderer == null)
+            if (!spriteRenderer)
             {
                 throw new ArgumentNullException(nameof(spriteRenderer));
             }
@@ -47,7 +47,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizedToLocalPosition(SpriteRenderer spriteRenderer, Vector2 normalizedPosition)
         {
-            if (spriteRenderer == null)
+            if (!spriteRenderer)
             {
                 throw new ArgumentNullException(nameof(spriteRenderer));
             }
@@ -60,7 +60,7 @@ namespace Aurora.Unity
             Vector2        normalizedPosition)
         {
             var sprite = spriteRenderer.sprite;
-            if (sprite == null)
+            if (!sprite)
             {
                 throw new ArgumentException(null, nameof(sprite));
             }
@@ -87,7 +87,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 GetFlipMultiplier(SpriteRenderer spriteRenderer)
         {
-            if (spriteRenderer == null)
+            if (!spriteRenderer)
             {
                 throw new ArgumentNullException(nameof(spriteRenderer));
             }
@@ -97,7 +97,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector2 InternalGetFlipMultiplier(SpriteRenderer spriteRenderer)
         {
-            return new Vector2(spriteRenderer.flipX ? -1f : 1f, spriteRenderer.flipY ? -1f : 1f);
+            return new Vector2(spriteRenderer.flipX ? -1 : 1, spriteRenderer.flipY ? -1 : 1);
         }
     }
 }

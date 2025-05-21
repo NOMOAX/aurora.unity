@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Aurora.Collections;
 using Aurora.Unity.CompilerServices;
 using Aurora.Unity.PlayerLoop;
 using UnityEngine.Networking;

@@ -110,11 +110,11 @@ namespace Aurora.Unity.UI
                 }
                 if (isActiveAndEnabled)
                 {
-                    if (group != null)
+                    if (group)
                     {
                         group.UnregisterButton(this);
                     }
-                    if (value != null)
+                    if (value)
                     {
                         value.RegisterButton(this);
                     }
@@ -343,7 +343,7 @@ namespace Aurora.Unity.UI
             base.OnEnable();
             _pointerInside = false;
             _pointerDown   = false;
-            if (group != null)
+            if (group)
             {
                 group.RegisterButton(this);
             }
@@ -357,7 +357,7 @@ namespace Aurora.Unity.UI
             _pointerDown               = false;
             _delaySingleClickCoroutine = null;
             UpdateStatus();
-            if (group != null)
+            if (group)
             {
                 group.UnregisterButton(this);
             }
@@ -373,7 +373,7 @@ namespace Aurora.Unity.UI
             /// <summary>
             /// 默认颜色。
             /// </summary>
-            public Color defaultColor = new Color(0.8f, 0.8f, 0.8f);
+            public Color defaultColor = new(0.8f, 0.8f, 0.8f);
 
             /// <summary>
             /// 悬停颜色。
@@ -383,12 +383,12 @@ namespace Aurora.Unity.UI
             /// <summary>
             /// 按下颜色。
             /// </summary>
-            public Color pressedColor = new Color(0.6f, 0.6f, 0.6f);
+            public Color pressedColor = new(0.6f, 0.6f, 0.6f);
 
             /// <summary>
             /// 不可交互颜色。
             /// </summary>
-            public Color notInteractableColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            public Color notInteractableColor = new(0.5f, 0.5f, 0.5f, 0.5f);
 
             /// <summary>
             /// 根据指定的 <see cref="EnhancedButtonStatus"/> 获取颜色。

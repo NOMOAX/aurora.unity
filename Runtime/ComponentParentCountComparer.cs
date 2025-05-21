@@ -12,7 +12,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static ComponentParentCountComparer Instance { get; } = new ComponentParentCountComparer();
+        public static ComponentParentCountComparer Instance { get; } = new();
 
         /// <summary>
         /// 获取单一实例，但比较结果与 <see cref="Instance"/> 相反。
@@ -41,7 +41,7 @@ namespace Aurora.Unity
 
         private static int GetParentCount(Component component)
         {
-            if (component == null)
+            if (!component)
             {
                 return -1;
             }

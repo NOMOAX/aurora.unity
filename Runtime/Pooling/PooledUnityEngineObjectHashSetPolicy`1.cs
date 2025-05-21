@@ -47,7 +47,7 @@ namespace Aurora.Unity.Pooling
             {
                 return false;
             }
-            if (!(obj.Comparer is UnityEngineObjectEqualityComparer))
+            if (obj.Comparer is not UnityEngineObjectEqualityComparer)
             {
                 return false;
             }

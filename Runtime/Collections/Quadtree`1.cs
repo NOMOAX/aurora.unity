@@ -180,7 +180,7 @@ namespace Aurora.Unity.Collections
             {
                 throw new ArgumentOutOfRangeException(nameof(center), center, null);
             }
-            if (float.IsNaN(radius) || radius < 0f || float.IsPositiveInfinity(radius))
+            if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
             {
                 throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
             }
@@ -227,8 +227,7 @@ namespace Aurora.Unity.Collections
 
             private readonly Aabb2 _aabb2;
 
-            private readonly List<IQuadtreeElement<TElementPosition>> _elements =
-                new List<IQuadtreeElement<TElementPosition>>();
+            private readonly List<IQuadtreeElement<TElementPosition>> _elements = new();
 
             private Node[] _children;
 
@@ -411,7 +410,7 @@ namespace Aurora.Unity.Collections
                 {
                     throw new ArgumentOutOfRangeException(nameof(center), center, null);
                 }
-                if (float.IsNaN(radius) || radius < 0f || float.IsPositiveInfinity(radius))
+                if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
                 {
                     throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
                 }

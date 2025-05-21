@@ -22,11 +22,11 @@ namespace Aurora.Unity
             {
                 return color;
             }
-            if (htmlString == null)
+            throw htmlString switch
             {
-                throw new ArgumentNullException(nameof(htmlString));
-            }
-            throw new ArgumentException();
+                null     => new ArgumentNullException(nameof(htmlString)),
+                not null => new ArgumentException()
+            };
         }
     }
 }

@@ -17,56 +17,56 @@ namespace Aurora.Unity.PlayerLoop
 
         private static readonly Plan[] Plans =
         {
-            new Plan(
+            new(
                 typeof(FixedUpdate),
                 typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
                 false,
                 typeof(FixedUpdatingForPlayerLoopRunner),
                 typeof(FixedUpdatingForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(FixedUpdate),
                 typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
                 true,
                 typeof(FixedUpdatedForPlayerLoopRunner),
                 typeof(FixedUpdatedForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(Update),
                 typeof(Update.ScriptRunBehaviourUpdate),
                 false,
                 typeof(UpdatingForPlayerLoopRunner),
                 typeof(UpdatingForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(Update),
                 typeof(Update.ScriptRunBehaviourUpdate),
                 true,
                 typeof(UpdatedForPlayerLoopRunner),
                 typeof(UpdatedForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(Update),
                 typeof(Update.ScriptRunDelayedDynamicFrameRate),
                 true,
                 typeof(UpdateYieldedForPlayerLoopRunner),
                 typeof(UpdateYieldedForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(Update),
                 typeof(Update.ScriptRunDelayedTasks),
                 true,
                 typeof(UpdatePostedForPlayerLoopRunner),
                 typeof(UpdatePostedForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(PreLateUpdate),
                 typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
                 false,
                 typeof(LateUpdatingForPlayerLoopRunner),
                 typeof(LateUpdatingForContinuationRunner)
             ),
-            new Plan(
+            new(
                 typeof(PreLateUpdate),
                 typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
                 true,

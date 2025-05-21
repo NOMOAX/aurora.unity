@@ -17,11 +17,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="a"/> 或 <paramref name="b"/> 为 <see langword="null"/>。</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b)
         {
-            if (a == null)
+            if (!a)
             {
                 throw new ArgumentNullException(nameof(a));
             }
-            if (b == null)
+            if (!b)
             {
                 throw new ArgumentNullException(nameof(b));
             }
@@ -38,15 +38,15 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="a"/>、<paramref name="b"/> 或 <paramref name="c"/> 为 <see langword="null"/>。</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b, Transform c)
         {
-            if (a == null)
+            if (!a)
             {
                 throw new ArgumentNullException(nameof(a));
             }
-            if (b == null)
+            if (!b)
             {
                 throw new ArgumentNullException(nameof(b));
             }
-            if (c == null)
+            if (!c)
             {
                 throw new ArgumentNullException(nameof(c));
             }
@@ -65,19 +65,19 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="a"/>、<paramref name="b"/>、<paramref name="c"/> 或 <paramref name="d"/> 为 <see langword="null"/>。</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b, Transform c, Transform d)
         {
-            if (a == null)
+            if (!a)
             {
                 throw new ArgumentNullException(nameof(a));
             }
-            if (b == null)
+            if (!b)
             {
                 throw new ArgumentNullException(nameof(b));
             }
-            if (c == null)
+            if (!c)
             {
                 throw new ArgumentNullException(nameof(c));
             }
-            if (d == null)
+            if (!d)
             {
                 throw new ArgumentNullException(nameof(d));
             }
@@ -104,7 +104,7 @@ namespace Aurora.Unity
                 throw new ArgumentException(null, nameof(transforms));
             }
             var firstTransform = transforms[0];
-            if (firstTransform == null)
+            if (!firstTransform)
             {
                 throw new ArgumentNullException();
             }
@@ -112,7 +112,7 @@ namespace Aurora.Unity
             for (var i = 1; i < length; i++)
             {
                 var otherTransform = transforms[i];
-                if (otherTransform == null)
+                if (!otherTransform)
                 {
                     throw new ArgumentNullException();
                 }

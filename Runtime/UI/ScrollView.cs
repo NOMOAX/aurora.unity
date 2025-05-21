@@ -44,10 +44,10 @@ namespace Aurora.Unity.UI
             scrollViewItem.index == index;
 
         private static readonly CounterTriggerCallback OnValueChangeCounterTriggerCallback =
-            (counter, state) => ((ScrollView) state).OnValueChangeCounterTriggered();
+            (_, state) => ((ScrollView) state).OnValueChangeCounterTriggered();
 
         private static readonly TimerTriggerCallback OnScrollTimerTriggerCallback =
-            (timer, state) => ((ScrollView) state).OnScrollTimerTriggered();
+            (_, state) => ((ScrollView) state).OnScrollTimerTriggered();
 
         private IScrollViewController _controller;
 
@@ -67,7 +67,7 @@ namespace Aurora.Unity.UI
         internal HorizontalOrVerticalLayoutGroup contentLayoutGroup;
 
         [SerializeField]
-        internal RectOffset padding = new RectOffset();
+        internal RectOffset padding = new();
 
         [SerializeField]
         [Min(0)]
@@ -209,17 +209,17 @@ namespace Aurora.Unity.UI
         /// </list>
         /// </summary>
         /// <remarks>长度为 <see cref="_itemCount"/> 的 2 倍。</remarks>
-        private readonly List<float> _itemPositions = new List<float>();
+        private readonly List<float> _itemPositions = new();
 
         /// <summary>
         /// 活动的 <see cref="ScrollViewItem"/>。
         /// </summary>
-        private readonly Deque<ScrollViewItem> _activeItems = new Deque<ScrollViewItem>();
+        private readonly Deque<ScrollViewItem> _activeItems = new();
 
         /// <summary>
         /// 已回收的 <see cref="ScrollViewItem"/>。
         /// </summary>
-        private readonly List<ScrollViewItem> _recycledItems = new List<ScrollViewItem>();
+        private readonly List<ScrollViewItem> _recycledItems = new();
 
         /// <remarks>当内容大小较大、<see cref="snapSpeedThreshold"/> 较小时，<see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>不再每帧触发，不可靠，因此趁它还在触发的时候开启计数器，并且在速度降低到阈值之前持续刷新计数器，这样才可以实现当速度低于阈值时吸附（当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时）。</remarks>
         private ICounter _valueChangeCounter;
@@ -1089,7 +1089,7 @@ namespace Aurora.Unity.UI
                     Mathf.Abs((contentEndPosition - contentBeginPosition) / snapSpeed),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            if (duration > 0 && duration != float.PositiveInfinity)
+            if (duration is > 0 and not float.PositiveInfinity and not float.NaN)
             {
                 var       exitToken        = UnityEnvironment.ExitToken;
                 var       disableToken     = gameObject.GetDisableToken();
@@ -1169,11 +1169,12 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double Clamp01(double value)
         {
-            return value < 0
-                       ? 0
-                       : value > 1
-                           ? 1
-                           : value;
+            return value switch
+            {
+                < 0 => 0,
+                > 1 => 1,
+                _   => value
+            };
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1341,7 +1342,7 @@ namespace Aurora.Unity.UI
                 throw new ArgumentNullException(nameof(itemPrefab));
             }
 
-            if (_recycledItems.FindLastIndex(AreIdentifierEqual, itemPrefab) is var index && index >= 0)
+            if (_recycledItems.FindLastIndex(AreIdentifierEqual, itemPrefab) is var index and >= 0)
             {
                 var item = _recycledItems[index];
                 _recycledItems.RemoveAt(index);

@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Aurora.Interpolations;
 using Aurora.Unity.PlayerLoop;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,7 +21,7 @@ namespace Aurora.Unity.Threading
 
         private static readonly FromToTimerValueChangedEventHandler ProgressChangedEventHandler = OnProgressChanged;
 
-        private readonly object _lock = new object();
+        private readonly object _lock = new();
 
         private volatile bool _disposed;
 
@@ -39,7 +40,7 @@ namespace Aurora.Unity.Threading
         private double _timeTruncated;
 
         /// <remarks>因为 <see cref="_from"/> 和 <see cref="_to"/> 的初始值相等，所以进度的初始值为 1。</remarks>
-        private double _progress = 1d;
+        private double _progress = 1;
 
 #if UNITY_EDITOR
         private static void ThrowIfNotPlaying()
@@ -411,11 +412,11 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetProgress(FromToTimerValueChangingCausation causation, double value)
         {
-            if (!(value >= 0d && value <= 1d))
+            if (value is < 0 or > 1 or double.NaN)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
-            var newProgress = _from != _to ? value : 1d;
+            var newProgress = _from != _to ? value : 1;
             if (SetValueAndRaiseEvent(this, causation, ref _progress, newProgress, ProgressChangedEventHandler))
             {
                 var newTime = Lerp(_from, _to, _progress);
@@ -499,7 +500,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double Sign(double f)
         {
-            return f >= 0.0 ? 1f : -1f;
+            return f >= 0 ? 1 : -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -524,7 +525,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double GetProgress(double from, double to, double time)
         {
-            return from != to ? (time - from) / (to - from) : 1d;
+            return InterpolationUtility.InverseLinearInterpolate(from, to, time, 1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -532,9 +533,9 @@ namespace Aurora.Unity.Threading
         {
             if (!double.IsInfinity(to))
             {
-                return from + (to - from) * progress;
+                return InterpolationUtility.LinearInterpolate(from, to, progress);
             }
-            return progress == 0d ? from : to;
+            return progress == 0 ? from : to;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -19,7 +19,7 @@ namespace Aurora.Unity.UI.ViewSystem
     [RequireComponent(typeof(RectTransform))]
     public abstract class View : UIBehaviour, IEnumerable<View>
     {
-        private static readonly List<ViewContainer> Containers = new List<ViewContainer>();
+        private static readonly List<ViewContainer> Containers = new();
 
         private static readonly Func<View, IEnumerable<View>> FuncGetChildren = GetChildrenAsEnumerable;
 
@@ -34,7 +34,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <param name="rectTransform">一个矩形变换，它将作为界面的容器。</param>
         public static void AddContainer(RectTransform rectTransform)
         {
-            if (rectTransform == null)
+            if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
@@ -94,7 +94,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <exception cref="ArgumentNullException"><paramref name="view"/> 为 <see langword="null"/>。</exception>
         public static bool IsTopmost(View view)
         {
-            if (view == null)
+            if (!view)
             {
                 throw new ArgumentNullException(nameof(view));
             }
@@ -111,7 +111,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <exception cref="ArgumentException"><paramref name="exclusions"/> 含有 <paramref name="view"/>，或含有既不是 <see cref="View"/> 类型又不是 <see cref="Type"/> 类型的元素。</exception>
         public static bool IsTopmost(View view, object[] exclusions)
         {
-            if (view == null)
+            if (!view)
             {
                 throw new ArgumentNullException(nameof(view));
             }
@@ -694,7 +694,7 @@ namespace Aurora.Unity.UI.ViewSystem
             CancellationToken cancellationToken) where T : View
         {
             var view = await CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
-            if (view == null)
+            if (!view)
             {
                 throw new InvalidOperationException(
                     $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面为 null"
@@ -789,7 +789,7 @@ namespace Aurora.Unity.UI.ViewSystem
             CancellationToken cancellationToken) where T : View
         {
             var view = await CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
-            if (view == null)
+            if (!view)
             {
                 throw new InvalidOperationException(
                     $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面为 null"
@@ -839,13 +839,12 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         public RectTransform childContainer;
 
-        private readonly List<View> _children = new List<View>();
+        private readonly List<View> _children = new();
 
         /// <summary>
         /// 获取与此实例关联的矩形变换。
         /// </summary>
-        public RectTransform RectTransform =>
-            _rectTransform ? _rectTransform : _rectTransform = (RectTransform) transform;
+        public RectTransform RectTransform => _rectTransform ??= (RectTransform) transform;
 
         /// <summary>
         /// 由用户定义的数据。将在打开界面时赋值。
@@ -963,7 +962,7 @@ namespace Aurora.Unity.UI.ViewSystem
             get
             {
                 var root = this;
-                for (var parent = _parent; parent != null; parent = parent._parent)
+                for (var parent = _parent; parent; parent = parent._parent)
                 {
                     root = parent;
                 }
@@ -974,7 +973,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 获取一个值，这个值指示这个界面是否是根界面。
         /// </summary>
-        public bool IsRoot => _parent == null;
+        public bool IsRoot => _parent is null;
 
         /// <summary>
         /// 获取一个值，这个值指示这个界面是否是叶子界面。
@@ -1006,7 +1005,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <exception cref="ArgumentNullException"><paramref name="view"/> 为 <see langword="null"/>。</exception>
         public bool IsChildOf(View view)
         {
-            if (view == null)
+            if (!view)
             {
                 throw new ArgumentNullException(nameof(view));
             }
@@ -1019,7 +1018,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 return false;
             }
-            for (var parent = _parent; parent != null; parent = parent._parent)
+            for (var parent = _parent; parent; parent = parent._parent)
             {
                 if (view == parent)
                 {
@@ -1150,7 +1149,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 catch (Exception e)
                 {
                     Log.E(e);
-                    if (this != null)
+                    if (this)
                     {
                         Destroy(gameObject);
                     }
@@ -1219,11 +1218,11 @@ namespace Aurora.Unity.UI.ViewSystem
         {
             public readonly RectTransform RectTransform;
 
-            internal readonly List<View> Views = new List<View>();
+            internal readonly List<View> Views = new();
 
             internal ViewContainer(RectTransform rectTransform)
             {
-                if (rectTransform == null)
+                if (!rectTransform)
                 {
                     throw new ArgumentNullException(nameof(rectTransform));
                 }
@@ -1232,7 +1231,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 {
                     throw new GameObjectInactiveException(gameObject);
                 }
-                if (gameObject.GetComponentInParent<Canvas>() == null)
+                if (!gameObject.GetComponentInParent<Canvas>())
                 {
                     throw new ComponentNotGotException(gameObject, GetComponentMethod.Parent, typeof(Canvas));
                 }
@@ -1557,7 +1556,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
             void IDisposable.Dispose()
             {
-                if (_view == null)
+                if (!_view)
                 {
                     return;
                 }
@@ -1567,7 +1566,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
             bool IEnumerator.MoveNext()
             {
-                if (_view == null)
+                if (!_view)
                 {
                     throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
                 }
@@ -1589,17 +1588,17 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 get
                 {
-                    if (_view == null)
+                    if (!_view)
                     {
                         throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
                     }
-                    return _current != null ? _current : throw new InvalidOperationException();
+                    return _current ? _current : throw new InvalidOperationException();
                 }
             }
 
             void IEnumerator.Reset()
             {
-                if (_view == null)
+                if (!_view)
                 {
                     throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
                 }

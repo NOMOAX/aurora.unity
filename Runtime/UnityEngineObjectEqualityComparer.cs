@@ -11,7 +11,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static UnityEngineObjectEqualityComparer Instance { get; } = new UnityEngineObjectEqualityComparer();
+        public static UnityEngineObjectEqualityComparer Instance { get; } = new();
 
         private UnityEngineObjectEqualityComparer()
         {
@@ -20,7 +20,7 @@ namespace Aurora.Unity
         /// <inheritdoc />
         public bool Equals(Object x, Object y)
         {
-            return ReferenceEquals(x, y) || (object) x != null && (object) y != null &&
+            return ReferenceEquals(x, y) || x is not null && y is not null &&
                    UnityEngineObjectUtility.InternalGetInstanceId(x) ==
                    UnityEngineObjectUtility.InternalGetInstanceId(y);
         }

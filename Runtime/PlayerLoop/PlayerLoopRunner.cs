@@ -14,7 +14,7 @@ namespace Aurora.Unity.PlayerLoop
 
         private readonly PlayerLoopPhase _phase;
 
-        private readonly List<IPlayerLoopItem> _items = new List<IPlayerLoopItem>();
+        private readonly List<IPlayerLoopItem> _items = new();
 
         internal PlayerLoopRunner(PlayerLoopPhase phase)
         {

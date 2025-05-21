@@ -165,7 +165,7 @@ namespace Aurora.UnityEditor
             {
                 var rectTransform = (RectTransform) Selection.activeTransform;
                 var layoutRoot    = RectTransformUtility.GetLayoutRoot(rectTransform);
-                if (layoutRoot == null)
+                if (!layoutRoot)
                 {
                     Log.W("选中的矩形变换不参与布局。");
                     return;
@@ -406,7 +406,7 @@ namespace Aurora.UnityEditor
             {
                 foreach (var @object in Selection.objects)
                 {
-                    if (@object == null)
+                    if (!@object)
                     {
                         continue;
                     }
@@ -657,7 +657,7 @@ namespace Aurora.UnityEditor
         /// </summary>
         public static readonly string Path = PackageInfo.FindForAssembly(typeof(UnityUtility).Assembly).assetPath;
 
-        private static readonly Regex SymbolRegex = new Regex(@"\A[A-Za-z_][A-Za-z0-9_]*\z", RegexOptions.Compiled);
+        private static readonly Regex SymbolRegex = new(@"\A[A-Za-z_][A-Za-z0-9_]*\z", RegexOptions.Compiled);
 
         /// <seealso cref="EditorGUILayout.IsChildrenIncluded"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

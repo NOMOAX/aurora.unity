@@ -14,7 +14,7 @@ namespace Aurora.Unity.UI.ViewSystem
     /// </summary>
     public abstract class ViewHandler
     {
-        private static readonly HashSet<ViewHandler> ViewHandlers = new HashSet<ViewHandler>();
+        private static readonly HashSet<ViewHandler> ViewHandlers = new();
 
         private static readonly IComparer<ViewHandler> ReversedViewHandlerComparer =
             new ReversedComparer<ViewHandler>(new ViewHandlerComparer());

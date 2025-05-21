@@ -20,7 +20,7 @@ namespace Aurora.Unity.UI
         [SerializeField]
         internal bool useExactRaycastLocation;
 
-        private readonly List<Vector2> _positions = new List<Vector2>();
+        private readonly List<Vector2> _positions = new();
 
         private const int SegmentsMinValue = 3;
 
@@ -38,11 +38,11 @@ namespace Aurora.Unity.UI
         {
             get
             {
-                if (texture != null)
+                if (texture)
                 {
                     return texture;
                 }
-                return material != null && material.mainTexture != null ? material.mainTexture : s_WhiteTexture;
+                return material && material.mainTexture ? material.mainTexture : s_WhiteTexture;
             }
         }
 
@@ -122,7 +122,7 @@ namespace Aurora.Unity.UI
             // 添加圆心
             vh.AddVert(center, color32, new Vector2(0.5f, 0.5f));
 
-            var stepAngle = 2f * Mathf.PI / segments;
+            var stepAngle = 2 * Mathf.PI / segments;
 
             // 添加圆周上各点
             for (var i = 0; i < segments; i++)
@@ -158,17 +158,17 @@ namespace Aurora.Unity.UI
         {
         }
 
-        float ILayoutElement.minWidth => 0f;
+        float ILayoutElement.minWidth => 0;
 
-        float ILayoutElement.preferredWidth => texture == null ? 0f : texture.width;
+        float ILayoutElement.preferredWidth => texture ? texture.width : 0;
 
-        float ILayoutElement.flexibleWidth => -1f;
+        float ILayoutElement.flexibleWidth => -1;
 
-        float ILayoutElement.minHeight => 0f;
+        float ILayoutElement.minHeight => 0;
 
-        float ILayoutElement.preferredHeight => texture == null ? 0f : texture.height;
+        float ILayoutElement.preferredHeight => texture ? texture.height : 0;
 
-        float ILayoutElement.flexibleHeight => -1f;
+        float ILayoutElement.flexibleHeight => -1;
 
         int ILayoutElement.layoutPriority => 0;
 

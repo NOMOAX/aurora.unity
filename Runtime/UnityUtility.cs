@@ -23,7 +23,7 @@ namespace Aurora.Unity
     /// </summary>
     public static class UnityUtility
     {
-        private static readonly Regex OptimizeNameRegex = new Regex(
+        private static readonly Regex OptimizeNameRegex = new(
             @"(?:\(Clone\)| \([1-9][0-9]*\))+\Z",
             RegexOptions.Compiled
         );
@@ -76,7 +76,7 @@ namespace Aurora.Unity
             {
                 throw new ArgumentNullException(nameof(@object));
             }
-            if (@object == null)
+            if (!@object)
             {
                 return;
             }
@@ -122,7 +122,7 @@ namespace Aurora.Unity
             Object      gameObject,
             EventSystem eventSystem)
         {
-            if (gameObject == null || eventSystem == null)
+            if (!gameObject || !eventSystem)
             {
                 return;
             }

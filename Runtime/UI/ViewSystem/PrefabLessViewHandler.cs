@@ -10,7 +10,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static PrefabLessViewHandler Instance { get; } = new PrefabLessViewHandler();
+        public static PrefabLessViewHandler Instance { get; } = new();
 
         private PrefabLessViewHandler()
         {

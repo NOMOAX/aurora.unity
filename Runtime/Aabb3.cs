@@ -305,7 +305,7 @@ namespace Aurora.Unity
         public Vector3 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector3(minX, minY, minZ);
+            readonly get => new(minX, minY, minZ);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -321,11 +321,7 @@ namespace Aurora.Unity
         public Vector3 Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector3(
-                minX + (maxX - minX) * 0.5f,
-                minY + (maxY - minY) * 0.5f,
-                minZ + (maxZ - minZ) * 0.5f
-            );
+            readonly get => new(minX + (maxX - minX) * 0.5f, minY + (maxY - minY) * 0.5f, minZ + (maxZ - minZ) * 0.5f);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -347,7 +343,7 @@ namespace Aurora.Unity
         public Vector3 Max
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector3(maxX, maxY, maxZ);
+            readonly get => new(maxX, maxY, maxZ);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -363,7 +359,7 @@ namespace Aurora.Unity
         public Vector3 Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector3(maxX - minX, maxY - minY, maxZ - minZ);
+            readonly get => new(maxX - minX, maxY - minY, maxZ - minZ);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -385,7 +381,7 @@ namespace Aurora.Unity
         public Vector3 Extends
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector3((maxX - minX) * 0.5f, (maxY - minY) * 0.5f, (maxZ - minZ) * 0.5f);
+            readonly get => new((maxX - minX) * 0.5f, (maxY - minY) * 0.5f, (maxZ - minZ) * 0.5f);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -421,9 +417,9 @@ namespace Aurora.Unity
         public readonly Vector3 Unlerp(Vector3 point)
         {
             return new Vector3(
-                minX != maxX ? (point.x - minX) / (maxX - minX) : 0f,
-                minY != maxY ? (point.y - minY) / (maxY - minY) : 0f,
-                minZ != maxZ ? (point.z - minZ) / (maxZ - minZ) : 0f
+                minX != maxX ? (point.x - minX) / (maxX - minX) : 0,
+                minY != maxY ? (point.y - minY) / (maxY - minY) : 0,
+                minZ != maxZ ? (point.z - minZ) / (maxZ - minZ) : 0
             );
         }
 

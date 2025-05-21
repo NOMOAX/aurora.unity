@@ -14,10 +14,10 @@ namespace Aurora.Unity.UI
         internal Texture texture;
 
         [SerializeField]
-        internal List<NormalizedPositionAndColor> vertices = new List<NormalizedPositionAndColor>();
+        internal List<NormalizedPositionAndColor> vertices = new();
 
         [SerializeField]
-        internal List<Vector3Int> triangles = new List<Vector3Int>();
+        internal List<Vector3Int> triangles = new();
 
         private CustomGraphic()
         {
@@ -57,11 +57,11 @@ namespace Aurora.Unity.UI
         {
             get
             {
-                if (texture != null)
+                if (texture)
                 {
                     return texture;
                 }
-                return material != null && material.mainTexture != null ? material.mainTexture : s_WhiteTexture;
+                return material && material.mainTexture ? material.mainTexture : s_WhiteTexture;
             }
         }
 
@@ -144,17 +144,17 @@ namespace Aurora.Unity.UI
         {
         }
 
-        float ILayoutElement.minWidth => 0f;
+        float ILayoutElement.minWidth => 0;
 
-        float ILayoutElement.preferredWidth => texture == null ? 0f : texture.width;
+        float ILayoutElement.preferredWidth => texture ? texture.width : 0;
 
-        float ILayoutElement.flexibleWidth => -1f;
+        float ILayoutElement.flexibleWidth => -1;
 
-        float ILayoutElement.minHeight => 0f;
+        float ILayoutElement.minHeight => 0;
 
-        float ILayoutElement.preferredHeight => texture == null ? 0f : texture.height;
+        float ILayoutElement.preferredHeight => texture ? texture.height : 0;
 
-        float ILayoutElement.flexibleHeight => -1f;
+        float ILayoutElement.flexibleHeight => -1;
 
         int ILayoutElement.layoutPriority => 0;
     }

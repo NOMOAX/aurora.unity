@@ -22,34 +22,34 @@ namespace Aurora.Unity.UI
         internal bool topLeftCornerRadiusNormalized;
 
         [SerializeField]
-        [Min(0f)]
-        internal float topLeftCornerRadius = 8f;
+        [Min(0)]
+        internal float topLeftCornerRadius = 8;
 
         [SerializeField]
         internal bool topRightCornerRadiusNormalized;
 
         [SerializeField]
-        [Min(0f)]
-        internal float topRightCornerRadius = 8f;
+        [Min(0)]
+        internal float topRightCornerRadius = 8;
 
         [SerializeField]
         internal bool bottomLeftCornerRadiusNormalized;
 
         [SerializeField]
-        [Min(0f)]
-        internal float bottomLeftCornerRadius = 8f;
+        [Min(0)]
+        internal float bottomLeftCornerRadius = 8;
 
         [SerializeField]
         internal bool bottomRightCornerRadiusNormalized;
 
         [SerializeField]
-        [Min(0f)]
-        internal float bottomRightCornerRadius = 8f;
+        [Min(0)]
+        internal float bottomRightCornerRadius = 8;
 
         [SerializeField]
         internal bool useExactRaycastLocation;
 
-        private readonly List<Vector2> _positions = new List<Vector2>();
+        private readonly List<Vector2> _positions = new();
 
         private const int SegmentsMinValue = 1;
 
@@ -67,11 +67,11 @@ namespace Aurora.Unity.UI
         {
             get
             {
-                if (texture != null)
+                if (texture)
                 {
                     return texture;
                 }
-                return material != null && material.mainTexture != null ? material.mainTexture : s_WhiteTexture;
+                return material && material.mainTexture ? material.mainTexture : s_WhiteTexture;
             }
         }
 
@@ -140,7 +140,7 @@ namespace Aurora.Unity.UI
             get => topLeftCornerRadius;
             set
             {
-                if (!(value >= 0f) || topLeftCornerRadiusNormalized && !(value <= 1f))
+                if (!(value >= 0) || topLeftCornerRadiusNormalized && !(value <= 1))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -178,7 +178,7 @@ namespace Aurora.Unity.UI
             get => topRightCornerRadius;
             set
             {
-                if (!(value >= 0f) || topRightCornerRadiusNormalized && !(value <= 1f))
+                if (!(value >= 0) || topRightCornerRadiusNormalized && !(value <= 1))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -216,7 +216,7 @@ namespace Aurora.Unity.UI
             get => bottomLeftCornerRadius;
             set
             {
-                if (!(value >= 0f) || bottomLeftCornerRadiusNormalized && !(value <= 1f))
+                if (!(value >= 0) || bottomLeftCornerRadiusNormalized && !(value <= 1))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -254,7 +254,7 @@ namespace Aurora.Unity.UI
             get => bottomRightCornerRadius;
             set
             {
-                if (!(value >= 0f) || bottomRightCornerRadiusNormalized && !(value <= 1f))
+                if (!(value >= 0) || bottomRightCornerRadiusNormalized && !(value <= 1))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -299,8 +299,8 @@ namespace Aurora.Unity.UI
             var newNormalized     = !normalized;
             value = newNormalized switch
             {
-                false => Mathf.Lerp(0f, halfMinSide, value),
-                true  => Mathf.Clamp01(Mathf.InverseLerp(0f, halfMinSide, value))
+                false => Mathf.Lerp(0, halfMinSide, value),
+                true  => Mathf.Clamp01(Mathf.InverseLerp(0, halfMinSide, value))
             };
             normalized = newNormalized;
             SetVerticesDirty();
@@ -310,8 +310,8 @@ namespace Aurora.Unity.UI
         {
             return normalized switch
             {
-                false => value >= 0f,
-                true  => value >= 0f && value <= 1f
+                false => value >= 0,
+                true  => value is >= 0 and <= 1
             };
         }
 
@@ -426,17 +426,17 @@ namespace Aurora.Unity.UI
         {
         }
 
-        float ILayoutElement.minWidth => 0f;
+        float ILayoutElement.minWidth => 0;
 
-        float ILayoutElement.preferredWidth => texture == null ? 0f : texture.width;
+        float ILayoutElement.preferredWidth => texture ? texture.width : 0;
 
-        float ILayoutElement.flexibleWidth => -1f;
+        float ILayoutElement.flexibleWidth => -1;
 
-        float ILayoutElement.minHeight => 0f;
+        float ILayoutElement.minHeight => 0;
 
-        float ILayoutElement.preferredHeight => texture == null ? 0f : texture.height;
+        float ILayoutElement.preferredHeight => texture ? texture.height : 0;
 
-        float ILayoutElement.flexibleHeight => -1f;
+        float ILayoutElement.flexibleHeight => -1;
 
         int ILayoutElement.layoutPriority => 0;
 
@@ -480,7 +480,7 @@ namespace Aurora.Unity.UI
         {
             if (float.IsNaN(value))
             {
-                value = 0f;
+                value = 0;
                 return;
             }
             if (IsValueValid(normalized, value))
@@ -489,7 +489,7 @@ namespace Aurora.Unity.UI
             }
             value = normalized switch
             {
-                false => Mathf.Max(value, 0f),
+                false => Mathf.Max(value, 0),
                 true  => Mathf.Clamp01(value)
             };
         }

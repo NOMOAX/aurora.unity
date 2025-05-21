@@ -16,7 +16,7 @@ namespace Aurora.Unity
         /// <remarks>如果你在 PlayerSettings 中设置了默认光标，则应在程序启动后调用 <see cref="set_InitialCursorInfo"/>。</remarks>
         public static CursorInfo InitialCursorInfo { set => _initialCursorInfo = value; }
 
-        private static readonly Stack<CursorInfo> CursorInfos = new Stack<CursorInfo>(16);
+        private static readonly Stack<CursorInfo> CursorInfos = new(16);
 
         private static CursorInfo _initialCursorInfo;
 

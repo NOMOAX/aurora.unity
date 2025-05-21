@@ -16,11 +16,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> 为 <see langword="null"/>。</exception>
         public static AudioSourceStatus GetStatus(this AudioSource audioSource)
         {
-            if (audioSource == null)
+            if (!audioSource)
             {
                 throw new ArgumentNullException(nameof(audioSource));
             }
-            if (audioSource.clip == null)
+            if (!audioSource.clip)
             {
                 return AudioSourceStatus.None;
             }
@@ -45,19 +45,19 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> 为 <see langword="null"/>。</exception>
         public static double GetProgress(this AudioSource audioSource)
         {
-            if (audioSource == null)
+            if (!audioSource)
             {
                 throw new ArgumentNullException(nameof(audioSource));
             }
             var audioClip = audioSource.clip;
-            if (audioClip == null)
+            if (!audioClip)
             {
-                return 0d;
+                return 0;
             }
             var samples = audioClip.samples;
             if (samples < 2)
             {
-                return 1d;
+                return 1;
             }
             var timeSamples = audioSource.timeSamples;
             return (double) timeSamples / (samples - 1);
@@ -72,16 +72,16 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="progress"/> 不在 [0, 1] 范围内。</exception>
         public static void SetProgress(this AudioSource audioSource, double progress)
         {
-            if (audioSource == null)
+            if (!audioSource)
             {
                 throw new ArgumentNullException(nameof(audioSource));
             }
-            if (!(progress >= 0d && progress <= 1d))
+            if (progress is < 0 or > 1 or float.NaN)
             {
                 throw new ArgumentOutOfRangeException(nameof(progress), progress, null);
             }
             var audioClip = audioSource.clip;
-            if (audioClip == null)
+            if (!audioClip)
             {
                 return;
             }

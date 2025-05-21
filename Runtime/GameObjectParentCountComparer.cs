@@ -12,7 +12,7 @@ namespace Aurora.Unity
         /// <summary>
         /// 获取单一实例。
         /// </summary>
-        public static GameObjectParentCountComparer Instance { get; } = new GameObjectParentCountComparer();
+        public static GameObjectParentCountComparer Instance { get; } = new();
 
         /// <summary>
         /// 获取单一实例，但比较结果与 <see cref="Instance"/> 相反。
@@ -41,7 +41,7 @@ namespace Aurora.Unity
 
         private static int GetParentCount(GameObject gameObject)
         {
-            if (gameObject == null)
+            if (!gameObject)
             {
                 return -1;
             }

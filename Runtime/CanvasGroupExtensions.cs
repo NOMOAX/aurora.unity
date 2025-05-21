@@ -23,11 +23,11 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentNullException"><paramref name="canvasGroup"/> 为 <see langword="null"/>。</exception>
         public static void Set(this CanvasGroup canvasGroup, bool value)
         {
-            if (canvasGroup == null)
+            if (!canvasGroup)
             {
                 throw new ArgumentNullException(nameof(canvasGroup));
             }
-            canvasGroup.alpha          = value ? 1f : 0f;
+            canvasGroup.alpha          = value ? 1 : 0;
             canvasGroup.blocksRaycasts = value;
         }
     }

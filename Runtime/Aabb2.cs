@@ -222,7 +222,7 @@ namespace Aurora.Unity
         public Vector2 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector2(minX, minY);
+            readonly get => new(minX, minY);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -237,7 +237,7 @@ namespace Aurora.Unity
         public Vector2 Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector2(minX + (maxX - minX) * 0.5f, minY + (maxY - minY) * 0.5f);
+            readonly get => new(minX + (maxX - minX) * 0.5f, minY + (maxY - minY) * 0.5f);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -256,7 +256,7 @@ namespace Aurora.Unity
         public Vector2 Max
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector2(maxX, maxY);
+            readonly get => new(maxX, maxY);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -271,7 +271,7 @@ namespace Aurora.Unity
         public Vector2 Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector2(maxX - minX, maxY - minY);
+            readonly get => new(maxX - minX, maxY - minY);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -290,7 +290,7 @@ namespace Aurora.Unity
         public Vector2 Extends
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get => new Vector2((maxX - minX) * 0.5f, (maxY - minY) * 0.5f);
+            readonly get => new((maxX - minX) * 0.5f, (maxY - minY) * 0.5f);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -323,8 +323,8 @@ namespace Aurora.Unity
         public readonly Vector2 Unlerp(Vector2 point)
         {
             return new Vector2(
-                minX != maxX ? (point.x - minX) / (maxX - minX) : 0f,
-                minY != maxY ? (point.y - minY) / (maxY - minY) : 0f
+                minX != maxX ? (point.x - minX) / (maxX - minX) : 0,
+                minY != maxY ? (point.y - minY) / (maxY - minY) : 0
             );
         }
 
@@ -483,7 +483,7 @@ namespace Aurora.Unity
         /// <returns>由 <paramref name="aabb2"/> 转换得到的三维轴向包围盒。</returns>
         public static implicit operator Aabb3(Aabb2 aabb2)
         {
-            return new Aabb3(aabb2.minX, aabb2.minY, 0f, aabb2.maxX, aabb2.maxY, 0f);
+            return new Aabb3(aabb2.minX, aabb2.minY, 0, aabb2.maxX, aabb2.maxY, 0);
         }
 
         /// <summary>
