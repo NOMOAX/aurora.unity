@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Aurora.Unity.UI.ViewSystem
 {
+    /// <summary>
+    /// 处理 <see cref="PrefabLessView"/> 的界面处理程序。
+    /// </summary>
     public sealed class PrefabLessViewHandler : ViewHandler
     {
         /// <summary>
@@ -16,8 +19,10 @@ namespace Aurora.Unity.UI.ViewSystem
         {
         }
 
+        /// <inheritdoc />
         public override Type HandleableLeastDerivedViewType => typeof(PrefabLessView);
 
+        /// <inheritdoc />
         public override Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)

@@ -102,7 +102,7 @@ namespace Aurora.Unity.UI
             get => segments;
             set
             {
-                if (value < SegmentsMinValue || value > SegmentsMaxValue)
+                if (value is < SegmentsMinValue or > SegmentsMaxValue)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -140,7 +140,7 @@ namespace Aurora.Unity.UI
             get => topLeftCornerRadius;
             set
             {
-                if (!(value >= 0) || topLeftCornerRadiusNormalized && !(value <= 1))
+                if (value is float.NaN or < 0 || topLeftCornerRadiusNormalized && value > 1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -178,7 +178,7 @@ namespace Aurora.Unity.UI
             get => topRightCornerRadius;
             set
             {
-                if (!(value >= 0) || topRightCornerRadiusNormalized && !(value <= 1))
+                if (value is float.NaN or < 0 || topRightCornerRadiusNormalized && value > 1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -216,7 +216,7 @@ namespace Aurora.Unity.UI
             get => bottomLeftCornerRadius;
             set
             {
-                if (!(value >= 0) || bottomLeftCornerRadiusNormalized && !(value <= 1))
+                if (value is float.NaN or < 0 || bottomLeftCornerRadiusNormalized && value > 1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -254,7 +254,7 @@ namespace Aurora.Unity.UI
             get => bottomRightCornerRadius;
             set
             {
-                if (!(value >= 0) || bottomRightCornerRadiusNormalized && !(value <= 1))
+                if (value is float.NaN or < 0 || bottomRightCornerRadiusNormalized && value > 1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -300,7 +300,7 @@ namespace Aurora.Unity.UI
             value = newNormalized switch
             {
                 false => Mathf.Lerp(0, halfMinSide, value),
-                true  => Mathf.Clamp01(Mathf.InverseLerp(0, halfMinSide, value))
+                true  => Mathf.InverseLerp(0, halfMinSide, value)
             };
             normalized = newNormalized;
             SetVerticesDirty();
@@ -478,7 +478,7 @@ namespace Aurora.Unity.UI
 
         private static void CorrectValue(bool normalized, ref float value)
         {
-            if (float.IsNaN(value))
+            if (value is float.NaN)
             {
                 value = 0;
                 return;

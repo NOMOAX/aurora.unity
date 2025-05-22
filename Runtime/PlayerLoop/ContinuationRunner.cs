@@ -36,9 +36,7 @@ namespace Aurora.Unity.PlayerLoop
 #if UNITY_EDITOR
         internal void Clear()
         {
-            while (_continuations.TryDequeue(out _))
-            {
-            }
+            _continuations.Clear();
         }
 #endif
 

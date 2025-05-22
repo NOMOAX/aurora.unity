@@ -1089,7 +1089,7 @@ namespace Aurora.Unity.UI
                     Mathf.Abs((contentEndPosition - contentBeginPosition) / snapSpeed),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            if (duration is > 0 and not float.PositiveInfinity and not float.NaN)
+            if (duration is not float.NaN and > 0 and not float.PositiveInfinity)
             {
                 var       exitToken        = UnityEnvironment.ExitToken;
                 var       disableToken     = gameObject.GetDisableToken();
@@ -1099,8 +1099,7 @@ namespace Aurora.Unity.UI
                 try
                 {
                     if (scrollRect.movementType == ScrollRect.MovementType.Elastic &&
-                        GetNormalizedScrollPosition() is var normalizedScrollPosition &&
-                        (normalizedScrollPosition < 0 || normalizedScrollPosition > 1))
+                        GetNormalizedScrollPosition() is < 0 or > 1)
                     {
                         scrollRect.velocity = Set(scrollRect.velocity, 0);
                     }
@@ -1768,7 +1767,7 @@ namespace Aurora.Unity.UI
                      * 由于 ScrollRect.onValueChanged 的触发不可靠，需要使用另一种方式来检测速度小于阈值
                      * 目前速度不小于阈值，启用计数器（即使已经启用了也没关系，反复启用只会生效最后一次），将在计数器的回调方法中检测速度是否低于阈值
                      */
-                    if (!(speed < snapSpeedThreshold))
+                    if (speed >= snapSpeedThreshold)
                     {
                         EnableValueChangeCounter();
                         DisableScrollTimer();

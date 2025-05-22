@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Aurora.Interpolations;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -405,7 +406,11 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3 Lerp(Vector3 t)
         {
-            return new Vector3(minX + (maxX - minX) * t.x, minY + (maxY - minY) * t.y, minZ + (maxZ - minZ) * t.z);
+            return new Vector3(
+                (float) InterpolationUtility.LinearInterpolate(minX, maxX, t.x),
+                (float) InterpolationUtility.LinearInterpolate(minY, maxY, t.y),
+                (float) InterpolationUtility.LinearInterpolate(minZ, maxZ, t.z)
+            );
         }
 
         /// <summary>
@@ -417,9 +422,9 @@ namespace Aurora.Unity
         public readonly Vector3 Unlerp(Vector3 point)
         {
             return new Vector3(
-                minX != maxX ? (point.x - minX) / (maxX - minX) : 0,
-                minY != maxY ? (point.y - minY) / (maxY - minY) : 0,
-                minZ != maxZ ? (point.z - minZ) / (maxZ - minZ) : 0
+                (float) InterpolationUtility.InverseLinearInterpolate(minX, maxX, point.x),
+                (float) InterpolationUtility.InverseLinearInterpolate(minY, maxY, point.y),
+                (float) InterpolationUtility.InverseLinearInterpolate(minZ, maxZ, point.z)
             );
         }
 

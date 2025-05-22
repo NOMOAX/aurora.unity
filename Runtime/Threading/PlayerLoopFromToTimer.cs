@@ -333,7 +333,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetFrom(FromToTimerValueChangingCausation causation, double value)
         {
-            if (double.IsNaN(value) || double.IsInfinity(value))
+            if (value is double.NaN || double.IsInfinity(value))
             {
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
@@ -361,7 +361,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetTo(FromToTimerValueChangingCausation causation, double value)
         {
-            if (double.IsNaN(value))
+            if (value is double.NaN)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
@@ -389,7 +389,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetTime(FromToTimerValueChangingCausation causation, double value)
         {
-            if (double.IsNaN(value))
+            if (value is double.NaN)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
@@ -412,7 +412,7 @@ namespace Aurora.Unity.Threading
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetProgress(FromToTimerValueChangingCausation causation, double value)
         {
-            if (value is < 0 or > 1 or double.NaN)
+            if (value is double.NaN or < 0 or > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }

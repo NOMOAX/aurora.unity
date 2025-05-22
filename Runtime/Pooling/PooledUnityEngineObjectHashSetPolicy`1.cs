@@ -23,12 +23,7 @@ namespace Aurora.Unity.Pooling
         /// <inheritdoc />
         public HashSet<T> Create()
         {
-            // return new HashSet<T>(InitialCapacity, UnityEngineObjectEqualityComparer.Instance);
-
-            // TODO 待 Unity 2020 逐渐退出历史舞台后，改用上面被注释掉的代码
-            var hashSet = new HashSet<T>(new T[InitialCapacity], UnityEngineObjectEqualityComparer.Instance);
-            hashSet.Clear();
-            return hashSet;
+            return new HashSet<T>(InitialCapacity, UnityEngineObjectEqualityComparer.Instance);
         }
 
         /// <inheritdoc />

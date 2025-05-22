@@ -130,15 +130,15 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 值。
         /// </summary>
-        /// <exception cref="ArgumentException"><paramref name="value"/> 为 <see cref="float.NaN"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字。</exception>
         public float Value
         {
             get => value;
             set
             {
-                if (float.IsNaN(value))
+                if (value is float.NaN)
                 {
-                    throw new ArgumentException(null, nameof(value));
+                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
                 value = Mathf.Clamp01(value);
                 SetValue(value, true);
@@ -232,7 +232,7 @@ namespace Aurora.Unity.UI
         /// <exception cref="ArgumentException"><paramref name="v"/> 为 <see cref="float.NaN"/>。</exception>
         public void SetValueWithoutNotify(float v)
         {
-            if (float.IsNaN(v))
+            if (v is float.NaN)
             {
                 throw new ArgumentException(null, nameof(v));
             }

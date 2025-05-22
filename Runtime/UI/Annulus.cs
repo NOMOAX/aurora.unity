@@ -86,7 +86,7 @@ namespace Aurora.Unity.UI
             get => segments;
             set
             {
-                if (value < SegmentsMinValue || value > SegmentsMaxValue)
+                if (value is < SegmentsMinValue or > SegmentsMaxValue)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -108,7 +108,7 @@ namespace Aurora.Unity.UI
             get => thickness;
             set
             {
-                if (value is < 0 or > 1 or float.NaN)
+                if (value is float.NaN or < 0 or > 1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
                 }
@@ -270,7 +270,7 @@ namespace Aurora.Unity.UI
         {
             base.OnValidate();
             segments  = Mathf.Clamp(segments, SegmentsMinValue, SegmentsMaxValue);
-            thickness = !float.IsNaN(thickness) ? Mathf.Clamp01(thickness) : ThicknessDefaultValue;
+            thickness = thickness is not float.NaN ? Mathf.Clamp01(thickness) : ThicknessDefaultValue;
         }
 #endif
 

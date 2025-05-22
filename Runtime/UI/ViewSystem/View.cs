@@ -146,12 +146,13 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.Remove(excludedView);
                             break;
                         case Type excludedViewType:
-                            views.RemoveAll(Match);
+                            views.RemoveAll(Match, ValueTuple.Create(view, excludedViewType));
                             break;
 
-                            bool Match(View e)
+                            static bool Match(View view, ValueTuple<Object, Type> state)
                             {
-                                return !ReferenceEquals(e, view) && excludedViewType.IsInstanceOfType(e);
+                                var (target, type) = state;
+                                return !ReferenceEquals(view, target) && type.IsInstanceOfType(view);
                             }
                         default:
                             throw new ArgumentException(null, nameof(exclusions));
@@ -229,12 +230,12 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.Remove(excludedView);
                             break;
                         case Type excludedViewType:
-                            views.RemoveAll(Match);
+                            views.RemoveAll(Match, excludedViewType);
                             break;
 
-                            bool Match(View e)
+                            static bool Match(View view, Type type)
                             {
-                                return excludedViewType.IsInstanceOfType(e);
+                                return type.IsInstanceOfType(view);
                             }
                         default:
                             throw new ArgumentException(null, nameof(exclusions));

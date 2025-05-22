@@ -1,5 +1,4 @@
 ﻿using System;
-using Aurora.Diagnostics;
 using UnityEngine;
 
 namespace Aurora.Unity.PlayerLoop
@@ -52,16 +51,7 @@ namespace Aurora.Unity.PlayerLoop
 
         void IPlayerLoopItem.Run(PlayerLoopPhase playerLoopPhase)
         {
-            if (_invocation != null)
-            {
-                _invocation.Invoke();
-            }
-            else
-            {
-                Log.E(
-                    $"检测到此实例已释放，但仍被播放器循环运行器 ({nameof(PlayerLoopRunner)}) 调用。如果此日志消息只打印一次，那么应该是正常现象，可以忽略掉。如果此日志消息打印了多次，请通知作者！"
-                );
-            }
+            _invocation.Invoke();
         }
 
         /// <inheritdoc />

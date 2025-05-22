@@ -76,7 +76,7 @@ namespace Aurora.Unity
             {
                 throw new ArgumentNullException(nameof(audioSource));
             }
-            if (progress is < 0 or > 1 or float.NaN)
+            if (progress is float.NaN or < 0 or > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(progress), progress, null);
             }

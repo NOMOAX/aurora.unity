@@ -60,7 +60,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color32 WithH(this Color32 color, float h)
         {
-            if (h is < 0 or > 1 or float.NaN)
+            if (h is float.NaN or < 0 or > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(h), h, null);
             }
@@ -78,7 +78,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWithH(this Color32 color, float h, out Color32 result)
         {
-            if (h is < 0 or > 1 or float.NaN)
+            if (h is float.NaN or < 0 or > 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(h), h, null);
             }

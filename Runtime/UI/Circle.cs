@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,12 +68,16 @@ namespace Aurora.Unity.UI
         /// <summary>
         /// 边数。
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [3, 64998] 范围内。</exception>
         public int Segments
         {
             get => segments;
             set
             {
-                value = Mathf.Clamp(value, SegmentsMinValue, SegmentsMaxValue);
+                if (value is < SegmentsMinValue or > SegmentsMaxValue)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
+                }
                 if (segments == value)
                 {
                     return;

@@ -138,16 +138,17 @@ namespace Aurora.Unity.Threading
             get => Time.frameCount;
         }
 
-        private int PeriodGreaterThanOrEqualToOne
+        /// <remarks>访问此属性时，<see cref="_period"/> 要么是正数，要么是 0。</remarks>
+        private int PeriodZeroIsOne
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Math.Max(_period, 1);
+            get => _period != 0 ? _period : 1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ThrowIfDueCountOrPeriodIsInvalid(int dueCountOrPeriod, string paramName)
         {
-            if (dueCountOrPeriod == -1 || dueCountOrPeriod >= 0)
+            if (dueCountOrPeriod is -1 or >= 0)
             {
                 return;
             }
@@ -174,7 +175,7 @@ namespace Aurora.Unity.Threading
                 _scheduled = true;
                 if (UnityEnvironment.OnUnityMainThread)
                 {
-                    _targetFrameCount         = UnityFrameCount + PeriodGreaterThanOrEqualToOne;
+                    _targetFrameCount         = UnityFrameCount + PeriodZeroIsOne;
                     _delayGetTargetFrameCount = false;
                 }
                 else
@@ -221,8 +222,7 @@ namespace Aurora.Unity.Threading
                 }
                 if (_delayGetTargetFrameCount)
                 {
-                    _targetFrameCount = UnityFrameCount +
-                                        (!_firstCallbackInvoked ? _dueCount : PeriodGreaterThanOrEqualToOne);
+                    _targetFrameCount = UnityFrameCount + (!_firstCallbackInvoked ? _dueCount : PeriodZeroIsOne);
                     _delayGetTargetFrameCount = false;
                     return;
                 }
@@ -246,7 +246,7 @@ namespace Aurora.Unity.Threading
                     }
                     else
                     {
-                        _targetFrameCount = UnityFrameCount + PeriodGreaterThanOrEqualToOne;
+                        _targetFrameCount = UnityFrameCount + PeriodZeroIsOne;
                     }
                 }
                 else
@@ -261,7 +261,7 @@ namespace Aurora.Unity.Threading
                     {
                         return;
                     }
-                    _targetFrameCount = UnityFrameCount + PeriodGreaterThanOrEqualToOne;
+                    _targetFrameCount = UnityFrameCount + PeriodZeroIsOne;
                 }
             }
             finally

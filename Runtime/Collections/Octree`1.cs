@@ -47,10 +47,10 @@ namespace Aurora.Unity.Collections
             {
                 throw new ArgumentNullException(nameof(createNodeHandler));
             }
-            if (float.IsNaN(aabb3.MinX) || float.IsInfinity(aabb3.MinX) || float.IsNaN(aabb3.MaxX) ||
-                float.IsInfinity(aabb3.MaxX) || float.IsNaN(aabb3.MinY) || float.IsInfinity(aabb3.MinY) ||
-                float.IsNaN(aabb3.MaxY) || float.IsInfinity(aabb3.MaxY) || float.IsNaN(aabb3.MinZ) ||
-                float.IsInfinity(aabb3.MinZ) || float.IsNaN(aabb3.MaxZ) || float.IsInfinity(aabb3.MaxZ))
+            if (aabb3.MinX is float.NaN || float.IsInfinity(aabb3.MinX) || aabb3.MaxX is float.NaN ||
+                float.IsInfinity(aabb3.MaxX) || aabb3.MinY is float.NaN || float.IsInfinity(aabb3.MinY) ||
+                aabb3.MaxY is float.NaN || float.IsInfinity(aabb3.MaxY) || aabb3.MinZ is float.NaN ||
+                float.IsInfinity(aabb3.MinZ) || aabb3.MaxZ is float.NaN || float.IsInfinity(aabb3.MaxZ))
             {
                 throw new ArgumentOutOfRangeException(nameof(aabb3), aabb3, null);
             }
@@ -176,12 +176,12 @@ namespace Aurora.Unity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInSphere(Vector3 center, float radius, List<IOctreeElement<TElementPosition>> results)
         {
-            if (float.IsNaN(center.x) || float.IsInfinity(center.x) || float.IsNaN(center.y) ||
-                float.IsInfinity(center.y) || float.IsNaN(center.z) || float.IsInfinity(center.z))
+            if (center.x is float.NaN || float.IsInfinity(center.x) || center.y is float.NaN ||
+                float.IsInfinity(center.y) || center.z is float.NaN || float.IsInfinity(center.z))
             {
                 throw new ArgumentOutOfRangeException(nameof(center), center, null);
             }
-            if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
+            if (radius is float.NaN or < 0 or float.PositiveInfinity)
             {
                 throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
             }
@@ -202,10 +202,10 @@ namespace Aurora.Unity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInAabb3(Aabb3 aabb3, List<IOctreeElement<TElementPosition>> results)
         {
-            if (float.IsNaN(aabb3.MinX) || float.IsInfinity(aabb3.MinX) || float.IsNaN(aabb3.MaxX) ||
-                float.IsInfinity(aabb3.MaxX) || float.IsNaN(aabb3.MinY) || float.IsInfinity(aabb3.MinY) ||
-                float.IsNaN(aabb3.MaxY) || float.IsInfinity(aabb3.MaxY) || float.IsNaN(aabb3.MinZ) ||
-                float.IsInfinity(aabb3.MinZ) || float.IsNaN(aabb3.MaxZ) || float.IsInfinity(aabb3.MaxZ))
+            if (aabb3.MinX is float.NaN || float.IsInfinity(aabb3.MinX) || aabb3.MaxX is float.NaN ||
+                float.IsInfinity(aabb3.MaxX) || aabb3.MinY is float.NaN || float.IsInfinity(aabb3.MinY) ||
+                aabb3.MaxY is float.NaN || float.IsInfinity(aabb3.MaxY) || aabb3.MinZ is float.NaN ||
+                float.IsInfinity(aabb3.MinZ) || aabb3.MaxZ is float.NaN || float.IsInfinity(aabb3.MaxZ))
             {
                 throw new ArgumentOutOfRangeException(nameof(aabb3), aabb3, null);
             }
@@ -407,12 +407,12 @@ namespace Aurora.Unity.Collections
                 float                                  radius,
                 List<IOctreeElement<TElementPosition>> results)
             {
-                if (float.IsNaN(center.x) || float.IsInfinity(center.x) || float.IsNaN(center.y) ||
-                    float.IsInfinity(center.y) || float.IsNaN(center.z) || float.IsInfinity(center.z))
+                if (center.x is float.NaN || float.IsInfinity(center.x) || center.y is float.NaN ||
+                    float.IsInfinity(center.y) || center.z is float.NaN || float.IsInfinity(center.z))
                 {
                     throw new ArgumentOutOfRangeException(nameof(center), center, null);
                 }
-                if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
+                if (radius is float.NaN or < 0 or float.PositiveInfinity)
                 {
                     throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
                 }
@@ -461,10 +461,10 @@ namespace Aurora.Unity.Collections
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElementsInAabb3(Aabb3 aabb3, List<IOctreeElement<TElementPosition>> results)
             {
-                if (float.IsNaN(aabb3.MinX) || float.IsInfinity(aabb3.MinX) || float.IsNaN(aabb3.MaxX) ||
-                    float.IsInfinity(aabb3.MaxX) || float.IsNaN(aabb3.MinY) || float.IsInfinity(aabb3.MinY) ||
-                    float.IsNaN(aabb3.MaxY) || float.IsInfinity(aabb3.MaxY) || float.IsNaN(aabb3.MinZ) ||
-                    float.IsInfinity(aabb3.MinZ) || float.IsNaN(aabb3.MaxZ) || float.IsInfinity(aabb3.MaxZ))
+                if (aabb3.MinX is float.NaN || float.IsInfinity(aabb3.MinX) || aabb3.MaxX is float.NaN ||
+                    float.IsInfinity(aabb3.MaxX) || aabb3.MinY is float.NaN || float.IsInfinity(aabb3.MinY) ||
+                    aabb3.MaxY is float.NaN || float.IsInfinity(aabb3.MaxY) || aabb3.MinZ is float.NaN ||
+                    float.IsInfinity(aabb3.MinZ) || aabb3.MaxZ is float.NaN || float.IsInfinity(aabb3.MaxZ))
                 {
                     throw new ArgumentOutOfRangeException(nameof(aabb3), aabb3, null);
                 }

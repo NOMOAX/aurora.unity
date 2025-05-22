@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Aurora.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
@@ -322,7 +323,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return false;
             }
-            var categoryIndex = Array.FindIndex(categories, e => e.type == categoryType);
+            var categoryIndex = categories.FindIndex(PlayerLoopSystemHasType, categoryType);
             if (categoryIndex < 0)
             {
                 return false;
@@ -350,7 +351,8 @@ namespace Aurora.Unity.PlayerLoop
                 subsystems = new[] { playerLoopSubsystem, continuationSubsystem };
                 return true;
             }
-            var subsystemIndex = Array.FindIndex(subsystems, e => e.type == anchorSubsystemType);
+
+            var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, anchorSubsystemType);
             if (subsystemIndex < 0)
             {
                 return false;
@@ -381,7 +383,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return false;
             }
-            var categoryIndex = Array.FindIndex(categories, e => e.type == categoryType);
+            var categoryIndex = categories.FindIndex(PlayerLoopSystemHasType, categoryType);
             if (categoryIndex < 0)
             {
                 return false;
@@ -397,7 +399,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return false;
             }
-            var subsystemIndex = Array.FindIndex(subsystems, e => e.type == subsystemType);
+            var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemType);
             if (subsystemIndex < 0)
             {
                 return false;
@@ -412,6 +414,11 @@ namespace Aurora.Unity.PlayerLoop
             Array.Copy(array, 0,         newArray, 0,     index);
             Array.Copy(array, index + 1, newArray, index, array.Length - index - 1);
             array = newArray;
+        }
+
+        private static bool PlayerLoopSystemHasType(PlayerLoopSystem playerLoopSystem, Type type)
+        {
+            return playerLoopSystem.type == type;
         }
 
         private readonly struct Plan

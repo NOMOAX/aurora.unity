@@ -154,7 +154,7 @@ namespace Aurora.Unity
             {
                 return true;
             }
-            if (obj is MonoBehaviour || obj is ScriptableObject)
+            if (obj is MonoBehaviour or ScriptableObject)
             {
                 return false;
             }

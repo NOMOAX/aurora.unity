@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Aurora.Diagnostics;
+using Aurora.Interpolations;
 using UnityEngine;
 
 namespace Aurora.Unity.PlayerLoop
@@ -16,9 +18,19 @@ namespace Aurora.Unity.PlayerLoop
 
         private readonly List<IPlayerLoopItem> _items = new();
 
+        private double _trimTime;
+
         internal PlayerLoopRunner(PlayerLoopPhase phase)
         {
             _phase = phase;
+
+            _trimTime = GetNextTrimTime(Time.realtimeSinceStartupAsDouble);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double GetNextTrimTime(double currentTime)
+        {
+            return currentTime + InterpolationUtility.LinearInterpolate(60, 120, RandomUtility.Shared.NextDouble());
         }
 
         internal void Add(IPlayerLoopItem item)
@@ -33,8 +45,7 @@ namespace Aurora.Unity.PlayerLoop
         {
             lock (_items)
             {
-                var index = _items.LastIndexOf(item);
-                if (index >= 0)
+                if (_items.LastIndexOf(item) is var index and >= 0)
                 {
                     _items[index] = null;
                 }
@@ -80,8 +91,7 @@ namespace Aurora.Unity.PlayerLoop
                     // ReSharper disable once ForCanBeConvertedToForeach
                     for (var i = 0; i < _items.Count; i++)
                     {
-                        var item = _items[i];
-                        if (item == null)
+                        if (_items[i] is var item && item is null)
                         {
                             continue;
                         }
@@ -96,8 +106,9 @@ namespace Aurora.Unity.PlayerLoop
                     }
                     _items.RemoveAll(IsNull);
 
-                    if (Time.frameCount % 4096 == 0)
+                    if (Time.realtimeSinceStartupAsDouble is var currentTime && currentTime > _trimTime)
                     {
+                        _trimTime = GetNextTrimTime(currentTime);
                         _items.TrimExcess();
                     }
                 }

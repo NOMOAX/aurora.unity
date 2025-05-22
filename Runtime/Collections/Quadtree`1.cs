@@ -47,9 +47,9 @@ namespace Aurora.Unity.Collections
             {
                 throw new ArgumentNullException(nameof(createNodeHandler));
             }
-            if (float.IsNaN(aabb2.MinX) || float.IsInfinity(aabb2.MinX) || float.IsNaN(aabb2.MaxX) ||
-                float.IsInfinity(aabb2.MaxX) || float.IsNaN(aabb2.MinY) || float.IsInfinity(aabb2.MinY) ||
-                float.IsNaN(aabb2.MaxY) || float.IsInfinity(aabb2.MaxY))
+            if (aabb2.MinX is float.NaN || float.IsInfinity(aabb2.MinX) || aabb2.MaxX is float.NaN ||
+                float.IsInfinity(aabb2.MaxX) || aabb2.MinY is float.NaN || float.IsInfinity(aabb2.MinY) ||
+                aabb2.MaxY is float.NaN || float.IsInfinity(aabb2.MaxY))
             {
                 throw new ArgumentOutOfRangeException(nameof(aabb2), aabb2, null);
             }
@@ -175,12 +175,12 @@ namespace Aurora.Unity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInCircle(Vector2 center, float radius, List<IQuadtreeElement<TElementPosition>> results)
         {
-            if (float.IsNaN(center.x) || float.IsInfinity(center.x) || float.IsNaN(center.y) ||
+            if (center.x is float.NaN || float.IsInfinity(center.x) || center.y is float.NaN ||
                 float.IsInfinity(center.y))
             {
                 throw new ArgumentOutOfRangeException(nameof(center), center, null);
             }
-            if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
+            if (radius is float.NaN or < 0 or float.PositiveInfinity)
             {
                 throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
             }
@@ -201,9 +201,9 @@ namespace Aurora.Unity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInAabb2(Aabb2 aabb2, List<IQuadtreeElement<TElementPosition>> results)
         {
-            if (float.IsNaN(aabb2.MinX) || float.IsInfinity(aabb2.MinX) || float.IsNaN(aabb2.MaxX) ||
-                float.IsInfinity(aabb2.MaxX) || float.IsNaN(aabb2.MinY) || float.IsInfinity(aabb2.MinY) ||
-                float.IsNaN(aabb2.MaxY) || float.IsInfinity(aabb2.MaxY))
+            if (aabb2.MinX is float.NaN || float.IsInfinity(aabb2.MinX) || aabb2.MaxX is float.NaN ||
+                float.IsInfinity(aabb2.MaxX) || aabb2.MinY is float.NaN || float.IsInfinity(aabb2.MinY) ||
+                aabb2.MaxY is float.NaN || float.IsInfinity(aabb2.MaxY))
             {
                 throw new ArgumentOutOfRangeException(nameof(aabb2), aabb2, null);
             }
@@ -405,12 +405,12 @@ namespace Aurora.Unity.Collections
                 float                                    radius,
                 List<IQuadtreeElement<TElementPosition>> results)
             {
-                if (float.IsNaN(center.x) || float.IsInfinity(center.x) || float.IsNaN(center.y) ||
+                if (center.x is float.NaN || float.IsInfinity(center.x) || center.y is float.NaN ||
                     float.IsInfinity(center.y))
                 {
                     throw new ArgumentOutOfRangeException(nameof(center), center, null);
                 }
-                if (float.IsNaN(radius) || radius < 0 || float.IsPositiveInfinity(radius))
+                if (radius is float.NaN or < 0 or float.PositiveInfinity)
                 {
                     throw new ArgumentOutOfRangeException(nameof(radius), radius, null);
                 }
@@ -459,9 +459,9 @@ namespace Aurora.Unity.Collections
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElementsInAabb2(Aabb2 aabb2, List<IQuadtreeElement<TElementPosition>> results)
             {
-                if (float.IsNaN(aabb2.MinX) || float.IsInfinity(aabb2.MinX) || float.IsNaN(aabb2.MaxX) ||
-                    float.IsInfinity(aabb2.MaxX) || float.IsNaN(aabb2.MinY) || float.IsInfinity(aabb2.MinY) ||
-                    float.IsNaN(aabb2.MaxY) || float.IsInfinity(aabb2.MaxY))
+                if (aabb2.MinX is float.NaN || float.IsInfinity(aabb2.MinX) || aabb2.MaxX is float.NaN ||
+                    float.IsInfinity(aabb2.MaxX) || aabb2.MinY is float.NaN || float.IsInfinity(aabb2.MinY) ||
+                    aabb2.MaxY is float.NaN || float.IsInfinity(aabb2.MaxY))
                 {
                     throw new ArgumentOutOfRangeException(nameof(aabb2), aabb2, null);
                 }

@@ -780,7 +780,7 @@ namespace Aurora.Unity.Threading.Tasks
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ThrowIfDelayFrameCountIsInvalid(int frameCount, string paramName)
         {
-            if (frameCount == -1 || frameCount >= 0)
+            if (frameCount is -1 or >= 0)
             {
                 return;
             }

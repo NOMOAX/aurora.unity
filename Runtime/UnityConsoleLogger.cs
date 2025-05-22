@@ -33,8 +33,7 @@ namespace Aurora.Unity
             {
                 return;
             }
-            var logAction = GetLogAction(logLevel);
-            if (logAction is null)
+            if (GetLogAction(logLevel) is var logAction && logAction is null)
             {
                 return;
             }
@@ -82,8 +81,7 @@ namespace Aurora.Unity
                     stringBuilder.Append('(');
                     {
 #if UNITY_EDITOR
-                        var htmlColor = GetHtmlColor(logLevel);
-                        using (new ColorScope(stringBuilder, htmlColor))
+                        using (new ColorScope(stringBuilder, GetHtmlColor(logLevel)))
 #endif
                         {
                             stringBuilder.Append(logLevel.ToString());
@@ -95,8 +93,7 @@ namespace Aurora.Unity
                 }
                 stringBuilder.Append(' ');
                 stringBuilder.Append(value);
-                var logString = stringBuilder.ToString();
-                return logString;
+                return stringBuilder.ToString();
             }
             finally
             {

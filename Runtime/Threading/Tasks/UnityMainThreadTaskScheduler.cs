@@ -35,8 +35,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// <inheritdoc />
         protected sealed override void QueueTask(Task task)
         {
-            var taskCreationOptions = task.CreationOptions;
-            if ((taskCreationOptions & TaskCreationOptions.LongRunning) != 0)
+            if ((task.CreationOptions & TaskCreationOptions.LongRunning) != 0)
             {
                 Log.E(
                     $"为防止卡死 Unity 主线程，禁止将“带有 {nameof(TaskCreationOptions.LongRunning)} 任务创建选项的任务”和“带有 {nameof(TaskContinuationOptions.LongRunning)} 任务延续选项的延续任务”排队到此任务调度器！"

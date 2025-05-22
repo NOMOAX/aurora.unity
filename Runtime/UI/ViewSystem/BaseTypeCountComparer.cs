@@ -15,7 +15,7 @@ namespace Aurora.Unity.UI.ViewSystem
         private static int GetBaseTypeCount(Type type)
         {
             var result = 0;
-            while (type != null)
+            while (type is not null)
             {
                 ++result;
                 type = type.BaseType;
