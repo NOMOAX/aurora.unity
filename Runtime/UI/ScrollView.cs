@@ -511,9 +511,24 @@ namespace Aurora.Unity.UI
         protected abstract float Get(Vector2 vector2);
 
         /// <summary>
+        /// 返回内容位置。
+        /// </summary>
+        /// <param name="contentAnchoredPosition"><see cref="content"/> 的 <see cref="RectTransform.anchoredPosition"/>。</param>
+        /// <remarks>方向为水平时，取反。</remarks>
+        protected abstract float GetContentPosition(Vector2 contentAnchoredPosition);
+
+        /// <summary>
         /// 将 <paramref name="vector2"/> 的滚动方向分量设置为 <paramref name="value"/>，然后返回设置后的值。
         /// </summary>
         protected abstract Vector2 Set(Vector2 vector2, float value);
+
+        /// <summary>
+        /// 设置内容位置。
+        /// </summary>
+        /// <param name="contentAnchoredPosition"><see cref="content"/> 的 <see cref="RectTransform.anchoredPosition"/>。</param>
+        /// <param name="contentPosition">内容位置。</param>
+        /// <remarks>方向为水平时，取反。</remarks>
+        protected abstract Vector2 SetContentPosition(Vector2 contentAnchoredPosition, float contentPosition);
 
         /// <summary>
         /// 设置 <paramref name="layoutElement"/> 在滚动方向上的最小大小。
@@ -554,13 +569,13 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetContentPosition()
         {
-            return Get(content.anchoredPosition);
+            return GetContentPosition(content.anchoredPosition);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SetContentPosition(float contentPosition)
         {
-            content.anchoredPosition = Set(content.anchoredPosition, contentPosition);
+            content.anchoredPosition = SetContentPosition(content.anchoredPosition, contentPosition);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
