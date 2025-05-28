@@ -13,7 +13,16 @@ namespace Aurora.UnityEditor
         [MenuItem("Window" + "/" + UnityEditorUtility.DisplayName + "/" + Title)]
         public static void OpenWindow()
         {
-            GetWindow<ViewInspectorWindow>(Title).ShowUtility();
+            GetWindow<ViewInspectorWindow>(Title);
+        }
+
+        private void OnInspectorUpdate()
+        {
+            if (View.Dirty)
+            {
+                View.Dirty = false;
+                Repaint();
+            }
         }
 
         private void OnGUI()

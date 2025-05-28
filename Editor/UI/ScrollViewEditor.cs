@@ -70,8 +70,6 @@ namespace Aurora.UnityEditor.UI
 
         private const string ScrollSnapDelayName = nameof(ScrollView.scrollSnapDelay);
 
-        private int _frameCount;
-
         private ScrollView _scrollView;
 
         private SerializedProperty _scrollRect;
@@ -138,7 +136,7 @@ namespace Aurora.UnityEditor.UI
 
         private void OnEnable()
         {
-            EditorApplication.update += RepaintIfFrameCountDifferent;
+            EditorApplication.update += RepaintIfDirty;
 
             _scrollView = (ScrollView) target;
 
@@ -173,31 +171,33 @@ namespace Aurora.UnityEditor.UI
             _snapInterpolation                  = serializedObject.FindProperty(SnapInterpolationName);
             _scrollSnapDelay                    = serializedObject.FindProperty(ScrollSnapDelayName);
 
-            _showSnapSpeedThreshold = new AnimBool(RepaintIfFrameCountDifferent);
+            _showSnapSpeedThreshold = new AnimBool(RepaintIfDirty);
             SetAnimBool(true);
         }
 
         private void OnDisable()
         {
-            EditorApplication.update -= RepaintIfFrameCountDifferent;
+            EditorApplication.update -= RepaintIfDirty;
         }
 
-        private void RepaintIfFrameCountDifferent()
+        private void RepaintIfDirty()
         {
-            if (_frameCount != Time.frameCount)
+            if (!_scrollView)
             {
-                _frameCount = Time.frameCount;
+                return;
+            }
+            if (_scrollView.Dirty)
+            {
+                _scrollView.Dirty = false;
                 Repaint();
             }
         }
 
         public override void OnInspectorGUI()
         {
-            SetAnimBool(false);
-
-            _frameCount = Time.frameCount;
-
             serializedObject.Update();
+
+            SetAnimBool(false);
 
             if (EditorApplication.isPlaying)
             {

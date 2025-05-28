@@ -19,6 +19,10 @@ namespace Aurora.Unity.UI.ViewSystem
     [RequireComponent(typeof(RectTransform))]
     public abstract class View : UIBehaviour, IEnumerable<View>
     {
+#if UNITY_EDITOR
+        internal static bool Dirty;
+#endif
+
         private static readonly List<ViewContainer> Containers = new();
 
         private static readonly Func<View, IEnumerable<View>> FuncGetChildren = GetChildrenAsEnumerable;
@@ -44,6 +48,9 @@ namespace Aurora.Unity.UI.ViewSystem
                 throw new ArgumentException();
             }
             Containers.Add(new ViewContainer(rectTransform));
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             static bool Match(ViewContainer container, RectTransform rectTransform)
             {
@@ -63,6 +70,10 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new InvalidOperationException("无法移除此界面容器，因为它仍然容纳着界面");
             }
+            Containers.RemoveAt(index);
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         /// <summary>
@@ -77,7 +88,12 @@ namespace Aurora.Unity.UI.ViewSystem
 #if UNITY_EDITOR
         internal static void ClearContainers()
         {
+            if (Containers.Count == 0)
+            {
+                return;
+            }
             Containers.Clear();
+            Dirty = true;
         }
 #endif
 
@@ -727,6 +743,9 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 view.enabled = true;
             }
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             return view;
         }
@@ -823,6 +842,9 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 view.enabled = true;
             }
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             return view;
         }
@@ -897,6 +919,9 @@ namespace Aurora.Unity.UI.ViewSystem
                 RectTransform.SetParent(_container.RectTransform, false);
                 RectTransform.SetAsLastSibling();
                 RectTransformUtility.AlignToParentEdges(RectTransform);
+#if UNITY_EDITOR
+                Dirty = true;
+#endif
             }
         }
 
@@ -952,6 +977,9 @@ namespace Aurora.Unity.UI.ViewSystem
                 }
                 RectTransform.SetAsLastSibling();
                 RectTransformUtility.AlignToParentEdges(RectTransform);
+#if UNITY_EDITOR
+                Dirty = true;
+#endif
             }
         }
 
@@ -1139,6 +1167,10 @@ namespace Aurora.Unity.UI.ViewSystem
                 _parent._children.Remove(this);
                 _parent = null;
             }
+
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             CloseState = closeState;
             if (_handler != null)

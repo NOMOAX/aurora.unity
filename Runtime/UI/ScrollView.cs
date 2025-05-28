@@ -49,6 +49,10 @@ namespace Aurora.Unity.UI
         private static readonly TimerTriggerCallback OnScrollTimerTriggerCallback =
             (_, state) => ((ScrollView) state).OnScrollTimerTriggered();
 
+#if UNITY_EDITOR
+        internal bool Dirty;
+#endif
+
         private IScrollViewController _controller;
 
         [SerializeField]
@@ -392,6 +396,9 @@ namespace Aurora.Unity.UI
                 }
                 childForceExpandSize = value;
                 SetLayoutGroupChildForceExpandSize(contentLayoutGroup, childForceExpandSize);
+#if UNITY_EDITOR
+                Dirty = true;
+#endif
             }
         }
 
@@ -484,6 +491,9 @@ namespace Aurora.Unity.UI
                 }
                 scrollbarVisibility = value;
                 RefreshScrollbarVisibility();
+#if UNITY_EDITOR
+                Dirty = true;
+#endif
             }
         }
 
@@ -576,6 +586,9 @@ namespace Aurora.Unity.UI
         private void SetContentPosition(float contentPosition)
         {
             content.anchoredPosition = SetContentPosition(content.anchoredPosition, contentPosition);
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -756,6 +769,9 @@ namespace Aurora.Unity.UI
             SetContentPosition(GetContentPosition());
             AddItems();
             RefreshScrollbarVisibility();
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         private void InternalReloadWithContentPosition(float contentPosition)
@@ -767,6 +783,9 @@ namespace Aurora.Unity.UI
             SetContentPosition(contentPosition);
             AddItems();
             RefreshScrollbarVisibility();
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         private void InternalReloadWithNormalizedScrollPosition(double normalizedScrollPosition)
@@ -778,6 +797,9 @@ namespace Aurora.Unity.UI
             SetNormalizedScrollPosition(normalizedScrollPosition);
             AddItems();
             RefreshScrollbarVisibility();
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         /// <summary>
@@ -805,6 +827,9 @@ namespace Aurora.Unity.UI
                     AddItems(firstActiveIndex, lastActiveIndex))
                 {
                     RefreshPlaceholders();
+#if UNITY_EDITOR
+                    Dirty = true;
+#endif
                 }
             }
             else
@@ -812,6 +837,9 @@ namespace Aurora.Unity.UI
                 if (ReturnAllItems())
                 {
                     RefreshPlaceholders();
+#if UNITY_EDITOR
+                    Dirty = true;
+#endif
                 }
             }
             RefreshScrollbarVisibility();
@@ -1028,6 +1056,9 @@ namespace Aurora.Unity.UI
             }
             _tweenTokenSource.Dispose();
             _tweenTokenSource = null;
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
