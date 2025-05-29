@@ -98,6 +98,152 @@ namespace Aurora.Unity.UI
         #region 工具
 
         /// <summary>
+        /// 获取适合记录矩形变换的消息。
+        /// </summary>
+        /// <param name="rectTransform">矩形变换。</param>
+        /// <returns>适合记录矩形变换的消息。</returns>
+        public static string GetLogMessage(RectTransform rectTransform)
+        {
+            if (!rectTransform)
+            {
+                return null;
+            }
+            var stringBuilder = PredefinedPools.StringBuilder.Get();
+            try
+            {
+                stringBuilder.Append(rectTransform.name);
+                stringBuilder.Append(' ');
+                stringBuilder.Append('(');
+                stringBuilder.Append(nameof(RectTransform));
+                stringBuilder.Append(')');
+                stringBuilder.Append(' ');
+                stringBuilder.Append('(');
+                stringBuilder.Append("scene path");
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.GetScenePath());
+                stringBuilder.Append(')');
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(Transform.localPosition));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.localPosition);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(Transform.localRotation));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.localRotation);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(Transform.localScale));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.localScale);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.anchorMin));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.anchorMin);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.anchorMax));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.anchorMax);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.anchoredPosition));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.anchoredPosition);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.sizeDelta));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.sizeDelta);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.pivot));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.pivot);
+
+                stringBuilder.Append('\n');
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(Rect.size));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.rect.size);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.offsetMin));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.offsetMin);
+
+                stringBuilder.Append('\n');
+
+                stringBuilder.Append('-');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(nameof(RectTransform.offsetMax));
+                stringBuilder.Append(' ');
+                stringBuilder.Append('=');
+                stringBuilder.Append(' ');
+                stringBuilder.Append(rectTransform.offsetMax);
+
+                return stringBuilder.ToString();
+            }
+            finally
+            {
+                PredefinedPools.StringBuilder.Return(stringBuilder);
+            }
+        }
+
+        /// <summary>
         /// 使矩形变换与其父变换的四边对其。
         /// </summary>
         /// <param name="rectTransform">矩形变换。</param>

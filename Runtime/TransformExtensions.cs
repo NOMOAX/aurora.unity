@@ -177,12 +177,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取当前 <see cref="Transform"/> 的全路径名称。
+        /// 获取当前 <see cref="Transform"/> 在场景中的路径。
         /// </summary>
         /// <param name="transform">此变换。</param>
-        /// <returns>这个变换的全路径名称。</returns>
+        /// <returns>这个变换在场景中的路径。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="transform"/> 为 <see langword="null"/>。</exception>
-        public static string GetFullName(this Transform transform)
+        public static string GetScenePath(this Transform transform)
         {
             if (!transform)
             {
