@@ -50,6 +50,10 @@ namespace Aurora.Unity.UI
             (_, state) => ((ScrollView) state).OnScrollTimerTriggered();
 
 #if UNITY_EDITOR
+        private float _contentPosition;
+
+        private double _normalizedScrollPosition;
+
         internal bool Dirty;
 #endif
 
@@ -1703,6 +1707,17 @@ namespace Aurora.Unity.UI
             {
                 RefreshItemsVisibleState();
                 _scrolling = false;
+#if UNITY_EDITOR
+                var contentPosition          = GetContentPosition();
+                var normalizedScrollPosition = GetNormalizedScrollPosition();
+                if (!_contentPosition.Equals(contentPosition) ||
+                    !_normalizedScrollPosition.Equals(normalizedScrollPosition))
+                {
+                    _contentPosition          = contentPosition;
+                    _normalizedScrollPosition = normalizedScrollPosition;
+                    Dirty                     = true;
+                }
+#endif
             }
         }
 

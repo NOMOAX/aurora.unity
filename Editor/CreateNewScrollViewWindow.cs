@@ -120,7 +120,7 @@ namespace Aurora.UnityEditor
             parent = (RectTransform) EditorGUILayout.ObjectField("Parent", parent, typeof(RectTransform), true);
             if (!IsParentValid(parent))
             {
-                EditorGUILayout.HelpBox("Select a canvas element as parent", MessageType.Error);
+                EditorGUILayout.HelpBox("Select a canvas element as parent!", MessageType.Error);
             }
             // parent 已被销毁，释放引用
             if (parent is not null && !UnityEngineObjectUtility.IsAlive(parent))
