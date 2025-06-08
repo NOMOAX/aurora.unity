@@ -25,7 +25,27 @@ namespace Aurora.Unity.UI.ViewSystem
 
         private static readonly List<ViewContainer> Containers = new();
 
-        private static readonly Func<View, IEnumerable<View>> FuncGetChildren = GetChildrenAsEnumerable;
+        private static readonly Func<View, IEnumerable<View>> GetChildrenFunc = view => view._children;
+
+        private static readonly ParameterizedPredicate<ViewContainer, RectTransform>
+            ViewContainerHasRectTransformPredicate = (container, rectTransform) =>
+                ReferenceEquals(container.RectTransform, rectTransform);
+
+        /// <summary>
+        /// 第一个参数（<see cref="View"/>）与第二个元组参数的 <see cref="View"/> 不相等，并且第一个参数（<see cref="View"/>）是第二个元组参数的 <see cref="Type"/> 的实例。
+        /// </summary>
+        private static readonly ParameterizedPredicate<View, ValueTuple<Object, Type>>
+            ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate = (view, state) =>
+            {
+                var (target, type) = state;
+                return !ReferenceEquals(view, target) && type.IsInstanceOfType(view);
+            };
+
+        /// <summary>
+        /// 第一个参数（<see cref="View"/>）是第二个参数（<see cref="Type"/>）的实例。
+        /// </summary>
+        private static readonly ParameterizedPredicate<View, Type> ViewIsInstanceOfTypePredicate =
+            (view, type) => type.IsInstanceOfType(view);
 
         /// <summary>
         /// 获取界面容器的数量。
@@ -35,14 +55,14 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 添加界面容器。
         /// </summary>
-        /// <param name="rectTransform">一个矩形变换，它将作为界面的容器。</param>
+        /// <param name="rectTransform">一个矩形变换，它将作为该界面容器下的根界面的父物体。</param>
         public static void AddContainer(RectTransform rectTransform)
         {
             if (!rectTransform)
             {
                 throw new ArgumentNullException(nameof(rectTransform));
             }
-            var index = Containers.FindIndex(Match, rectTransform);
+            var index = Containers.FindIndex(ViewContainerHasRectTransformPredicate, rectTransform);
             if (index >= 0)
             {
                 throw new ArgumentException();
@@ -51,11 +71,6 @@ namespace Aurora.Unity.UI.ViewSystem
 #if UNITY_EDITOR
             Dirty = true;
 #endif
-
-            static bool Match(ViewContainer container, RectTransform rectTransform)
-            {
-                return ReferenceEquals(container.RectTransform, rectTransform);
-            }
         }
 
         /// <summary>
@@ -96,11 +111,6 @@ namespace Aurora.Unity.UI.ViewSystem
             Dirty = true;
         }
 #endif
-
-        private static IEnumerable<View> GetChildrenAsEnumerable(View view)
-        {
-            return view._children;
-        }
 
         /// <summary>
         /// 判断指定的界面是否是最上层界面。
@@ -162,14 +172,9 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.Remove(excludedView);
                             break;
                         case Type excludedViewType:
-                            views.RemoveAll(Match, ValueTuple.Create(view, excludedViewType));
+                            var state = ValueTuple.Create(view, excludedViewType);
+                            views.RemoveAll(ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate, state);
                             break;
-
-                            static bool Match(View view, ValueTuple<Object, Type> state)
-                            {
-                                var (target, type) = state;
-                                return !ReferenceEquals(view, target) && type.IsInstanceOfType(view);
-                            }
                         default:
                             throw new ArgumentException(null, nameof(exclusions));
                     }
@@ -207,7 +212,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
         private static View InternalGetTopmostView()
         {
-            // return GetViewWithoutRoot<View>(TreeEnumOrder.DepthFirstRld);
+            // return GetView<View>(TreeEnumOrder.DepthFirstRld);
             // 下面的实现消耗更少的内存和性能
 
             var containersCount = Containers.Count;
@@ -246,13 +251,8 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.Remove(excludedView);
                             break;
                         case Type excludedViewType:
-                            views.RemoveAll(Match, excludedViewType);
+                            views.RemoveAll(ViewIsInstanceOfTypePredicate, excludedViewType);
                             break;
-
-                            static bool Match(View view, Type type)
-                            {
-                                return type.IsInstanceOfType(view);
-                            }
                         default:
                             throw new ArgumentException(null, nameof(exclusions));
                     }
@@ -556,7 +556,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(container));
             }
-            _ = await InternalOpenAsync<T>(container, null, CancellationToken.None);
+            await InternalOpenAsync<T>(container, null, CancellationToken.None);
         }
 
         /// <summary>
@@ -570,7 +570,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 throw new ArgumentNullException(nameof(container));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _ = await InternalOpenAsync<T>(container, null, cancellationToken);
+            await InternalOpenAsync<T>(container, null, cancellationToken);
         }
 
         /// <summary>
@@ -582,7 +582,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(container));
             }
-            _ = await InternalOpenAsync<T>(container, state, CancellationToken.None);
+            await InternalOpenAsync<T>(container, state, CancellationToken.None);
         }
 
         /// <summary>
@@ -598,7 +598,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 throw new ArgumentNullException(nameof(container));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _ = await InternalOpenAsync<T>(container, state, cancellationToken);
+            await InternalOpenAsync<T>(container, state, cancellationToken);
         }
 
         /// <summary>
@@ -610,7 +610,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(parent));
             }
-            _ = await InternalOpenAsync<T>(parent, null, CancellationToken.None);
+            await InternalOpenAsync<T>(parent, null, CancellationToken.None);
         }
 
         /// <summary>
@@ -623,7 +623,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 throw new ArgumentNullException(nameof(parent));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _ = await InternalOpenAsync<T>(parent, null, cancellationToken);
+            await InternalOpenAsync<T>(parent, null, cancellationToken);
         }
 
         /// <summary>
@@ -635,7 +635,7 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(parent));
             }
-            _ = await InternalOpenAsync<T>(parent, state, CancellationToken.None);
+            await InternalOpenAsync<T>(parent, state, CancellationToken.None);
         }
 
         /// <summary>
@@ -649,7 +649,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 throw new ArgumentNullException(nameof(parent));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            _ = await InternalOpenAsync<T>(parent, state, cancellationToken);
+            await InternalOpenAsync<T>(parent, state, cancellationToken);
         }
 
         /// <summary>
@@ -1049,7 +1049,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             for (var parent = _parent; parent; parent = parent._parent)
             {
-                if (view == parent)
+                if (ReferenceEquals(view, parent))
                 {
                     return true;
                 }
@@ -1223,12 +1223,12 @@ namespace Aurora.Unity.UI.ViewSystem
             return order switch
             {
                 TreeEnumOrder.Default        => new DirectChildEnumerator(this),
-                TreeEnumOrder.BreadthFirstLr => new LrEnumerator<View>(this, FuncGetChildren),
-                TreeEnumOrder.BreadthFirstRl => new RlEnumerator<View>(this, FuncGetChildren),
-                TreeEnumOrder.DepthFirstDlr  => new DlrEnumerator<View>(this, FuncGetChildren),
-                TreeEnumOrder.DepthFirstDrl  => new DrlEnumerator<View>(this, FuncGetChildren),
-                TreeEnumOrder.DepthFirstLrd  => new LrdEnumerator<View>(this, FuncGetChildren),
-                TreeEnumOrder.DepthFirstRld  => new RldEnumerator<View>(this, FuncGetChildren),
+                TreeEnumOrder.BreadthFirstLr => new LrEnumerator<View>(this, GetChildrenFunc),
+                TreeEnumOrder.BreadthFirstRl => new RlEnumerator<View>(this, GetChildrenFunc),
+                TreeEnumOrder.DepthFirstDlr  => new DlrEnumerator<View>(this, GetChildrenFunc),
+                TreeEnumOrder.DepthFirstDrl  => new DrlEnumerator<View>(this, GetChildrenFunc),
+                TreeEnumOrder.DepthFirstLrd  => new LrdEnumerator<View>(this, GetChildrenFunc),
+                TreeEnumOrder.DepthFirstRld  => new RldEnumerator<View>(this, GetChildrenFunc),
                 _                            => throw new ArgumentOutOfRangeException(nameof(order), order, null)
             };
         }
@@ -1249,6 +1249,9 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         public sealed class ViewContainer
         {
+            /// <summary>
+            /// <see cref="ViewContainer"/> 下的根界面的父物体。
+            /// </summary>
             public readonly RectTransform RectTransform;
 
             internal readonly List<View> Views = new();
