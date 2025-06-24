@@ -40,7 +40,7 @@ namespace Aurora.Unity.UI
         private static readonly ParameterizedPredicate<ScrollViewItem, ScrollViewItem> AreIdentifierEqual =
             (a, b) => a.identifier == b.identifier;
 
-        private static readonly ParameterizedPredicate<ScrollViewItem, int> IndexEqualTo = (scrollViewItem, index) =>
+        private static readonly ParameterizedPredicate<ScrollViewItem, int> HasIndex = (scrollViewItem, index) =>
             scrollViewItem.index == index;
 
         private static readonly CounterTriggerCallback OnValueChangeCounterTriggerCallback =
@@ -623,7 +623,7 @@ namespace Aurora.Unity.UI
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), index, null);
                 }
-                return _activeItems.Find(IndexEqualTo, index);
+                return _activeItems.Find(HasIndex, index);
             }
         }
 
