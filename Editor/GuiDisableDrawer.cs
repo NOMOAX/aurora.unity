@@ -9,9 +9,22 @@ namespace Aurora.UnityEditor
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUI.PropertyField(position, property, label, UnityEditorUtility.IsChildrenIncluded(property));
-            EditorGUI.EndDisabledGroup();
+            var disabled = ((GuiDisableAttribute) attribute).When switch
+            {
+                When.Always     => true,
+                When.Playing    => EditorApplication.isPlaying,
+                When.NotPlaying => !EditorApplication.isPlaying,
+                _               => true
+            };
+            using (new EditorGUI.DisabledScope(disabled))
+            {
+                EditorGUI.PropertyField(position, property, label, UnityEditorUtility.IncludeChildren(property));
+            }
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, label, UnityEditorUtility.IncludeChildren(property));
         }
     }
 }

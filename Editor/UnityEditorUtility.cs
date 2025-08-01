@@ -555,7 +555,7 @@ namespace Aurora.UnityEditor
 
         /// <seealso cref="EditorGUILayout.IsChildrenIncluded"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool IsChildrenIncluded(SerializedProperty property)
+        internal static bool IncludeChildren(SerializedProperty property)
         {
             return property.propertyType switch
             {
