@@ -353,7 +353,7 @@ namespace Aurora.Unity.UI
         /// 定义几个颜色。
         /// </summary>
         [Serializable]
-        public sealed class ColorBlock
+        public struct ColorBlock
         {
             internal const float DefaultMultiplier = 0.8f;
 
@@ -417,35 +417,35 @@ namespace Aurora.Unity.UI
             /// <summary>
             /// 默认颜色。
             /// </summary>
-            public Color defaultColor = DefaultDefaultColor;
+            public Color defaultColor;
 
             /// <summary>
             /// 悬停颜色。
             /// </summary>
-            public Color hoveredColor = DefaultHoveredColor;
+            public Color hoveredColor;
 
             /// <summary>
             /// 按下颜色。
             /// </summary>
-            public Color pressedColor = DefaultPressedColor;
+            public Color pressedColor;
 
             /// <summary>
             /// 不可交互时默认颜色。
             /// </summary>
-            public Color nonInteractableDefaultColor = DefaultNonInteractableDefaultColor;
+            public Color nonInteractableDefaultColor;
 
             /// <summary>
             /// 不可交互时悬停颜色。
             /// </summary>
-            public Color nonInteractableHoveredColor = DefaultNonInteractableHoveredColor;
+            public Color nonInteractableHoveredColor;
 
             /// <summary>
             /// 不可交互时按下颜色。
             /// </summary>
-            public Color nonInteractablePressedColor = DefaultNonInteractablePressedColor;
+            public Color nonInteractablePressedColor;
 
             /// <summary>
-            /// 获取最适合于按钮的颜色。
+            /// 根据按钮的状态（<see cref="EnhancedButton.State"/>）、是否可交互（<see cref="EnhancedButton.Interactable"/>）获取颜色。
             /// </summary>
             /// <param name="button">按钮。</param>
             public Color GetColor(EnhancedButton button)

@@ -299,32 +299,28 @@ namespace Aurora.UnityEditor.UI
                         var nonInteractablePressedColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.nonInteractablePressedColor));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, defaultColor);
+                        EditorGUI.PropertyField(position, defaultColor, EditorGUIUtility.TrTempContent("Default"));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, hoveredColor);
+                        EditorGUI.PropertyField(position, hoveredColor, EditorGUIUtility.TrTempContent("Hovered"));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, pressedColor);
+                        EditorGUI.PropertyField(position, pressedColor, EditorGUIUtility.TrTempContent("Pressed"));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, nonInteractableDefaultColor, EditorGUIUtility.TrTempContent("Non-Interactable Default Color"));
+                        EditorGUI.PropertyField(position, nonInteractableDefaultColor, EditorGUIUtility.TrTempContent("Non-Interactable Default"));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, nonInteractableHoveredColor, EditorGUIUtility.TrTempContent("Non-Interactable Hovered Color"));
+                        EditorGUI.PropertyField(position, nonInteractableHoveredColor, EditorGUIUtility.TrTempContent("Non-Interactable Hovered"));
 
                         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.PropertyField(position, nonInteractablePressedColor, EditorGUIUtility.TrTempContent("Non-Interactable Pressed Color"));
+                        EditorGUI.PropertyField(position, nonInteractablePressedColor, EditorGUIUtility.TrTempContent("Non-Interactable Pressed"));
                     }
                 }
             }
 
             private static void WriteToClipboard(EnhancedButton.ColorBlock colorBlock)
             {
-                if (colorBlock == null)
-                {
-                    return;
-                }
                 EditorGUIUtility.systemCopyBuffer = JsonUtility.ToJson(colorBlock);
             }
 
@@ -333,7 +329,7 @@ namespace Aurora.UnityEditor.UI
                 var clipboard = EditorGUIUtility.systemCopyBuffer;
                 if (string.IsNullOrEmpty(clipboard))
                 {
-                    colorBlock = null;
+                    colorBlock = default;
                     return false;
                 }
                 try
@@ -343,7 +339,7 @@ namespace Aurora.UnityEditor.UI
                 }
                 catch (Exception)
                 {
-                    colorBlock = null;
+                    colorBlock = default;
                     return false;
                 }
             }
