@@ -56,7 +56,8 @@ namespace Aurora.Unity.UI.ViewSystem
         /// 添加界面容器。
         /// </summary>
         /// <param name="rectTransform">一个矩形变换，它将作为该界面容器下的根界面的父物体。</param>
-        public static void AddContainer(RectTransform rectTransform)
+        /// <returns>将 <paramref name="rectTransform"/> 作为其下的根界面的父物体的界面容器。</returns>
+        public static ViewContainer AddContainer(RectTransform rectTransform)
         {
             if (!rectTransform)
             {
@@ -67,10 +68,12 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentException();
             }
-            Containers.Add(new ViewContainer(rectTransform));
+            var viewContainer = new ViewContainer(rectTransform);
+            Containers.Add(viewContainer);
 #if UNITY_EDITOR
             Dirty = true;
 #endif
+            return viewContainer;
         }
 
         /// <summary>
