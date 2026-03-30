@@ -1647,6 +1647,9 @@ namespace Aurora.Unity.UI
             }
 
             _dragging = true;
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             InternalStopTween();
             DisableValueChangeCounter();
@@ -1674,6 +1677,9 @@ namespace Aurora.Unity.UI
             }
 
             _dragging = false;
+#if UNITY_EDITOR
+            Dirty = true;
+#endif
 
             if ((snapTrigger & ScrollViewSnapTrigger.OnEndDrag) != 0 && !IsTweening())
             {
