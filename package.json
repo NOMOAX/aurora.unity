@@ -2,7 +2,7 @@
   "name": "com.kevin-games.aurora.unity",
   "displayName": "Aurora Unity",
   "version": "1.0.0",
-  "unity": "2020.3",
+  "unity": "2021.2",
   "description": "High-performance, low-memory-consumption toolkit for Unity.\n\nDependencies:\n- Aurora (https://gitee.com/kevin-games/aurora_unitypackage.git)\n- Unity UI",
   "keywords": [
     "aurora"
