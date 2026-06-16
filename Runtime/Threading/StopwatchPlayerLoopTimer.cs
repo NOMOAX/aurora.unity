@@ -7,7 +7,7 @@ using Aurora.Unity.PlayerLoop;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 使用秒表计时并在特定的播放器循环阶段中处理非立即执行的回调的计时器。
+    /// 使用秒表计时并在特定的主循环阶段中处理非立即执行的回调的计时器。
     /// </summary>
     public sealed class StopwatchPlayerLoopTimer : ITimer, IPlayerLoopItem
     {
@@ -38,7 +38,7 @@ namespace Aurora.Unity.Threading
         /// </summary>
         /// <param name="callback">当计时器触发时执行的方法。</param>
         /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
         public StopwatchPlayerLoopTimer(TimerTriggerCallback callback, object state, PlayerLoopPhase playerLoopPhase)
@@ -80,7 +80,7 @@ namespace Aurora.Unity.Threading
         /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在计时器触发后，将在指定的时间后再次触发，反复如此，直至计时器被禁用（实际等待时间受计时器精度影响）</description></item>
         /// </list>
         /// </param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueTime"/> 或 <paramref name="period"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它们的毫秒数不在 [0, 4294967294] 范围内；或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
         public StopwatchPlayerLoopTimer(

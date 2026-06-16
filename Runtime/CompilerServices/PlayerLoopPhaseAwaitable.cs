@@ -17,7 +17,7 @@ namespace Aurora.Unity.CompilerServices
         /// <summary>
         /// 初始化 <see cref="PlayerLoopPhaseAwaitable"/> 结构的新实例。
         /// </summary>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         public PlayerLoopPhaseAwaitable(PlayerLoopPhase playerLoopPhase)
         {
             _playerLoopPhase   = playerLoopPhase;
@@ -27,7 +27,7 @@ namespace Aurora.Unity.CompilerServices
         /// <summary>
         /// 初始化 <see cref="PlayerLoopPhaseAwaitable"/> 结构的新实例。
         /// </summary>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         public PlayerLoopPhaseAwaitable(PlayerLoopPhase playerLoopPhase, CancellationToken cancellationToken)
         {
@@ -105,7 +105,7 @@ namespace Aurora.Unity.CompilerServices
             /// <summary>
             /// 初始化 <see cref="Any"/> 结构的新实例。
             /// </summary>
-            /// <param name="playerLoopPhases">多个播放器循环阶段。</param>
+            /// <param name="playerLoopPhases">多个主循环阶段。</param>
             /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
             /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
             public Any(PlayerLoopPhase[] playerLoopPhases)
@@ -125,7 +125,7 @@ namespace Aurora.Unity.CompilerServices
             /// <summary>
             /// 初始化 <see cref="Any"/> 结构的新实例。
             /// </summary>
-            /// <param name="playerLoopPhases">多个播放器循环阶段。</param>
+            /// <param name="playerLoopPhases">多个主循环阶段。</param>
             /// <param name="cancellationToken">取消令牌。</param>
             public Any(PlayerLoopPhase[] playerLoopPhases, CancellationToken cancellationToken)
             {

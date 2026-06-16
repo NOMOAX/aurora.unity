@@ -16,7 +16,7 @@ namespace Aurora.Unity.PlayerLoop
         /// 初始化 <see cref="PlayerLoopScope"/> 类的新实例。
         /// </summary>
         /// <param name="action">更新时执行的操作。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         public PlayerLoopScope(Action action, PlayerLoopPhase playerLoopPhase)
         {
             if (action != null)
@@ -32,7 +32,7 @@ namespace Aurora.Unity.PlayerLoop
         /// </summary>
         /// <param name="action">更新时执行的操作，它具有一个 <see cref="object"/> 类型的参数。</param>
         /// <param name="state">要传递给 <paramref name="action"/> 的参数。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         public PlayerLoopScope(Action<object> action, object state, PlayerLoopPhase playerLoopPhase)
         {
             if (action != null)

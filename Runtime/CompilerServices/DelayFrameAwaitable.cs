@@ -23,7 +23,7 @@ namespace Aurora.Unity.CompilerServices
         /// 初始化 <see cref="DelayFrameAwaitable"/> 结构的新实例。
         /// </summary>
         /// <param name="delayFrameCount">要等待的帧的数量。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         public DelayFrameAwaitable(int delayFrameCount, PlayerLoopPhase playerLoopPhase)
         {
             _delayFrameCount   = delayFrameCount;
@@ -35,7 +35,7 @@ namespace Aurora.Unity.CompilerServices
         /// 初始化 <see cref="DelayFrameAwaitable"/> 结构的新实例。
         /// </summary>
         /// <param name="delayFrameCount">要等待的帧的数量。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         public DelayFrameAwaitable(
             int               delayFrameCount,

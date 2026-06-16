@@ -17,21 +17,21 @@ namespace Aurora.Unity.Threading.Tasks
         #region PlayerLoopPhase、Any PlayerLoopPhase
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于指定的播放器循环阶段时完成。
+        /// 创建一个任务，该任务将在处于指定的主循环阶段时完成。
         /// </summary>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
-        /// <returns>在处于指定的播放器循环阶段时完成的任务。</returns>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <returns>在处于指定的主循环阶段时完成的任务。</returns>
         public static Task WhenPlayerLoopPhase(PlayerLoopPhase playerLoopPhase)
         {
             return InternalWhenPlayerLoopPhase(playerLoopPhase, CancellationToken.None);
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于指定的播放器循环阶段时完成。
+        /// 创建一个任务，该任务将在处于指定的主循环阶段时完成。
         /// </summary>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在处于指定的播放器循环阶段时完成的任务。</returns>
+        /// <returns>在处于指定的主循环阶段时完成的任务。</returns>
         public static Task WhenPlayerLoopPhase(PlayerLoopPhase playerLoopPhase, CancellationToken cancellationToken)
         {
             return InternalWhenPlayerLoopPhase(playerLoopPhase, cancellationToken);
@@ -58,10 +58,10 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于多个指定的播放器循环阶段中的任何一个时完成。
+        /// 创建一个任务，该任务将在处于多个指定的主循环阶段中的任何一个时完成。
         /// </summary>
-        /// <param name="playerLoopPhases">多个播放器循环阶段。</param>
-        /// <returns>在处于多个指定的播放器循环阶段中的任何一个时完成的任务。</returns>
+        /// <param name="playerLoopPhases">多个主循环阶段。</param>
+        /// <returns>在处于多个指定的主循环阶段中的任何一个时完成的任务。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
         public static Task WhenAnyPlayerLoopPhase(PlayerLoopPhase[] playerLoopPhases)
@@ -78,11 +78,11 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于多个指定的播放器循环阶段中的任何一个时完成。
+        /// 创建一个任务，该任务将在处于多个指定的主循环阶段中的任何一个时完成。
         /// </summary>
-        /// <param name="playerLoopPhases">多个播放器循环阶段。</param>
+        /// <param name="playerLoopPhases">多个主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在处于多个指定的播放器循环阶段中的任何一个时完成的任务。</returns>
+        /// <returns>在处于多个指定的主循环阶段中的任何一个时完成的任务。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
         public static Task WhenAnyPlayerLoopPhase(
@@ -364,7 +364,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// 创建一个任务，该任务将在指定的延迟后完成。
         /// </summary>
         /// <param name="delay">延迟。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <returns>表示时间延迟的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
         public static Task Delay(TimeSpan delay, PlayerLoopPhase playerLoopPhase)
@@ -377,7 +377,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// 创建一个任务，该任务将在指定的延迟后完成。
         /// </summary>
         /// <param name="delay">延迟。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         /// <returns>表示时间延迟的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
@@ -496,7 +496,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// </summary>
         /// <param name="delay">延迟。</param>
         /// <param name="unscaled">如果为 <see langword="false"/>，则使用 <see cref="Time.time">Time.time</see> 来计时；如果为 <see langword="true"/>，则使用 <see cref="Time.unscaledTime">Time.unscaledTime</see> 来计时。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <returns>表示时间延迟的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
         public static Task DelayUnityTime(TimeSpan delay, bool unscaled, PlayerLoopPhase playerLoopPhase)
@@ -510,7 +510,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// </summary>
         /// <param name="delay">延迟。</param>
         /// <param name="unscaled">如果为 <see langword="false"/>，则使用 <see cref="Time.time">Time.time</see> 来计时；如果为 <see langword="true"/>，则使用 <see cref="Time.unscaledTime">Time.unscaledTime</see> 来计时。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         /// <returns>表示时间延迟的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
@@ -645,7 +645,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// 创建一个任务，该任务将在几帧后完成。
         /// </summary>
         /// <param name="frameCount">帧数。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <returns>在几帧后完成的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> 小于 0，但不为 -1。</exception>
         public static Task DelayFrame(int frameCount, PlayerLoopPhase playerLoopPhase)
@@ -658,7 +658,7 @@ namespace Aurora.Unity.Threading.Tasks
         /// 创建一个任务，该任务将在几帧后完成。
         /// </summary>
         /// <param name="frameCount">帧数。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         /// <returns>在几帧后完成的任务。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> 小于 0，但不为 -1。</exception>

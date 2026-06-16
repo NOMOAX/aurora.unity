@@ -1,7 +1,7 @@
 ﻿namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
-    /// 播放器循环阶段。
+    /// Unity 主循环阶段。
     /// </summary>
     public enum PlayerLoopPhase : byte
     {

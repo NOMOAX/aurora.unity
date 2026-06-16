@@ -10,7 +10,7 @@ using UnityEditor;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 在特定的播放器循环阶段中从指定的起点计时到终点的计时器。
+    /// 在特定的主循环阶段中从指定的起点计时到终点的计时器。
     /// </summary>
     public sealed class PlayerLoopFromToTimer : IFromToTimer, IPlayerLoopItem
     {
@@ -55,7 +55,7 @@ namespace Aurora.Unity.Threading
         /// <summary>
         /// 初始化 <see cref="PlayerLoopFromToTimer"/> 类的新实例。
         /// </summary>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         public PlayerLoopFromToTimer(PlayerLoopPhase playerLoopPhase)
         {
 #if UNITY_EDITOR

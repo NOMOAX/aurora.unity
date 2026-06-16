@@ -23,7 +23,7 @@ namespace Aurora.Unity
         /// 初始化 <see cref="NotifyScreenSizeChangedScope"/> 类的新实例。
         /// </summary>
         /// <param name="callback">当屏幕大小更改时执行的方法。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
         public NotifyScreenSizeChangedScope(Action<Vector2Int> callback, PlayerLoopPhase playerLoopPhase)
@@ -55,7 +55,7 @@ namespace Aurora.Unity
         /// </summary>
         /// <param name="callback">当屏幕方向更改时执行的方法。</param>
         /// <param name="screenSize">屏幕方向。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="screenSize"/> 的任何分量为负数，或者 <paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
         public NotifyScreenSizeChangedScope(

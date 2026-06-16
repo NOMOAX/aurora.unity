@@ -8,7 +8,7 @@ using UnityEngine.PlayerLoop;
 namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
-    /// 提供与原生播放器循环有关的工具。
+    /// 提供与 Unity 主循环有关的工具。
     /// </summary>
     public static class PlayerLoopUtility
     {
@@ -98,7 +98,7 @@ namespace Aurora.Unity.PlayerLoop
         }
 
         /// <summary>
-        /// 当前播放器循环阶段。
+        /// 当前主循环阶段。
         /// </summary>
         public static PlayerLoopPhase? CurrentPhase { get; internal set; }
 
@@ -106,7 +106,7 @@ namespace Aurora.Unity.PlayerLoop
         /// 添加播放器更新循环操作。
         /// </summary>
         /// <param name="item">播放器更新循环操作。</param>
-        /// <param name="phase">播放器循环阶段。</param>
+        /// <param name="phase">主循环阶段。</param>
         public static void AddPlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
@@ -127,7 +127,7 @@ namespace Aurora.Unity.PlayerLoop
         /// 移除播放器更新循环操作。
         /// </summary>
         /// <param name="item">播放器更新循环操作。</param>
-        /// <param name="phase">播放器循环阶段。</param>
+        /// <param name="phase">主循环阶段。</param>
         public static void RemovePlayerLoopItem(IPlayerLoopItem item, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
@@ -148,7 +148,7 @@ namespace Aurora.Unity.PlayerLoop
         /// 添加延续操作。
         /// </summary>
         /// <param name="continuation">延续操作。</param>
-        /// <param name="phase">播放器循环阶段。</param>
+        /// <param name="phase">主循环阶段。</param>
         public static void AddContinuation(Action continuation, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
@@ -170,7 +170,7 @@ namespace Aurora.Unity.PlayerLoop
         /// </summary>
         /// <param name="continuation">延续操作。</param>
         /// <param name="state">由延续操作使用的参数。</param>
-        /// <param name="phase">播放器循环阶段。</param>
+        /// <param name="phase">主循环阶段。</param>
         public static void AddContinuation(Action<object> continuation, object state, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR
@@ -191,7 +191,7 @@ namespace Aurora.Unity.PlayerLoop
         /// 添加延续操作。
         /// </summary>
         /// <param name="continuationInvocation">延续操作。</param>
-        /// <param name="phase">播放器循环阶段。</param>
+        /// <param name="phase">主循环阶段。</param>
         public static void AddContinuation(Invocation continuationInvocation, PlayerLoopPhase phase)
         {
 #if UNITY_EDITOR

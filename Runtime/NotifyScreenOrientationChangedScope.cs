@@ -24,7 +24,7 @@ namespace Aurora.Unity
         /// 初始化 <see cref="NotifyScreenOrientationChangedScope"/> 类的新实例。
         /// </summary>
         /// <param name="callback">当屏幕方向更改时执行的方法。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
         public NotifyScreenOrientationChangedScope(Action<ScreenOrientation> callback, PlayerLoopPhase playerLoopPhase)
@@ -56,7 +56,7 @@ namespace Aurora.Unity
         /// </summary>
         /// <param name="callback">当屏幕方向更改时执行的方法。</param>
         /// <param name="screenOrientation">屏幕方向。</param>
-        /// <param name="playerLoopPhase">播放器循环阶段。</param>
+        /// <param name="playerLoopPhase">主循环阶段。</param>
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="screenOrientation"/> 不是基本方向（<see cref="ScreenOrientation.Portrait"/>、<see cref="ScreenOrientation.PortraitUpsideDown"/>、<see cref="ScreenOrientation.LandscapeLeft"/>、<see cref="ScreenOrientation.LandscapeRight"/>），或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
         public NotifyScreenOrientationChangedScope(
