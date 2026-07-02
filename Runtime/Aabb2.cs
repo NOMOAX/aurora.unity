@@ -24,7 +24,7 @@ namespace Aurora.Unity
         [SerializeField]
         private float maxY;
 
-        private const string Format = nameof(Aabb2) + "(({0}f, {1}f), ({2}f, {3}f))";
+        private const string Format = nameof(Aabb2) + "(({0}, {1}), ({2}, {3}))";
 
         /// <summary>
         /// 初始化 <see cref="Aabb2"/> 结构的新实例。

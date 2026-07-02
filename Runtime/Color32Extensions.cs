@@ -89,7 +89,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Color32 InternalWithH(Color32 color, float h)
         {
-            if (IsHUndefined(color))
+            if (color.IsHUndefined())
             {
                 return color;
             }
