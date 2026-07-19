@@ -1,4 +1,7 @@
+// @formatter:max_line_length 10000
+
 using System;
+using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +12,10 @@ namespace Aurora.UnityEditor
     /// </summary>
     public static class UnityEditorGUIUtility
     {
+        private const float AxisLabelPositionOffset = 0.7f;
+
+        private static readonly GUILayoutOption[] WithNoExpand = { GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false) };
+
         /// <summary>
         /// 绘制外边框。
         /// </summary>
@@ -17,12 +24,10 @@ namespace Aurora.UnityEditor
         /// <param name="thickness">边框的粗细。</param>
         public static void DrawOuterBorder(Rect rect, Color color, float thickness)
         {
-            // @formatter:max_line_length 10000
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin - thickness, rect.yMin - thickness, rect.xMax + thickness, rect.yMin), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin - thickness, rect.yMax, rect.xMax + thickness, rect.yMax + thickness), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin - thickness, rect.yMin, rect.xMin, rect.yMax), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMax, rect.yMin, rect.xMax + thickness, rect.yMax), color);
-            // @formatter:max_line_length restore
         }
 
         /// <summary>
@@ -33,117 +38,376 @@ namespace Aurora.UnityEditor
         /// <param name="thickness">边框的粗细。</param>
         public static void DrawInnerBorder(Rect rect, Color color, float thickness)
         {
-            // @formatter:max_line_length 10000
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin, rect.yMin, rect.xMax, rect.yMin + thickness), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin, rect.yMax - thickness, rect.xMax, rect.yMax), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin, rect.yMin + thickness, rect.xMin + thickness, rect.yMax - thickness), color);
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMax - thickness, rect.yMin + thickness, rect.xMax, rect.yMax - thickness), color);
-            // @formatter:max_line_length restore
         }
 
         /// <summary>
         /// 绘制单元格区域。
         /// </summary>
-        /// <param name="padding">整个区域的外边距。</param>
-        /// <param name="cellsAreaPadding">单元格区域的外边距（与列/行工具按钮区之间的间距）。</param>
-        /// <param name="cellDimensions">单元格的列数和行数（x = 列数，y = 行数）。</param>
-        /// <param name="cellSize">单个单元格的大小。</param>
-        /// <param name="cellSpacing">单元格之间的间距。</param>
-        /// <param name="drawOptions">绘制配置（回调与样式）。</param>
-        public static void DrawCellsArea(
-            RectOffset           padding,
-            RectOffset           cellsAreaPadding,
-            Vector2Int           cellDimensions,
-            Vector2              cellSize,
-            Vector2              cellSpacing,
-            CellsAreaDrawOptions drawOptions)
+        /// <param name="padding">整个区域的外边距（x = left, y = bottom, z = right, w = top）。</param>
+        /// <param name="cellsAreaPadding">单元格区域的外边距（x = left, y = bottom, z = right, w = top）。</param>
+        /// <param name="cellDimensions">单元格的列数和行数（x = columns，y = rows）。</param>
+        /// <param name="cellSize">单元格的大小。工具也将使用这个值作为大小。</param>
+        /// <param name="cellSpacing">单元格之间的间距。工具也将使用这个值作为间距。</param>
+        /// <param name="options">绘制配置（回调与样式）。</param>
+        /// <param name="state">调用方自定义状态，会作为最后一个参数传给每个绘制委托。</param>
+        public static void DrawCellsArea(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
-            // 1. 按钮溢出量：新增按钮比最末单元格多出的空间
-            //    buttonOverflow = cellSize * 0.5f - cellSpacing * 0.5f   (Vector2)
-            //    effectiveMargin = max(cellsAreaPadding, buttonOverflow)
-
-            // 2. 从整体区域 Rect 缩进 effectiveMargin，得到 cellsAreaRect
-
-            // 3. 绘制整体背景 OnDrawBackground(totalRect)
-
-            // 4. 计算子区域 Rect（列/行按钮位置待后续确定）：
-            //    columnButtonsRect — 列工具区
-            //    rowButtonsRect    — 行工具区
-            //    gridRect          — 单元格区
-
-            // 5. 绘制单元格区域背景 OnDrawCellsAreaBackground
-
-            // 6. 根据 RowOrigin 分流：
-            //    Bottom（默认）：列工具在下方，遵循 Unity 空间坐标系（Y 向上，行 0 在底）
-            //    Top（反向）：   列工具在上方，对应 GUI Y 向下（行 0 在顶）
-            //    if (drawOptions.RowOrigin == CellRowOrigin.Bottom) DrawCellsAreaBottom(...)
-            //    else DrawCellsAreaTop(...)
-
-            // 7. 遍历单元格（固定列优先：先遍历列再遍历行）：
-            //    for col 0..cellDimensions.x-1:
-            //      for row 0..cellDimensions.y-1:
-            //        OnDrawCell(rectAt(col, row), new Vector2Int(col, row))
+            if (float.IsNaN(padding.x) || float.IsNaN(padding.y) || float.IsNaN(padding.z) || float.IsNaN(padding.w) || padding.x < 0 || padding.y < 0 || padding.z < 0 || padding.w < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(padding));
+            }
+            if (float.IsNaN(cellsAreaPadding.x) || float.IsNaN(cellsAreaPadding.y) || float.IsNaN(cellsAreaPadding.z) || float.IsNaN(cellsAreaPadding.w) || cellsAreaPadding.x < 0 || cellsAreaPadding.y < 0 || cellsAreaPadding.z < 0 || cellsAreaPadding.w < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(cellsAreaPadding));
+            }
+            if (cellDimensions.x < 0 || cellDimensions.y < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(cellDimensions));
+            }
+            if (float.IsNaN(cellSize.x) || float.IsNaN(cellSize.y) || cellSize.x < 0 || cellSize.y < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(cellSize));
+            }
+            if (float.IsNaN(cellSpacing.x) || float.IsNaN(cellSpacing.y) || cellSpacing.x < 0 || cellSpacing.y < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(cellSpacing));
+            }
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            switch (options.RowOrigin)
+            {
+                case CellRowOrigin.Bottom:
+                    DrawCellsAreaBottom(padding, cellsAreaPadding, cellDimensions, cellSize, cellSpacing, options, state);
+                    break;
+                case CellRowOrigin.Top:
+                    DrawCellsAreaTop(padding, cellsAreaPadding, cellDimensions, cellSize, cellSpacing, options, state);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
-        /// <summary>
-        /// CellRowOrigin.Top：行 0 在顶部，Y 向下递增。
-        /// </summary>
-        private static void DrawCellsAreaTop(
-            Rect                 gridRect,
-            Vector2              cellSize,
-            Vector2              cellSpacing,
-            Vector2Int           cellDimensions,
-            CellsAreaDrawOptions drawOptions)
+        private static void DrawCellsAreaBottom(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
-            // 遍历每行 i（0 到 cellDimensions.y）：
-            //   cellY = gridRect.y + i * (cellSize.y + cellSpacing.y)
-            //
-            //   // 行删除按钮（左侧 rowButtonsRect 内）
-            //   OnDrawDeleteRowButton(new Rect(..., cellY, ..., cellSize.y), i)
-            //
-            //   // 行新增按钮（居中于间距）
-            //   addY = cellY + cellSize.y + cellSpacing.y * 0.5f
-            //   OnDrawAddNewRowButton(new Rect(..., addY, ..., cellSize.y), i)
-            //
-            //   // 最后多一个新增按钮（i == cellDimensions.y 时无删除按钮）
-            //
-            // 遍历每个单元格（col, row）：
-            //   x = gridRect.x + col * (cellSize.x + cellSpacing.x)
-            //   y = gridRect.y + row * (cellSize.y + cellSpacing.y)
-            //   OnDrawCell(new Rect(x, y, cellSize), new Vector2Int(col, row))
+            #region 计算各区域尺寸
 
-            throw new NotImplementedException();
+            var columns = cellDimensions.x;
+            var rows    = cellDimensions.y;
+            var stepX   = cellSize.x + cellSpacing.x;
+            var stepY   = cellSize.y + cellSpacing.y;
+
+            // 按钮溢出量
+            var buttonOverflowX = (cellSize.x + cellSpacing.x) * 0.5f;
+            var buttonOverflowY = (cellSize.y + cellSpacing.y) * 0.5f;
+
+            // 有效边距: 左/下推开按钮区, 右/上与溢出量取max
+            var effectiveLeft   = cellsAreaPadding.x;                             // x = left
+            var effectiveBottom = cellsAreaPadding.y;                             // y = bottom
+            var effectiveRight  = Mathf.Max(cellsAreaPadding.z, buttonOverflowX); // z = right
+            var effectiveTop    = Mathf.Max(cellsAreaPadding.w, buttonOverflowY); // w = top
+
+            var rowButtonsWidth     = stepX + cellSize.x;
+            var columnButtonsHeight = stepY + cellSize.y;
+            var gridWidth           = columns * cellSize.x + Mathf.Max(0, columns - 1) * cellSpacing.x;
+            var gridHeight          = rows * cellSize.y + Mathf.Max(0,    rows - 1) * cellSpacing.y;
+            var innerWidth          = rowButtonsWidth + effectiveLeft + gridWidth + effectiveRight;
+            var innerHeight         = effectiveTop + gridHeight + effectiveBottom + columnButtonsHeight;
+            var totalWidth          = padding.x + innerWidth + padding.z;
+            var totalHeight         = padding.y + innerHeight + padding.w;
+
+            #endregion
+
+            // 获取 totalRect 并切分子区域
+            var totalRect = GUILayoutUtility.GetRect(totalWidth, totalHeight, WithNoExpand);
+            var innerRect = new Rect(totalRect.xMin + padding.x, totalRect.yMin + padding.w, innerWidth, innerHeight);
+            var gridRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin + effectiveTop, gridWidth, gridHeight);
+            var columnButtonsRect = new Rect(gridRect.xMin, gridRect.yMax + effectiveBottom, gridWidth + effectiveRight, columnButtonsHeight);
+            var rowButtonsRect = new Rect(innerRect.xMin, innerRect.yMin + effectiveTop - buttonOverflowY, rowButtonsWidth, gridHeight + buttonOverflowY * 2f);
+
+            // 背景
+            options.OnDrawBackground?.Invoke(totalRect, state);
+
+            // 单元格区域背景 = gridRect + cellsAreaPadding
+            if (options.OnDrawCellsAreaBackground != null)
+            {
+                var cellsAreaBackgroundRect = new Rect(gridRect.xMin - cellsAreaPadding.x, gridRect.yMin - cellsAreaPadding.w, cellsAreaPadding.x + gridRect.width + cellsAreaPadding.z, cellsAreaPadding.y + gridRect.height + cellsAreaPadding.w);
+                options.OnDrawCellsAreaBackground(cellsAreaBackgroundRect, state);
+            }
+
+            // 列删除按钮
+            if (options.OnDrawDeleteColumnButton != null)
+            {
+                var deleteColumnY = columnButtonsRect.yMin;
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var deleteColumnX        = gridRect.xMin + columnIndex * stepX;
+                    var deleteColumnPosition = new Vector2(deleteColumnX, deleteColumnY);
+                    var deleteColumnRect     = new Rect(deleteColumnPosition, cellSize);
+                    options.OnDrawDeleteColumnButton(deleteColumnRect, columnIndex, state);
+                }
+            }
+            // 列添加按钮
+            if (options.OnDrawAddColumnButton != null)
+            {
+                var addColumnY = columnButtonsRect.yMin + stepY;
+                for (var columnInsertIndex = 0; columnInsertIndex <= columns; columnInsertIndex++)
+                {
+                    var addColumnX        = gridRect.xMin + (columnInsertIndex - 0.5f) * stepX;
+                    var addColumnPosition = new Vector2(addColumnX, addColumnY);
+                    var addColumnRect     = new Rect(addColumnPosition, cellSize);
+                    options.OnDrawAddColumnButton(addColumnRect, columnInsertIndex, state);
+                }
+            }
+
+            // 行删除按钮
+            if (options.OnDrawDeleteRowButton != null)
+            {
+                var deleteRowX = rowButtonsRect.xMin + stepX;
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                {
+                    var deleteRowY        = gridRect.yMax - (rowIndex + 1) * cellSize.y - rowIndex * cellSpacing.y;
+                    var deleteRowPosition = new Vector2(deleteRowX, deleteRowY);
+                    var deleteRowRect     = new Rect(deleteRowPosition, cellSize);
+                    options.OnDrawDeleteRowButton(deleteRowRect, rowIndex, state);
+                }
+            }
+            // 行添加按钮
+            if (options.OnDrawAddRowButton != null)
+            {
+                var addRowX = rowButtonsRect.xMin;
+                for (var rowInsertIndex = 0; rowInsertIndex <= rows; rowInsertIndex++)
+                {
+                    var addRowY = gridRect.yMax - (rowInsertIndex + 0.5f) * cellSize.y - (rowInsertIndex - 0.5f) * cellSpacing.y;
+                    var addRowPosition = new Vector2(addRowX, addRowY);
+                    var addRowRect = new Rect(addRowPosition, cellSize);
+                    options.OnDrawAddRowButton(addRowRect, rowInsertIndex, state);
+                }
+            }
+
+            // 各单元格
+            if (options.OnDrawCell != null)
+            {
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var cellX        = gridRect.xMin + columnIndex * stepX;
+                    var cellY        = gridRect.yMax - (rowIndex + 1) * cellSize.y - rowIndex * cellSpacing.y;
+                    var cellPosition = new Vector2(cellX, cellY);
+                    var cellRect     = new Rect(cellPosition, cellSize);
+                    var cellCoord    = new Vector2Int(columnIndex, rowIndex);
+                    options.OnDrawCell(cellRect, cellCoord, state);
+                }
+            }
+
+            if (options.IndexLabelStyle != null)
+            {
+                // 列索引标签：顶部中点紧贴对应列单元格的下边中点
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var content       = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var anchorX       = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
+                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMax);
+                    var labelRect     = new Rect(labelPosition, labelSize);
+                    GUI.Label(labelRect, content, options.IndexLabelStyle);
+                }
+                // 行索引标签：右侧中点紧贴对应行单元格的左边中点
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                {
+                    var content       = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var cellY         = gridRect.yMax - (rowIndex + 1) * cellSize.y - rowIndex * cellSpacing.y;
+                    var anchorY       = cellY + cellSize.y * 0.5f;
+                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x, anchorY - labelSize.y * 0.5f);
+                    var labelRect     = new Rect(labelPosition, labelSize);
+                    GUI.Label(labelRect, content, options.IndexLabelStyle);
+                }
+            }
+
+            if (options.AxisLabelStyle != null)
+            {
+                // "X" 轴标签：右上角对齐 (0,0) 单元格左下角，再向右偏移
+                {
+                    var content = new GUIContent("X");
+                    var xLabelSize = options.AxisLabelStyle.CalcSize(content);
+                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMax);
+                    var xLabelRect = new Rect(xLabelPosition, xLabelSize);
+                    GUI.Label(xLabelRect, content, options.AxisLabelStyle);
+                }
+                // "Y" 轴标签：右上角对齐 (0,0) 单元格左下角，再向上偏移
+                {
+                    var content = new GUIContent("Y");
+                    var yLabelSize = options.AxisLabelStyle.CalcSize(content);
+                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x, gridRect.yMax - yLabelSize.y * AxisLabelPositionOffset);
+                    var yLabelRect = new Rect(yLabelPosition, yLabelSize);
+                    GUI.Label(yLabelRect, content, options.AxisLabelStyle);
+                }
+            }
         }
 
-        /// <summary>
-        /// CellRowOrigin.Bottom：行 0 在底部，Y 向上递减。
-        /// </summary>
-        private static void DrawCellsAreaBottom(
-            Rect                 gridRect,
-            Vector2              cellSize,
-            Vector2              cellSpacing,
-            Vector2Int           cellDimensions,
-            CellsAreaDrawOptions drawOptions)
+        private static void DrawCellsAreaTop(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
-            // 行方向翻转：以 gridRect 底部为基准向上计算
-            // 遍历每行 i（0 到 cellDimensions.y）：
-            //   cellY = gridRect.yMax - (i + 1) * cellSize.y - i * cellSpacing.y
-            //
-            //   // 行删除按钮
-            //   OnDrawDeleteRowButton(new Rect(..., cellY, ..., cellSize.y), i)
-            //
-            //   // 行新增按钮（上方）
-            //   addY = cellY - cellSpacing.y * 0.5f
-            //   OnDrawAddNewRowButton(new Rect(..., addY, ..., cellSize.y), i)
-            //
-            //   // 最后多一个新增按钮（i == cellDimensions.y 时在顶部之上）
-            //
-            // 遍历每个单元格（col, row）：
-            //   x = gridRect.x + col * (cellSize.x + cellSpacing.x)
-            //   y = gridRect.yMax - (row + 1) * cellSize.y - row * cellSpacing.y
-            //   OnDrawCell(new Rect(x, y, cellSize), new Vector2Int(col, row))
+            #region 计算各区域尺寸
 
-            throw new NotImplementedException();
+            var columns = cellDimensions.x;
+            var rows    = cellDimensions.y;
+            var stepX   = cellSize.x + cellSpacing.x;
+            var stepY   = cellSize.y + cellSpacing.y;
+
+            // 按钮溢出量
+            var buttonOverflowX = (cellSize.x + cellSpacing.x) * 0.5f;
+            var buttonOverflowY = (cellSize.y + cellSpacing.y) * 0.5f;
+
+            // 有效边距: 左/上推开按钮区, 右/下与溢出量取max
+            var effectiveLeft   = cellsAreaPadding.x;                             // x = left
+            var effectiveBottom = Mathf.Max(cellsAreaPadding.y, buttonOverflowY); // y = bottom
+            var effectiveRight  = Mathf.Max(cellsAreaPadding.z, buttonOverflowX); // z = right
+            var effectiveTop    = cellsAreaPadding.w;                             // w = top
+
+            var rowButtonsWidth     = stepX + cellSize.x;
+            var columnButtonsHeight = stepY + cellSize.y;
+            var gridWidth           = columns * cellSize.x + Mathf.Max(0, columns - 1) * cellSpacing.x;
+            var gridHeight          = rows * cellSize.y + Mathf.Max(0,    rows - 1) * cellSpacing.y;
+            var innerWidth          = rowButtonsWidth + effectiveLeft + gridWidth + effectiveRight;
+            var innerHeight         = columnButtonsHeight + effectiveTop + gridHeight + effectiveBottom;
+            var totalWidth          = padding.x + innerWidth + padding.z;
+            var totalHeight         = padding.y + innerHeight + padding.w;
+
+            #endregion
+
+            // 获取 totalRect 并切分子区域
+            var totalRect = GUILayoutUtility.GetRect(totalWidth, totalHeight, WithNoExpand);
+            var innerRect = new Rect(totalRect.xMin + padding.x, totalRect.yMin + padding.w, innerWidth, innerHeight);
+            var gridRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin + columnButtonsHeight + effectiveTop, gridWidth, gridHeight);
+            var columnButtonsRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin, gridWidth + effectiveRight, columnButtonsHeight);
+            var rowButtonsRect = new Rect(innerRect.xMin, gridRect.yMin - buttonOverflowY, rowButtonsWidth, gridHeight + buttonOverflowY * 2f);
+
+            // 背景
+            options.OnDrawBackground?.Invoke(totalRect, state);
+
+            // 单元格区域背景 = gridRect + cellsAreaPadding
+            if (options.OnDrawCellsAreaBackground != null)
+            {
+                var cellsAreaBackgroundRect = new Rect(gridRect.xMin - cellsAreaPadding.x, gridRect.yMin - cellsAreaPadding.w, cellsAreaPadding.x + gridRect.width + cellsAreaPadding.z, cellsAreaPadding.y + gridRect.height + cellsAreaPadding.w);
+                options.OnDrawCellsAreaBackground(cellsAreaBackgroundRect, state);
+            }
+
+            // 列删除按钮
+            if (options.OnDrawDeleteColumnButton != null)
+            {
+                var deleteColumnY = columnButtonsRect.yMin + stepY;
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var deleteColumnX        = gridRect.xMin + columnIndex * stepX;
+                    var deleteColumnPosition = new Vector2(deleteColumnX, deleteColumnY);
+                    var deleteColumnRect     = new Rect(deleteColumnPosition, cellSize);
+                    options.OnDrawDeleteColumnButton(deleteColumnRect, columnIndex, state);
+                }
+            }
+            // 列添加按钮
+            if (options.OnDrawAddColumnButton != null)
+            {
+                var addColumnY = columnButtonsRect.yMin;
+                for (var columnInsertIndex = 0; columnInsertIndex <= columns; columnInsertIndex++)
+                {
+                    var addColumnX        = gridRect.xMin + (columnInsertIndex - 0.5f) * stepX;
+                    var addColumnPosition = new Vector2(addColumnX, addColumnY);
+                    var addColumnRect     = new Rect(addColumnPosition, cellSize);
+                    options.OnDrawAddColumnButton(addColumnRect, columnInsertIndex, state);
+                }
+            }
+
+            // 行删除按钮
+            if (options.OnDrawDeleteRowButton != null)
+            {
+                var deleteRowX = rowButtonsRect.xMin + stepX;
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                {
+                    var deleteRowY        = gridRect.yMin + rowIndex * stepY;
+                    var deleteRowPosition = new Vector2(deleteRowX, deleteRowY);
+                    var deleteRowRect     = new Rect(deleteRowPosition, cellSize);
+                    options.OnDrawDeleteRowButton(deleteRowRect, rowIndex, state);
+                }
+            }
+            // 行添加按钮
+            if (options.OnDrawAddRowButton != null)
+            {
+                var addRowX = rowButtonsRect.xMin;
+                for (var rowInsertIndex = 0; rowInsertIndex <= rows; rowInsertIndex++)
+                {
+                    var addRowY        = gridRect.yMin + (rowInsertIndex - 0.5f) * stepY;
+                    var addRowPosition = new Vector2(addRowX, addRowY);
+                    var addRowRect     = new Rect(addRowPosition, cellSize);
+                    options.OnDrawAddRowButton(addRowRect, rowInsertIndex, state);
+                }
+            }
+
+            // 各单元格
+            if (options.OnDrawCell != null)
+            {
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var cellX        = gridRect.xMin + columnIndex * stepX;
+                    var cellY        = gridRect.yMin + rowIndex * stepY;
+                    var cellPosition = new Vector2(cellX, cellY);
+                    var cellRect     = new Rect(cellPosition, cellSize);
+                    var cellCoord    = new Vector2Int(columnIndex, rowIndex);
+                    options.OnDrawCell(cellRect, cellCoord, state);
+                }
+            }
+
+            if (options.IndexLabelStyle != null)
+            {
+                // 列索引标签：顶部中点紧贴对应列单元格的上边中点
+                for (var columnIndex = 0; columnIndex < columns; columnIndex++)
+                {
+                    var content       = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var anchorX       = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
+                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMin - labelSize.y);
+                    var labelRect     = new Rect(labelPosition, labelSize);
+                    GUI.Label(labelRect, content, options.IndexLabelStyle);
+                }
+                // 行索引标签：右侧中点紧贴对应行单元格的左边中点
+                for (var rowIndex = 0; rowIndex < rows; rowIndex++)
+                {
+                    var content       = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var cellY         = gridRect.yMin + rowIndex * stepY;
+                    var anchorY       = cellY + cellSize.y * 0.5f;
+                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x, anchorY - labelSize.y * 0.5f);
+                    var labelRect     = new Rect(labelPosition, labelSize);
+                    GUI.Label(labelRect, content, options.IndexLabelStyle);
+                }
+            }
+
+            if (options.AxisLabelStyle != null)
+            {
+                // "X" 轴标签：右下角对齐 (0,0) 单元格左上角，再向右偏移
+                {
+                    var content = new GUIContent("X");
+                    var xLabelSize = options.AxisLabelStyle.CalcSize(content);
+                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMin - xLabelSize.y);
+                    var xLabelRect = new Rect(xLabelPosition, xLabelSize);
+                    GUI.Label(xLabelRect, content, options.AxisLabelStyle);
+                }
+                // "Y" 轴标签：右下角对齐 (0,0) 单元格左上角，再向下偏移
+                {
+                    var content = new GUIContent("Y");
+                    var yLabelSize = options.AxisLabelStyle.CalcSize(content);
+                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x, gridRect.yMin - yLabelSize.y * (1f - AxisLabelPositionOffset));
+                    var yLabelRect = new Rect(yLabelPosition, yLabelSize);
+                    GUI.Label(yLabelRect, content, options.AxisLabelStyle);
+                }
+            }
         }
     }
 }
+// @formatter:max_line_length restore
