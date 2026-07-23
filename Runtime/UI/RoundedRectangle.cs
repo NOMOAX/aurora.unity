@@ -384,15 +384,15 @@ namespace Aurora.Unity.UI
             for (var i = 0; i < 4; i++)
             {
                 // 此象限的首个顶点的索引（注意，每个象限的最后一个顶点与它的下个象限的首个顶点具有相同的角度，此时将这两个顶点当作具有相同的索引）
-                var firstVertexIndex = segments * i;
+                var firstVertexIndex     = segments * i;
                 // 圆角半径
-                var cornerRadius = cornerRadii[i];
+                var cornerRadius         = cornerRadii[i];
                 // 圆角圆心到中心的相对位置
                 var cornerCenterToCenter = (halfSize - Vector2.one * cornerRadius) * multipliers[i];
                 // 因为每个象限有 segments 条边，所以有 segments + 1 个顶点
                 for (var j = 0; j < segments + 1; j++)
                 {
-                    var angle = stepAngle * (firstVertexIndex + j);
+                    var angle                  = stepAngle * (firstVertexIndex + j);
                     // 此顶点到圆角圆心的相对位置
                     var positionToCornerCenter = UnityMath.CosSin(angle) * cornerRadius;
                     var position               = center + cornerCenterToCenter + positionToCornerCenter;

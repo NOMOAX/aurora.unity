@@ -210,22 +210,22 @@ namespace Aurora.UnityEditor
                 // 列索引标签：顶部中点紧贴对应列单元格的下边中点
                 for (var columnIndex = 0; columnIndex < columns; columnIndex++)
                 {
-                    var content       = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
-                    var anchorX       = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
-                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
-                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMax);
-                    var labelRect     = new Rect(labelPosition, labelSize);
+                    var content = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var anchorX = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
+                    var labelSize = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMax + options.LabelOffset.y);
+                    var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
                 // 行索引标签：右侧中点紧贴对应行单元格的左边中点
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
                 {
-                    var content       = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
-                    var cellY         = gridRect.yMax - (rowIndex + 1) * cellSize.y - rowIndex * cellSpacing.y;
-                    var anchorY       = cellY + cellSize.y * 0.5f;
-                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
-                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x, anchorY - labelSize.y * 0.5f);
-                    var labelRect     = new Rect(labelPosition, labelSize);
+                    var content = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var cellY = gridRect.yMax - (rowIndex + 1) * cellSize.y - rowIndex * cellSpacing.y;
+                    var anchorY = cellY + cellSize.y * 0.5f;
+                    var labelSize = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x - options.LabelOffset.x, anchorY - labelSize.y * 0.5f);
+                    var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
             }
@@ -236,7 +236,7 @@ namespace Aurora.UnityEditor
                 {
                     var content = new GUIContent("X");
                     var xLabelSize = options.AxisLabelStyle.CalcSize(content);
-                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMax);
+                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMax + options.LabelOffset.y);
                     var xLabelRect = new Rect(xLabelPosition, xLabelSize);
                     GUI.Label(xLabelRect, content, options.AxisLabelStyle);
                 }
@@ -244,7 +244,7 @@ namespace Aurora.UnityEditor
                 {
                     var content = new GUIContent("Y");
                     var yLabelSize = options.AxisLabelStyle.CalcSize(content);
-                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x, gridRect.yMax - yLabelSize.y * AxisLabelPositionOffset);
+                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x - options.LabelOffset.x, gridRect.yMax - yLabelSize.y * AxisLabelPositionOffset);
                     var yLabelRect = new Rect(yLabelPosition, yLabelSize);
                     GUI.Label(yLabelRect, content, options.AxisLabelStyle);
                 }
@@ -368,22 +368,22 @@ namespace Aurora.UnityEditor
                 // 列索引标签：顶部中点紧贴对应列单元格的上边中点
                 for (var columnIndex = 0; columnIndex < columns; columnIndex++)
                 {
-                    var content       = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
-                    var anchorX       = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
-                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
-                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMin - labelSize.y);
-                    var labelRect     = new Rect(labelPosition, labelSize);
+                    var content = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var anchorX = gridRect.xMin + columnIndex * stepX + cellSize.x * 0.5f;
+                    var labelSize = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(anchorX - labelSize.x * 0.5f, gridRect.yMin - labelSize.y - options.LabelOffset.y);
+                    var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
                 // 行索引标签：右侧中点紧贴对应行单元格的左边中点
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
                 {
-                    var content       = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
-                    var cellY         = gridRect.yMin + rowIndex * stepY;
-                    var anchorY       = cellY + cellSize.y * 0.5f;
-                    var labelSize     = options.IndexLabelStyle.CalcSize(content);
-                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x, anchorY - labelSize.y * 0.5f);
-                    var labelRect     = new Rect(labelPosition, labelSize);
+                    var content = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
+                    var cellY = gridRect.yMin + rowIndex * stepY;
+                    var anchorY = cellY + cellSize.y * 0.5f;
+                    var labelSize = options.IndexLabelStyle.CalcSize(content);
+                    var labelPosition = new Vector2(gridRect.xMin - labelSize.x - options.LabelOffset.x, anchorY - labelSize.y * 0.5f);
+                    var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
             }
@@ -394,7 +394,7 @@ namespace Aurora.UnityEditor
                 {
                     var content = new GUIContent("X");
                     var xLabelSize = options.AxisLabelStyle.CalcSize(content);
-                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMin - xLabelSize.y);
+                    var xLabelPosition = new Vector2(gridRect.xMin + xLabelSize.x * AxisLabelPositionOffset - xLabelSize.x, gridRect.yMin - xLabelSize.y - options.LabelOffset.y);
                     var xLabelRect = new Rect(xLabelPosition, xLabelSize);
                     GUI.Label(xLabelRect, content, options.AxisLabelStyle);
                 }
@@ -402,7 +402,7 @@ namespace Aurora.UnityEditor
                 {
                     var content = new GUIContent("Y");
                     var yLabelSize = options.AxisLabelStyle.CalcSize(content);
-                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x, gridRect.yMin - yLabelSize.y * (1f - AxisLabelPositionOffset));
+                    var yLabelPosition = new Vector2(gridRect.xMin - yLabelSize.x - options.LabelOffset.x, gridRect.yMin - yLabelSize.y * (1f - AxisLabelPositionOffset));
                     var yLabelRect = new Rect(yLabelPosition, yLabelSize);
                     GUI.Label(yLabelRect, content, options.AxisLabelStyle);
                 }
