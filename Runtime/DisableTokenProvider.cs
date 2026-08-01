@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
-using Aurora.Diagnostics;
+using Aurora.Unity.Diagnostics;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -27,7 +27,8 @@ namespace Aurora.Unity
                 {
                     return _cancellationTokenSource.Token;
                 }
-                if (!UnityEnvironment.IsPlaying || !this || !Assume.IsTrue(
+
+                if (!UnityEnvironment.IsPlaying || !this || !InlineAssert.IsTrue(
                         enabled,
                         "Never disable this " + nameof(UnityEngine) + "." + nameof(Behaviour) + " instance directly!"
                     ) || !gameObject.activeInHierarchy)
