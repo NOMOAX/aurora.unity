@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Aurora.Diagnostics;
@@ -15,18 +16,42 @@ namespace Aurora.Unity
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Initialize()
         {
-            var stringBuilder = PredefinedPools.StringBuilder.Get();
-            try
             {
-                stringBuilder.AppendLine(
-                    $"{nameof(Aurora)}.{nameof(Unity)}.{nameof(RuntimeInitialization)}.{nameof(Initialize)}();"
-                );
-                InternalInitialize(stringBuilder);
-                Debug.Log(stringBuilder.ToString());
+                var stringBuilder = PredefinedPools.StringBuilder.Get();
+                try
+                {
+                    stringBuilder.AppendLine(
+                        $"{nameof(Aurora)}.{nameof(Unity)}.{nameof(RuntimeInitialization)}.{nameof(Initialize)}();"
+                    );
+                    InternalInitialize(stringBuilder);
+                    Debug.Log(stringBuilder.ToString());
+                }
+                finally
+                {
+                    PredefinedPools.StringBuilder.Return(stringBuilder);
+                }
             }
-            finally
             {
-                PredefinedPools.StringBuilder.Return(stringBuilder);
+                var stringBuilder = PredefinedPools.StringBuilder.Get();
+                try
+                {
+                    var regex                          = new Regex(" {2,}", RegexOptions.CultureInvariant);
+                    var operatingSystemNameWithVersion = regex.Replace(SystemInfo.operatingSystem, " ").Trim();
+                    var systemMemorySize               = SystemInfo.systemMemorySize;
+                    var processorName                  = regex.Replace(SystemInfo.processorType, " ").Trim();
+                    var processorCount                 = SystemInfo.processorCount;
+                    var graphicsDeviceName             = regex.Replace(SystemInfo.graphicsDeviceName, " ").Trim();
+                    var graphicsMemorySize             = SystemInfo.graphicsMemorySize;
+
+                    stringBuilder.AppendLine($"{operatingSystemNameWithVersion} ({systemMemorySize} MB)");
+                    stringBuilder.AppendLine($"{processorName} ({processorCount} Processors)");
+                    stringBuilder.AppendLine($"{graphicsDeviceName} ({graphicsMemorySize} MB)");
+                    Debug.Log(stringBuilder.ToString());
+                }
+                finally
+                {
+                    PredefinedPools.StringBuilder.Return(stringBuilder);
+                }
             }
         }
 
