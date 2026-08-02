@@ -35,7 +35,7 @@ namespace Aurora.Unity
                 var stringBuilder = PredefinedPools.StringBuilder.Get();
                 try
                 {
-                    var regex                          = new Regex(" {2,}", RegexOptions.CultureInvariant);
+                    var regex                          = new Regex(" {2,}");
                     var operatingSystemNameWithVersion = regex.Replace(SystemInfo.operatingSystem, " ").Trim();
                     var systemMemorySize               = SystemInfo.systemMemorySize;
                     var processorName                  = regex.Replace(SystemInfo.processorType, " ").Trim();
