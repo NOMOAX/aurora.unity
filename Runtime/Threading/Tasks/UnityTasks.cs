@@ -126,7 +126,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class PlayerLoopPhasePromise : TaskCompletionSource<VoidResult>
         {
             private static readonly Action<object> PromiseComplete =
-                state => ((PlayerLoopPhasePromise) state).Complete();
+                state => ((PlayerLoopPhasePromise)state).Complete();
 
             internal PlayerLoopPhasePromise(PlayerLoopPhase playerLoopPhase)
             {
@@ -159,7 +159,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (playerLoopPhaseWithCancellation, cancellationToken) =
-                    (Tuple<PlayerLoopPhasePromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<PlayerLoopPhasePromiseWithCancellation, CancellationToken>)state;
                 if (playerLoopPhaseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     playerLoopPhaseWithCancellation.CleanUp();
@@ -267,7 +267,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class AsyncOperationPromise : TaskCompletionSource<VoidResult>
         {
             private static readonly Action<Task, object> PromiseCompleteOrRegister =
-                (_, state) => ((AsyncOperationPromise) state).CompleteOrRegister();
+                (_, state) => ((AsyncOperationPromise)state).CompleteOrRegister();
 
             private readonly AsyncOperation _asyncOperation;
 
@@ -326,7 +326,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (asyncOperationPromiseWithCancellation, cancellationToken) =
-                    (Tuple<AsyncOperationPromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<AsyncOperationPromiseWithCancellation, CancellationToken>)state;
                 if (asyncOperationPromiseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     asyncOperationPromiseWithCancellation.CleanUp();
@@ -412,7 +412,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class DelayPromise : TaskCompletionSource<VoidResult>
         {
             private static readonly TimerTriggerCallback PromiseComplete =
-                (_, state) => ((DelayPromise) state).Complete();
+                (_, state) => ((DelayPromise)state).Complete();
 
             private readonly ITimer _timer;
 
@@ -456,7 +456,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (delayPromiseWithCancellation, cancellationToken) =
-                    (Tuple<DelayPromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<DelayPromiseWithCancellation, CancellationToken>)state;
                 if (delayPromiseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     delayPromiseWithCancellation.CleanUp();
@@ -550,7 +550,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class DelayUnityTimePromise : TaskCompletionSource<VoidResult>
         {
             private static readonly TimerTriggerCallback PromiseComplete = (_, state) =>
-                ((DelayUnityTimePromise) state).Complete();
+                ((DelayUnityTimePromise)state).Complete();
 
             private readonly ITimer _timer;
 
@@ -605,7 +605,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (delayUnityTimePromiseWithCancellation, cancellationToken) =
-                    (Tuple<DelayUnityTimePromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<DelayUnityTimePromiseWithCancellation, CancellationToken>)state;
                 if (delayUnityTimePromiseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     delayUnityTimePromiseWithCancellation.CleanUp();
@@ -696,7 +696,7 @@ namespace Aurora.Unity.Threading.Tasks
         private class DelayFramePromise : TaskCompletionSource<VoidResult>
         {
             private static readonly CounterTriggerCallback PromiseComplete = (_, state) =>
-                ((DelayFramePromise) state).Complete();
+                ((DelayFramePromise)state).Complete();
 
             private readonly ICounter _counter;
 
@@ -733,7 +733,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (delayFramePromiseWithCancellation, cancellationToken) =
-                    (Tuple<DelayFramePromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<DelayFramePromiseWithCancellation, CancellationToken>)state;
                 if (delayFramePromiseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     delayFramePromiseWithCancellation.CleanUp();
@@ -908,7 +908,7 @@ namespace Aurora.Unity.Threading.Tasks
             private static readonly Action<object> Cancel = state =>
             {
                 var (fileCreatedOrChangedPromiseWithCancellation, cancellationToken) =
-                    (Tuple<FileCreatedOrChangedPromiseWithCancellation, CancellationToken>) state;
+                    (Tuple<FileCreatedOrChangedPromiseWithCancellation, CancellationToken>)state;
                 if (fileCreatedOrChangedPromiseWithCancellation.TrySetCanceled(cancellationToken))
                 {
                     fileCreatedOrChangedPromiseWithCancellation.Cleanup();

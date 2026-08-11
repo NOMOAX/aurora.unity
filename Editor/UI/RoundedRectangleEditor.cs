@@ -164,7 +164,7 @@ namespace Aurora.UnityEditor.UI
 
         private void CornersGUI()
         {
-            var roundedRectangle  = (RoundedRectangle) target;
+            var roundedRectangle  = (RoundedRectangle)target;
             var pixelAdjustedRect = roundedRectangle.GetPixelAdjustedRect();
             var halfMinSide       = Mathf.Min(pixelAdjustedRect.width, pixelAdjustedRect.height) * 0.5f;
             NormalizedFloatValueGUI(

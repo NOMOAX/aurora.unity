@@ -28,7 +28,7 @@ namespace Aurora.Unity
                 null
             );
             Assert.IsNotNull(getCachedPtrMethodInfo);
-            FuncGetCachedPtr = (Func<Object, IntPtr>) Delegate.CreateDelegate(
+            FuncGetCachedPtr = (Func<Object, IntPtr>)Delegate.CreateDelegate(
                 typeof(Func<Object, IntPtr>),
                 getCachedPtrMethodInfo
             );
@@ -42,7 +42,7 @@ namespace Aurora.Unity
                 null
             );
             Assert.IsNotNull(doesObjectWithInstanceIdExistMethodInfo);
-            FuncDoesObjectWithInstanceIdExist = (Func<int, bool>) Delegate.CreateDelegate(
+            FuncDoesObjectWithInstanceIdExist = (Func<int, bool>)Delegate.CreateDelegate(
                 typeof(Func<int, bool>),
                 doesObjectWithInstanceIdExistMethodInfo
             );

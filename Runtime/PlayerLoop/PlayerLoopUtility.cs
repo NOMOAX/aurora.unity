@@ -119,7 +119,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var playerLoopRunner = PlayerLoopRunners[(int) phase];
+            var playerLoopRunner = PlayerLoopRunners[(int)phase];
             playerLoopRunner.Add(item);
         }
 
@@ -140,7 +140,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var playerLoopRunner = PlayerLoopRunners[(int) phase];
+            var playerLoopRunner = PlayerLoopRunners[(int)phase];
             playerLoopRunner.Remove(item);
         }
 
@@ -161,7 +161,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var continuationRunner = ContinuationRunners[(int) phase];
+            var continuationRunner = ContinuationRunners[(int)phase];
             continuationRunner.Add(continuation);
         }
 
@@ -183,7 +183,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var runner = ContinuationRunners[(int) phase];
+            var runner = ContinuationRunners[(int)phase];
             runner.Add(continuation, state);
         }
 
@@ -204,7 +204,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 return;
             }
-            var continuationRunner = ContinuationRunners[(int) phase];
+            var continuationRunner = ContinuationRunners[(int)phase];
             continuationRunner.Add(continuationInvocation);
         }
 
@@ -256,9 +256,9 @@ namespace Aurora.Unity.PlayerLoop
                 var anchorSubsystemType                 = plan.AnchorSubsystemType;
                 var insertAfter                         = plan.InsertAfter;
                 var playerLoopSubsystemType             = plan.PlayerLoopSubsystemType;
-                var playerLoopSubsystemUpdateDelegate   = (PlayerLoopSystem.UpdateFunction) PlayerLoopRunners[i].Run;
+                var playerLoopSubsystemUpdateDelegate   = (PlayerLoopSystem.UpdateFunction)PlayerLoopRunners[i].Run;
                 var continuationSubsystemType           = plan.ContinuationSubsystemType;
-                var continuationSubsystemUpdateDelegate = (PlayerLoopSystem.UpdateFunction) ContinuationRunners[i].Run;
+                var continuationSubsystemUpdateDelegate = (PlayerLoopSystem.UpdateFunction)ContinuationRunners[i].Run;
                 hasChanged |= RemoveAddPlayerLoopSubsystemAndContinuationSubsystem(
                     ref system,
                     categoryType,

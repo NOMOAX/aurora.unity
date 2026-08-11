@@ -100,8 +100,8 @@ namespace Aurora.Unity
         public static Vector2 PointToNormalizedUnclamped(Rect rectangle, Vector2 point)
         {
             return new Vector2(
-                (float) InterpolationUtility.InverseLinearInterpolate(rectangle.xMin, rectangle.xMax, point.x),
-                (float) InterpolationUtility.InverseLinearInterpolate(rectangle.yMin, rectangle.yMax, point.y)
+                (float)InterpolationUtility.InverseLinearInterpolate(rectangle.xMin, rectangle.xMax, point.x),
+                (float)InterpolationUtility.InverseLinearInterpolate(rectangle.yMin, rectangle.yMax, point.y)
             );
         }
 

@@ -124,8 +124,8 @@ namespace Aurora.Unity.UI
         private void GetLines()
         {
             _lines.Clear();
-            var availableSize = rectTransform.rect.size[(int) axis] -
-                                ((int) axis == 0 ? padding.horizontal : padding.vertical);
+            var availableSize = rectTransform.rect.size[(int)axis] -
+                                ((int)axis == 0 ? padding.horizontal : padding.vertical);
             var line     = new List<RectTransform>();
             var lineSize = 0f;
             foreach (var child in rectChildren)
@@ -134,11 +134,11 @@ namespace Aurora.Unity.UI
                 if (line.Count == 0)
                 {
                     line.Add(child);
-                    lineSize = preferredSize[(int) axis];
+                    lineSize = preferredSize[(int)axis];
                 }
                 else
                 {
-                    var newLineSize = lineSize + spacing[(int) axis] + preferredSize[(int) axis];
+                    var newLineSize = lineSize + spacing[(int)axis] + preferredSize[(int)axis];
                     if (newLineSize <= availableSize)
                     {
                         line.Add(child);
@@ -153,7 +153,7 @@ namespace Aurora.Unity.UI
                         {
                             child
                         };
-                        lineSize = preferredSize[(int) axis];
+                        lineSize = preferredSize[(int)axis];
                     }
                 }
             }
@@ -243,7 +243,7 @@ namespace Aurora.Unity.UI
                 {
                     foreach (var line in _lines)
                     {
-                        var position = (float) padding.left;
+                        var position = (float)padding.left;
                         for (var i = 0; i < line.Count; i++)
                         {
                             var child = line[i];
@@ -268,7 +268,7 @@ namespace Aurora.Unity.UI
                 }
                 case RectTransform.Axis.Vertical:
                 {
-                    var position = (float) padding.left;
+                    var position = (float)padding.left;
                     for (var i = 0; i < _lines.Count; i++)
                     {
                         if (i > 0)
@@ -299,7 +299,7 @@ namespace Aurora.Unity.UI
             {
                 case RectTransform.Axis.Horizontal:
                 {
-                    var position = (float) padding.top;
+                    var position = (float)padding.top;
                     for (var i = 0; i < _lines.Count; i++)
                     {
                         if (i > 0)
@@ -322,7 +322,7 @@ namespace Aurora.Unity.UI
                 {
                     foreach (var line in _lines)
                     {
-                        var position = (float) padding.top;
+                        var position = (float)padding.top;
                         for (var i = 0; i < line.Count; i++)
                         {
                             var child = line[i];

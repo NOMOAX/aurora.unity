@@ -317,17 +317,17 @@ namespace Aurora.Unity.Threading
 
         private static void OnTimeChanged(IFromToTimer timer, in FromToTimerValueChangedEventArgs args)
         {
-            ((PlayerLoopFromToTimer) timer).OnTimeChanged(in args);
+            ((PlayerLoopFromToTimer)timer).OnTimeChanged(in args);
         }
 
         private static void OnTimeTruncatedChanged(IFromToTimer timer, in FromToTimerValueChangedEventArgs args)
         {
-            ((PlayerLoopFromToTimer) timer).OnTimeTruncatedChanged(in args);
+            ((PlayerLoopFromToTimer)timer).OnTimeTruncatedChanged(in args);
         }
 
         private static void OnProgressChanged(IFromToTimer timer, in FromToTimerValueChangedEventArgs args)
         {
-            ((PlayerLoopFromToTimer) timer).OnProgressChanged(in args);
+            ((PlayerLoopFromToTimer)timer).OnProgressChanged(in args);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

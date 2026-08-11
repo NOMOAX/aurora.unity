@@ -60,7 +60,7 @@ namespace Aurora.Unity
                 return 1;
             }
             var timeSamples = audioSource.timeSamples;
-            return (double) timeSamples / (samples - 1);
+            return (double)timeSamples / (samples - 1);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Aurora.Unity
             {
                 return;
             }
-            audioSource.timeSamples = (int) ((samples - 1) * progress);
+            audioSource.timeSamples = (int)((samples - 1) * progress);
         }
     }
 }

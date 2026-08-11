@@ -119,7 +119,7 @@ namespace Aurora.Unity.UI
 
             vh.Clear();
 
-            var color32           = (Color32) color;
+            var color32           = (Color32)color;
             var pixelAdjustedRect = GetPixelAdjustedRect();
             var center            = pixelAdjustedRect.center;
             var halfSize          = pixelAdjustedRect.size * 0.5f;

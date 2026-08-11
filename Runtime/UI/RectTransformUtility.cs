@@ -1151,7 +1151,7 @@ namespace Aurora.Unity.UI
             rectTransform.pivot = value;
             var cornerAfter  = GetReferenceCorner(rectTransform);
             var cornerOffset = cornerAfter - cornerBefore;
-            rectTransform.anchoredPosition -= (Vector2) cornerOffset;
+            rectTransform.anchoredPosition -= (Vector2)cornerOffset;
             var position = rectTransform.position;
             position.z             -= cornerOffset.z;
             rectTransform.position =  position;
@@ -1387,7 +1387,7 @@ namespace Aurora.Unity.UI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector3 GetReferenceCorner(RectTransform rectTransform)
         {
-            return (Vector3) rectTransform.rect.min + rectTransform.localPosition;
+            return (Vector3)rectTransform.rect.min + rectTransform.localPosition;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

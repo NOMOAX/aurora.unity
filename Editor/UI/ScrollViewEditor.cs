@@ -79,7 +79,7 @@ namespace Aurora.UnityEditor.UI
         {
             EditorApplication.update += RepaintIfDirty;
 
-            _scrollView = (ScrollView) target;
+            _scrollView = (ScrollView)target;
 
             _scrollRect                         = serializedObject.FindProperty(nameof(ScrollView.scrollRect));
             _inactiveContainer                  = serializedObject.FindProperty(nameof(ScrollView.inactiveContainer));
@@ -204,7 +204,7 @@ namespace Aurora.UnityEditor.UI
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(_scrollView, $"set {nameof(ScrollView.ScrollbarVisibility)}");
-                _scrollView.ScrollbarVisibility = (ScrollbarVisibility) _scrollbarVisibility.intValue;
+                _scrollView.ScrollbarVisibility = (ScrollbarVisibility)_scrollbarVisibility.intValue;
                 EditorUtility.SetDirty(_scrollView);
             }
 
@@ -232,7 +232,7 @@ namespace Aurora.UnityEditor.UI
 
             EditorGUILayout.PropertyField(_snapDurationMode);
 
-            switch ((ScrollViewSnapDurationMode) _snapDurationMode.intValue)
+            switch ((ScrollViewSnapDurationMode)_snapDurationMode.intValue)
             {
                 case ScrollViewSnapDurationMode.Fixed:
                     EditorGUILayout.PropertyField(_snapDuration);
@@ -330,7 +330,7 @@ namespace Aurora.UnityEditor.UI
 
         private void SetAnimBool(bool instant)
         {
-            SetAnimBool(_showSnapSpeedThreshold, ((ScrollViewSnapTrigger) _snapTrigger.intValue & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0, instant);
+            SetAnimBool(_showSnapSpeedThreshold, ((ScrollViewSnapTrigger)_snapTrigger.intValue & ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged) != 0, instant);
         }
 
         private static void SetAnimBool(AnimBool animBool, bool value, bool instant)

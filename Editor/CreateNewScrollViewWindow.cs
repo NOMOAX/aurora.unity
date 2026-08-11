@@ -117,7 +117,7 @@ namespace Aurora.UnityEditor
 
         private static void DrawParent(ref RectTransform parent)
         {
-            parent = (RectTransform) EditorGUILayout.ObjectField("Parent", parent, typeof(RectTransform), true);
+            parent = (RectTransform)EditorGUILayout.ObjectField("Parent", parent, typeof(RectTransform), true);
             if (!IsParentValid(parent))
             {
                 EditorGUILayout.HelpBox("Select a canvas element as parent!", MessageType.Error);
@@ -131,7 +131,7 @@ namespace Aurora.UnityEditor
 
         private static void DrawAxis(ref RectTransform.Axis axis)
         {
-            axis = (RectTransform.Axis) EditorGUILayout.EnumPopup("Axis", axis);
+            axis = (RectTransform.Axis)EditorGUILayout.EnumPopup("Axis", axis);
         }
 
         private static void DrawScrollViewSize(ref Vector2 size, float[] sizeValues)
@@ -172,13 +172,13 @@ namespace Aurora.UnityEditor
             };
 
             var scrollbarPosition = scrollbarPositionGetter();
-            if (EditorGUI.DropdownButton(rect, guiContents[(int) scrollbarPosition], FocusType.Keyboard))
+            if (EditorGUI.DropdownButton(rect, guiContents[(int)scrollbarPosition], FocusType.Keyboard))
             {
                 var genericMenu = new GenericMenu();
                 foreach (var value in EnumUtility<ScrollbarPosition>.Values)
                 {
                     genericMenu.AddItem(
-                        guiContents[(int) value],
+                        guiContents[(int)value],
                         value == scrollbarPosition,
                         OnScrollPositionDropdownItemSelected,
                         Tuple.Create(value, scrollbarPositionGetter, scrollbarPositionSetter)
@@ -189,7 +189,7 @@ namespace Aurora.UnityEditor
                 static void OnScrollPositionDropdownItemSelected(object userData)
                 {
                     var (scrollbarPosition, scrollbarPositionGetter, scrollbarPositionSetter) =
-                        (Tuple<ScrollbarPosition, Func<ScrollbarPosition>, Action<ScrollbarPosition>>) userData;
+                        (Tuple<ScrollbarPosition, Func<ScrollbarPosition>, Action<ScrollbarPosition>>)userData;
                     var oldScrollbarPosition = scrollbarPositionGetter();
                     if (oldScrollbarPosition == scrollbarPosition)
                     {
@@ -212,7 +212,7 @@ namespace Aurora.UnityEditor
             }
             else
             {
-                var sizeAloneOtherAxis        = size[1 - (int) axis];
+                var sizeAloneOtherAxis        = size[1 - (int)axis];
                 var defaultScrollbarThickness = sizeAloneOtherAxis * DefaultScrollbarThicknessMultiplier;
                 var minScrollbarThickness     = sizeAloneOtherAxis * MinScrollbarThicknessMultiplier;
                 var maxScrollbarThickness     = sizeAloneOtherAxis * MaxScrollbarThicknessMultiplier;
@@ -244,7 +244,7 @@ namespace Aurora.UnityEditor
             return CreateScrollView(
                 _parent,
                 _size,
-                _size[(int) _axis] * ContentSizeMultiplier,
+                _size[(int)_axis] * ContentSizeMultiplier,
                 _scrollbarPosition,
                 _scrollbarThickness,
                 _axis

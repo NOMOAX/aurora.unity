@@ -74,7 +74,7 @@ namespace Aurora.Unity.CompilerServices
             public T GetResult()
             {
                 _awaiter.GetResult();
-                return (T) _assetBundleRequest?.asset;
+                return (T)_assetBundleRequest?.asset;
             }
         }
 
@@ -146,7 +146,7 @@ namespace Aurora.Unity.CompilerServices
             public T[] GetResult()
             {
                 _awaiter.GetResult();
-                return (T[]) _assetBundleRequest?.allAssets;
+                return (T[])_assetBundleRequest?.allAssets;
             }
         }
     }

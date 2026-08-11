@@ -10,7 +10,7 @@ namespace Aurora.Unity.UI
     public static class SelectableUtility
     {
         private static readonly Func<Selectable, bool> SelectableIsPressedGetter =
-            (Func<Selectable, bool>) Delegate.CreateDelegate(
+            (Func<Selectable, bool>)Delegate.CreateDelegate(
                 typeof(Func<Selectable, bool>),
                 typeof(Selectable).GetMethod(
                     "IsPressed",

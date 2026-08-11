@@ -346,7 +346,7 @@ namespace Aurora.Unity.UI
 
             _positions.Clear();
 
-            var color32           = (Color32) color;
+            var color32           = (Color32)color;
             var pixelAdjustedRect = GetPixelAdjustedRect();
             var halfMinSide       = Mathf.Min(pixelAdjustedRect.width, pixelAdjustedRect.height) * 0.5f;
 

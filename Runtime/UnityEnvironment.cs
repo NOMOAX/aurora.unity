@@ -117,7 +117,7 @@ namespace Aurora.Unity
         public static float ScreenAspectRatio
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (float) Screen.width / Screen.height;
+            get => (float)Screen.width / Screen.height;
         }
 
         /// <summary>

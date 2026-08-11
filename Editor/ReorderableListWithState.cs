@@ -231,7 +231,7 @@ namespace Aurora.UnityEditor
 
                     void OnReorderWithDetails(ReorderableList list1, int oldIndex, int newIndex)
                     {
-                        value((ReorderableListWithState) list1, oldIndex, newIndex, _state);
+                        value((ReorderableListWithState)list1, oldIndex, newIndex, _state);
                     }
                 }
             }
@@ -258,7 +258,7 @@ namespace Aurora.UnityEditor
 
                     void OnReorder(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -285,7 +285,7 @@ namespace Aurora.UnityEditor
 
                     void OnSelect(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -312,7 +312,7 @@ namespace Aurora.UnityEditor
 
                     void OnAdd(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -339,7 +339,7 @@ namespace Aurora.UnityEditor
 
                     void OnAddDropdown(Rect buttonRect, ReorderableList list1)
                     {
-                        value(buttonRect, (ReorderableListWithState) list1, _state);
+                        value(buttonRect, (ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -366,7 +366,7 @@ namespace Aurora.UnityEditor
 
                     void OnRemove(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -393,7 +393,7 @@ namespace Aurora.UnityEditor
 
                     void OnMouseDrag(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -420,7 +420,7 @@ namespace Aurora.UnityEditor
 
                     void OnMouseUp(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -447,7 +447,7 @@ namespace Aurora.UnityEditor
 
                     bool OnCanRemove(ReorderableList list1)
                     {
-                        return value((ReorderableListWithState) list1, _state);
+                        return value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -474,7 +474,7 @@ namespace Aurora.UnityEditor
 
                     bool OnCanAdd(ReorderableList list1)
                     {
-                        return value((ReorderableListWithState) list1, _state);
+                        return value((ReorderableListWithState)list1, _state);
                     }
                 }
             }
@@ -501,7 +501,7 @@ namespace Aurora.UnityEditor
 
                     void OnChanged(ReorderableList list1)
                     {
-                        value((ReorderableListWithState) list1, _state);
+                        value((ReorderableListWithState)list1, _state);
                     }
                 }
             }

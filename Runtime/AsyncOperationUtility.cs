@@ -34,7 +34,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool InternalIsDisposed(AsyncOperation asyncOperation)
         {
-            var ptr = (IntPtr) PtrFieldInfo.GetValue(asyncOperation);
+            var ptr = (IntPtr)PtrFieldInfo.GetValue(asyncOperation);
             return ptr == IntPtr.Zero;
         }
     }

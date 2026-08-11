@@ -238,7 +238,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool InternalIsDisposed(UnityWebRequest unityWebRequest)
         {
-            var ptr = (IntPtr) PtrFieldInfo.GetValue(unityWebRequest);
+            var ptr = (IntPtr)PtrFieldInfo.GetValue(unityWebRequest);
             return ptr == IntPtr.Zero;
         }
 
@@ -269,18 +269,18 @@ namespace Aurora.Unity
             }
             throw new UnityWebRequestException(
                 unityWebRequest,
-                string.Format(NotSuccessStatusCodeMessage, (int) unityWebRequest.responseCode)
+                string.Format(NotSuccessStatusCodeMessage, (int)unityWebRequest.responseCode)
             );
         }
 
         private static bool InternalIsSuccessStatusCode(UnityWebRequest unityWebRequest)
         {
-            return IsSuccessStatusCode((HttpStatusCode) unityWebRequest.responseCode);
+            return IsSuccessStatusCode((HttpStatusCode)unityWebRequest.responseCode);
         }
 
         private static bool IsSuccessStatusCode(HttpStatusCode statusCode)
         {
-            return statusCode is >= HttpStatusCode.OK and <= (HttpStatusCode) 299;
+            return statusCode is >= HttpStatusCode.OK and <= (HttpStatusCode)299;
         }
     }
 }

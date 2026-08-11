@@ -156,7 +156,7 @@ namespace Aurora.Unity.Diagnostics
         {
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                return (T) (object) AreEqual((Object) (object) expected, (Object) (object) actual, message);
+                return (T)(object)AreEqual((Object)(object)expected, (Object)(object)actual, message);
             }
             if (!comparer.Equals(actual, expected))
             {
@@ -192,7 +192,7 @@ namespace Aurora.Unity.Diagnostics
         {
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                return (T) (object) AreNotEqual((Object) (object) expected, (Object) (object) actual, message);
+                return (T)(object)AreNotEqual((Object)(object)expected, (Object)(object)actual, message);
             }
             if (comparer.Equals(actual, expected))
             {
@@ -222,7 +222,7 @@ namespace Aurora.Unity.Diagnostics
         {
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                return (T) (object) IsNull((Object) (object) value, message);
+                return (T)(object)IsNull((Object)(object)value, message);
             }
             if (value != null)
             {
@@ -252,7 +252,7 @@ namespace Aurora.Unity.Diagnostics
         {
             if (typeof(Object).IsAssignableFrom(typeof(T)))
             {
-                return (T) (object) IsNotNull((Object) (object) value, message);
+                return (T)(object)IsNotNull((Object)(object)value, message);
             }
             if (value == null)
             {

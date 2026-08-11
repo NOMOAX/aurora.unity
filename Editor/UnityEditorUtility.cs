@@ -14,7 +14,6 @@ using UnityEngine.UI;
 using Assembly = System.Reflection.Assembly;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 using RectTransformUtility = Aurora.Unity.UI.RectTransformUtility;
 
 namespace Aurora.UnityEditor
@@ -104,7 +103,7 @@ namespace Aurora.UnityEditor
                 }
                 try
                 {
-                    return (Action) Delegate.CreateDelegate(typeof(Action), clearMethodInfo);
+                    return (Action)Delegate.CreateDelegate(typeof(Action), clearMethodInfo);
                 }
                 catch (Exception e)
                 {
@@ -163,7 +162,7 @@ namespace Aurora.UnityEditor
             [MenuItem(DisplayName + "/" + PingLayoutRootName, priority = PingLayoutRootPriority)]
             private static void PingLayoutRoot()
             {
-                var rectTransform = (RectTransform) Selection.activeTransform;
+                var rectTransform = (RectTransform)Selection.activeTransform;
                 var layoutRoot    = RectTransformUtility.GetLayoutRoot(rectTransform);
                 if (!layoutRoot)
                 {
@@ -190,7 +189,7 @@ namespace Aurora.UnityEditor
             [MenuItem(DisplayName + "/" + MarkRebuildLayoutName, priority = MarkRebuildLayoutPriority)]
             private static void MarkLayoutForRebuild()
             {
-                LayoutRebuilder.MarkLayoutForRebuild((RectTransform) Selection.activeTransform);
+                LayoutRebuilder.MarkLayoutForRebuild((RectTransform)Selection.activeTransform);
             }
 
             [MenuItem(DisplayName + "/" + MarkRebuildLayoutName, true)]
@@ -210,7 +209,7 @@ namespace Aurora.UnityEditor
             [MenuItem(DisplayName + "/" + RebuildLayoutName, priority = RebuildLayoutPriority)]
             private static void ForceRebuildLayoutImmediate()
             {
-                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform) Selection.activeTransform);
+                LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)Selection.activeTransform);
             }
 
             [MenuItem(DisplayName + "/" + RebuildLayoutName, true)]
@@ -454,7 +453,7 @@ namespace Aurora.UnityEditor
             private static void CaptureScreenshotToDesktop()
             {
                 UnityUtility.BeginCaptureScreenshot(
-                    System.IO.Path.Combine(
+                    Path.Combine(
                         System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop),
                         $"{Application.productName}_{DateTimeOffset.Now:yyyy-MM-dd_HH-mm-ss}.png"
                     )
@@ -547,15 +546,56 @@ namespace Aurora.UnityEditor
             new DirectoryInfo(Application.dataPath).Parent!.FullName.ReplaceBackslashWithSlash();
 
         /// <summary>
-        /// 路径。
+        /// 获取指定路径相对于项目路径的相对路径。
         /// </summary>
-        public static readonly string Path = PackageInfo.FindForAssembly(typeof(UnityUtility).Assembly).assetPath;
+        /// <param name="path">路径。</param>
+        /// <param name="relativePath">
+        /// 如下表所示：
+        /// <list type="table">
+        /// <listheader><term><paramref name="path"/> 的值</term><description><paramref name="relativePath"/> 的值</description></listheader>
+        /// <item><term><see cref="ProjectPath"/></term><description><see cref="string.Empty"/></description></item>
+        /// <item><term><see cref="ProjectPath"/> 的子路径</term><description>从 <see cref="ProjectPath"/> 到 <paramref name="path"/> 的相对路径</description></item>
+        /// <item><term>其他</term><description><see langword="null"/></description></item>
+        /// </list>
+        /// </param>
+        /// <returns>如果 <paramref name="path"/> 是 <see cref="ProjectPath"/> 本身或其子路径，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentException"><paramref name="path"/> 为 <see cref="string.Empty"/>，或实际上为空（只包含空白字符），或包含非法字符，或系统无法获取其绝对路径。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="path"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="PathTooLongException"><paramref name="path"/> 的长度超过系统定义的最大长度。</exception>
+        public static bool TryGetProjectRelativePath(string path, out string relativePath)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            var normalizedPath         = Path.GetFullPath(path).ReplaceBackslashWithSlash();
+            var normalizedRelativePath = Path.GetRelativePath(ProjectPath, normalizedPath).ReplaceBackslashWithSlash();
+            if (normalizedRelativePath is ".")
+            {
+                relativePath = "";
+                return true;
+            }
+            if (normalizedRelativePath is ".." || normalizedRelativePath == normalizedPath ||
+                normalizedRelativePath.StartsWith("../", StringComparison.Ordinal))
+            {
+                relativePath = null;
+                return false;
+            }
+            relativePath = normalizedRelativePath;
+            return true;
+        }
 
         private static readonly Regex SymbolRegex = new(@"\A[A-Za-z_][A-Za-z0-9_]*\z", RegexOptions.Compiled);
 
+        /// <summary>
+        /// 判断指定的序列化属性是否包含子成员。
+        /// </summary>
+        /// <param name="property">序列化属性。</param>
+        /// <returns>如果 <paramref name="property"/> 包含子成员，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <remarks>可用于 <see cref="EditorGUI.PropertyField(Rect,SerializedProperty,GUIContent,bool)"/> 和 <see cref="EditorGUI.GetPropertyHeight(SerializedProperty,GUIContent,bool)"/></remarks>
         /// <seealso cref="EditorGUILayout.IsChildrenIncluded"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool IncludeChildren(SerializedProperty property)
+        public static bool IsChildrenIncluded(SerializedProperty property)
         {
             return property.propertyType switch
             {

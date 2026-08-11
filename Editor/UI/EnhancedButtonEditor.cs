@@ -76,7 +76,7 @@ namespace Aurora.UnityEditor.UI
                     EditorGUILayout.GetControlRect(),
                     EditorGUIUtility.TrTempContent(nameof(EnhancedButton.State))
                 );
-                EditorGUI.LabelField(rect, ((EnhancedButton) target).State.ToString());
+                EditorGUI.LabelField(rect, ((EnhancedButton)target).State.ToString());
             }
 
             EditorGUILayout.PropertyField(_interactable, _interactableContent);
@@ -105,7 +105,7 @@ namespace Aurora.UnityEditor.UI
         {
             private static readonly GenericMenu.MenuFunction2 Reset = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -126,7 +126,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 Copy = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -150,7 +150,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 Paste = state =>
             {
-                var (property, colorBlock) = (Tuple<SerializedProperty, EnhancedButton.ColorBlock>) state;
+                var (property, colorBlock) = (Tuple<SerializedProperty, EnhancedButton.ColorBlock>)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -171,7 +171,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 GenerateColors = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -196,7 +196,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 GenerateColorsWithGrayscale = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -227,7 +227,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 GenerateInteractableColors = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var defaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.defaultColor));
                 var hoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.hoveredColor));
@@ -243,7 +243,7 @@ namespace Aurora.UnityEditor.UI
 
             private static readonly GenericMenu.MenuFunction2 GenerateNonInteractableColors = state =>
             {
-                var property = (SerializedProperty) state;
+                var property = (SerializedProperty)state;
 
                 var nonInteractableDefaultColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.nonInteractableDefaultColor));
                 var nonInteractableHoveredColor = property.FindPropertyRelative(nameof(EnhancedButton.ColorBlock.nonInteractableHoveredColor));

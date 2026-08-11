@@ -64,7 +64,7 @@ namespace Aurora.Unity
                 DontDestroyOnLoad(gameObject);
             }
             var withHideFlagsAttribute =
-                (WithHideFlagsAttribute) Attribute.GetCustomAttribute(type, typeof(WithHideFlagsAttribute));
+                (WithHideFlagsAttribute)Attribute.GetCustomAttribute(type, typeof(WithHideFlagsAttribute));
             if (withHideFlagsAttribute != null)
             {
                 gameObject.hideFlags |= withHideFlagsAttribute.HideFlags;

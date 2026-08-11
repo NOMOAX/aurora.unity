@@ -31,7 +31,7 @@ namespace Aurora.Unity
         private static readonly TimerTriggerCallback CancelCancellationTokenSource = (timer, state) =>
         {
             timer.Dispose();
-            var cancellationTokenSource = (CancellationTokenSource) state;
+            var cancellationTokenSource = (CancellationTokenSource)state;
             if (CancellationTokenSourceUtility.IsDisposed(cancellationTokenSource))
             {
                 return;

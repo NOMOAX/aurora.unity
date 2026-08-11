@@ -44,10 +44,10 @@ namespace Aurora.Unity.UI
             scrollViewItem.index == index;
 
         private static readonly CounterTriggerCallback OnValueChangeCounterTriggerCallback =
-            (_, state) => ((ScrollView) state).OnValueChangeCounterTriggered();
+            (_, state) => ((ScrollView)state).OnValueChangeCounterTriggered();
 
         private static readonly TimerTriggerCallback OnScrollTimerTriggerCallback =
-            (_, state) => ((ScrollView) state).OnScrollTimerTriggered();
+            (_, state) => ((ScrollView)state).OnScrollTimerTriggered();
 
 #if UNITY_EDITOR
         private float _contentPosition;
@@ -888,7 +888,7 @@ namespace Aurora.Unity.UI
                 double itemPosition = 0;
                 for (var itemIndex = 0; itemIndex < _itemCount; itemIndex++)
                 {
-                    _itemPositions.Add((float) (itemPosition += itemIndex == 0 ? FirstPaddingAlongAxis : spacing));
+                    _itemPositions.Add((float)(itemPosition += itemIndex == 0 ? FirstPaddingAlongAxis : spacing));
 
                     float itemSize;
                     {
@@ -906,7 +906,7 @@ namespace Aurora.Unity.UI
                             itemSize = 0;
                         }
                     }
-                    _itemPositions.Add((float) (itemPosition += itemSize));
+                    _itemPositions.Add((float)(itemPosition += itemSize));
                 }
             }
         }
@@ -1124,7 +1124,7 @@ namespace Aurora.Unity.UI
             }
             // 限制内容位置的值，确保内容不会超出滚动视图
             var contentEndPosition = Mathf.Clamp(
-                (float) InterpolationUtility.LinearInterpolate(
+                (float)InterpolationUtility.LinearInterpolate(
                     itemBeginPosition,
                     itemEndPosition,
                     snapNormalizedItemPosition
@@ -1197,7 +1197,7 @@ namespace Aurora.Unity.UI
                 if (Time.deltaTime > 0)
                 {
                     SetContentPosition(
-                        (float) InterpolationUtility.Interpolate(
+                        (float)InterpolationUtility.Interpolate(
                             contentBeginPosition,
                             contentEndPosition,
                             Clamp01(
@@ -1578,7 +1578,7 @@ namespace Aurora.Unity.UI
         {
             var contentBeginPosition = GetContentPosition();
             var contentEndPosition   = contentBeginPosition + GetViewportSize();
-            return (float) InterpolationUtility.InverseLinearInterpolate(
+            return (float)InterpolationUtility.InverseLinearInterpolate(
                 contentBeginPosition,
                 contentEndPosition,
                 contentPosition
@@ -1590,7 +1590,7 @@ namespace Aurora.Unity.UI
         {
             var contentBeginPosition = GetContentPosition();
             var contentEndPosition   = contentBeginPosition + GetViewportSize();
-            return (float) InterpolationUtility.LinearInterpolate(
+            return (float)InterpolationUtility.LinearInterpolate(
                 contentBeginPosition,
                 contentEndPosition,
                 normalizedViewportPosition
@@ -1608,7 +1608,7 @@ namespace Aurora.Unity.UI
         private float InternalConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
         {
             var overflowedContentSize = GetOverflowedContentSize();
-            return (float) (overflowedContentSize == 0 ? 0 : overflowedContentSize * normalizedScrollPosition);
+            return (float)(overflowedContentSize == 0 ? 0 : overflowedContentSize * normalizedScrollPosition);
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

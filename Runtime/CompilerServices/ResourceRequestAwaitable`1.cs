@@ -74,7 +74,7 @@ namespace Aurora.Unity.CompilerServices
             public T GetResult()
             {
                 _awaiter.GetResult();
-                return (T) _resourceRequest?.asset;
+                return (T)_resourceRequest?.asset;
             }
         }
     }

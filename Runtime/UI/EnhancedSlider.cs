@@ -152,9 +152,9 @@ namespace Aurora.Unity.UI
 
         private bool MayDrag => IsActive() && interactable;
 
-        private RectTransform.Axis Axis => (RectTransform.Axis) ((int) direction / 2);
+        private RectTransform.Axis Axis => (RectTransform.Axis)((int)direction / 2);
 
-        private bool ReverseValue => (int) direction % 2 != 0;
+        private bool ReverseValue => (int)direction % 2 != 0;
 
         /// <summary>
         /// 值改变。
@@ -201,7 +201,7 @@ namespace Aurora.Unity.UI
             {
                 return;
             }
-            var axisInt           = (int) Axis;
+            var axisInt           = (int)Axis;
             var rectTransformSize = rectTransform.rect.size[axisInt];
             if (rectTransformSize <= 0)
             {
@@ -265,7 +265,7 @@ namespace Aurora.Unity.UI
 #endif
             _tracker.Clear();
             var reverseValue = ReverseValue;
-            var axisInt      = (int) Axis;
+            var axisInt      = (int)Axis;
             if (_fillParent)
             {
                 _tracker.Add(this, fill, DrivenTransformProperties.Anchors);

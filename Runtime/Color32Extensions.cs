@@ -94,7 +94,7 @@ namespace Aurora.Unity
                 return color;
             }
             Color.RGBToHSV(color, out _, out var s, out var v);
-            var result = (Color32) Color.HSVToRGB(h, s, v);
+            var result = (Color32)Color.HSVToRGB(h, s, v);
             result.a = color.a;
             return result;
         }

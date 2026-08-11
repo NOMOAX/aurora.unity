@@ -870,7 +870,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// 获取与此实例关联的矩形变换。
         /// </summary>
-        public RectTransform RectTransform => _rectTransform ??= (RectTransform) transform;
+        public RectTransform RectTransform => _rectTransform ??= (RectTransform)transform;
 
         /// <summary>
         /// 由用户定义的数据。将在打开界面时赋值。

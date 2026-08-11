@@ -313,8 +313,8 @@ namespace Aurora.Unity
         public readonly Vector2 Lerp(Vector2 t)
         {
             return new Vector2(
-                (float) InterpolationUtility.LinearInterpolate(minX, maxX, t.x),
-                (float) InterpolationUtility.LinearInterpolate(minY, maxY, t.y)
+                (float)InterpolationUtility.LinearInterpolate(minX, maxX, t.x),
+                (float)InterpolationUtility.LinearInterpolate(minY, maxY, t.y)
             );
         }
 
@@ -327,8 +327,8 @@ namespace Aurora.Unity
         public readonly Vector2 Unlerp(Vector2 point)
         {
             return new Vector2(
-                (float) InterpolationUtility.InverseLinearInterpolate(minX, maxX, point.x),
-                (float) InterpolationUtility.InverseLinearInterpolate(minY, maxY, point.y)
+                (float)InterpolationUtility.InverseLinearInterpolate(minX, maxX, point.x),
+                (float)InterpolationUtility.InverseLinearInterpolate(minY, maxY, point.y)
             );
         }
 

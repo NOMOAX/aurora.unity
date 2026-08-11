@@ -160,7 +160,7 @@ namespace Aurora.Unity
             UnityWebRequest    unityWebRequest,
             HttpRequestMessage request)
         {
-            var responseMessage = new HttpResponseMessage((HttpStatusCode) unityWebRequest.responseCode);
+            var responseMessage = new HttpResponseMessage((HttpStatusCode)unityWebRequest.responseCode);
             responseMessage.ReasonPhrase = unityWebRequest.error;
             responseMessage.RequestMessage = request;
             responseMessage.Content = new ByteArrayContent(unityWebRequest.downloadHandler.data ?? Array.Empty<byte>());
@@ -177,7 +177,7 @@ namespace Aurora.Unity
                 }
                 else if (unityWebRequest.downloadedBytes <= long.MaxValue)
                 {
-                    contentHeaders.ContentLength = (long) unityWebRequest.downloadedBytes;
+                    contentHeaders.ContentLength = (long)unityWebRequest.downloadedBytes;
                 }
                 foreach (var (name, value) in headers)
                 {
