@@ -37,21 +37,29 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 在 <see cref="ReorderableList.drawElementCallback"/> 回调方法的一开始调用。
+        /// 初始化 <paramref name="rect"/> 的 <see cref="Rect.y">y</see>。
         /// </summary>
         /// <param name="rect">按引用传入 <see cref="ReorderableList.drawElementCallback"/> 的第 1 个参数。</param>
-        /// <remarks>调用方不应该手动修改 <paramref name="rect"/> 的值。</remarks>
-        public static void BeginDrawElement(ref Rect rect)
+        /// <remarks>在 <see cref="ReorderableList.drawElementCallback"/> 回调方法的一开始调用。</remarks>
+        public static void InitializeY(ref Rect rect)
         {
-            rect.y      += ElementContentTopPadding;
-            rect.height =  EditorGUIUtility.singleLineHeight;
+            rect.y += ElementContentTopPadding;
         }
 
         /// <summary>
-        /// 在 <see cref="ReorderableList.drawElementCallback"/> 回调方法中需要绘制下一行之前调用。
+        /// 设置 <paramref name="rect"/> 的 <see cref="Rect.height">height</see> 为 <see cref="EditorGUIUtility.singleLineHeight"/>。
         /// </summary>
         /// <param name="rect">按引用传入 <see cref="ReorderableList.drawElementCallback"/> 的第 1 个参数。</param>
-        /// <remarks>调用方不应该手动修改 <paramref name="rect"/> 的值。</remarks>
+        public static void SetSingleLineHeight(ref Rect rect)
+        {
+            rect.height = EditorGUIUtility.singleLineHeight;
+        }
+
+        /// <summary>
+        /// 设置 <paramref name="rect"/> 的 <see cref="Rect.y">y</see> 为下一行内容的起始位置。
+        /// </summary>
+        /// <param name="rect">按引用传入 <see cref="ReorderableList.drawElementCallback"/> 的第 1 个参数。</param>
+        /// <remarks>在 <see cref="ReorderableList.drawElementCallback"/> 回调方法中需要绘制下一行之前调用。</remarks>
         public static void NextLine(ref Rect rect)
         {
             rect.y = rect.yMax + VerticalSpacing;
