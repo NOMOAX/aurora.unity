@@ -64,5 +64,19 @@ namespace Aurora.UnityEditor
         {
             rect.y = rect.yMax + VerticalSpacing;
         }
+
+        /// <summary>
+        /// 为嵌套的 <see cref="ReorderableList"/> 设置正确的 <see cref="ReorderableList.footerHeight"/>，使得它在它被选中时的亮蓝色背景里居中。
+        /// </summary>
+        /// <param name="nestedReorderableList">嵌套的 <see cref="ReorderableList"/>。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="nestedReorderableList"/> 为 <see langword="null"/>。</exception>
+        public static void SetFooterHeightForNestedReorderableList(ReorderableList nestedReorderableList)
+        {
+            if (nestedReorderableList == null)
+            {
+                throw new ArgumentNullException(nameof(nestedReorderableList));
+            }
+            nestedReorderableList.footerHeight -= 1f;
+        }
     }
 }
