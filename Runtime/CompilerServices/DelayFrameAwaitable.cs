@@ -9,7 +9,7 @@ using Aurora.Unity.Threading.Tasks;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到几帧后的可等待上下文。
+    /// Provides an awaitable context for switching to several frames later.
     /// </summary>
     public readonly struct DelayFrameAwaitable : IAwaitable
     {
@@ -20,10 +20,10 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="DelayFrameAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="DelayFrameAwaitable"/> struct.
         /// </summary>
-        /// <param name="delayFrameCount">要等待的帧的数量。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="delayFrameCount">The number of frames to wait.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         public DelayFrameAwaitable(int delayFrameCount, PlayerLoopPhase playerLoopPhase)
         {
             _delayFrameCount   = delayFrameCount;
@@ -32,11 +32,11 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="DelayFrameAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="DelayFrameAwaitable"/> struct.
         /// </summary>
-        /// <param name="delayFrameCount">要等待的帧的数量。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="delayFrameCount">The number of frames to wait.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public DelayFrameAwaitable(
             int               delayFrameCount,
             PlayerLoopPhase   playerLoopPhase,

@@ -4,20 +4,20 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 在游戏物体处于非激活状态时引发的异常。
+    /// The exception thrown when a game object is inactive.
     /// </summary>
     public class GameObjectInactiveException : UnityException
     {
         /// <summary>
-        /// 游戏物体。
+        /// The game object.
         /// </summary>
         public GameObject GameObject { get; }
 
         /// <summary>
-        /// 使用指定的游戏物体初始化 <see cref="GameObjectInactiveException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="GameObjectInactiveException"/> class with the specified game object.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">The game object.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public GameObjectInactiveException(GameObject gameObject)
         {
             if (gameObject is null)
@@ -28,11 +28,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的游戏物体和错误消息初始化 <see cref="GameObjectInactiveException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="GameObjectInactiveException"/> class with the specified game object and error message.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">The game object.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public GameObjectInactiveException(GameObject gameObject, string message) : base(message)
         {
             if (gameObject is null)
@@ -43,12 +43,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的游戏物体、错误消息和内部异常初始化 <see cref="GameObjectInactiveException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="GameObjectInactiveException"/> class with the specified game object, error message, and inner exception.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <param name="innerException">造成此异常的异常。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">The game object.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <param name="innerException">The exception that caused this exception.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public GameObjectInactiveException(GameObject gameObject, string message, Exception innerException) : base(
             message,
             innerException

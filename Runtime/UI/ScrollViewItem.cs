@@ -4,9 +4,9 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 滚动视图的项。
+    /// An item of a scroll view.
     /// </summary>
-    /// <remarks>不同类型的 <see cref="ScrollViewItem"/> 使用 <see cref="identifier"/> 来区分。</remarks>
+    /// <remarks>Different types of <see cref="ScrollViewItem"/> are distinguished by <see cref="identifier"/>.</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
     public class ScrollViewItem : UIBehaviour
@@ -24,52 +24,52 @@ namespace Aurora.Unity.UI
         internal bool visible;
 
         /// <summary>
-        /// 标识符，用于区分不同类型的 <see cref="ScrollViewItem"/>。
+        /// The identifier used to distinguish different types of <see cref="ScrollViewItem"/>.
         /// </summary>
-        /// <remarks>别忘了在编辑时赋值，并且不要在运行时修改。</remarks>
+        /// <remarks>Remember to assign it at edit time and do not modify it at runtime.</remarks>
         public string identifier = string.Empty;
 
         /// <summary>
-        /// 滚动视图。
+        /// The scroll view.
         /// </summary>
-        /// <returns>在首次执行 <see cref="OnGet"/> 之前赋值。</returns>
+        /// <returns>Assign it before the first <see cref="OnGet"/> call.</returns>
         public ScrollView ScrollView => scrollView;
 
         /// <summary>
-        /// 在 <see cref="ScrollView"/> 中的索引。
+        /// The index within the <see cref="ScrollView"/>.
         /// </summary>
         public int Index => index;
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 是否已进入 <see cref="ScrollView"/> 的视口。
+        /// Whether this <see cref="ScrollViewItem"/> has entered the <see cref="ScrollView"/>'s viewport.
         /// </summary>
         public bool Visible => visible;
 
         /// <summary>
-        /// 在使用此 <see cref="ScrollViewItem"/> 时执行。
+        /// Executed when this <see cref="ScrollViewItem"/> is used.
         /// </summary>
-        /// <param name="isNewCreated">如果是新创建的，则为 <see langword="true"/>；否则为 <see langword="false"/>。暴露此行为有助于对新创建的项做一些额外操作。</param>
+        /// <param name="isNewCreated"><see langword="true"/> if it is newly created; otherwise <see langword="false"/>. Exposing this behavior helps to perform extra operations on newly created items.</param>
         protected internal virtual void OnGet(bool isNewCreated)
         {
         }
 
         /// <summary>
-        /// 在将此 <see cref="ScrollViewItem"/> 放入缓存时以及因滚动视图正在销毁时执行。
+        /// Executed when this <see cref="ScrollViewItem"/> is put into the cache and when the scroll view is being destroyed.
         /// </summary>
-        /// <param name="isScrollViewBeingDestroyed">如果滚动视图正在被销毁，则为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
+        /// <param name="isScrollViewBeingDestroyed"><see langword="true"/> if the scroll view is being destroyed; otherwise <see langword="false"/>.</param>
         protected internal virtual void OnReturn(bool isScrollViewBeingDestroyed)
         {
         }
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 进入 <see cref="ScrollView"/> 的视口。
+        /// This <see cref="ScrollViewItem"/> enters the <see cref="ScrollView"/>'s viewport.
         /// </summary>
         protected internal virtual void OnVisible()
         {
         }
 
         /// <summary>
-        /// 此 <see cref="ScrollViewItem"/> 离开 <see cref="ScrollView"/> 的视口。
+        /// This <see cref="ScrollViewItem"/> leaves the <see cref="ScrollView"/>'s viewport.
         /// </summary>
         protected internal virtual void OnInvisible()
         {

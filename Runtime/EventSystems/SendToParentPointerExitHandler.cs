@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IPointerExitHandler.OnPointerExit"/> 传递给父级。
+    /// Forwards <see cref="IPointerExitHandler.OnPointerExit"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentPointerExitHandler : SendToParentEventSystemHandler<IPointerExitHandler>,

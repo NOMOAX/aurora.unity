@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI.ViewSystem
 {
     /// <summary>
-    /// 遮罩界面。
+    /// A mask view.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class MaskView : PrefabLessView, IPointerClickHandler
@@ -13,7 +13,7 @@ namespace Aurora.Unity.UI.ViewSystem
         private Block _block;
 
         /// <summary>
-        /// 获取遮罩。
+        /// Gets the mask.
         /// </summary>
         public Graphic MaskGraphic => _block;
 
@@ -56,23 +56,23 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 遮罩界面参数。
+        /// The mask view arguments.
         /// </summary>
         public sealed class Args
         {
             /// <summary>
-            /// 遮罩颜色。
+            /// The mask color.
             /// </summary>
             public Color MaskColor { get; set; }
 
             /// <summary>
-            /// 点击时关闭界面。
+            /// Closes the view when clicked.
             /// </summary>
-            /// <remarks>在执行 <see cref="InvocationOnClick"/> 之前关闭界面。</remarks>
+            /// <remarks>Closes the view before executing <see cref="InvocationOnClick"/>.</remarks>
             public bool CloseOnClick { get; set; }
 
             /// <summary>
-            /// 点击时执行的调用。
+            /// The invocation executed when clicked.
             /// </summary>
             public Invocation InvocationOnClick { get; set; }
         }

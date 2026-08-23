@@ -3,9 +3,9 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// <see cref="IEventSystemExecutor"/> 的各个子接口与 <see cref="IEventSystemHandler"/> 的各个子接口一一对应，提供相似的成员。
+    /// The sub-interfaces of <see cref="IEventSystemExecutor"/> correspond one-to-one with the sub-interfaces of <see cref="IEventSystemHandler"/> and provide similar members.
     /// <br/>
-    /// 实现 <see cref="IEventSystemExecutor"/> 的子接口，既可以处理事件，又不会因为实现了 <see cref="IEventSystemHandler"/> 的子接口而直接收到由 Unity 事件系统发送的事件。
+    /// Implementing a sub-interface of <see cref="IEventSystemExecutor"/> allows handling events without directly receiving those events sent by the Unity event system merely because a sub-interface of <see cref="IEventSystemHandler"/> is implemented.
     /// </summary>
     public interface IEventSystemExecutor
     {

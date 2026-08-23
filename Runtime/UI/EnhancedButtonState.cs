@@ -1,38 +1,38 @@
 ﻿namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// <see cref="EnhancedButton"/> 的状态。
+    /// The state of an <see cref="EnhancedButton"/>.
     /// </summary>
     public enum EnhancedButtonState
     {
         /// <summary>
-        /// 默认状态。
+        /// The default state.
         /// </summary>
         Default,
 
         /// <summary>
-        /// 指针处于内部。
+        /// The pointer is inside.
         /// </summary>
         Hovered,
 
         /// <summary>
-        /// 指针按下，且处于内部。
+        /// The pointer is pressed and inside.
         /// </summary>
         /// <list type="table">
         /// <listheader>
-        /// <term>指针操作</term>
-        /// <description>切换到新状态</description>
+        /// <term>Pointer action</term>
+        /// <description>Transitions to a new state</description>
         /// </listheader>
         /// <item>
-        /// <term>指针抬起</term>
+        /// <term>Pointer release</term>
         /// <description><see cref="Hovered"/></description>
         /// </item>
         /// <item>
-        /// <term>指针离开内部</term>
+        /// <term>Pointer leaves inside</term>
         /// <description><see cref="Default"/></description>
         /// </item>
         /// <item>
-        /// <term>指针离开内部，然后又进入内部</term>
+        /// <term>Pointer leaves inside and then re-enters inside</term>
         /// <description><see cref="Hovered"/></description>
         /// </item>
         /// </list>

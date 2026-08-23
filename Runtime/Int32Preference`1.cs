@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 表示 <see cref="PlayerPrefs"/> 中的基本值为 <see cref="int"/> 的一项。
+    /// Represents an item in <see cref="PlayerPrefs"/> whose primitive value is an <see cref="int"/>.
     /// </summary>
     /// <inheritdoc />
     public class Int32Preference<TValue> : Preference<TValue>
@@ -12,11 +12,11 @@ namespace Aurora.Unity
         private readonly PreferenceConverterPair<TValue, int> _converterPair;
 
         /// <summary>
-        /// 初始化 <see cref="Int32Preference{TValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="Int32Preference{TValue}"/> class.
         /// </summary>
-        /// <param name="key">键。</param>
-        /// <param name="converterPair">一个对象，它提供一对转换器方法，可将用户使用的值与 <see cref="PlayerPrefs"/> 中的基本值互相转换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> 或 <paramref name="converterPair"/> 为 <see langword="null"/>。</exception>
+        /// <param name="key">The key.</param>
+        /// <param name="converterPair">An object that provides a pair of converter methods to convert between the user's value and the primitive value in <see cref="PlayerPrefs"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="converterPair"/> is <see langword="null"/>.</exception>
         public Int32Preference(string key, PreferenceConverterPair<TValue, int> converterPair) : base(key)
         {
             if (converterPair == null)

@@ -1,41 +1,41 @@
 ﻿namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 滚动视图的控制器。
+    /// The controller of a scroll view.
     /// </summary>
     public interface IScrollViewController
     {
         /// <summary>
-        /// 获取项的数量。
+        /// Gets the number of items.
         /// </summary>
-        /// <param name="scrollView">滚动视图。</param>
-        /// <returns>项的数量。</returns>
+        /// <param name="scrollView">The scroll view.</param>
+        /// <returns>The number of items.</returns>
         int GetItemCount(ScrollView scrollView);
 
         /// <summary>
-        /// 获取指定索引处的项的大小。
+        /// Gets the size of the item at the specified index.
         /// </summary>
-        /// <param name="scrollView">滚动视图。</param>
-        /// <param name="index">索引。</param>
-        /// <returns>索引为 <paramref name="index"/> 的项的大小。</returns>
+        /// <param name="scrollView">The scroll view.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>The size of the item at index <paramref name="index"/>.</returns>
         float GetItemSize(ScrollView scrollView, int index);
 
         /// <summary>
-        /// 获取指定索引处的项（通过调用 <see cref="ScrollView.GetRecycledOrCreateNewItem"/> 以获取，还可以将需要使用的数据传递给项）。
+        /// Gets the item at the specified index (obtained by calling <see cref="ScrollView.GetRecycledOrCreateNewItem"/>; you can also pass the data the item needs).
         /// </summary>
-        /// <param name="scrollView">滚动视图。</param>
-        /// <param name="index">索引。</param>
-        /// <param name="isNewCreated">项是否是新创建的。</param>
-        /// <returns>项。</returns>
+        /// <param name="scrollView">The scroll view.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="isNewCreated">Whether the item is newly created.</param>
+        /// <returns>The item.</returns>
         ScrollViewItem GetItem(ScrollView scrollView, int index, out bool isNewCreated);
 
 #if UNITY_EDITOR
         /// <summary>
-        /// （仅编辑器环境下）获取指定项的名称，用于在编辑器环境中设置项的名称，以便于调试。
+        /// (Editor only) Gets the name of the specified item, used to set the item's name in the editor environment for debugging.
         /// </summary>
-        /// <param name="item">项。</param>
-        /// <returns>项的名称。</returns>
-        /// <remarks>若不需要支持此行为，可返回 <see langword="null"/> 或抛出异常，方法的调用者会妥善处理。</remarks>
+        /// <param name="item">The item.</param>
+        /// <returns>The name of the item.</returns>
+        /// <remarks>If you do not need to support this behavior, you can return <see langword="null"/> or throw an exception; the caller handles it appropriately.</remarks>
         string GetItemName(ScrollViewItem item);
 #endif
     }

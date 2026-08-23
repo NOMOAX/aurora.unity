@@ -33,9 +33,9 @@ namespace Aurora.UnityEditor.UI
             _texture             = serializedObject.FindProperty(TextureName);
             _vertices            = serializedObject.FindProperty(VerticesName);
             _triangles           = serializedObject.FindProperty(TrianglesName);
-            _textureGUIContent   = new GUIContent("Texture",   "纹理");
-            _verticesGUIContent  = new GUIContent("Vertices",  "顶点");
-            _trianglesGUIContent = new GUIContent("Triangles", "三角形");
+            _textureGUIContent   = new GUIContent("Texture",   "Texture");
+            _verticesGUIContent  = new GUIContent("Vertices",  "Vertices");
+            _trianglesGUIContent = new GUIContent("Triangles", "Triangles");
             SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 

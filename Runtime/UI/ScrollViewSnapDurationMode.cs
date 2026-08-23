@@ -1,18 +1,18 @@
 ﻿namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 如何计算 <see cref="ScrollView"/> 自动吸附的耗时。
+    /// How the duration of <see cref="ScrollView"/> auto-snap is computed.
     /// </summary>
     public enum ScrollViewSnapDurationMode
     {
         /// <summary>
-        /// 使用固定的吸附时间。
+        /// Uses a fixed snap duration.
         /// </summary>
         /// <seealso cref="ScrollView.snapDuration"/>
         Fixed,
 
         /// <summary>
-        /// 根据距离和速度计算吸附时间。
+        /// Computes the snap duration from distance and speed.
         /// </summary>
         /// <seealso cref="ScrollView.snapSpeed"/>
         Dynamic

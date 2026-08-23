@@ -10,7 +10,7 @@ using UnityEditor;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 使用 <see cref="Time.frameCount"/> 计数并在特定的主循环阶段中处理非立即执行的回调的计数器。
+    /// A counter that uses <see cref="Time.frameCount"/> to count and handles non-immediate callbacks in a specific player loop phase.
     /// </summary>
     public sealed class UnityFrameCountPlayerLoopCounter : ICounter, IPlayerLoopItem
     {
@@ -49,13 +49,13 @@ namespace Aurora.Unity.Threading
 #endif
 
         /// <summary>
-        /// 初始化 <see cref="UnityFrameCountPlayerLoopCounter"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityFrameCountPlayerLoopCounter"/> class.
         /// </summary>
-        /// <param name="callback">当计数器触发时执行的方法。</param>
-        /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
+        /// <param name="callback">The method executed when the counter triggers.</param>
+        /// <param name="state">The second parameter passed to <see cref="callback"/>.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> is not a member defined in the <see cref="PlayerLoopPhase"/> enum.</exception>
         public UnityFrameCountPlayerLoopCounter(
             CounterTriggerCallback callback,
             object                 state,
@@ -80,30 +80,30 @@ namespace Aurora.Unity.Threading
         }
 
         /// <summary>
-        /// 初始化 <see cref="UnityFrameCountPlayerLoopCounter"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityFrameCountPlayerLoopCounter"/> class.
         /// </summary>
-        /// <param name="callback">当计数器触发时执行的方法。</param>
-        /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
+        /// <param name="callback">The method executed when the counter triggers.</param>
+        /// <param name="state">The second parameter passed to <see cref="callback"/>.</param>
         /// <param name="dueCount">
-        /// 计数器首次触发所需的个数。
+        /// The count required for the counter to trigger for the first time.
         /// <list type="table">
-        /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term>-1</term><description>禁用计数器</description></item>
-        /// <item><term>0</term><description>禁用计数器，然后启用计数器并立即触发</description></item>
-        /// <item><term>大于 0</term><description>禁用计数器，然后启用计数器，计数器将在指定的个数后触发</description></item>
+        /// <listheader><term>Value</term><description>Meaning</description></listheader>
+        /// <item><term>-1</term><description>Disables the counter</description></item>
+        /// <item><term>0</term><description>Disables the counter, then enables it and triggers it immediately</description></item>
+        /// <item><term>Greater than 0</term><description>Disables the counter, then enables it; the counter triggers after the specified count</description></item>
         /// </list>
         /// </param>
         /// <param name="period">
-        /// 计数器再次触发所需的个数。
+        /// The count required for the counter to trigger again.
         /// <list type="table">
-        /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term>-1</term><description>在计数器首次触发后禁用计数器</description></item>
-        /// <item><term>0 以及大于 0</term><description>在计数器触发后，将在指定的个数后再次触发，反复如此，直至计器被禁用（实际个数受计数器精度影响，且至少为 1）</description></item>
+        /// <listheader><term>Value</term><description>Meaning</description></listheader>
+        /// <item><term>-1</term><description>Disables the counter after it triggers for the first time</description></item>
+        /// <item><term>0 and greater than 0</term><description>After the counter triggers, it triggers again after the specified count, repeating until the counter is disabled (the actual count is affected by counter precision and is at least 1)</description></item>
         /// </list>
         /// </param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueCount"/> 或 <paramref name="period"/> 小于 0，但不为 -1；或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueCount"/> or <paramref name="period"/> is less than 0 but not -1; or <paramref name="playerLoopPhase"/>'s value is undefined.</exception>
         public UnityFrameCountPlayerLoopCounter(
             CounterTriggerCallback callback,
             object                 state,
@@ -138,7 +138,7 @@ namespace Aurora.Unity.Threading
             get => Time.frameCount;
         }
 
-        /// <remarks>访问此属性时，<see cref="_period"/> 要么是正数，要么是 0。</remarks>
+        /// <remarks>When accessing this property, <see cref="_period"/> is either positive or 0.</remarks>
         private int PeriodZeroIsOne
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

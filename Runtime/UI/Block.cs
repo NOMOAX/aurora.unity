@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 色块。
+    /// A color block.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class Block : MaskableGraphic

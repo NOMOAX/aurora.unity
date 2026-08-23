@@ -1,23 +1,23 @@
 ﻿namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 表示滚动条的可见性。
+    /// Represents the visibility of a scrollbar.
     /// </summary>
     public enum ScrollbarVisibility
     {
         /// <summary>
-        /// 总是不可见。
+        /// Always invisible.
         /// </summary>
         Never,
 
         /// <summary>
-        /// 仅当内容大小大于视口大小时可见。
+        /// Visible only when the content size is larger than the viewport size.
         /// </summary>
         /// <seealso cref="ScrollView.OverflowedContentSize"/>
         OnlyIfNeeded,
 
         /// <summary>
-        /// 总是可见。
+        /// Always visible.
         /// </summary>
         Always
     }

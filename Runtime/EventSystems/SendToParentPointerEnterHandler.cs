@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IPointerEnterHandler.OnPointerEnter"/> 传递给父级。
+    /// Forwards <see cref="IPointerEnterHandler.OnPointerEnter"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentPointerEnterHandler : SendToParentEventSystemHandler<IPointerEnterHandler>,

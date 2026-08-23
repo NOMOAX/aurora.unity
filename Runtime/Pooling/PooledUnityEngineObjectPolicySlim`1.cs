@@ -6,9 +6,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.Pooling
 {
     /// <summary>
-    /// 管理池中的 Unity 对象的轻量级策略。
+    /// The lightweight policy for managing pooled Unity objects.
     /// </summary>
-    /// <typeparam name="T">Unity 对象的类型。</typeparam>
+    /// <typeparam name="T">The type of the Unity object.</typeparam>
     public sealed class PooledUnityEngineObjectPolicySlim<T> : IPooledObjectPolicy<T> where T : Object
     {
         private readonly T _original;
@@ -18,12 +18,12 @@ namespace Aurora.Unity.Pooling
         private readonly bool _optimizeName;
 
         /// <summary>
-        /// 初始化 <see cref="PooledUnityEngineObjectPolicySlim{T}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PooledUnityEngineObjectPolicySlim{T}"/> class.
         /// </summary>
-        /// <param name="original">原本。</param>
-        /// <param name="container">容器。</param>
-        /// <param name="optimizeName">是否要优化副本的名称。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="original"/> 为 <see langword="null"/>。</exception>
+        /// <param name="original">The original.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="optimizeName">Whether to optimize the name of the copy.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="original"/> is <see langword="null"/>.</exception>
         public PooledUnityEngineObjectPolicySlim(T original, Transform container, bool optimizeName)
         {
             if (!original)
@@ -36,12 +36,12 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <summary>
-        /// 原本。
+        /// The original.
         /// </summary>
         public T Original => _original;
 
         /// <summary>
-        /// 容器。
+        /// The container.
         /// </summary>
         public Transform Container => _container;
 

@@ -4,12 +4,12 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 用于比较 <see cref="Object"/> 的相等性。
+    /// Used to compare the equality of <see cref="Object"/>.
     /// </summary>
     public sealed class UnityEngineObjectEqualityComparer : IEqualityComparer<Object>
     {
         /// <summary>
-        /// 获取单一实例。
+        /// Gets the single instance.
         /// </summary>
         public static UnityEngineObjectEqualityComparer Instance { get; } = new();
 

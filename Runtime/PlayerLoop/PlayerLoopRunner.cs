@@ -54,7 +54,7 @@ namespace Aurora.Unity.PlayerLoop
                 if (UnityEnvironment.IsPlaying)
 #endif
                 {
-                    Log.W($"找不到要移除的 {nameof(IPlayerLoopItem)}");
+                    Log.W($"The {nameof(IPlayerLoopItem)} to remove was not found");
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace Aurora.Unity.PlayerLoop
             {
                 lock (_items)
                 {
-                    // 列表的长度可能会增加，不要改为 foreach 语句
+                    // The list's length may increase; do not change this to a foreach statement
                     // ReSharper disable once ForCanBeConvertedToForeach
                     for (var i = 0; i < _items.Count; i++)
                     {

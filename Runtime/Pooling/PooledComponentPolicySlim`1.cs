@@ -6,9 +6,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.Pooling
 {
     /// <summary>
-    /// 管理池中的组件的轻量级策略。
+    /// The lightweight policy for managing pooled components.
     /// </summary>
-    /// <typeparam name="T">组件的类型。</typeparam>
+    /// <typeparam name="T">The type of the component.</typeparam>
     public class PooledComponentPolicySlim<T> : IPooledObjectPolicy<T> where T : Component
     {
         private readonly T _original;
@@ -18,12 +18,12 @@ namespace Aurora.Unity.Pooling
         private readonly bool _optimizeName;
 
         /// <summary>
-        /// 初始化 <see cref="PooledComponentPolicySlim{T}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PooledComponentPolicySlim{T}"/> class.
         /// </summary>
-        /// <param name="original">原本。</param>
-        /// <param name="container">容器。</param>
-        /// <param name="optimizeName">是否要优化副本的名称。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="original"/> 为 <see langword="null"/>。</exception>
+        /// <param name="original">The original.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="optimizeName">Whether to optimize the name of the copy.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="original"/> is <see langword="null"/>.</exception>
         public PooledComponentPolicySlim(T original, Transform container, bool optimizeName)
         {
             if (!original)
@@ -36,12 +36,12 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <summary>
-        /// 原本。
+        /// The original.
         /// </summary>
         public T Original => _original;
 
         /// <summary>
-        /// 容器。
+        /// The container.
         /// </summary>
         public Transform Container => _container;
 
@@ -83,27 +83,27 @@ namespace Aurora.Unity.Pooling
         }
 
         /// <summary>
-        /// 在将组件放入池之前执行。
+        /// Executed before the component is put into the pool.
         /// <br/>
-        /// 重写此方法，以执行额外清理操作。
+        /// Override this method to perform extra cleanup operations.
         /// </summary>
-        /// <param name="obj">组件。</param>
+        /// <param name="obj">The component.</param>
         protected virtual void OnReturning(T obj)
         {
         }
 
         /// <summary>
-        /// 在将组件放入池之后执行。
+        /// Executed after the component is put into the pool.
         /// <br/>
-        /// 重写此方法，以执行额外清理操作。
+        /// Override this method to perform extra cleanup operations.
         /// </summary>
-        /// <param name="obj">组件。</param>
+        /// <param name="obj">The component.</param>
         protected virtual void OnReturn(T obj)
         {
         }
 
         /// <inheritdoc />
-        /// <remarks>会销毁与组件关联的游戏物体，而不是仅销毁组件。</remarks>
+        /// <remarks>Destroys the game object associated with the component rather than only the component.</remarks>
         public void Dispose(T obj)
         {
             if (!UnityEnvironment.IsPlaying)

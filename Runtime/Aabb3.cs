@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 三维轴向包围盒（three-dimensional axis-aligned bounding box）。
+    /// A three-dimensional axis-aligned bounding box.
     /// </summary>
     [Serializable]
     public struct Aabb3 : IFormattable, IEquatable<Aabb3>
@@ -33,11 +33,11 @@ namespace Aurora.Unity
         private const string Format = nameof(Aabb3) + "(({0}, {1}, {2}), ({3}, {4}, {5}))";
 
         /// <summary>
-        /// 初始化 <see cref="Aabb3"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb3"/> struct.
         /// </summary>
-        /// <param name="x">初始点的 x 分量。</param>
-        /// <param name="y">初始点的 y 分量。</param>
-        /// <param name="z">初始点的 z 分量。</param>
+        /// <param name="x">The x component of the initial point.</param>
+        /// <param name="y">The y component of the initial point.</param>
+        /// <param name="z">The z component of the initial point.</param>
         public Aabb3(float x, float y, float z)
         {
             minX = x;
@@ -49,9 +49,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb3"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb3"/> struct.
         /// </summary>
-        /// <param name="point">初始点。</param>
+        /// <param name="point">The initial point.</param>
         public Aabb3(Vector3 point)
         {
             minX = point.x;
@@ -63,14 +63,14 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb3"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb3"/> struct.
         /// </summary>
-        /// <param name="minX">最小值的 x 分量。</param>
-        /// <param name="minY">最小值的 y 分量。</param>
-        /// <param name="minZ">最小值的 z 分量。</param>
-        /// <param name="maxX">最大值的 x 分量。</param>
-        /// <param name="maxY">最大值的 y 分量。</param>
-        /// <param name="maxZ">最大值的 z 分量。</param>
+        /// <param name="minX">The x component of the minimum value.</param>
+        /// <param name="minY">The y component of the minimum value.</param>
+        /// <param name="minZ">The z component of the minimum value.</param>
+        /// <param name="maxX">The x component of the maximum value.</param>
+        /// <param name="maxY">The y component of the maximum value.</param>
+        /// <param name="maxZ">The z component of the maximum value.</param>
         public Aabb3(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
         {
             this.minX = minX;
@@ -82,10 +82,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb3"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb3"/> struct.
         /// </summary>
-        /// <param name="min">最小值。</param>
-        /// <param name="max">最大值。</param>
+        /// <param name="min">The minimum value.</param>
+        /// <param name="max">The maximum value.</param>
         public Aabb3(Vector3 min, Vector3 max)
         {
             minX = min.x;
@@ -97,15 +97,15 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取具有指定的中心和大小的 <see cref="Aabb3"/> 实例。
+        /// Gets an <see cref="Aabb3"/> instance with the specified center and size.
         /// </summary>
-        /// <param name="centerX">中心的 x 分量。</param>
-        /// <param name="centerY">中心的 y 分量。</param>
-        /// <param name="centerZ">中心的 z 分量。</param>
-        /// <param name="sizeX">大小的 x 分量。</param>
-        /// <param name="sizeY">大小的 y 分量。</param>
-        /// <param name="sizeZ">大小的 z 分量。</param>
-        /// <returns>具有指定的中心和大小的 <see cref="Aabb3"/> 实例。</returns>
+        /// <param name="centerX">The x component of the center.</param>
+        /// <param name="centerY">The y component of the center.</param>
+        /// <param name="centerZ">The z component of the center.</param>
+        /// <param name="sizeX">The x component of the size.</param>
+        /// <param name="sizeY">The y component of the size.</param>
+        /// <param name="sizeZ">The z component of the size.</param>
+        /// <returns>An <see cref="Aabb3"/> instance with the specified center and size.</returns>
         public static Aabb3 CenterSize(
             float centerX,
             float centerY,
@@ -128,11 +128,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取具有指定的中心和大小的 <see cref="Aabb3"/> 实例。
+        /// Gets an <see cref="Aabb3"/> instance with the specified center and size.
         /// </summary>
-        /// <param name="center">中心。</param>
-        /// <param name="size">大小。</param>
-        /// <returns>具有指定的中心和大小的 <see cref="Aabb3"/> 实例。</returns>
+        /// <param name="center">The center.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>An <see cref="Aabb3"/> instance with the specified center and size.</returns>
         public static Aabb3 CenterSize(Vector3 center, Vector3 size)
         {
             var extendX = size.x * 0.5f;
@@ -149,12 +149,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取包含了传入的所有点的 <see cref="Aabb3"/> 实例。
+        /// Gets an <see cref="Aabb3"/> instance that contains all the passed-in points.
         /// </summary>
-        /// <param name="points">要包含的所有点。</param>
-        /// <returns>包含了传入的所有点的 <see cref="Aabb3"/> 实例。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="points"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="points"/> 中的元素数为 0。</exception>
+        /// <param name="points">All the points to contain.</param>
+        /// <returns>An <see cref="Aabb3"/> instance that contains all the passed-in points.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="points"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The element count of <paramref name="points"/> is 0.</exception>
         public static Aabb3 Points(IEnumerable<Vector3> points)
         {
             if (points is null)
@@ -164,7 +164,7 @@ namespace Aurora.Unity
             using var enumerator = points.GetEnumerator();
             if (!enumerator.MoveNext())
             {
-                throw new ArgumentException($"{nameof(points)} 中的元素数为 0");
+                throw new ArgumentException($"{nameof(points)} has 0 elements");
             }
             var firstPoint = enumerator.Current;
             var minX       = firstPoint.x;
@@ -187,7 +187,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值的 x 分量。
+        /// Gets or sets the x component of the minimum value.
         /// </summary>
         public float MinX
         {
@@ -198,7 +198,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值的 y 分量。
+        /// Gets or sets the y component of the minimum value.
         /// </summary>
         public float MinY
         {
@@ -209,7 +209,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值的 z 分量。
+        /// Gets or sets the z component of the minimum value.
         /// </summary>
         public float MinZ
         {
@@ -220,7 +220,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心的 x 分量。
+        /// Gets or sets the x component of the center.
         /// </summary>
         public float CenterX
         {
@@ -236,7 +236,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心的 y 分量。
+        /// Gets or sets the y component of the center.
         /// </summary>
         public float CenterY
         {
@@ -252,7 +252,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心的 z 分量。
+        /// Gets or sets the z component of the center.
         /// </summary>
         public float CenterZ
         {
@@ -268,7 +268,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值的 x 分量。
+        /// Gets or sets the x component of the maximum value.
         /// </summary>
         public float MaxX
         {
@@ -279,7 +279,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值的 y 分量。
+        /// Gets or sets the y component of the maximum value.
         /// </summary>
         public float MaxY
         {
@@ -290,7 +290,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值的 z 分量。
+        /// Gets or sets the z component of the maximum value.
         /// </summary>
         public float MaxZ
         {
@@ -301,7 +301,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值。
+        /// Gets or sets the minimum value.
         /// </summary>
         public Vector3 Min
         {
@@ -317,7 +317,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心。
+        /// Gets or sets the center.
         /// </summary>
         public Vector3 Center
         {
@@ -339,7 +339,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值。
+        /// Gets or sets the maximum value.
         /// </summary>
         public Vector3 Max
         {
@@ -355,7 +355,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置大小。
+        /// Gets or sets the size.
         /// </summary>
         public Vector3 Size
         {
@@ -377,7 +377,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置一半大小。
+        /// Gets or sets the half-size.
         /// </summary>
         public Vector3 Extends
         {
@@ -399,10 +399,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 由标准化位置计算实际位置。
+        /// Computes the actual position from a normalized position.
         /// </summary>
-        /// <param name="t">标准化位置。</param>
-        /// <returns>实际位置。</returns>
+        /// <param name="t">The normalized position.</param>
+        /// <returns>The actual position.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3 Lerp(Vector3 t)
         {
@@ -414,10 +414,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 由实际位置计算标准化位置。
+        /// Computes the normalized position from an actual position.
         /// </summary>
-        /// <param name="point">实际位置。</param>
-        /// <returns>标准化位置。</returns>
+        /// <param name="point">The actual position.</param>
+        /// <returns>The normalized position.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3 Unlerp(Vector3 point)
         {
@@ -429,9 +429,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定点（不考虑 z 分量）。
+        /// Includes the specified point (ignoring the z component).
         /// </summary>
-        /// <param name="point">点。</param>
+        /// <param name="point">The point.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Vector2 point)
         {
@@ -444,9 +444,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定点。
+        /// Includes the specified point.
         /// </summary>
-        /// <param name="point">点。</param>
+        /// <param name="point">The point.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Vector3 point)
         {
@@ -462,9 +462,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定的另一个二维轴向包围盒（不修改 z 分量）。
+        /// Includes the specified another 2D axis-aligned bounding box (without modifying the z component).
         /// </summary>
-        /// <param name="other">另一个二维轴向包围盒。</param>
+        /// <param name="other">Another 2D axis-aligned bounding box.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Aabb2 other)
         {
@@ -475,9 +475,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定的另一个三维轴向包围盒。
+        /// Includes the specified another 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个三维轴向包围盒。</param>
+        /// <param name="other">Another 3D axis-aligned bounding box.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Aabb3 other)
         {
@@ -490,10 +490,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含指定点（不考虑 z 分量）。
+        /// Returns a value indicating whether this instance contains the specified point (ignoring the z component).
         /// </summary>
-        /// <param name="point">点。</param>
-        /// <returns>如果此实例包含 <paramref name="point"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="point">The point.</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="point"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Vector2 point)
         {
@@ -501,10 +501,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含指定点。
+        /// Returns a value indicating whether this instance contains the specified point.
         /// </summary>
-        /// <param name="point">点。</param>
-        /// <returns>如果此实例包含 <paramref name="point"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="point">The point.</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="point"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Vector3 point)
         {
@@ -513,10 +513,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含指定二维轴向包围盒（不考虑 z 分量）。
+        /// Returns a value indicating whether this instance contains the specified 2D axis-aligned bounding box (ignoring the z component).
         /// </summary>
-        /// <param name="aabb2">二维轴向包围盒。</param>
-        /// <returns>如果此实例包含 <paramref name="aabb2"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="aabb2">The 2D axis-aligned bounding box.</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="aabb2"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Aabb2 aabb2)
         {
@@ -524,10 +524,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含另一个三维轴向包围盒。
+        /// Returns a value indicating whether this instance contains another 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个三维轴向包围盒。</param>
-        /// <returns>如果此实例包含 <paramref name="other"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="other">Another 3D axis-aligned bounding box.</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="other"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Aabb3 other)
         {
@@ -536,10 +536,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否与指定二维轴向包围盒有重叠（不考虑 z 分量）。
+        /// Returns a value indicating whether this instance overlaps the specified 2D axis-aligned bounding box (ignoring the z component).
         /// </summary>
-        /// <param name="aabb2">二维轴向包围盒。</param>
-        /// <returns>如果此实例与 <paramref name="aabb2"/> 有重叠，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="aabb2">The 2D axis-aligned bounding box.</param>
+        /// <returns><see langword="true"/> if this instance overlaps <paramref name="aabb2"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Overlaps(Aabb2 aabb2)
         {
@@ -547,10 +547,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否与另一个三维轴向包围盒有重叠。
+        /// Returns a value indicating whether this instance overlaps another 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个三维轴向包围盒。</param>
-        /// <returns>如果此实例与 <paramref name="other"/> 有重叠，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="other">Another 3D axis-aligned bounding box.</param>
+        /// <returns><see langword="true"/> if this instance overlaps <paramref name="other"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Overlaps(Aabb3 other)
         {
@@ -607,11 +607,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示两个指定的 <see cref="Aabb3"/> 值是否相等。
+        /// Returns a value indicating whether two specified <see cref="Aabb3"/> values are equal.
         /// </summary>
-        /// <param name="left">要比较的第一个值。</param>
-        /// <param name="right">要比较的第二个值。</param>
-        /// <returns>如果 <paramref name="left"/> 和 <paramref name="right"/> 相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are equal; otherwise <see langword="false"/>.</returns>
         public static bool operator ==(Aabb3 left, Aabb3 right)
         {
             return left.minX == right.minX && left.minY == right.minY && left.minZ == right.minZ &&
@@ -619,31 +619,31 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示两个指定的 <see cref="Aabb3"/> 值是否相等。
+        /// Returns a value indicating whether two specified <see cref="Aabb3"/> values are equal.
         /// </summary>
-        /// <param name="left">要比较的第一个值。</param>
-        /// <param name="right">要比较的第二个值。</param>
-        /// <returns>如果 <paramref name="left"/> 和 <paramref name="right"/> 不相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are not equal; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(Aabb3 left, Aabb3 right)
         {
             return !(left == right);
         }
 
         /// <summary>
-        /// 将三位轴向包围盒转换为 Unity 三维轴向包围盒。
+        /// Converts a 3D axis-aligned bounding box to a Unity 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="aabb3">三维轴向包围盒。</param>
-        /// <returns>由 <paramref name="aabb3"/> 转换得到的 Unity 三维轴向包围盒。</returns>
+        /// <param name="aabb3">The 3D axis-aligned bounding box.</param>
+        /// <returns>The Unity 3D axis-aligned bounding box converted from <paramref name="aabb3"/>.</returns>
         public static explicit operator Bounds(Aabb3 aabb3)
         {
             return new Bounds(aabb3.Center, aabb3.Size);
         }
 
         /// <summary>
-        /// 将 Unity 三维轴向包围盒转换为三位轴向包围盒。
+        /// Converts a Unity 3D axis-aligned bounding box to a 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="bounds">Unity 三维轴向包围盒。</param>
-        /// <returns>由 <paramref name="bounds"/> 转换得到的三维轴向包围盒。</returns>
+        /// <param name="bounds">The Unity 3D axis-aligned bounding box.</param>
+        /// <returns>The 3D axis-aligned bounding box converted from <paramref name="bounds"/>.</returns>
         public static explicit operator Aabb3(Bounds bounds)
         {
             return CenterSize(bounds.center, bounds.size);

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 圆。
+    /// A circle.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class Circle : MaskableGraphic, ILayoutElement, ICanvasRaycastFilter
@@ -48,7 +48,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 纹理。
+        /// The texture.
         /// </summary>
         public Texture Texture
         {
@@ -66,9 +66,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 边数。
+        /// The segment count.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [3, 64998] 范围内。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is outside the range [3, 64998].</exception>
         public int Segments
         {
             get => segments;
@@ -88,7 +88,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用精确点击区域。
+        /// Whether to use an exact click area.
         /// </summary>
         public bool UseExactRaycastLocation
         {
@@ -124,12 +124,12 @@ namespace Aurora.Unity.UI
             var center            = pixelAdjustedRect.center;
             var halfSize          = pixelAdjustedRect.size * 0.5f;
 
-            // 添加圆心
+            // Add the circle center
             vh.AddVert(center, color32, new Vector2(0.5f, 0.5f));
 
             var stepAngle = 2 * Mathf.PI / segments;
 
-            // 添加圆周上各点
+            // Add the points on the circumference
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;

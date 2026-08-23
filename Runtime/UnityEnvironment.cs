@@ -11,14 +11,14 @@ using UnityEditor;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供与 Unity 环境有关的值和方法。
+    /// Provides values and methods related to the Unity environment.
     /// </summary>
     public static class UnityEnvironment
     {
         /// <summary>
-        /// 程序是否正在运行。
+        /// Whether the program is running.
         /// </summary>
-        /// <remarks>当这个值为 <see langword="false"/> 时，应跳过复杂与耗时的操作，让程序尽快结束。</remarks>
+        /// <remarks>When this value is <see langword="false"/>, complex and time-consuming operations should be skipped so that the program can end as quickly as possible.</remarks>
         public static bool IsPlaying { get; internal set; }
 
         internal static readonly Stack<IDisposable> Disposables = new();
@@ -26,27 +26,27 @@ namespace Aurora.Unity
         internal static CancellationTokenSource ExitTokenSource { get; set; }
 
         /// <summary>
-        /// Unity 主线程 ID。
+        /// The Unity main thread ID.
         /// </summary>
-        /// <remarks>在 <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/> 阶段被赋值。</remarks>
+        /// <remarks>Assigned during the <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/> phase.</remarks>
         public static int UnityMainThreadId { get; internal set; }
 
         /// <summary>
-        /// Unity 同步上下文。
+        /// The Unity synchronization context.
         /// </summary>
-        /// <remarks>在 <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/> 阶段被赋值。</remarks>
+        /// <remarks>Assigned during the <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/> phase.</remarks>
         public static SynchronizationContext UnitySynchronizationContext { get; internal set; }
 
         /// <summary>
-        /// 持有 <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/> 的任务调度器。
+        /// The task scheduler that holds the <see cref="RuntimeInitializeLoadType.BeforeSceneLoad"/>.
         /// </summary>
-        /// <remarks>在 <see cref="UnitySynchronizationContext"/> 阶段被赋值。</remarks>
+        /// <remarks>Assigned during the <see cref="UnitySynchronizationContext"/> phase.</remarks>
         public static TaskScheduler UnitySynchronizationContextTaskScheduler { get; internal set; }
 
         /// <summary>
-        /// 在编辑器环境下，获取一个在进入播放模式时初始化、退出播放模式时发出取消通知的取消令牌，在其他情况下，将直接返回一个已取消的令牌；
+        /// In the editor environment, gets a cancellation token initialized when entering play mode and that emits a cancellation notification when exiting play mode; in other cases, it directly returns an already-canceled token;
         /// <br/>
-        /// 在非编辑器环境下，获取一个在程序开始时初始化、程序结束时发出取消通知的取消令牌。
+        /// In a non-editor environment, gets a cancellation token initialized when the program starts and that emits a cancellation notification when the program ends.
         /// </summary>
         public static CancellationToken ExitToken
         {
@@ -63,7 +63,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示当前线程是否是 Unity 主线程。
+        /// Gets a value indicating whether the current thread is the Unity main thread.
         /// </summary>
         public static bool OnUnityMainThread
         {
@@ -72,27 +72,27 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示当前是否处于编辑器环境，且使用了专业版皮肤。
+        /// Gets a value indicating whether the current environment is the editor environment with the pro skin.
         /// </summary>
         public static bool IsProSkin { get; internal set; }
 
         /// <summary>
-        /// “Default”层的值。
+        /// The value of the "Default" layer.
         /// </summary>
         public static int DefaultLayer { get; internal set; }
 
         /// <summary>
-        /// “Ignore Raycast”层的值。
+        /// The value of the "Ignore Raycast" layer.
         /// </summary>
         public static int IgnoreRaycastLayer { get; internal set; }
 
         /// <summary>
-        /// “UI”层的值。
+        /// The value of the "UI" layer.
         /// </summary>
         public static int UILayer { get; internal set; }
 
         /// <summary>
-        /// 字符串剪贴板。
+        /// The string clipboard.
         /// </summary>
         public static string Clipboard
         {
@@ -103,7 +103,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 屏幕尺寸。
+        /// The screen size.
         /// </summary>
         public static Vector2Int ScreenSize
         {
@@ -112,7 +112,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 屏幕宽高比。
+        /// The screen aspect ratio.
         /// </summary>
         public static float ScreenAspectRatio
         {
@@ -121,7 +121,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 结束此程序。
+        /// Quits this program.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void QuitApplication()
@@ -134,9 +134,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 结束此程序。
+        /// Quits this program.
         /// </summary>
-        /// <param name="exitCode">退出代码。</param>
+        /// <param name="exitCode">The exit code.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void QuitApplication(int exitCode)
         {
@@ -148,12 +148,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 添加一个在程序结束时释放的实例。
+        /// Adds an instance that is released when the program ends.
         /// </summary>
-        /// <param name="disposable">要在程序结束时释放的实例。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="disposable"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="InvalidOperationException">程序未运行（<see cref="IsPlaying"/> 为 <see langword="false"/>）。</exception>
-        /// <remarks>多个通过 <see cref="DisposeOnApplicationQuit"/> 添加的 <see cref="IDisposable"/> 实例将在程序结束时按照先进后出的顺序释放。</remarks>
+        /// <param name="disposable">The instance to release when the program ends.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="disposable"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">The program is not running (<see cref="IsPlaying"/> is <see langword="false"/>).</exception>
+        /// <remarks>Multiple <see cref="IDisposable"/> instances added via <see cref="DisposeOnApplicationQuit"/> are released in last-in-first-out order when the program ends.</remarks>
         public static void DisposeOnApplicationQuit(IDisposable disposable)
         {
             if (disposable == null)

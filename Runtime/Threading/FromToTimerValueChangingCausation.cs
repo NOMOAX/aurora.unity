@@ -1,17 +1,17 @@
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 引起 <see cref="IFromToTimer"/> 值变化的原因。
+    /// The cause of a value change of <see cref="IFromToTimer"/>.
     /// </summary>
     public enum FromToTimerValueChangingCausation
     {
         /// <summary>
-        /// 计时。
+        /// Timing.
         /// </summary>
         Timing,
 
         /// <summary>
-        /// 修改。
+        /// Modification.
         /// </summary>
         Modification
     }

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 对另一个 <see cref="Preference{TValue}"/> 进行包装，并持有一个默认值，以便执行额外操作。
+    /// Wraps another <see cref="Preference{TValue}"/> and holds a default value in order to perform additional operations.
     /// </summary>
     /// <inheritdoc />
     public abstract class DefaultValuePreference<TValue> : WrappedPreference<TValue>
@@ -12,18 +12,18 @@ namespace Aurora.Unity
         private readonly TValue _defaultValue;
 
         /// <summary>
-        /// 初始化 <see cref="DefaultValuePreference{TValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="DefaultValuePreference{TValue}"/> class.
         /// </summary>
-        /// <param name="preference">被包装的 <see cref="Preference{TValue}"/>。</param>
-        /// <param name="defaultValue">指定的默认值。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="preference"/> 为 <see langword="null"/>。</exception>
+        /// <param name="preference">The wrapped <see cref="Preference{TValue}"/>.</param>
+        /// <param name="defaultValue">The specified default value.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="preference"/> is <see langword="null"/>.</exception>
         protected DefaultValuePreference(Preference<TValue> preference, TValue defaultValue) : base(preference)
         {
             _defaultValue = defaultValue;
         }
 
         /// <summary>
-        /// 从构造函数传入的默认值。
+        /// The default value passed in from the constructor.
         /// </summary>
         public TValue DefaultValue
         {

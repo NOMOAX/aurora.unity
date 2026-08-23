@@ -11,9 +11,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.Diagnostics
 {
     /// <summary>
-    /// 断言并返回用户传入的原始值。
+    /// Asserts a condition and returns the original value passed in.
     /// <br/>
-    /// 断言失败时不抛出异常，仅打印断言失败信息。
+    /// Does not throw an exception when the assertion fails; it only prints the failure message.
     /// </summary>
     /// <seealso cref="Assert"/>
     /// <seealso cref="InlineAssert"/>

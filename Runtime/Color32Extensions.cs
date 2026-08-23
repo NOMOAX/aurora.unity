@@ -5,18 +5,18 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Color32"/> 结构提供扩展方法。
+    /// Provides extension methods for the <see cref="Color32"/> struct.
     /// </summary>
     public static class Color32Extensions
     {
         /// <summary>
-        /// 析构此 <see cref="Color32"/>。
+        /// Deconstructs this <see cref="Color32"/>.
         /// </summary>
-        /// <param name="color">颜色。</param>
-        /// <param name="r">红色。</param>
-        /// <param name="g">绿色。</param>
-        /// <param name="b">蓝色。</param>
-        /// <param name="a">不透明度。</param>
+        /// <param name="color">The color.</param>
+        /// <param name="r">Red.</param>
+        /// <param name="g">Green.</param>
+        /// <param name="b">Blue.</param>
+        /// <param name="a">Alpha.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Deconstruct(this Color32 color, out byte r, out byte g, out byte b, out byte a)
         {
@@ -27,12 +27,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 析构此 <see cref="Color32"/>。
+        /// Deconstructs this <see cref="Color32"/>.
         /// </summary>
-        /// <param name="color">颜色。</param>
-        /// <param name="h">色相。</param>
-        /// <param name="s">饱和度。</param>
-        /// <param name="v">明度。</param>
+        /// <param name="color">The color.</param>
+        /// <param name="h">Hue.</param>
+        /// <param name="s">Saturation.</param>
+        /// <param name="v">Value.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Deconstruct(this Color32 color, out float h, out float s, out float v)
         {
@@ -40,10 +40,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断 <see cref="Color32"/> 的色相是否是未定义的。
+        /// Determines whether the hue of the <see cref="Color32"/> is undefined.
         /// </summary>
-        /// <param name="color">颜色。</param>
-        /// <returns>如果 <paramref name="color"/> 的 R、G、B 值都相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="color">The color.</param>
+        /// <returns><see langword="true"/> if the R, G, and B values of <paramref name="color"/> are all equal; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsHUndefined(this Color32 color)
         {
@@ -51,12 +51,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 复制当前 <see cref="Color32"/>，然后将色相设置为新的值。
+        /// Copies the current <see cref="Color32"/> and then sets the hue to a new value.
         /// </summary>
-        /// <param name="color">颜色。</param>
-        /// <param name="h">色相。</param>
-        /// <returns>新的颜色。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="h"/> 不在 [0, 1] 范围内。</exception>
+        /// <param name="color">The color.</param>
+        /// <param name="h">The hue.</param>
+        /// <returns>The new color.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="h"/> is not in the [0, 1] range.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Color32 WithH(this Color32 color, float h)
         {
@@ -68,13 +68,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 复制当前 <see cref="Color32"/>，然后尝试将色相设置为新的值。
+        /// Copies the current <see cref="Color32"/> and then attempts to set the hue to a new value.
         /// </summary>
-        /// <param name="color">颜色。</param>
-        /// <param name="h">色相。</param>
-        /// <param name="result">新的颜色。</param>
-        /// <returns>如果新的颜色与 <paramref name="color"/> 不相同，则为 <see langword="true"/> ；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="h"/> 不在 [0, 1] 范围内。</exception>
+        /// <param name="color">The color.</param>
+        /// <param name="h">The hue.</param>
+        /// <param name="result">The new color.</param>
+        /// <returns><see langword="true"/> if the new color is different from <paramref name="color"/>; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="h"/> is not in the [0, 1] range.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWithH(this Color32 color, float h, out Color32 result)
         {

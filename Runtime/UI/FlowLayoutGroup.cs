@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 流式布局组。
+    /// A flow layout group.
     /// </summary>
     public sealed class FlowLayoutGroup : LayoutGroup
     {
@@ -26,12 +26,12 @@ namespace Aurora.Unity.UI
         private readonly List<List<RectTransform>> _lines = new();
 
         /// <summary>
-        /// 主轴。
+        /// The main axis.
         /// </summary>
         public RectTransform.Axis Axis { get => axis; set => SetProperty(ref axis, value); }
 
         /// <summary>
-        /// 沿主轴方向的首选尺寸。
+        /// The preferred size along the main axis.
         /// </summary>
         public float PreferredSizeAloneAxis
         {
@@ -40,23 +40,23 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 间距。
+        /// The spacing.
         /// </summary>
         public Vector2 Spacing { get => spacing; set => SetProperty(ref spacing, value); }
 
         /// <summary>
-        /// 行（或列）数。
+        /// The number of rows (or columns).
         /// </summary>
         public int LineCount => _lines.Count;
 
         /// <summary>
-        /// 获取指定的子布局元素的索引。
+        /// Gets the index of the specified child layout element.
         /// </summary>
-        /// <param name="layoutChild">子布局元素。</param>
-        /// <param name="indexAloneAxis"><paramref name="layoutChild"/> 沿 <see cref="Axis"/> 轴的索引。</param>
-        /// <param name="indexAloneOtherAxis"><paramref name="layoutChild"/> 沿另一轴的索引。</param>
-        /// <returns>指定的子布局元素的索引。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="layoutChild"/> 为 <see langword="null"/>。</exception>
+        /// <param name="layoutChild">The child layout element.</param>
+        /// <param name="indexAloneAxis">The index of <paramref name="layoutChild"/> along the <see cref="Axis"/> axis.</param>
+        /// <param name="indexAloneOtherAxis">The index of <paramref name="layoutChild"/> along the other axis.</param>
+        /// <returns>The index of the specified child layout element.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="layoutChild"/> is <see langword="null"/>.</exception>
         public bool TryGetIndexOf(RectTransform layoutChild, out int indexAloneAxis, out int indexAloneOtherAxis)
         {
             if (!layoutChild)
@@ -83,12 +83,12 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取位于指定行（或列）的所有子布局元素。
+        /// Gets all child layout elements on the specified row (or column).
         /// </summary>
-        /// <param name="lineIndex">行（或列）索引。</param>
-        /// <param name="results">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="lineIndex"/> 小于 0，或大于等于行（或列）数。</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+        /// <param name="lineIndex">The row (or column) index.</param>
+        /// <param name="results">The list used to hold the results.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="lineIndex"/> is less than 0, or greater than or equal to the number of rows (or columns).</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
         public void GetLayoutChildrenOfLine(int lineIndex, List<RectTransform> results)
         {
             if (lineIndex < 0)
@@ -146,9 +146,9 @@ namespace Aurora.Unity.UI
                     }
                     else
                     {
-                        // 该行结束
+                        // This line ends
                         _lines.Add(line);
-                        // 新起一行
+                        // Start a new line
                         line = new List<RectTransform>
                         {
                             child

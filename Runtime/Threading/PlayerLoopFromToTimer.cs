@@ -10,7 +10,7 @@ using UnityEditor;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 在特定的主循环阶段中从指定的起点计时到终点的计时器。
+    /// A timer that counts from a specified start point to an end point within a specific player loop phase.
     /// </summary>
     public sealed class PlayerLoopFromToTimer : IFromToTimer, IPlayerLoopItem
     {
@@ -39,7 +39,7 @@ namespace Aurora.Unity.Threading
 
         private double _timeTruncated;
 
-        /// <remarks>因为 <see cref="_from"/> 和 <see cref="_to"/> 的初始值相等，所以进度的初始值为 1。</remarks>
+        /// <remarks>Because the initial values of <see cref="_from"/> and <see cref="_to"/> are equal, the initial progress is 1.</remarks>
         private double _progress = 1;
 
 #if UNITY_EDITOR
@@ -53,9 +53,9 @@ namespace Aurora.Unity.Threading
 #endif
 
         /// <summary>
-        /// 初始化 <see cref="PlayerLoopFromToTimer"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PlayerLoopFromToTimer"/> class.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         public PlayerLoopFromToTimer(PlayerLoopPhase playerLoopPhase)
         {
 #if UNITY_EDITOR
@@ -100,7 +100,7 @@ namespace Aurora.Unity.Threading
         }
 
         /// <summary>
-        /// 获取或设置在向终点推进当前时间时是否使用不考虑尺度的时间。如果为 <see langword="false"/>，使用 <see cref="UnityEngine.Time.deltaTime">UnityEngine.Time.deltaTime</see>；否则使用 <see cref="UnityEngine.Time.unscaledDeltaTime">UnityEngine.Time.unscaledDeltaTime</see>。
+        /// Gets or sets whether unscaled time is used to advance the current time toward the end point. If <see langword="false"/>, <see cref="UnityEngine.Time.deltaTime">UnityEngine.Time.deltaTime</see> is used; otherwise <see cref="UnityEngine.Time.unscaledDeltaTime">UnityEngine.Time.unscaledDeltaTime</see> is used.
         /// </summary>
         public bool UseUnscaledTime { get => _useUnscaledTime; set => _useUnscaledTime = value; }
 

@@ -4,17 +4,17 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Color"/> 结构提供工具方法。
+    /// Provides utility methods for the <see cref="Color"/> struct.
     /// </summary>
     public static class ColorUtility
     {
         /// <summary>
-        /// 将 HTML 颜色字符串转换为颜色值。
+        /// Converts an HTML color string to a color value.
         /// </summary>
-        /// <param name="htmlString">HTML 颜色字符串。</param>
-        /// <returns>将 <paramref name="htmlString"/> 转换得到的颜色值。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="htmlString"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="htmlString"/> 不是有效的 HTML 颜色字符串。</exception>
+        /// <param name="htmlString">The HTML color string.</param>
+        /// <returns>The color value converted from <paramref name="htmlString"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="htmlString"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="htmlString"/> is not a valid HTML color string.</exception>
         /// <seealso cref="UnityEngine.ColorUtility.TryParseHtmlString"/>
         public static Color ParseHtmlString(string htmlString)
         {

@@ -5,17 +5,17 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 分析一段代码。
+    /// Profiles a section of code.
     /// </summary>
-    /// <remarks>不支持异步分析。</remarks>
+    /// <remarks>Asynchronous profiling is not supported.</remarks>
     public struct ProfilerScope : IDisposable
     {
         private bool _disposed;
 
         /// <summary>
-        /// 初始化 <see cref="ProfilerScope"/> 结构的新实例，并开始分析。
+        /// Initializes a new instance of the <see cref="ProfilerScope"/> struct and begins profiling.
         /// </summary>
-        /// <param name="name">用于识别分析的字符串。</param>
+        /// <param name="name">A string used to identify the profiling section.</param>
         public ProfilerScope(string name)
         {
             try
@@ -31,10 +31,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="ProfilerScope"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="ProfilerScope"/> struct.
         /// </summary>
-        /// <param name="name">用于识别分析的字符串。</param>
-        /// <param name="targetObject">为分析提供上下文的对象。</param>
+        /// <param name="name">A string used to identify the profiling section.</param>
+        /// <param name="targetObject">An object that provides context for the profiling section.</param>
         public ProfilerScope(string name, Object targetObject)
         {
             try
@@ -50,7 +50,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 结束分析。
+        /// Ends profiling.
         /// </summary>
         public void Dispose()
         {

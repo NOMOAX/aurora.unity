@@ -3,14 +3,14 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 表示 <see cref="PlayerPrefs"/> 中的值为 <see cref="int"/> 的一项。
+    /// Represents an item in <see cref="PlayerPrefs"/> whose value is an <see cref="int"/>.
     /// </summary>
     public sealed class IdentityInt32Preference : Int32Preference<int>
     {
         /// <summary>
-        /// 初始化 <see cref="IdentityInt32Preference"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="IdentityInt32Preference"/> class.
         /// </summary>
-        /// <param name="key">键。</param>
+        /// <param name="key">The key.</param>
         public IdentityInt32Preference(string key) : base(key, IdentityPreferenceConverterPair<int>.Instance)
         {
         }

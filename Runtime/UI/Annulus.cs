@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 环。
+    /// An annulus.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class Annulus : MaskableGraphic, ILayoutElement, ICanvasRaycastFilter
@@ -60,7 +60,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 纹理。
+        /// The texture.
         /// </summary>
         public Texture Texture
         {
@@ -78,9 +78,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 边数。
+        /// The segment count.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [3, 32499] 范围内。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is outside the range [3, 32499].</exception>
         public int Segments
         {
             get => segments;
@@ -100,9 +100,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 粗细。
+        /// The thickness.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [0, 1] 范围内。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is outside the range [0, 1].</exception>
         public float Thickness
         {
             get => thickness;
@@ -122,7 +122,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用精确点击区域。
+        /// Whether to use an exact click area.
         /// </summary>
         public bool UseExactRaycastLocation
         {
@@ -154,7 +154,7 @@ namespace Aurora.Unity.UI
 
             vh.Clear();
 
-            // 粗细为 0，图形消失
+            // When the thickness is 0, the graphic disappears
             if (thickness == 0)
             {
                 TrimExcess();
@@ -168,7 +168,7 @@ namespace Aurora.Unity.UI
 
             var stepAngle = 2 * Mathf.PI / segments;
 
-            // 添加内圆圆周上各点
+            // Add the points on the inner circle's circumference
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;
@@ -179,7 +179,7 @@ namespace Aurora.Unity.UI
                 }
                 vh.AddVert(position, color32, UnityMath.GetUV(pixelAdjustedRect, position));
             }
-            // 添加外圆圆周上各点
+            // Add the points on the outer circle's circumference
             for (var i = 0; i < segments; i++)
             {
                 var angle    = stepAngle * i;

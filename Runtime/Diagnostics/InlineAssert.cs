@@ -7,9 +7,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.Diagnostics
 {
     /// <summary>
-    /// 断言并返回用户传入的原始值。
+    /// Asserts a condition and returns the original value passed in.
     /// <br/>
-    /// 断言失败时抛出异常。
+    /// Throws an exception when the assertion fails.
     /// </summary>
     /// <seealso cref="Assert"/>
     /// <seealso cref="InlineAssertNoThrow"/>

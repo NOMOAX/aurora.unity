@@ -3,7 +3,7 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 用于修饰继承 <see cref="SingletonBehaviour{T}"/> 类的类型，以在首次获取或创建 <see cref="SingletonBehaviour{T}.Instance"/> 时对该单一实例执行 <see cref="UnityEngine.Object.DontDestroyOnLoad"/>。
+    /// Marks a type that inherits from <see cref="SingletonBehaviour{T}"/> so that <see cref="UnityEngine.Object.DontDestroyOnLoad"/> is executed on the single instance when <see cref="SingletonBehaviour{T}.Instance"/> is first retrieved or created.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class DoNotDestroyOnLoadAttribute : Attribute

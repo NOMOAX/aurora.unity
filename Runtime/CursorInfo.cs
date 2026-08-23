@@ -4,24 +4,24 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 光标信息。
+    /// Cursor information.
     /// </summary>
     [Serializable]
     public struct CursorInfo
     {
         /// <summary>
-        /// 光标纹理。
+        /// The cursor texture.
         /// </summary>
         public Texture2D texture;
 
         /// <summary>
-        /// 从光标纹理的左上角开始的偏移量，用于确定目标点的位置。
+        /// The offset from the top-left corner of the cursor texture used to determine the target point.
         /// </summary>
-        /// <remarks>必须在光标纹理的边界内。</remarks>
+        /// <remarks>Must be within the bounds of the cursor texture.</remarks>
         public Vector2 hotspot;
 
         /// <summary>
-        /// 光标模式。
+        /// The cursor mode.
         /// </summary>
         public CursorMode cursorMode;
     }

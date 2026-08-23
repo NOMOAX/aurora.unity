@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IEndDragHandler.OnEndDrag"/> 传递给父级。
+    /// Forwards <see cref="IEndDragHandler.OnEndDrag"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentEndDragHandler : SendToParentEventSystemHandler<IEndDragHandler>, IEndDragHandler

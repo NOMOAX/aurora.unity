@@ -6,18 +6,18 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 表示 <see cref="PlayerPrefs"/> 中的一项。
+    /// Represents an item in <see cref="PlayerPrefs"/>.
     /// </summary>
-    /// <typeparam name="TValue">用户使用的值的类型。</typeparam>
+    /// <typeparam name="TValue">The type of the user's value.</typeparam>
     public abstract class Preference<TValue>
     {
         private readonly string _key;
 
         /// <summary>
-        /// 初始化 <see cref="Preference{T}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="Preference{T}"/> class.
         /// </summary>
-        /// <param name="key">键。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <see langword="null"/>。</exception>
+        /// <param name="key">The key.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
         protected Preference(string key)
         {
             if (key == null)
@@ -28,7 +28,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 键。
+        /// The key.
         /// </summary>
         public string Key
         {
@@ -37,39 +37,39 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断 <see cref="PlayerPrefs"/> 中是否存在 <see cref="Key"/>。
+        /// Determines whether <see cref="Key"/> exists in <see cref="PlayerPrefs"/>.
         /// </summary>
         public bool KeyExists => PlayerPrefs.HasKey(_key);
 
         /// <summary>
-        /// 在 <see cref="PlayerPrefs"/> 中 <see cref="Key"/> 对应的基本值的类型。
+        /// The type of the primitive value stored under <see cref="Key"/> in <see cref="PlayerPrefs"/>.
         /// </summary>
         public abstract PreferenceValueType ValueType { get; }
 
         /// <summary>
-        /// 设置 <see cref="PlayerPrefs"/> 中 <see cref="Key"/> 对应的值。
+        /// Sets the value stored under <see cref="Key"/> in <see cref="PlayerPrefs"/>.
         /// </summary>
-        /// <param name="value">值。</param>
-        /// <remarks>在派生类的实现中，不要调用 <see cref="PlayerPrefs.Save"/>。</remarks>
+        /// <param name="value">The value.</param>
+        /// <remarks>In the implementation of a derived class, do not call <see cref="PlayerPrefs.Save"/>.</remarks>
         public abstract void SetValue(TValue value);
 
         /// <summary>
-        /// 获取 <see cref="PlayerPrefs"/> 中 <see cref="Key"/> 对应的值。
+        /// Gets the value stored under <see cref="Key"/> in <see cref="PlayerPrefs"/>.
         /// </summary>
-        /// <returns>如果 <see cref="PlayerPrefs"/> 中存在 <see cref="Key"/>，则为对应的值；否则为 <typeparamref name="TValue"/> 的默认值。</returns>
+        /// <returns>The corresponding value if <see cref="Key"/> exists in <see cref="PlayerPrefs"/>; otherwise the default value of <typeparamref name="TValue"/>.</returns>
         public abstract TValue GetValue();
 
         /// <summary>
-        /// 获取 <see cref="PlayerPrefs"/> 中 <see cref="Key"/> 对应的值。
+        /// Gets the value stored under <see cref="Key"/> in <see cref="PlayerPrefs"/>.
         /// </summary>
-        /// <param name="defaultValue">当 <see cref="PlayerPrefs"/> 中不存在 <see cref="Key"/> 时，返回的默认值。</param>
-        /// <returns>如果 <see cref="PlayerPrefs"/> 中存在此键，则为对应的值；否则为 <paramref name="defaultValue"/>。</returns>
+        /// <param name="defaultValue">The default value returned when <see cref="Key"/> does not exist in <see cref="PlayerPrefs"/>.</param>
+        /// <returns>The corresponding value if this key exists in <see cref="PlayerPrefs"/>; otherwise <paramref name="defaultValue"/>.</returns>
         public abstract TValue GetValue(TValue defaultValue);
 
         /// <summary>
-        /// 从 <see cref="PlayerPrefs"/> 中移除 <see cref="Key"/>。
+        /// Removes <see cref="Key"/> from <see cref="PlayerPrefs"/>.
         /// </summary>
-        /// <remarks>如果 <see cref="PlayerPrefs"/> 中不存在 <see cref="Key"/>，此方法啊不会产生任何作用。</remarks>
+        /// <remarks>If <see cref="Key"/> does not exist in <see cref="PlayerPrefs"/>, this method has no effect.</remarks>
         public void Remove()
         {
             PlayerPrefs.DeleteKey(_key);

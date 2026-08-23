@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IScrollHandler.OnScroll"/> 传递给父级。
+    /// Forwards <see cref="IScrollHandler.OnScroll"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentScrollHandler : SendToParentEventSystemHandler<IScrollHandler>, IScrollHandler

@@ -9,7 +9,7 @@ using UnityEditor;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 滑块。
+    /// A slider.
     /// </summary>
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
@@ -21,7 +21,7 @@ namespace Aurora.Unity.UI
                                          IInitializePotentialDragHandler
     {
         /// <summary>
-        /// 表示在滑块的值改变时执行的方法。
+        /// Represents the method executed when the slider's value changes.
         /// </summary>
         public delegate void ValueChangedEventHandler(EnhancedSlider slider, float value, float oldValue);
 
@@ -54,7 +54,7 @@ namespace Aurora.Unity.UI
         private bool _delayUpdateVisuals;
 
         /// <summary>
-        /// 是否可交互。
+        /// Whether it is interactable.
         /// </summary>
         public bool Interactable
         {
@@ -75,7 +75,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 填充。
+        /// The fill.
         /// </summary>
         public RectTransform Fill
         {
@@ -93,7 +93,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 把手。
+        /// The handle.
         /// </summary>
         public RectTransform Handle
         {
@@ -111,7 +111,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 方向。
+        /// The direction.
         /// </summary>
         public Slider.Direction Direction
         {
@@ -128,9 +128,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 值。
+        /// The value.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number.</exception>
         public float Value
         {
             get => value;
@@ -146,7 +146,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否正在操作中。
+        /// Whether it is currently being operated.
         /// </summary>
         public bool IsOperating => _isOperating;
 
@@ -157,17 +157,17 @@ namespace Aurora.Unity.UI
         private bool ReverseValue => (int)direction % 2 != 0;
 
         /// <summary>
-        /// 值改变。
+        /// The value changed.
         /// </summary>
         public event ValueChangedEventHandler ValueChanged;
 
         /// <summary>
-        /// 操作即将开始。
+        /// The operation is about to begin.
         /// </summary>
         public event Action<EnhancedSlider> OperationBeginning;
 
         /// <summary>
-        /// 操作结束。
+        /// The operation ended.
         /// </summary>
         public event Action<EnhancedSlider> OperationEnded;
 
@@ -226,10 +226,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置值，但不引发 <see cref="ValueChanged"/> 事件。
+        /// Sets the value without raising the <see cref="ValueChanged"/> event.
         /// </summary>
-        /// <param name="v">值。</param>
-        /// <exception cref="ArgumentException"><paramref name="v"/> 为 <see cref="float.NaN"/>。</exception>
+        /// <param name="v">The value.</param>
+        /// <exception cref="ArgumentException"><paramref name="v"/> is <see cref="float.NaN"/>.</exception>
         public void SetValueWithoutNotify(float v)
         {
             if (v is float.NaN)

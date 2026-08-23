@@ -3,14 +3,14 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 表示 <see cref="PlayerPrefs"/> 中的值为 <see cref="float"/> 的一项。
+    /// Represents an item in <see cref="PlayerPrefs"/> whose value is a <see cref="float"/>.
     /// </summary>
     public sealed class IdentitySinglePreference : SinglePreference<float>
     {
         /// <summary>
-        /// 初始化 <see cref="IdentitySinglePreference"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="IdentitySinglePreference"/> class.
         /// </summary>
-        /// <param name="key">键。</param>
+        /// <param name="key">The key.</param>
         public IdentitySinglePreference(string key) : base(key, IdentityPreferenceConverterPair<float>.Instance)
         {
         }

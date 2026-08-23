@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Aurora.UnityEditor
 {
     /// <summary>
-    /// 提供一组辅助 IMGUI 绘制的工具。
+    /// Provides a set of utilities to assist IMGUI drawing.
     /// </summary>
     public static class UnityEditorGUIUtility
     {
@@ -17,11 +17,11 @@ namespace Aurora.UnityEditor
         private static readonly GUILayoutOption[] WithNoExpand = { GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false) };
 
         /// <summary>
-        /// 绘制外边框。
+        /// Draws an outer border.
         /// </summary>
-        /// <param name="rect">边框的位置和大小。</param>
-        /// <param name="color">边框的颜色。</param>
-        /// <param name="thickness">边框的粗细。</param>
+        /// <param name="rect">The position and size of the border.</param>
+        /// <param name="color">The color of the border.</param>
+        /// <param name="thickness">The thickness of the border.</param>
         public static void DrawOuterBorder(Rect rect, Color color, float thickness)
         {
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin - thickness, rect.yMin - thickness, rect.xMax + thickness, rect.yMin), color);
@@ -31,11 +31,11 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 绘制内边框。
+        /// Draws an inner border.
         /// </summary>
-        /// <param name="rect">边框的位置和大小。</param>
-        /// <param name="color">边框的颜色。</param>
-        /// <param name="thickness">边框的粗细。</param>
+        /// <param name="rect">The position and size of the border.</param>
+        /// <param name="color">The color of the border.</param>
+        /// <param name="thickness">The thickness of the border.</param>
         public static void DrawInnerBorder(Rect rect, Color color, float thickness)
         {
             EditorGUI.DrawRect(Rect.MinMaxRect(rect.xMin, rect.yMin, rect.xMax, rect.yMin + thickness), color);
@@ -45,15 +45,15 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 绘制单元格区域。
+        /// Draws a cell area.
         /// </summary>
-        /// <param name="padding">整个区域的外边距（x = left, y = bottom, z = right, w = top）。</param>
-        /// <param name="cellsAreaPadding">单元格区域的外边距（x = left, y = bottom, z = right, w = top）。</param>
-        /// <param name="cellDimensions">单元格的列数和行数（x = columns，y = rows）。</param>
-        /// <param name="cellSize">单元格的大小。工具也将使用这个值作为大小。</param>
-        /// <param name="cellSpacing">单元格之间的间距。工具也将使用这个值作为间距。</param>
-        /// <param name="options">绘制配置（回调与样式）。</param>
-        /// <param name="state">调用方自定义状态，会作为最后一个参数传给每个绘制委托。</param>
+        /// <param name="padding">The outer margin of the whole area (x = left, y = bottom, z = right, w = top).</param>
+        /// <param name="cellsAreaPadding">The outer margin of the cell area (x = left, y = bottom, z = right, w = top).</param>
+        /// <param name="cellDimensions">The column and row counts of the cells (x = columns, y = rows).</param>
+        /// <param name="cellSize">The size of a cell. The tool will also use this value as the size.</param>
+        /// <param name="cellSpacing">The spacing between cells. The tool will also use this value as the spacing.</param>
+        /// <param name="options">The drawing configuration (callbacks and styles).</param>
+        /// <param name="state">The caller-defined state, passed as the last argument to each drawing delegate.</param>
         public static void DrawCellsArea(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
             if (float.IsNaN(padding.x) || float.IsNaN(padding.y) || float.IsNaN(padding.z) || float.IsNaN(padding.w) || padding.x < 0 || padding.y < 0 || padding.z < 0 || padding.w < 0)
@@ -95,18 +95,18 @@ namespace Aurora.UnityEditor
 
         private static void DrawCellsAreaBottom(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
-            #region 计算各区域尺寸
+            #region Calculate the sizes of each region
 
             var columns = cellDimensions.x;
             var rows    = cellDimensions.y;
             var stepX   = cellSize.x + cellSpacing.x;
             var stepY   = cellSize.y + cellSpacing.y;
 
-            // 按钮溢出量
+            // Button overflow amount
             var buttonOverflowX = (cellSize.x + cellSpacing.x) * 0.5f;
             var buttonOverflowY = (cellSize.y + cellSpacing.y) * 0.5f;
 
-            // 有效边距: 左/下推开按钮区, 右/上与溢出量取max
+            // Effective margins: left/bottom push the button area away; right/top take the max with the overflow amount
             var effectiveLeft   = cellsAreaPadding.x;                             // x = left
             var effectiveBottom = cellsAreaPadding.y;                             // y = bottom
             var effectiveRight  = Mathf.Max(cellsAreaPadding.z, buttonOverflowX); // z = right
@@ -123,24 +123,24 @@ namespace Aurora.UnityEditor
 
             #endregion
 
-            // 获取 totalRect 并切分子区域
+            // Get totalRect and split sub-regions
             var totalRect = GUILayoutUtility.GetRect(totalWidth, totalHeight, WithNoExpand);
             var innerRect = new Rect(totalRect.xMin + padding.x, totalRect.yMin + padding.w, innerWidth, innerHeight);
             var gridRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin + effectiveTop, gridWidth, gridHeight);
             var columnButtonsRect = new Rect(gridRect.xMin, gridRect.yMax + effectiveBottom, gridWidth + effectiveRight, columnButtonsHeight);
             var rowButtonsRect = new Rect(innerRect.xMin, innerRect.yMin + effectiveTop - buttonOverflowY, rowButtonsWidth, gridHeight + buttonOverflowY * 2f);
 
-            // 背景
+            // Background
             options.OnDrawBackground?.Invoke(totalRect, state);
 
-            // 单元格区域背景 = gridRect + cellsAreaPadding
+            // Cell area background = gridRect + cellsAreaPadding
             if (options.OnDrawCellsAreaBackground != null)
             {
                 var cellsAreaBackgroundRect = new Rect(gridRect.xMin - cellsAreaPadding.x, gridRect.yMin - cellsAreaPadding.w, cellsAreaPadding.x + gridRect.width + cellsAreaPadding.z, cellsAreaPadding.y + gridRect.height + cellsAreaPadding.w);
                 options.OnDrawCellsAreaBackground(cellsAreaBackgroundRect, state);
             }
 
-            // 列删除按钮
+            // Delete column button
             if (options.OnDrawDeleteColumnButton != null)
             {
                 var deleteColumnY = columnButtonsRect.yMin;
@@ -152,7 +152,7 @@ namespace Aurora.UnityEditor
                     options.OnDrawDeleteColumnButton(deleteColumnRect, columnIndex, state);
                 }
             }
-            // 列添加按钮
+            // Add column button
             if (options.OnDrawAddColumnButton != null)
             {
                 var addColumnY = columnButtonsRect.yMin + stepY;
@@ -165,7 +165,7 @@ namespace Aurora.UnityEditor
                 }
             }
 
-            // 行删除按钮
+            // Delete row button
             if (options.OnDrawDeleteRowButton != null)
             {
                 var deleteRowX = rowButtonsRect.xMin + stepX;
@@ -177,7 +177,7 @@ namespace Aurora.UnityEditor
                     options.OnDrawDeleteRowButton(deleteRowRect, rowIndex, state);
                 }
             }
-            // 行添加按钮
+            // Add row button
             if (options.OnDrawAddRowButton != null)
             {
                 var addRowX = rowButtonsRect.xMin;
@@ -190,7 +190,7 @@ namespace Aurora.UnityEditor
                 }
             }
 
-            // 各单元格
+            // Each cell
             if (options.OnDrawCell != null)
             {
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
@@ -207,7 +207,7 @@ namespace Aurora.UnityEditor
 
             if (options.IndexLabelStyle != null)
             {
-                // 列索引标签：顶部中点紧贴对应列单元格的下边中点
+                // Column index label: the top midpoint is adjacent to the bottom midpoint of the corresponding column cell
                 for (var columnIndex = 0; columnIndex < columns; columnIndex++)
                 {
                     var content = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
@@ -217,7 +217,7 @@ namespace Aurora.UnityEditor
                     var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
-                // 行索引标签：右侧中点紧贴对应行单元格的左边中点
+                // Row index label: the right midpoint is adjacent to the left midpoint of the corresponding row cell
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
                 {
                     var content = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
@@ -232,7 +232,7 @@ namespace Aurora.UnityEditor
 
             if (options.AxisLabelStyle != null)
             {
-                // "X" 轴标签：右上角对齐 (0,0) 单元格左下角，再向右偏移
+                // "X" axis label: the top-right corner is aligned with the bottom-left corner of the (0,0) cell, then shifted right
                 {
                     var content = new GUIContent("X");
                     var xLabelSize = options.AxisLabelStyle.CalcSize(content);
@@ -240,7 +240,7 @@ namespace Aurora.UnityEditor
                     var xLabelRect = new Rect(xLabelPosition, xLabelSize);
                     GUI.Label(xLabelRect, content, options.AxisLabelStyle);
                 }
-                // "Y" 轴标签：右上角对齐 (0,0) 单元格左下角，再向上偏移
+                // "Y" axis label: the top-right corner is aligned with the bottom-left corner of the (0,0) cell, then shifted up
                 {
                     var content = new GUIContent("Y");
                     var yLabelSize = options.AxisLabelStyle.CalcSize(content);
@@ -253,18 +253,18 @@ namespace Aurora.UnityEditor
 
         private static void DrawCellsAreaTop(Vector4 padding, Vector4 cellsAreaPadding, Vector2Int cellDimensions, Vector2 cellSize, Vector2 cellSpacing, DrawCellsAreaOptions options, object state)
         {
-            #region 计算各区域尺寸
+            #region Calculate the sizes of each region
 
             var columns = cellDimensions.x;
             var rows    = cellDimensions.y;
             var stepX   = cellSize.x + cellSpacing.x;
             var stepY   = cellSize.y + cellSpacing.y;
 
-            // 按钮溢出量
+            // Button overflow amount
             var buttonOverflowX = (cellSize.x + cellSpacing.x) * 0.5f;
             var buttonOverflowY = (cellSize.y + cellSpacing.y) * 0.5f;
 
-            // 有效边距: 左/上推开按钮区, 右/下与溢出量取max
+            // Effective margins: left/top push the button area away; right/bottom take the max with the overflow amount
             var effectiveLeft   = cellsAreaPadding.x;                             // x = left
             var effectiveBottom = Mathf.Max(cellsAreaPadding.y, buttonOverflowY); // y = bottom
             var effectiveRight  = Mathf.Max(cellsAreaPadding.z, buttonOverflowX); // z = right
@@ -281,24 +281,24 @@ namespace Aurora.UnityEditor
 
             #endregion
 
-            // 获取 totalRect 并切分子区域
+            // Get totalRect and split sub-regions
             var totalRect = GUILayoutUtility.GetRect(totalWidth, totalHeight, WithNoExpand);
             var innerRect = new Rect(totalRect.xMin + padding.x, totalRect.yMin + padding.w, innerWidth, innerHeight);
             var gridRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin + columnButtonsHeight + effectiveTop, gridWidth, gridHeight);
             var columnButtonsRect = new Rect(innerRect.xMin + rowButtonsWidth + effectiveLeft, innerRect.yMin, gridWidth + effectiveRight, columnButtonsHeight);
             var rowButtonsRect = new Rect(innerRect.xMin, gridRect.yMin - buttonOverflowY, rowButtonsWidth, gridHeight + buttonOverflowY * 2f);
 
-            // 背景
+            // Background
             options.OnDrawBackground?.Invoke(totalRect, state);
 
-            // 单元格区域背景 = gridRect + cellsAreaPadding
+            // Cell area background = gridRect + cellsAreaPadding
             if (options.OnDrawCellsAreaBackground != null)
             {
                 var cellsAreaBackgroundRect = new Rect(gridRect.xMin - cellsAreaPadding.x, gridRect.yMin - cellsAreaPadding.w, cellsAreaPadding.x + gridRect.width + cellsAreaPadding.z, cellsAreaPadding.y + gridRect.height + cellsAreaPadding.w);
                 options.OnDrawCellsAreaBackground(cellsAreaBackgroundRect, state);
             }
 
-            // 列删除按钮
+            // Delete column button
             if (options.OnDrawDeleteColumnButton != null)
             {
                 var deleteColumnY = columnButtonsRect.yMin + stepY;
@@ -310,7 +310,7 @@ namespace Aurora.UnityEditor
                     options.OnDrawDeleteColumnButton(deleteColumnRect, columnIndex, state);
                 }
             }
-            // 列添加按钮
+            // Add column button
             if (options.OnDrawAddColumnButton != null)
             {
                 var addColumnY = columnButtonsRect.yMin;
@@ -323,7 +323,7 @@ namespace Aurora.UnityEditor
                 }
             }
 
-            // 行删除按钮
+            // Delete row button
             if (options.OnDrawDeleteRowButton != null)
             {
                 var deleteRowX = rowButtonsRect.xMin + stepX;
@@ -335,7 +335,7 @@ namespace Aurora.UnityEditor
                     options.OnDrawDeleteRowButton(deleteRowRect, rowIndex, state);
                 }
             }
-            // 行添加按钮
+            // Add row button
             if (options.OnDrawAddRowButton != null)
             {
                 var addRowX = rowButtonsRect.xMin;
@@ -348,7 +348,7 @@ namespace Aurora.UnityEditor
                 }
             }
 
-            // 各单元格
+            // Each cell
             if (options.OnDrawCell != null)
             {
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
@@ -365,7 +365,7 @@ namespace Aurora.UnityEditor
 
             if (options.IndexLabelStyle != null)
             {
-                // 列索引标签：顶部中点紧贴对应列单元格的上边中点
+                // Column index label: the top midpoint is adjacent to the top midpoint of the corresponding column cell
                 for (var columnIndex = 0; columnIndex < columns; columnIndex++)
                 {
                     var content = new GUIContent(columnIndex.ToString(NumberFormatInfo.InvariantInfo));
@@ -375,7 +375,7 @@ namespace Aurora.UnityEditor
                     var labelRect = new Rect(labelPosition, labelSize);
                     GUI.Label(labelRect, content, options.IndexLabelStyle);
                 }
-                // 行索引标签：右侧中点紧贴对应行单元格的左边中点
+                // Row index label: the right midpoint is adjacent to the left midpoint of the corresponding row cell
                 for (var rowIndex = 0; rowIndex < rows; rowIndex++)
                 {
                     var content = new GUIContent(rowIndex.ToString(NumberFormatInfo.InvariantInfo));
@@ -390,7 +390,7 @@ namespace Aurora.UnityEditor
 
             if (options.AxisLabelStyle != null)
             {
-                // "X" 轴标签：右下角对齐 (0,0) 单元格左上角，再向右偏移
+                // "X" axis label: the bottom-right corner is aligned with the top-left corner of the (0,0) cell, then shifted right
                 {
                     var content = new GUIContent("X");
                     var xLabelSize = options.AxisLabelStyle.CalcSize(content);
@@ -398,7 +398,7 @@ namespace Aurora.UnityEditor
                     var xLabelRect = new Rect(xLabelPosition, xLabelSize);
                     GUI.Label(xLabelRect, content, options.AxisLabelStyle);
                 }
-                // "Y" 轴标签：右下角对齐 (0,0) 单元格左上角，再向下偏移
+                // "Y" axis label: the bottom-right corner is aligned with the top-left corner of the (0,0) cell, then shifted down
                 {
                     var content = new GUIContent("Y");
                     var yLabelSize = options.AxisLabelStyle.CalcSize(content);

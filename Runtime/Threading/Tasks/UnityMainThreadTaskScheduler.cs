@@ -9,7 +9,7 @@ using Aurora.Unity.PlayerLoop;
 namespace Aurora.Unity.Threading.Tasks
 {
     /// <summary>
-    /// 表示一个处理将任务排队到 Unity 主线程中的低级工作的对象。
+    /// Represents an object that handles the low-level work of queueing tasks onto the Unity main thread.
     /// </summary>
     public class UnityMainThreadTaskScheduler : TaskScheduler, IPlayerLoopItem
     {
@@ -18,15 +18,15 @@ namespace Aurora.Unity.Threading.Tasks
         private const PlayerLoopPhase PlayerLoopPhase = PlayerLoop.PlayerLoopPhase.UpdateYielded;
 
         /// <summary>
-        /// 获取一个值，这个值指示是否可以对已排队的任务开始新一轮的处理。
+        /// Gets a value indicating whether a new round of processing can begin for queued tasks.
         /// </summary>
-        /// <remarks>保证只在 Unity 主线程中调用此成员。</remarks>
+        /// <remarks>Guaranteed to be called only on the Unity main thread.</remarks>
         protected virtual bool BeginProcess => true;
 
         /// <summary>
-        /// 获取一个值，这个值指示是否可以继续处理下一个已排队的任务。
+        /// Gets a value indicating whether the next queued task can be processed.
         /// </summary>
-        /// <remarks>保证只在 Unity 主线程中调用此成员。</remarks>
+        /// <remarks>Guaranteed to be called only on the Unity main thread.</remarks>
         protected virtual bool Continue => true;
 
         /// <inheritdoc />
@@ -38,7 +38,7 @@ namespace Aurora.Unity.Threading.Tasks
             if ((task.CreationOptions & TaskCreationOptions.LongRunning) != 0)
             {
                 Log.E(
-                    $"为防止卡死 Unity 主线程，禁止将“带有 {nameof(TaskCreationOptions.LongRunning)} 任务创建选项的任务”和“带有 {nameof(TaskContinuationOptions.LongRunning)} 任务延续选项的延续任务”排队到此任务调度器！"
+                    $"To prevent deadlocking the Unity main thread, it is forbidden to queue \"tasks with the {nameof(TaskCreationOptions.LongRunning)} task creation option\" and \"continuation tasks with the {nameof(TaskContinuationOptions.LongRunning)} task continuation option\" to this task scheduler!"
                 );
                 return;
             }
@@ -71,7 +71,9 @@ namespace Aurora.Unity.Threading.Tasks
                 {
                     return _tasks;
                 }
-                throw new NotSupportedException("不支持在非 Unity 主线程中获取此任务调度器中的已排队任务");
+                throw new NotSupportedException(
+                    "Getting queued tasks from this task scheduler is not supported off the Unity main thread"
+                );
             }
             finally
             {

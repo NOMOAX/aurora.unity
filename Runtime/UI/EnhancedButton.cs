@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 按钮。
+    /// A button.
     /// </summary>
     [DisallowMultipleComponent]
     public class EnhancedButton : UIBehaviour,
@@ -17,17 +17,17 @@ namespace Aurora.Unity.UI
                                   IPointerClickHandler
     {
         /// <summary>
-        /// 表示当按钮被点击时执行的方法。
+        /// Represents the method executed when a button is clicked.
         /// </summary>
         public delegate void ClickedEventHandler(EnhancedButton button, PointerEventData eventData);
 
         /// <summary>
-        /// 表示当按钮的开关状态发生改变时执行的方法。
+        /// Represents the method executed when the button's toggle state changes.
         /// </summary>
         public delegate void ToggledEventHandler(EnhancedButton button);
 
         /// <summary>
-        /// 表示当按钮的状态、开关状态或者可交互状态发生更改时执行的方法。
+        /// Represents the method executed when the button's state, toggle state, or interactable state changes.
         /// </summary>
         public delegate void UpdatedEventHandler(EnhancedButton button);
 
@@ -41,12 +41,12 @@ namespace Aurora.Unity.UI
         internal EnhancedButtonGroup group;
 
         /// <summary>
-        /// 是否允许右击。
+        /// Whether right-click is allowed.
         /// </summary>
         public bool rightClick;
 
         /// <summary>
-        /// 是否允许双击。
+        /// Whether double-click is allowed.
         /// </summary>
         public bool doubleClick;
 
@@ -61,7 +61,7 @@ namespace Aurora.Unity.UI
         private Coroutine _delaySingleClickCoroutine;
 
         /// <summary>
-        /// 获取或设置按钮是否可交互。
+        /// Gets or sets whether the button is interactable.
         /// </summary>
         public bool Interactable
         {
@@ -78,19 +78,19 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置按钮的开关状态。
+        /// Gets or sets the button's toggle state.
         /// </summary>
         public bool IsOn { get => isOn; set => SetIsOn(value, true); }
 
         /// <summary>
-        /// 获取按钮的状态。
+        /// Gets the button's state.
         /// </summary>
         public EnhancedButtonState State => GetState();
 
         /// <summary>
-        /// 获取或设置组。
+        /// Gets or sets the group.
         /// </summary>
-        /// <remarks>请注意，只有当按钮 <see cref="Behaviour.isActiveAndEnabled"/> 时，它才可能会在组中存在。</remarks>
+        /// <remarks>Note that a button can exist in the group only when the button is <see cref="Behaviour.isActiveAndEnabled"/>.</remarks>
         public EnhancedButtonGroup Group
         {
             get => group;
@@ -116,25 +116,25 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 按钮的开关状态发生改变。
+        /// The button's toggle state changed.
         /// </summary>
-        /// <remarks>除非手动设置 <see cref="IsOn"/> 或者调用 <see cref="SetIsOnWithoutNotify"/>，否则不会在 <see cref="Interactable"/> 为 <see langword="false"/> 时引发。</remarks>
+        /// <remarks>Unless <see cref="IsOn"/> is set manually or <see cref="SetIsOnWithoutNotify"/> is called, it is not raised when <see cref="Interactable"/> is <see langword="false"/>.</remarks>
         public event ToggledEventHandler Toggled;
 
         /// <summary>
-        /// 按钮被点击。
+        /// The button was clicked.
         /// </summary>
-        /// <remarks>当 <see cref="Interactable"/> 为 <see langword="false"/> 时仍然能够引发。</remarks>
+        /// <remarks>Still raised when <see cref="Interactable"/> is <see langword="false"/>.</remarks>
         public event ClickedEventHandler Clicked;
 
         /// <summary>
-        /// 按钮被双击。
+        /// The button was double-clicked.
         /// </summary>
-        /// <remarks>当 <see cref="Interactable"/> 为 <see langword="false"/> 时仍然能够引发。</remarks>
+        /// <remarks>Still raised when <see cref="Interactable"/> is <see langword="false"/>.</remarks>
         public event ClickedEventHandler DoubleClicked;
 
         /// <summary>
-        /// 按钮的状态、开关状态或者可交互状态发生更改。
+        /// The button's state, toggle state, or interactable state changed.
         /// </summary>
         public event UpdatedEventHandler Updated;
 
@@ -189,9 +189,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 开启或关闭按钮，但不要引发 <see cref="Toggled"/>。
+        /// Turns the button on or off, but does not raise <see cref="Toggled"/>.
         /// </summary>
-        /// <param name="value"><see langword="true"/> 表示开启，<see langword="false"/> 表示关闭。</param>
+        /// <param name="value"><see langword="true"/> means on, <see langword="false"/> means off.</param>
         public void SetIsOnWithoutNotify(bool value)
         {
             SetIsOn(value, false);
@@ -236,7 +236,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 引发 <see cref="Updated"/>。
+        /// Raises <see cref="Updated"/>.
         /// </summary>
         public void Refresh()
         {
@@ -350,7 +350,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 定义几个颜色。
+        /// Defines several colors.
         /// </summary>
         [Serializable]
         public struct ColorBlock
@@ -415,39 +415,39 @@ namespace Aurora.Unity.UI
             }
 
             /// <summary>
-            /// 默认颜色。
+            /// The default color.
             /// </summary>
             public Color defaultColor;
 
             /// <summary>
-            /// 悬停颜色。
+            /// The hovered color.
             /// </summary>
             public Color hoveredColor;
 
             /// <summary>
-            /// 按下颜色。
+            /// The pressed color.
             /// </summary>
             public Color pressedColor;
 
             /// <summary>
-            /// 不可交互时默认颜色。
+            /// The non-interactable default color.
             /// </summary>
             public Color nonInteractableDefaultColor;
 
             /// <summary>
-            /// 不可交互时悬停颜色。
+            /// The non-interactable hovered color.
             /// </summary>
             public Color nonInteractableHoveredColor;
 
             /// <summary>
-            /// 不可交互时按下颜色。
+            /// The non-interactable pressed color.
             /// </summary>
             public Color nonInteractablePressedColor;
 
             /// <summary>
-            /// 根据按钮的状态（<see cref="EnhancedButton.State"/>）、是否可交互（<see cref="EnhancedButton.Interactable"/>）获取颜色。
+            /// Gets the color based on the button's state (<see cref="EnhancedButton.State"/>), whether it is interactable (<see cref="EnhancedButton.Interactable"/>).
             /// </summary>
-            /// <param name="button">按钮。</param>
+            /// <param name="button">The button.</param>
             public Color GetColor(EnhancedButton button)
             {
                 if (!button)

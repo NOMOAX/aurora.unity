@@ -6,7 +6,7 @@ using Aurora.Unity.PlayerLoop;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到目标 <see cref="PlayerLoopPhase"/> 的可等待上下文。
+    /// Provides an awaitable context for switching to a target <see cref="PlayerLoopPhase"/>.
     /// </summary>
     public readonly struct PlayerLoopPhaseAwaitable : IAwaitable
     {
@@ -15,9 +15,9 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="PlayerLoopPhaseAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="PlayerLoopPhaseAwaitable"/> struct.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         public PlayerLoopPhaseAwaitable(PlayerLoopPhase playerLoopPhase)
         {
             _playerLoopPhase   = playerLoopPhase;
@@ -25,10 +25,10 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="PlayerLoopPhaseAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="PlayerLoopPhaseAwaitable"/> struct.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public PlayerLoopPhaseAwaitable(PlayerLoopPhase playerLoopPhase, CancellationToken cancellationToken)
         {
             _playerLoopPhase   = playerLoopPhase;
@@ -94,7 +94,7 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 提供用于切换到多个 <see cref="PlayerLoopPhase"/> 中的最早执行的那一个的可等待上下文。
+        /// Provides an awaitable context for switching to the earliest-executing one among multiple <see cref="PlayerLoopPhase"/>.
         /// </summary>
         public readonly struct Any : IAwaitable
         {
@@ -103,11 +103,11 @@ namespace Aurora.Unity.CompilerServices
             private readonly CancellationToken _cancellationToken;
 
             /// <summary>
-            /// 初始化 <see cref="Any"/> 结构的新实例。
+            /// Initializes a new instance of the <see cref="Any"/> struct.
             /// </summary>
-            /// <param name="playerLoopPhases">多个主循环阶段。</param>
-            /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
-            /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
+            /// <param name="playerLoopPhases">Multiple player loop phases.</param>
+            /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> is <see langword="null"/>.</exception>
+            /// <exception cref="playerLoopPhases">The length of <paramref name="playerLoopPhases"/> is 0.</exception>
             public Any(PlayerLoopPhase[] playerLoopPhases)
             {
                 if (playerLoopPhases == null)
@@ -123,10 +123,10 @@ namespace Aurora.Unity.CompilerServices
             }
 
             /// <summary>
-            /// 初始化 <see cref="Any"/> 结构的新实例。
+            /// Initializes a new instance of the <see cref="Any"/> struct.
             /// </summary>
-            /// <param name="playerLoopPhases">多个主循环阶段。</param>
-            /// <param name="cancellationToken">取消令牌。</param>
+            /// <param name="playerLoopPhases">Multiple player loop phases.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
             public Any(PlayerLoopPhase[] playerLoopPhases, CancellationToken cancellationToken)
             {
                 if (playerLoopPhases == null)

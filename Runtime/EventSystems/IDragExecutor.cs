@@ -3,15 +3,15 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 此接口提供与 <see cref="IDragHandler"/> 接口相似的成员。
+    /// This interface provides members similar to the <see cref="IDragHandler"/> interface.
     /// </summary>
     public interface IDragExecutor : IEventSystemExecutor
     {
         /// <summary>
-        /// 对应于 <see cref="IDragHandler.OnDrag"/>。
+        /// Corresponds to <see cref="IDragHandler.OnDrag"/>.
         /// </summary>
-        /// <param name="sender">调用方。</param>
-        /// <param name="eventData">指针事件数据。</param>
+        /// <param name="sender">The caller.</param>
+        /// <param name="eventData">The pointer event data.</param>
         void OnDrag(object sender, PointerEventData eventData);
     }
 }

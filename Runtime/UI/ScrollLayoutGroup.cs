@@ -5,13 +5,13 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 滚动布局组。
+    /// A scroll layout group.
     /// </summary>
     [RequireComponent(typeof(RectMask2D))]
     public sealed class ScrollLayoutGroup : LayoutGroup
     {
         /// <summary>
-        /// 是否让子物体沿水平方向排列？
+        /// Whether to arrange child objects along the horizontal axis?
         /// </summary>
         public bool horizontal;
 
@@ -25,17 +25,17 @@ namespace Aurora.Unity.UI
         private Vector2 _maxPreferredSize;
 
         /// <summary>
-        /// 获取或设置位于此布局组的中心的布局元素的索引。
+        /// Gets or sets the index of the layout element at the center of this layout group.
         /// </summary>
         public float CenterIndex { get => centerIndex; set => SetCenterIndex(value); }
 
         /// <summary>
-        /// 此组件所在游戏物体上的二维矩形遮罩。
+        /// The 2D rectangular mask on the game object this component belongs to.
         /// </summary>
         public RectMask2D RectMask2D => _rectMask2D ??= GetComponent<RectMask2D>();
 
         /// <summary>
-        /// 参与布局的子物体数量。
+        /// The number of child objects participating in layout.
         /// </summary>
         public int LayoutChildrenCount => rectChildren.Count;
 
@@ -50,7 +50,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取当前处于中间的子布局元素。
+        /// Gets the child layout element currently in the middle.
         /// </summary>
         public RectTransform CurrentCenter
         {
@@ -78,23 +78,23 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 将指定的是布局元素的子物体居中。
+        /// Centers the specified child layout element.
         /// </summary>
-        /// <param name="child">一个是布局元素的子物体。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> 为 <see langword="null"/> .</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="child"/> 不是布局元素，或不是这个矩形变换的子物体。</exception>
+        /// <param name="child">A child object that is a layout element.</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/> .</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a layout element, or is not a child of this rectangular transform.</exception>
         public void SetLayoutChildToCenter(RectTransform child)
         {
             SetCenterIndex(GetLayoutChildIndex(child));
         }
 
         /// <summary>
-        /// 获取指定的是布局元素的子物体在此布局组的所有布局元素中的索引。
+        /// Gets the index of the specified child layout element among all layout elements of this layout group.
         /// </summary>
-        /// <param name="child">一个是布局元素的子物体。</param>
+        /// <param name="child">A child object that is a layout element.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> 为 <see langword="null"/> .</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="child"/> 不是布局元素，或不是这个矩形变换的子物体。</exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/> .</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a layout element, or is not a child of this rectangular transform.</exception>
         public int GetLayoutChildIndex(RectTransform child)
         {
             if (!child)

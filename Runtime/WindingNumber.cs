@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 通过计算多边形的每边环绕指定点的方式判断点是否处于多边形内部。
+    /// Determines whether a point is inside a polygon by computing how many times each edge of the polygon winds around the point.
     /// </summary>
     public struct WindingNumber : IInclusionOfAPointInAPolygonAlgorithm
     {

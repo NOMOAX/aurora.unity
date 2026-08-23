@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 二维轴向包围盒（two-dimensional axis-aligned bounding box）。
+    /// A two-dimensional axis-aligned bounding box.
     /// </summary>
     [Serializable]
     public struct Aabb2 : IFormattable, IEquatable<Aabb2>
@@ -27,10 +27,10 @@ namespace Aurora.Unity
         private const string Format = nameof(Aabb2) + "(({0}, {1}), ({2}, {3}))";
 
         /// <summary>
-        /// 初始化 <see cref="Aabb2"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb2"/> struct.
         /// </summary>
-        /// <param name="x">初始点的 x 分量。</param>
-        /// <param name="y">初始点的 y 分量。</param>
+        /// <param name="x">The x component of the initial point.</param>
+        /// <param name="y">The y component of the initial point.</param>
         public Aabb2(float x, float y)
         {
             minX = x;
@@ -40,9 +40,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb2"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb2"/> struct.
         /// </summary>
-        /// <param name="point">初始点。</param>
+        /// <param name="point">The initial point.</param>
         public Aabb2(Vector2 point)
         {
             minX = point.x;
@@ -52,12 +52,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb2"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb2"/> struct.
         /// </summary>
-        /// <param name="minX">最小值的 x 分量。</param>
-        /// <param name="minY">最小值的 y 分量。</param>
-        /// <param name="maxX">最大值的 x 分量。</param>
-        /// <param name="maxY">最大值的 y 分量。</param>
+        /// <param name="minX">The x component of the minimum value.</param>
+        /// <param name="minY">The y component of the minimum value.</param>
+        /// <param name="maxX">The x component of the maximum value.</param>
+        /// <param name="maxY">The y component of the maximum value.</param>
         public Aabb2(float minX, float minY, float maxX, float maxY)
         {
             this.minX = minX;
@@ -67,10 +67,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="Aabb2"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="Aabb2"/> struct.
         /// </summary>
-        /// <param name="min">最小值。</param>
-        /// <param name="max">最大值。</param>
+        /// <param name="min">The minimum value.</param>
+        /// <param name="max">The maximum value.</param>
         public Aabb2(Vector2 min, Vector2 max)
         {
             minX = min.x;
@@ -80,13 +80,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取具有指定的中心和大小的 <see cref="Aabb2"/> 实例。
+        /// Gets an <see cref="Aabb2"/> instance with the specified center and size.
         /// </summary>
-        /// <param name="centerX">中心的 x 分量。</param>
-        /// <param name="centerY">中心的 y 分量。</param>
-        /// <param name="sizeX">大小的 x 分量。</param>
-        /// <param name="sizeY">大小的 y 分量。</param>
-        /// <returns>具有指定的中心和大小的 <see cref="Aabb2"/> 实例。</returns>
+        /// <param name="centerX">The x component of the center.</param>
+        /// <param name="centerY">The y component of the center.</param>
+        /// <param name="sizeX">The x component of the size.</param>
+        /// <param name="sizeY">The y component of the size.</param>
+        /// <returns>An <see cref="Aabb2"/> instance with the specified center and size.</returns>
         public static Aabb2 CenterSize(float centerX, float centerY, float sizeX, float sizeY)
         {
             var extendX = sizeX * 0.5f;
@@ -95,11 +95,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取具有指定的中心和大小的 <see cref="Aabb2"/> 实例。
+        /// Gets an <see cref="Aabb2"/> instance with the specified center and size.
         /// </summary>
-        /// <param name="center">中心。</param>
-        /// <param name="size">大小。</param>
-        /// <returns>具有指定的中心和大小的 <see cref="Aabb2"/> 实例。</returns>
+        /// <param name="center">The center.</param>
+        /// <param name="size">The size.</param>
+        /// <returns>An <see cref="Aabb2"/> instance with the specified center and size.</returns>
         public static Aabb2 CenterSize(Vector2 center, Vector2 size)
         {
             var extendX = size.x * 0.5f;
@@ -108,12 +108,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取包含了传入的所有点的 <see cref="Aabb2"/> 实例。
+        /// Gets an <see cref="Aabb2"/> instance that contains all the passed-in points.
         /// </summary>
-        /// <param name="points">要包含的所有点。</param>
-        /// <returns>包含了传入的所有点的 <see cref="Aabb2"/> 实例。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="points"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="points"/> 中的元素数为 0。</exception>
+        /// <param name="points">All the points to contain.</param>
+        /// <returns>An <see cref="Aabb2"/> instance that contains all the passed-in points.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="points"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The element count of <paramref name="points"/> is 0.</exception>
         public static Aabb2 Points(IEnumerable<Vector2> points)
         {
             if (points is null)
@@ -123,7 +123,7 @@ namespace Aurora.Unity
             using var enumerator = points.GetEnumerator();
             if (!enumerator.MoveNext())
             {
-                throw new ArgumentException($"{nameof(points)} 中的元素数为 0");
+                throw new ArgumentException($"{nameof(points)} has 0 elements");
             }
             var firstPoint = enumerator.Current;
             var minX       = firstPoint.x;
@@ -142,7 +142,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值的 x 分量。
+        /// Gets or sets the x component of the minimum value.
         /// </summary>
         public float MinX
         {
@@ -153,7 +153,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值的 y 分量。
+        /// Gets or sets the y component of the minimum value.
         /// </summary>
         public float MinY
         {
@@ -164,7 +164,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心的 x 分量。
+        /// Gets or sets the x component of the center.
         /// </summary>
         public float CenterX
         {
@@ -180,7 +180,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心的 y 分量。
+        /// Gets or sets the y component of the center.
         /// </summary>
         public float CenterY
         {
@@ -196,7 +196,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值的 x 分量。
+        /// Gets or sets the x component of the maximum value.
         /// </summary>
         public float MaxX
         {
@@ -207,7 +207,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值的 y 分量。
+        /// Gets or sets the y component of the maximum value.
         /// </summary>
         public float MaxY
         {
@@ -218,7 +218,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最小值。
+        /// Gets or sets the minimum value.
         /// </summary>
         public Vector2 Min
         {
@@ -233,7 +233,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置中心。
+        /// Gets or sets the center.
         /// </summary>
         public Vector2 Center
         {
@@ -252,7 +252,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置最大值。
+        /// Gets or sets the maximum value.
         /// </summary>
         public Vector2 Max
         {
@@ -267,7 +267,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置大小。
+        /// Gets or sets the size.
         /// </summary>
         public Vector2 Size
         {
@@ -286,7 +286,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或设置一半大小。
+        /// Gets or sets the half-size.
         /// </summary>
         public Vector2 Extends
         {
@@ -305,10 +305,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 由标准化位置计算实际位置。
+        /// Computes the actual position from a normalized position.
         /// </summary>
-        /// <param name="t">标准化位置。</param>
-        /// <returns>实际位置。</returns>
+        /// <param name="t">The normalized position.</param>
+        /// <returns>The actual position.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector2 Lerp(Vector2 t)
         {
@@ -319,10 +319,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 由实际位置计算标准化位置。
+        /// Computes the normalized position from an actual position.
         /// </summary>
-        /// <param name="point">实际位置。</param>
-        /// <returns>标准化位置。</returns>
+        /// <param name="point">The actual position.</param>
+        /// <returns>The normalized position.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector2 Unlerp(Vector2 point)
         {
@@ -333,9 +333,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定点。
+        /// Includes the specified point.
         /// </summary>
-        /// <param name="point">点。</param>
+        /// <param name="point">The point.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Vector2 point)
         {
@@ -348,9 +348,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 包含指定的另一个二维轴向包围盒。
+        /// Includes the specified another 2D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个二维轴向包围盒。</param>
+        /// <param name="other">Another 2D axis-aligned bounding box.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Include(Aabb2 other)
         {
@@ -361,10 +361,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含指定点。
+        /// Returns a value indicating whether this instance contains the specified point.
         /// </summary>
-        /// <param name="point">点。</param>
-        /// <returns>如果此实例包含 <paramref name="point"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="point">The point.</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="point"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Vector2 point)
         {
@@ -372,10 +372,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否包含另一个二维轴向包围盒。
+        /// Returns a value indicating whether this instance contains another 2D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个二维轴向包围盒</param>
-        /// <returns>如果此实例包含 <paramref name="other"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="other">Another 2D axis-aligned bounding box</param>
+        /// <returns><see langword="true"/> if this instance contains <paramref name="other"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Contains(Aabb2 other)
         {
@@ -383,10 +383,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例是否与另一个二维轴向包围盒有重叠。
+        /// Returns a value indicating whether this instance overlaps another 2D axis-aligned bounding box.
         /// </summary>
-        /// <param name="other">另一个二维轴向包围盒</param>
-        /// <returns>如果此实例与 <paramref name="other"/> 有重叠，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="other">Another 2D axis-aligned bounding box</param>
+        /// <returns><see langword="true"/> if this instance overlaps <paramref name="other"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Overlaps(Aabb2 other)
         {
@@ -438,11 +438,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示两个指定的 <see cref="Aabb2"/> 值是否相等。
+        /// Returns a value indicating whether two specified <see cref="Aabb2"/> values are equal.
         /// </summary>
-        /// <param name="left">要比较的第一个值。</param>
-        /// <param name="right">要比较的第二个值。</param>
-        /// <returns>如果 <paramref name="left"/> 和 <paramref name="right"/> 相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are equal; otherwise <see langword="false"/>.</returns>
         public static bool operator ==(Aabb2 left, Aabb2 right)
         {
             return left.minX == right.minX && left.minY == right.minY && left.maxX == right.maxX &&
@@ -450,51 +450,51 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 返回一个值，该值指示两个指定的 <see cref="Aabb2"/> 值是否相等。
+        /// Returns a value indicating whether two specified <see cref="Aabb2"/> values are equal.
         /// </summary>
-        /// <param name="left">要比较的第一个值。</param>
-        /// <param name="right">要比较的第二个值。</param>
-        /// <returns>如果 <paramref name="left"/> 和 <paramref name="right"/> 不相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are not equal; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(Aabb2 left, Aabb2 right)
         {
             return !(left == right);
         }
 
         /// <summary>
-        /// 将二维轴向包围盒转换为矩形。
+        /// Converts a 2D axis-aligned bounding box to a rectangle.
         /// </summary>
-        /// <param name="aabb2">二维轴向包围盒。</param>
-        /// <returns>由 <paramref name="aabb2"/> 转换得到的矩形。</returns>
+        /// <param name="aabb2">The 2D axis-aligned bounding box.</param>
+        /// <returns>The rectangle converted from <paramref name="aabb2"/>.</returns>
         public static explicit operator Rect(Aabb2 aabb2)
         {
             return Rect.MinMaxRect(aabb2.minX, aabb2.minY, aabb2.maxX, aabb2.maxY);
         }
 
         /// <summary>
-        /// 将矩形转换为二维轴向包围盒。
+        /// Converts a rectangle to a 2D axis-aligned bounding box.
         /// </summary>
-        /// <param name="rect">矩形。</param>
-        /// <returns>由 <paramref name="rect"/> 转换得到的二维轴向包围盒。</returns>
+        /// <param name="rect">The rectangle.</param>
+        /// <returns>The 2D axis-aligned bounding box converted from <paramref name="rect"/>.</returns>
         public static explicit operator Aabb2(Rect rect)
         {
             return new Aabb2(rect.xMin, rect.yMin, rect.xMax, rect.yMax);
         }
 
         /// <summary>
-        /// 将二维轴向包围盒转换为三维轴向包围盒。
+        /// Converts a 2D axis-aligned bounding box to a 3D axis-aligned bounding box.
         /// </summary>
-        /// <param name="aabb2">二维轴向包围盒。</param>
-        /// <returns>由 <paramref name="aabb2"/> 转换得到的三维轴向包围盒。</returns>
+        /// <param name="aabb2">The 2D axis-aligned bounding box.</param>
+        /// <returns>The 3D axis-aligned bounding box converted from <paramref name="aabb2"/>.</returns>
         public static implicit operator Aabb3(Aabb2 aabb2)
         {
             return new Aabb3(aabb2.minX, aabb2.minY, 0, aabb2.maxX, aabb2.maxY, 0);
         }
 
         /// <summary>
-        /// 将三维轴向包围盒转换为二维轴向包围盒。
+        /// Converts a 3D axis-aligned bounding box to a 2D axis-aligned bounding box.
         /// </summary>
-        /// <param name="aabb3">三维轴向包围盒。</param>
-        /// <returns>由 <paramref name="aabb3"/> 转换得到的二维轴向包围盒。</returns>
+        /// <param name="aabb3">The 3D axis-aligned bounding box.</param>
+        /// <returns>The 2D axis-aligned bounding box converted from <paramref name="aabb3"/>.</returns>
         public static implicit operator Aabb2(Aabb3 aabb3)
         {
             return new Aabb2(aabb3.MinX, aabb3.MinY, aabb3.MaxX, aabb3.MaxY);

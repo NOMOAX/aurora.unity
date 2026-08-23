@@ -7,16 +7,16 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="GameObject"/> 类提供扩展方法。
+    /// Provides extension methods for the <see cref="GameObject"/> class.
     /// </summary>
     public static class GameObjectExtensions
     {
         /// <summary>
-        /// 设置当前 <see cref="GameObject"/> 以及它的递归子游戏物体所在的层。
+        /// Sets the layer of the current <see cref="GameObject"/> and its recursive child game objects.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <param name="layer">层。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">This game object.</param>
+        /// <param name="layer">The layer.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public static void SetLayerRecursively(this GameObject gameObject, int layer)
         {
             if (!gameObject)
@@ -39,11 +39,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 设置当前 <see cref="GameObject"/> 以及它的递归子游戏物体的标签。
+        /// Sets the tag of the current <see cref="GameObject"/> and its recursive child game objects.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <param name="tag">标签。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">This game object.</param>
+        /// <param name="tag">The tag.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public static void SetTagRecursively(this GameObject gameObject, string tag)
         {
             if (!gameObject)
@@ -66,12 +66,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取或添加组件。
+        /// Gets or adds a component.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <typeparam name="T">要获取或添加的组件的类型。</typeparam>
-        /// <returns>获取到的或添加的组件。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">This game object.</param>
+        /// <typeparam name="T">The type of the component to get or add.</typeparam>
+        /// <returns>The component that was gotten or added.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
         {
             if (!gameObject)
@@ -87,11 +87,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 移除组件。
+        /// Removes a component.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <typeparam name="T">要移除的组件的类型。</typeparam>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">This game object.</param>
+        /// <typeparam name="T">The type of the component to remove.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public static void RemoveComponent<T>(this GameObject gameObject) where T : Component
         {
             if (!gameObject)
@@ -105,11 +105,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取与当前 <see cref="GameObject"/> 的激活状态关联的取消令牌。
+        /// Gets a cancellation token tied to the activation state of the current <see cref="GameObject"/>.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <returns>与当前游戏物体的激活状态关联的取消令牌。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
+        /// <param name="gameObject">This game object.</param>
+        /// <returns>The cancellation token tied to the activation state of the current game object.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
         public static CancellationToken GetDisableToken(this GameObject gameObject)
         {
             if (gameObject is null)
@@ -122,11 +122,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 销毁当前 <see cref="GameObject"/> 的所有子游戏物体。
+        /// Destroys all child game objects of the current <see cref="GameObject"/>.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
-        /// <remarks>销毁按倒序进行，即首先销毁最后的子游戏物体，最后销毁第一个子游戏物体。</remarks>
+        /// <param name="gameObject">This game object.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
+        /// <remarks>Destruction is in reverse order, i.e. the last child game object is destroyed first and the first child game object is destroyed last.</remarks>
         public static void DestroyChildren(this GameObject gameObject)
         {
             if (!gameObject)
@@ -143,11 +143,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 立即销毁当前 <see cref="GameObject"/> 的所有子游戏物体。
+        /// Immediately destroys all child game objects of the current <see cref="GameObject"/>.
         /// </summary>
-        /// <param name="gameObject">此游戏物体。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 为 <see langword="null"/>。</exception>
-        /// <remarks>销毁按倒序进行，即首先销毁最后的子游戏物体，最后销毁第一个子游戏物体。</remarks>
+        /// <param name="gameObject">This game object.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> is <see langword="null"/>.</exception>
+        /// <remarks>Destruction is in reverse order, i.e. the last child game object is destroyed first and the first child game object is destroyed last.</remarks>
         public static void DestroyChildrenImmediate(this GameObject gameObject)
         {
             if (!gameObject)

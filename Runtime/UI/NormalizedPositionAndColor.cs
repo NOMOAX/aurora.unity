@@ -4,18 +4,18 @@ using UnityEngine;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 定义标准化位置和颜色。
+    /// Defines a normalized position and a color.
     /// </summary>
     [Serializable]
     public struct NormalizedPositionAndColor
     {
         /// <summary>
-        /// 标准化位置。
+        /// The normalized position.
         /// </summary>
         public Vector2 normalizedPosition;
 
         /// <summary>
-        /// 颜色。
+        /// The color.
         /// </summary>
         public Color32 color;
     }

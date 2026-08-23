@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 为 <see cref="Selectable"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="Selectable"/> class.
     /// </summary>
     public static class SelectableUtility
     {
@@ -23,11 +23,11 @@ namespace Aurora.Unity.UI
             );
 
         /// <summary>
-        /// 判断 <see cref="Selectable"/> 是否已被按下。
+        /// Determines whether the <see cref="Selectable"/> has been pressed.
         /// </summary>
-        /// <param name="selectable">可选择对象。</param>
-        /// <returns>如果 <paramref name="selectable"/> 已被按下，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="selectable"/> 为 <see langword="null"/>。</exception>
+        /// <param name="selectable">The selectable object.</param>
+        /// <returns><see langword="true"/> if <paramref name="selectable"/> has been pressed; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="selectable"/> is <see langword="null"/>.</exception>
         public static bool IsPressed(Selectable selectable)
         {
             if (!selectable)

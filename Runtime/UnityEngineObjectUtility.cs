@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="UnityEngine.Object"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="UnityEngine.Object"/> class.
     /// </summary>
     public static class UnityEngineObjectUtility
     {
@@ -49,11 +49,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取由 <see cref="Object"/> 实例包装的原生 C++ 对象的内存地址。
+        /// Gets the memory address of the native C++ object wrapped by the <see cref="Object"/> instance.
         /// </summary>
-        /// <param name="obj"><see cref="Object"/> 实例。</param>
-        /// <returns>由 <paramref name="obj"/> 包装的原生 C++ 对象的内存地址。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="obj"/> 为 <see langword="null"/>。</exception>
+        /// <param name="obj">The <see cref="Object"/> instance.</param>
+        /// <returns>The memory address of the native C++ object wrapped by <paramref name="obj"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
         public static IntPtr GetCachedPtr(Object obj)
         {
             if (obj is null)
@@ -65,11 +65,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取 <see cref="Object"/> 实例的标识符。
+        /// Gets the identifier of the <see cref="Object"/> instance.
         /// </summary>
-        /// <param name="obj"><see cref="Object"/> 实例。</param>
-        /// <returns><paramref name="obj"/> 的标识符。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="obj"/> 为 <see langword="null"/>。</exception>
+        /// <param name="obj">The <see cref="Object"/> instance.</param>
+        /// <returns>The identifier of <paramref name="obj"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
         public static int GetInstanceId(Object obj)
         {
             if (obj is null)
@@ -81,11 +81,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示 <see cref="Object"/> 实例是否处于存活状态。
+        /// Gets a value indicating whether the <see cref="Object"/> instance is alive.
         /// </summary>
-        /// <param name="obj"><see cref="Object"/> 实例。</param>
-        /// <returns>如果 <paramref name="obj"/> 处于存活状态，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="obj"/> 为 <see langword="null"/>。</exception>
+        /// <param name="obj">The <see cref="Object"/> instance.</param>
+        /// <returns><see langword="true"/> if <paramref name="obj"/> is alive; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
         public static bool IsAlive(Object obj)
         {
             if (obj is null)
@@ -97,10 +97,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示是否存在具有指定标识符的 <see cref="Object"/> 实例。
+        /// Gets a value indicating whether an <see cref="Object"/> instance with the specified identifier exists.
         /// </summary>
-        /// <param name="instanceId">标识符。</param>
-        /// <returns>如果存在标识符为 <paramref name="instanceId"/> 的 <see cref="Object"/> 实例，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="instanceId">The identifier.</param>
+        /// <returns><see langword="true"/> if an <see cref="Object"/> instance with identifier <paramref name="instanceId"/> exists; otherwise <see langword="false"/>.</returns>
         public static bool DoesObjectWithInstanceIdExist(int instanceId)
         {
             var objectWithInstanceIdExist = InternalDoesObjectWithInstanceIdExist(instanceId);
@@ -108,12 +108,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示两个 <see cref="Object"/> 实例是否相等。
+        /// Gets a value indicating whether two <see cref="Object"/> instances are equal.
         /// </summary>
-        /// <param name="objA">第一个 <see cref="Object"/> 实例。</param>
-        /// <param name="objB">第二个 <see cref="Object"/> 实例。</param>
-        /// <returns>如果 <paramref name="objA"/> 和 <paramref name="objB"/> 的引用相等，或者其中一个处于销毁状态而另一个为 <see langword="null"/>，或者它们的标识符相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <remarks>此方法是 <see cref="Object.op_Equality"/> 去除 Unity 主线程校验的版本。</remarks>
+        /// <param name="objA">The first <see cref="Object"/> instance.</param>
+        /// <param name="objB">The second <see cref="Object"/> instance.</param>
+        /// <returns><see langword="true"/> if the references of <paramref name="objA"/> and <paramref name="objB"/> are equal, or one of them is destroyed while the other is <see langword="null"/>, or their identifiers are equal; otherwise <see langword="false"/>.</returns>
+        /// <remarks>This method is the version of <see cref="Object.op_Equality"/> without the Unity main-thread check.</remarks>
         public static bool Equals(Object objA, Object objB)
         {
             if (ReferenceEquals(objA, objB))

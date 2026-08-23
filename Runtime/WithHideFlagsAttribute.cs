@@ -4,20 +4,20 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 用于修饰继承 <see cref="SingletonBehaviour{T}"/> 类的类型，以在首次获取或创建 <see cref="SingletonBehaviour{T}.Instance"/> 时对该单一实例设置 <see cref="UnityEngine.Object.hideFlags"/>。
+    /// Marks a type that inherits from <see cref="SingletonBehaviour{T}"/> so that <see cref="UnityEngine.Object.hideFlags"/> is set on the single instance when <see cref="SingletonBehaviour{T}.Instance"/> is first retrieved or created.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class WithHideFlagsAttribute : Attribute
     {
         /// <summary>
-        /// 隐藏标记。
+        /// The hide flags.
         /// </summary>
         public readonly HideFlags HideFlags;
 
         /// <summary>
-        /// 初始化 <see cref="WithHideFlagsAttribute"/> 类的新示例。
+        /// Initializes a new instance of the <see cref="WithHideFlagsAttribute"/> class.
         /// </summary>
-        /// <param name="hideFlags">隐藏标记。</param>
+        /// <param name="hideFlags">The hide flags.</param>
         public WithHideFlagsAttribute(HideFlags hideFlags)
         {
             HideFlags = hideFlags;

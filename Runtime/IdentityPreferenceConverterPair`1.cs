@@ -4,13 +4,13 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 实现 <see cref="PreferenceConverterPair{TValue,TPreferenceValue}"/>，当用户使用的值和 <see cref="PlayerPrefs"/> 中基本值的类型相等时，无需做任何转换。
+    /// Implements <see cref="PreferenceConverterPair{TValue,TPreferenceValue}"/> for the case where the type of the user's value equals the type of the primitive value in <see cref="PlayerPrefs"/>, so no conversion is needed.
     /// </summary>
-    /// <typeparam name="T">用户使用的值和 <see cref="PlayerPrefs"/> 中基本值的类型。</typeparam>
+    /// <typeparam name="T">The type of both the user's value and the primitive value in <see cref="PlayerPrefs"/>.</typeparam>
     public sealed class IdentityPreferenceConverterPair<T> : PreferenceConverterPair<T, T>
     {
         /// <summary>
-        /// 获取单一实例。
+        /// Gets the single instance.
         /// </summary>
         public static IdentityPreferenceConverterPair<T> Instance { get; } = new(obj => obj);
 

@@ -7,7 +7,7 @@ using UnityEditor;
 namespace Aurora.UnityEditor
 {
     /// <summary>
-    /// 定义预编译符号范围。
+    /// A scope for defining preprocessor symbols.
     /// </summary>
     public sealed class DefineSymbolScope : IDisposable
     {
@@ -34,11 +34,11 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 添加预编译符号。
+        /// Adds a preprocessor symbol.
         /// </summary>
-        /// <param name="symbol">要添加的预编译符号。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="symbol"/> 不是一个合法的预编译符号。</exception>
+        /// <param name="symbol">The preprocessor symbol to add.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="symbol"/> is not a valid preprocessor symbol.</exception>
         public void Add(string symbol)
         {
             UnityEditorUtility.ThrowIfSymbolInvalid(symbol);
@@ -51,11 +51,11 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 移除预编译符号。
+        /// Removes a preprocessor symbol.
         /// </summary>
-        /// <param name="symbol">要移除的预编译符号。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="symbol"/> 不是一个合法的预编译符号。</exception>
+        /// <param name="symbol">The preprocessor symbol to remove.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="symbol"/> is not a valid preprocessor symbol.</exception>
         public void Remove(string symbol)
         {
             UnityEditorUtility.ThrowIfSymbolInvalid(symbol);
@@ -69,12 +69,12 @@ namespace Aurora.UnityEditor
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示指定的预编译符号是否已定义。
+        /// Gets a value indicating whether the specified preprocessor symbol is defined.
         /// </summary>
-        /// <param name="symbol">预编译符号。</param>
-        /// <returns>如果 <paramref name="symbol"/> 已定义，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="symbol"/> 不是一个合法的预编译符号。</exception>
+        /// <param name="symbol">The preprocessor symbol.</param>
+        /// <returns><see langword="true"/> if <paramref name="symbol"/> is defined; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="symbol"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="symbol"/> is not a valid preprocessor symbol.</exception>
         public bool IsDefined(string symbol)
         {
             UnityEditorUtility.ThrowIfSymbolInvalid(symbol);

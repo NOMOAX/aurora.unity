@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 圆角矩形边框。
+    /// A rounded rectangle border.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class RoundedRectangleBorder : MaskableGraphic, ILayoutElement, ICanvasRaycastFilter
@@ -87,7 +87,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 纹理。
+        /// The texture.
         /// </summary>
         public Texture Texture
         {
@@ -105,9 +105,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 边数。
+        /// The segment count.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [1, 8123] 范围内。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is outside the range [1, 8123].</exception>
         public int Segments
         {
             get => segments;
@@ -127,7 +127,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示左上圆角半径。
+        /// Whether to use a normalized length to represent the top-left corner radius.
         /// </summary>
         public bool TopLeftCornerRadiusNormalized
         {
@@ -143,9 +143,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 左上圆角半径。
+        /// The top-left corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="TopLeftCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="TopLeftCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float TopLeftCornerRadius
         {
             get => topLeftCornerRadius;
@@ -165,7 +165,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示右上圆角半径。
+        /// Whether to use a normalized length to represent the top-right corner radius.
         /// </summary>
         public bool TopRightCornerRadiusNormalized
         {
@@ -181,9 +181,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 右上圆角半径。
+        /// The top-right corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="TopRightCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="TopRightCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float TopRightCornerRadius
         {
             get => topRightCornerRadius;
@@ -203,7 +203,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示左下圆角半径。
+        /// Whether to use a normalized length to represent the bottom-left corner radius.
         /// </summary>
         public bool BottomLeftCornerRadiusNormalized
         {
@@ -219,9 +219,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 左下圆角半径。
+        /// The bottom-left corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="BottomLeftCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="BottomLeftCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float BottomLeftCornerRadius
         {
             get => bottomLeftCornerRadius;
@@ -241,7 +241,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示右下圆角半径。
+        /// Whether to use a normalized length to represent the bottom-right corner radius.
         /// </summary>
         public bool BottomRightCornerRadiusNormalized
         {
@@ -257,9 +257,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 右下圆角半径。
+        /// The bottom-right corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="BottomRightCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="BottomRightCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float BottomRightCornerRadius
         {
             get => bottomRightCornerRadius;
@@ -279,7 +279,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示粗细。
+        /// Whether to use a normalized length to represent the thickness.
         /// </summary>
         public bool ThicknessNormalized
         {
@@ -295,9 +295,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 粗细。
+        /// The thickness.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="ThicknessNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="ThicknessNormalized"/> is <see langword="true"/>.</exception>
         public float Thickness
         {
             get => thickness;
@@ -317,7 +317,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用精确点击区域。
+        /// Whether to use an exact click area.
         /// </summary>
         public bool UseExactRaycastLocation
         {
@@ -393,7 +393,7 @@ namespace Aurora.Unity.UI
             _outerPositions.Clear();
             _innerPositions.Clear();
 
-            // 粗细为 0，图形消失
+            // When the thickness is 0, the graphic disappears
             if (thickness == 0)
             {
                 vh.Clear();
@@ -405,14 +405,14 @@ namespace Aurora.Unity.UI
             var pixelAdjustedRect = GetPixelAdjustedRect();
             var halfMinSide       = Mathf.Min(pixelAdjustedRect.width, pixelAdjustedRect.height) * 0.5f;
 
-            // 各圆角半径
+            // Each corner radius
             var cornerRadii = new Vector4(
                 GetActualValue(topRightCornerRadiusNormalized,    topRightCornerRadius,    halfMinSide),
                 GetActualValue(topLeftCornerRadiusNormalized,     topLeftCornerRadius,     halfMinSide),
                 GetActualValue(bottomLeftCornerRadiusNormalized,  bottomLeftCornerRadius,  halfMinSide),
                 GetActualValue(bottomRightCornerRadiusNormalized, bottomRightCornerRadius, halfMinSide)
             );
-            // 粗细
+            // The thickness
             var thickness1 = GetActualValue(thicknessNormalized, thickness, halfMinSide);
 
             vh.Clear();
@@ -421,15 +421,15 @@ namespace Aurora.Unity.UI
             var halfSize = pixelAdjustedRect.size * 0.5f;
 
             /*
-             * 各象限的单位向量，用于参与乘法运算
-             * 使用 stackalloc 关键字确保仅分配在栈内存上，提高性能
+             * The unit vectors of each quadrant, used in multiplication operations
+             * The stackalloc keyword is used to ensure allocation only on the stack, improving performance
              */
             var multipliers = stackalloc Vector2[4]
             {
-                Vector2.right + Vector2.up,  // 右上（第Ⅰ象限）
-                Vector2.left + Vector2.up,   // 左上（第Ⅱ象限）
-                Vector2.left + Vector2.down, // 左下（第Ⅲ象限）
-                Vector2.right + Vector2.down // 右下（第Ⅳ象限）
+                Vector2.right + Vector2.up,  // top-right (quadrant I)
+                Vector2.left + Vector2.up,   // top-left (quadrant II)
+                Vector2.left + Vector2.down, // bottom-left (quadrant III)
+                Vector2.right + Vector2.down // bottom-right (quadrant IV)
             };
 
             var stepAngle = 0.5f * Mathf.PI / segments;
@@ -437,14 +437,14 @@ namespace Aurora.Unity.UI
             {
                 var firstVertexIndex = segments * i;
 
-                #region 外层
+                #region Outer layer
 
                 var cornerRadius         = cornerRadii[i];
                 var cornerCenterToCenter = (halfSize - Vector2.one * cornerRadius) * multipliers[i];
 
                 #endregion
 
-                #region 内层
+                #region Inner layer
 
                 var innerCornerRadius = Mathf.Max(cornerRadius - thickness1, 0);
                 var innerCornerCenterToCenter =
@@ -457,7 +457,7 @@ namespace Aurora.Unity.UI
                     var angle  = stepAngle * (firstVertexIndex + j);
                     var cosSin = UnityMath.CosSin(angle);
 
-                    #region 外层
+                    #region Outer layer
 
                     var positionToCornerCenter = cosSin * cornerRadius;
                     var position               = center + cornerCenterToCenter + positionToCornerCenter;
@@ -469,7 +469,7 @@ namespace Aurora.Unity.UI
 
                     #endregion
 
-                    #region 内层
+                    #region Inner layer
 
                     var innerPositionToInnerCornerCenter = cosSin * innerCornerRadius;
                     var innerPosition = center + innerCornerCenterToCenter + innerPositionToInnerCornerCenter;

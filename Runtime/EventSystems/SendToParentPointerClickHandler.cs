@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IPointerClickHandler.OnPointerClick"/> 传递给父级。
+    /// Forwards <see cref="IPointerClickHandler.OnPointerClick"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentPointerClickHandler : SendToParentEventSystemHandler<IPointerClickHandler>,

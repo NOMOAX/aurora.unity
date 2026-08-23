@@ -4,15 +4,15 @@ namespace Aurora.Unity.Collections
 {
     /// <inheritdoc />
     /// <summary>
-    /// 在 Unity 帧更新时执行自定义操作的状态。
+    /// A state that executes a custom action during Unity frame update.
     /// </summary>
-    /// <remarks>可用于 <see cref="UnityUpdateStateMachine{T}"/> 类型的有限状态机。</remarks>
+    /// <remarks>Can be used for finite state machines of type <see cref="UnityUpdateStateMachine{T}"/>.</remarks>
     public interface IUnityUpdateState<T> : IState<T>
     {
         /// <summary>
-        /// 有限状态机在 Unity 帧更新时执行自定义逻辑。
+        /// The finite state machine executes custom logic during Unity frame update.
         /// </summary>
-        /// <param name="stateMachine">有限状态机。</param>
+        /// <param name="stateMachine">The finite state machine.</param>
         void OnUnityUpdate(UnityUpdateStateMachine<T> stateMachine);
     }
 }

@@ -4,23 +4,23 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="CanvasGroup"/> 类提供扩展方法。
+    /// Provides extension methods for the <see cref="CanvasGroup"/> class.
     /// </summary>
     public static class CanvasGroupExtensions
     {
         /// <summary>
-        /// 设置 <see cref="CanvasGroup"/> 的 <see cref="CanvasGroup.alpha"/> 与 <see cref="CanvasGroup.blocksRaycasts"/>。
+        /// Sets the <see cref="CanvasGroup.alpha"/> and <see cref="CanvasGroup.blocksRaycasts"/> of a <see cref="CanvasGroup"/>.
         /// </summary>
-        /// <param name="canvasGroup">画布组。</param>
+        /// <param name="canvasGroup">The canvas group.</param>
         /// <param name="value">
-        /// 一个布尔值，它的含义如下：
+        /// A boolean value, its meaning is as follows:
         /// <list type="table">
-        /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term><see langword="true"/></term><description>设置 <paramref name="canvasGroup"/> 的 <see cref="CanvasGroup.alpha"/> 为 1，<see cref="CanvasGroup.blocksRaycasts"/> 为 <see langword="true"/></description></item>
-        /// <item><term><see langword="false"/></term><description>设置 <paramref name="canvasGroup"/> 的 <see cref="CanvasGroup.alpha"/> 为 0，<see cref="CanvasGroup.blocksRaycasts"/> 为 <see langword="false"/></description></item>
+        /// <listheader><term>Value</term><description>Meaning</description></listheader>
+        /// <item><term><see langword="true"/></term><description>Sets <paramref name="canvasGroup"/>'s <see cref="CanvasGroup.alpha"/> to 1 and <see cref="CanvasGroup.blocksRaycasts"/> to <see langword="true"/></description></item>
+        /// <item><term><see langword="false"/></term><description>Sets <paramref name="canvasGroup"/>'s <see cref="CanvasGroup.alpha"/> to 0 and <see cref="CanvasGroup.blocksRaycasts"/> to <see langword="false"/></description></item>
         /// </list>
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="canvasGroup"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="canvasGroup"/> is <see langword="null"/>.</exception>
         public static void Set(this CanvasGroup canvasGroup, bool value)
         {
             if (!canvasGroup)

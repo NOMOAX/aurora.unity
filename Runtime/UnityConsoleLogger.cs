@@ -10,12 +10,12 @@ using ILogger = Aurora.Diagnostics.ILogger;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 写入到 Unity 控制台。
+    /// Writes to the Unity console.
     /// </summary>
     public sealed class UnityConsoleLogger : ILogger
     {
         /// <summary>
-        /// 获取单一实例。
+        /// Gets the single instance.
         /// </summary>
         public static UnityConsoleLogger Instance { get; } = new();
 
@@ -42,10 +42,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 根据写入等级，获取执行写入的方法。
+        /// Gets the method that performs the write based on the log level.
         /// </summary>
-        /// <param name="logLevel">写入等级。</param>
-        /// <returns>如果需要执行写入，则为执行写入的方法；否则为 <see langword="null"/>。</returns>
+        /// <param name="logLevel">The log level.</param>
+        /// <returns>The method that performs the write if a write is needed; otherwise <see langword="null"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Action<object> GetLogAction(LogLevel logLevel)
         {
@@ -61,11 +61,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取实际写入的字符串。
+        /// Gets the actual string that is written.
         /// </summary>
-        /// <param name="value">写入对象。</param>
-        /// <param name="logLevel">写入等级。</param>
-        /// <returns>实际写入的字符串。</returns>
+        /// <param name="value">The object to write.</param>
+        /// <param name="logLevel">The log level.</param>
+        /// <returns>The actual string that is written.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string GetLogString(object value, LogLevel logLevel)
         {
@@ -118,7 +118,6 @@ namespace Aurora.Unity
             }
         }
 #endif
-
 #if UNITY_EDITOR
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Color32 GetColor(LogLevel logLevel)
@@ -154,7 +153,6 @@ namespace Aurora.Unity
             };
         }
 #endif
-
 #if UNITY_EDITOR
         private struct BoldScope : IDisposable
         {
@@ -179,7 +177,6 @@ namespace Aurora.Unity
             }
         }
 #endif
-
 #if UNITY_EDITOR
         private struct ColorScope : IDisposable
         {

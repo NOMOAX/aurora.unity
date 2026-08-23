@@ -4,16 +4,16 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="AudioSource"/> 类提供扩展方法。
+    /// Provides extension methods for the <see cref="AudioSource"/> class.
     /// </summary>
     public static class AudioSourceExtensions
     {
         /// <summary>
-        /// 获取当前 <see cref="AudioSource"/> 的状态。
+        /// Gets the current state of the <see cref="AudioSource"/>.
         /// </summary>
-        /// <param name="audioSource">音频源。</param>
-        /// <returns>音频源的状态。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> 为 <see langword="null"/>。</exception>
+        /// <param name="audioSource">The audio source.</param>
+        /// <returns>The state of the audio source.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> is <see langword="null"/>.</exception>
         public static AudioSourceStatus GetStatus(this AudioSource audioSource)
         {
             if (!audioSource)
@@ -38,11 +38,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取当前 <see cref="AudioSource"/> 的进度。
+        /// Gets the current progress of the <see cref="AudioSource"/>.
         /// </summary>
-        /// <param name="audioSource">音频源。</param>
-        /// <returns>音频源的进度。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> 为 <see langword="null"/>。</exception>
+        /// <param name="audioSource">The audio source.</param>
+        /// <returns>The progress of the audio source.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> is <see langword="null"/>.</exception>
         public static double GetProgress(this AudioSource audioSource)
         {
             if (!audioSource)
@@ -64,12 +64,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 设置当前 <see cref="AudioSource"/> 的进度。
+        /// Sets the current progress of the <see cref="AudioSource"/>.
         /// </summary>
-        /// <param name="audioSource">音频源。</param>
-        /// <param name="progress">进度。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="progress"/> 不在 [0, 1] 范围内。</exception>
+        /// <param name="audioSource">The audio source.</param>
+        /// <param name="progress">The progress.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="audioSource"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="progress"/> is not in the [0, 1] range.</exception>
         public static void SetProgress(this AudioSource audioSource, double progress)
         {
             if (!audioSource)

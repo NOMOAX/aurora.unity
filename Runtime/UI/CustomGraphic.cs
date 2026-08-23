@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 自定义图形。
+    /// A custom graphic.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class CustomGraphic : MaskableGraphic, ILayoutElement
@@ -25,7 +25,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 纹理。
+        /// The texture.
         /// </summary>
         public Texture Texture
         {
@@ -43,12 +43,12 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 顶点。
+        /// The vertices.
         /// </summary>
         public List<NormalizedPositionAndColor> Vertices => vertices;
 
         /// <summary>
-        /// 三角形。
+        /// The triangles.
         /// </summary>
         public List<Vector3Int> Triangles => triangles;
 

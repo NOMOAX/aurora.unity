@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到目标 <see cref="AsyncOperation"/> 执行完毕时的可等待上下文。
+    /// Provides an awaitable context for switching to when the target <see cref="AsyncOperation"/> finishes.
     /// </summary>
     public readonly struct AsyncOperationAwaitable : IAwaitable
     {
@@ -18,9 +18,9 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="AsyncOperationAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AsyncOperationAwaitable"/> struct.
         /// </summary>
-        /// <param name="asyncOperation">Unity 异步操作。</param>
+        /// <param name="asyncOperation">The Unity asynchronous operation.</param>
         public AsyncOperationAwaitable(AsyncOperation asyncOperation)
         {
             _asyncOperation    = asyncOperation;
@@ -28,10 +28,10 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="AsyncOperationAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AsyncOperationAwaitable"/> struct.
         /// </summary>
-        /// <param name="asyncOperation">Unity 异步操作。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="asyncOperation">The Unity asynchronous operation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public AsyncOperationAwaitable(AsyncOperation asyncOperation, CancellationToken cancellationToken)
         {
             _asyncOperation    = asyncOperation;

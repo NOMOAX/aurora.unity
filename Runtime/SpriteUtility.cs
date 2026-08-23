@@ -5,17 +5,17 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Sprite"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="Sprite"/> class.
     /// </summary>
     public static class SpriteUtility
     {
         /// <summary>
-        /// 将精灵中的标准化位置转换为本地位置。
+        /// Converts a normalized position in a sprite to a local position.
         /// </summary>
-        /// <param name="sprite">精灵。</param>
-        /// <param name="normalizedPosition">标准化位置。</param>
-        /// <returns><paramref name="sprite"/> 中标准化位置为 <paramref name="normalizedPosition"/> 的点在 <paramref name="sprite"/> 本地坐标系中的位置。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="sprite"/> 为 <see langword="null"/>。</exception>
+        /// <param name="sprite">The sprite.</param>
+        /// <param name="normalizedPosition">The normalized position.</param>
+        /// <returns>The position in <paramref name="sprite"/>'s local coordinate system of the point whose normalized position in <paramref name="sprite"/> is <paramref name="normalizedPosition"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="sprite"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizedToLocalPosition(Sprite sprite, Vector2 normalizedPosition)
         {

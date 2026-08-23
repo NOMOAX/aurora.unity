@@ -40,10 +40,10 @@ namespace Aurora.UnityEditor.UI
             _segments                          = serializedObject.FindProperty(SegmentsName);
             _thickness                         = serializedObject.FindProperty(ThicknessName);
             _useExactRaycastLocation           = serializedObject.FindProperty(UseExactRaycastLocationName);
-            _textureGUIContent                 = new GUIContent("Texture",                    "纹理");
-            _segmentsGUIContent                = new GUIContent("Segments",                   "边数");
-            _thicknessGUIContent               = new GUIContent("Thickness",                  "粗细");
-            _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "使用精确点击区域");
+            _textureGUIContent                 = new GUIContent("Texture",                    "Texture");
+            _segmentsGUIContent                = new GUIContent("Segments",                   "Segment Count");
+            _thicknessGUIContent               = new GUIContent("Thickness",                  "Thickness");
+            _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "Use Exact Hit Area");
             SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 

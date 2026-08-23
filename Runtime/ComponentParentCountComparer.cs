@@ -5,17 +5,17 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 根据组件所在的游戏物体的父级数量来比较组件的比较器。
+    /// A comparer that compares components by the parent count of the game object they belong to.
     /// </summary>
     public sealed class ComponentParentCountComparer : IComparer<Component>
     {
         /// <summary>
-        /// 获取单一实例。
+        /// Gets the single instance.
         /// </summary>
         public static ComponentParentCountComparer Instance { get; } = new();
 
         /// <summary>
-        /// 获取单一实例，但比较结果与 <see cref="Instance"/> 相反。
+        /// Gets the single instance, but the comparison result is reversed relative to <see cref="Instance"/>.
         /// </summary>
         public static IComparer<Component> InstanceReversed { get; } = new ReversedComparer<Component>(Instance);
 

@@ -5,18 +5,18 @@ using UnityEngine;
 namespace Aurora.Unity.Pooling
 {
     /// <summary>
-    /// 管理池中的哈希集的策略。
+    /// The policy for managing pooled hash sets.
     /// </summary>
-    /// <typeparam name="T">哈希集的成员的类型。它是 <see cref="Object"/> 类型或其派生类型。</typeparam>
+    /// <typeparam name="T">The type of the hash set members. It is <see cref="Object"/> or a type derived from it.</typeparam>
     public class PooledUnityEngineObjectHashSetPolicy<T> : IPooledObjectPolicy<HashSet<T>> where T : Object
     {
         /// <summary>
-        /// 获取或设置池化的哈希集的初始容量。
+        /// Gets or sets the initial capacity of the pooled hash set.
         /// </summary>
         public int InitialCapacity { get; set; } = 17;
 
         /// <summary>
-        /// 获取或设置允许被放入池的哈希集的最大长度。
+        /// Gets or sets the maximum length of a hash set that is allowed to be put into the pool.
         /// </summary>
         public int MaximumRetainedCount { get; set; } = 293;
 

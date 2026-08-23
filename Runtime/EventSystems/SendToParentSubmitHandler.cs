@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="ISubmitHandler.OnSubmit"/> 传递给父级。
+    /// Forwards <see cref="ISubmitHandler.OnSubmit"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentSubmitHandler : SendToParentEventSystemHandler<ISubmitHandler>, ISubmitHandler

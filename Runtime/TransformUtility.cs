@@ -4,17 +4,17 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Transform"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="Transform"/> class.
     /// </summary>
     public static class TransformUtility
     {
         /// <summary>
-        /// 判断两个变换是否具有同样的父变换。
+        /// Determines whether two transforms share the same parent transform.
         /// </summary>
-        /// <param name="a">第一个变换。</param>
-        /// <param name="b">第二个变换。</param>
-        /// <returns>如果 <paramref name="a"/> 和 <paramref name="b"/> 具有同样的父变换，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="a"/> 或 <paramref name="b"/> 为 <see langword="null"/>。</exception>
+        /// <param name="a">The first transform.</param>
+        /// <param name="b">The second transform.</param>
+        /// <returns><see langword="true"/> if <paramref name="a"/> and <paramref name="b"/> share the same parent transform; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="a"/> or <paramref name="b"/> is <see langword="null"/>.</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b)
         {
             if (!a)
@@ -29,13 +29,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断三个变换是否具有同样的父变换。
+        /// Determines whether three transforms share the same parent transform.
         /// </summary>
-        /// <param name="a">第一个变换。</param>
-        /// <param name="b">第二个变换。</param>
-        /// <param name="c">第三个变换。</param>
-        /// <returns>如果 <paramref name="a"/>、<paramref name="b"/> 和 <paramref name="c"/> 具有同样的父变换，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="a"/>、<paramref name="b"/> 或 <paramref name="c"/> 为 <see langword="null"/>。</exception>
+        /// <param name="a">The first transform.</param>
+        /// <param name="b">The second transform.</param>
+        /// <param name="c">The third transform.</param>
+        /// <returns><see langword="true"/> if <paramref name="a"/>, <paramref name="b"/>, and <paramref name="c"/> share the same parent transform; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="a"/>, <paramref name="b"/>, or <paramref name="c"/> is <see langword="null"/>.</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b, Transform c)
         {
             if (!a)
@@ -55,14 +55,14 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断四个变换是否具有同样的父变换。
+        /// Determines whether four transforms share the same parent transform.
         /// </summary>
-        /// <param name="a">第一个变换。</param>
-        /// <param name="b">第二个变换。</param>
-        /// <param name="c">第三个变换。</param>
-        /// <param name="d">第四个变换。</param>
-        /// <returns>如果 <paramref name="a"/>、<paramref name="b"/>、<paramref name="c"/> 和 <paramref name="d"/> 具有同样的父变换，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="a"/>、<paramref name="b"/>、<paramref name="c"/> 或 <paramref name="d"/> 为 <see langword="null"/>。</exception>
+        /// <param name="a">The first transform.</param>
+        /// <param name="b">The second transform.</param>
+        /// <param name="c">The third transform.</param>
+        /// <param name="d">The fourth transform.</param>
+        /// <returns><see langword="true"/> if <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, and <paramref name="d"/> share the same parent transform; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/>, or <paramref name="d"/> is <see langword="null"/>.</exception>
         public static bool AreTransformsShareSameParent(Transform a, Transform b, Transform c, Transform d)
         {
             if (!a)
@@ -86,12 +86,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断多个变换是否具有同样的父变换。
+        /// Determines whether multiple transforms share the same parent transform.
         /// </summary>
-        /// <param name="transforms">多个变换。</param>
-        /// <returns>如果 <paramref name="transforms"/> 中的每个成员都具有同样的父变换，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="transforms"/> 为 <see langword="null"/>，或 <paramref name="transforms"/> 中含有为 <see langword="null"/> 的成员。</exception>
-        /// <exception cref="ArgumentException"><paramref name="transforms"/> 的成员数小于 2。</exception>
+        /// <param name="transforms">Multiple transforms.</param>
+        /// <returns><see langword="true"/> if every member of <paramref name="transforms"/> shares the same parent transform; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="transforms"/> is <see langword="null"/>, or <paramref name="transforms"/> contains a <see langword="null"/> member.</exception>
+        /// <exception cref="ArgumentException">The member count of <paramref name="transforms"/> is less than 2.</exception>
         public static bool AreTransformsShareSameParent(params Transform[] transforms)
         {
             if (transforms is null)

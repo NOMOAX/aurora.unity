@@ -6,12 +6,12 @@ using UnityEngine;
 namespace Aurora.Unity.UI.ViewSystem
 {
     /// <summary>
-    /// 处理 <see cref="PrefabLessView"/> 的界面处理程序。
+    /// The view handler for <see cref="PrefabLessView"/>.
     /// </summary>
     public sealed class PrefabLessViewHandler : ViewHandler
     {
         /// <summary>
-        /// 获取单一实例。
+        /// Gets the single instance.
         /// </summary>
         public static PrefabLessViewHandler Instance { get; } = new();
 

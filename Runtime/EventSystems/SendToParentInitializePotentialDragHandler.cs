@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IInitializePotentialDragHandler.OnInitializePotentialDrag"/> 传递给父级。
+    /// Forwards <see cref="IInitializePotentialDragHandler.OnInitializePotentialDrag"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentInitializePotentialDragHandler :

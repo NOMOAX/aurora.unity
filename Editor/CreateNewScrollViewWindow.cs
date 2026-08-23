@@ -103,12 +103,13 @@ namespace Aurora.UnityEditor
                     }
                 }
 
-                // 重设窗口的高度
+                // Reset the window height
                 if (Event.current.type == EventType.Repaint)
                 {
-                    var marginTop     = verticalScope.rect.y; // 顶部外边距
+                    var marginTop     = verticalScope.rect.y; // top margin
                     var contentHeight = verticalScope.rect.height;
-                    var windowHeight  = marginTop + contentHeight + marginTop /* 底部外边距（很可能与顶部外边距相等） */;
+                    var windowHeight =
+                        marginTop + contentHeight + marginTop /* bottom margin (likely equal to top margin) */;
                     var windowSize    = new Vector2(WindowWidth, windowHeight);
                     minSize = maxSize = windowSize;
                 }
@@ -122,7 +123,7 @@ namespace Aurora.UnityEditor
             {
                 EditorGUILayout.HelpBox("Select a canvas element as parent!", MessageType.Error);
             }
-            // parent 已被销毁，释放引用
+            // The parent has been destroyed, release the reference
             if (parent is not null && !UnityEngineObjectUtility.IsAlive(parent))
             {
                 parent = null;

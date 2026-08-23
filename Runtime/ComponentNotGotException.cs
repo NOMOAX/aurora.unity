@@ -4,33 +4,33 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 在无法获取到指定类型的组件时引发的异常。
+    /// The exception thrown when a component of the specified type cannot be obtained.
     /// </summary>
     public class ComponentNotGotException : UnityException
     {
         /// <summary>
-        /// 游戏物体。
+        /// The game object.
         /// </summary>
         public GameObject GameObject { get; }
 
         /// <summary>
-        /// 从游戏物体获取组件的方法。
+        /// The method used to get a component from the game object.
         /// </summary>
         public GetComponentMethod Method { get; }
 
         /// <summary>
-        /// 组件类型。
+        /// The component type.
         /// </summary>
         public Type ComponentType { get; }
 
         /// <summary>
-        /// 使用指定的游戏物体、从游戏物体获取组件的方法和组件类型初始化 <see cref="GameObjectInactiveException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="GameObjectInactiveException"/> class with the specified game object, the method to get a component from the game object, and the component type.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <param name="method">从游戏物体获取组件的方法。</param>
-        /// <param name="componentType">组件类型。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 或 <paramref name="componentType"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="componentType"/> 既不是接口类型，又不是 <seealso cref="Component"/> 类型或其子类型。</exception>
+        /// <param name="gameObject">The game object.</param>
+        /// <param name="method">The method used to get a component from the game object.</param>
+        /// <param name="componentType">The component type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> or <paramref name="componentType"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="componentType"/> is neither an interface type nor a <seealso cref="Component"/> type or its subtype.</exception>
         public ComponentNotGotException(GameObject gameObject, GetComponentMethod method, Type componentType)
         {
             if (gameObject is null)
@@ -52,14 +52,14 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的游戏物体、从游戏物体获取组件的方法、组件类型和错误消息初始化 <see cref="GameObjectInactiveException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="GameObjectInactiveException"/> class with the specified game object, the method to get a component from the game object, the component type, and an error message.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <param name="method">从游戏物体获取组件的方法。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <param name="componentType">组件类型。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> 或 <paramref name="componentType"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="componentType"/> 既不是接口类型，又不是 <seealso cref="Component"/> 类型或其子类型。</exception>
+        /// <param name="gameObject">The game object.</param>
+        /// <param name="method">The method used to get a component from the game object.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <param name="componentType">The component type.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="gameObject"/> or <paramref name="componentType"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="componentType"/> is neither an interface type nor a <seealso cref="Component"/> type or its subtype.</exception>
         public ComponentNotGotException(
             GameObject         gameObject,
             GetComponentMethod method,

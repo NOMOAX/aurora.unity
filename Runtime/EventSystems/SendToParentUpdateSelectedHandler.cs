@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IUpdateSelectedHandler.OnUpdateSelected"/> 传递给父级。
+    /// Forwards <see cref="IUpdateSelectedHandler.OnUpdateSelected"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentUpdateSelectedHandler : SendToParentEventSystemHandler<IUpdateSelectedHandler>,

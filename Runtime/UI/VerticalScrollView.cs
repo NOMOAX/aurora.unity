@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 垂直滚动视图。
+    /// A vertical scroll view.
     /// </summary>
     public sealed class VerticalScrollView : ScrollView
     {

@@ -6,9 +6,9 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供与游戏物体的激活状态关联的取消令牌。
+    /// Provides a cancellation token tied to the activation state of a game object.
     /// </summary>
-    /// <remarks>不要手动修改此实例的 <see cref="Behaviour.enabled"/> 属性。</remarks>
+    /// <remarks>Do not manually modify the <see cref="Behaviour.enabled"/> property of this instance.</remarks>
     /// <seealso cref="GameObjectExtensions.GetDisableToken"/>
     [DisallowMultipleComponent]
     internal sealed class DisableTokenProvider : MonoBehaviour
@@ -16,7 +16,7 @@ namespace Aurora.Unity
         private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
-        /// 获取与游戏物体的激活状态关联的取消令牌。
+        /// Gets the cancellation token tied to the activation state of the game object.
         /// </summary>
         internal CancellationToken CancellationToken
         {

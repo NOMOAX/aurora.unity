@@ -3,31 +3,31 @@ using System;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 由 <see cref="FromToTimerValueChangedEventHandler"/> 使用的参数。
+    /// Arguments used by <see cref="FromToTimerValueChangedEventHandler"/>.
     /// </summary>
     public readonly struct FromToTimerValueChangedEventArgs : IFormattable
     {
         /// <summary>
-        /// 引起 <see cref="IFromToTimer"/> 值变化的原因。
+        /// The cause of the value change of <see cref="IFromToTimer"/>.
         /// </summary>
         public readonly FromToTimerValueChangingCausation Causation;
 
         /// <summary>
-        /// 旧值。
+        /// The previous value.
         /// </summary>
         public readonly double PreviousValue;
 
         /// <summary>
-        /// 新值。
+        /// The new value.
         /// </summary>
         public readonly double NewValue;
 
         /// <summary>
-        /// 初始化 <see cref="FromToTimerValueChangedEventArgs"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="FromToTimerValueChangedEventArgs"/> struct.
         /// </summary>
-        /// <param name="causation">引起 <see cref="IFromToTimer"/> 值变化的原因。</param>
-        /// <param name="previousValue">旧值。</param>
-        /// <param name="newValue">新值。</param>
+        /// <param name="causation">The cause of the value change of <see cref="IFromToTimer"/>.</param>
+        /// <param name="previousValue">The previous value.</param>
+        /// <param name="newValue">The new value.</param>
         public FromToTimerValueChangedEventArgs(
             FromToTimerValueChangingCausation causation,
             double                            previousValue,

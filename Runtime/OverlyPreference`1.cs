@@ -3,13 +3,13 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 当调用 <see cref="GetValue()"/> 时如果值不存在，会设置 <see cref="PlayerPrefs"/> 中 <see cref="Preference{TValue}.Key"/> 对应的值为 <see cref="DefaultValuePreference{TValue}.DefaultValue"/>，然后返回；当调用 <see cref="GetValue(TValue)"/> 时如果值不存在，会设置 <see cref="PlayerPrefs"/> 中 <see cref="Preference{TValue}.Key"/> 对应的值为传入的默认值，然后返回。
+    /// When <see cref="GetValue()"/> is called and the value does not exist, the value stored under <see cref="Preference{TValue}.Key"/> in <see cref="PlayerPrefs"/> is set to <see cref="DefaultValuePreference{TValue}.DefaultValue"/> and then returned; when <see cref="GetValue(TValue)"/> is called and the value does not exist, the value stored under <see cref="Preference{TValue}.Key"/> in <see cref="PlayerPrefs"/> is set to the passed-in default value and then returned.
     /// </summary>
     /// <inheritdoc />
     public sealed class OverlyPreference<TValue> : DefaultValuePreference<TValue>
     {
         /// <summary>
-        /// 初始化 <see cref="OverlyPreference{TValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="OverlyPreference{TValue}"/> class.
         /// </summary>
         /// <inheritdoc />
         public OverlyPreference(Preference<TValue> preference, TValue defaultValue) : base(preference, defaultValue)

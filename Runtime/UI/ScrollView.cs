@@ -20,9 +20,9 @@ using UnityEditor;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 滚动视图。
+    /// A scroll view.
     /// </summary>
-    /// <remarks>借助 <see cref="UnityEngine.UI.ScrollRect"/> 实现功能。</remarks>
+    /// <remarks>Features are implemented with the help of <see cref="UnityEngine.UI.ScrollRect"/>.</remarks>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(ScrollRect))]
@@ -97,87 +97,87 @@ namespace Aurora.Unity.UI
         internal ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.OnlyIfNeeded;
 
         /// <summary>
-        /// 前方活动（内容位置）偏移量。用于提前加载。
+        /// The leading active (content position) offset. Used for preloading.
         /// </summary>
-        /// <remarks>设置为大于或等于 0 的值。设置后，将在下一次刷新后生效。</remarks>
+        /// <remarks>Set to a value greater than or equal to 0. After setting, it takes effect after the next refresh.</remarks>
         [Min(0)]
         public float leadingActiveOffset;
 
         /// <summary>
-        /// 后方活动（内容位置）偏移量。用于提前加载。
+        /// The trailing active (content position) offset. Used for preloading.
         /// </summary>
-        /// <remarks>设置为大于或等于 0 的值。设置后，将在下一次刷新后生效。</remarks>
+        /// <remarks>Set to a value greater than or equal to 0. After setting, it takes effect after the next refresh.</remarks>
         [Min(0)]
         public float trailingActiveOffset;
 
         /// <summary>
-        /// 速率限制。大于 0 时生效。
+        /// The speed limit. Takes effect when greater than 0.
         /// </summary>
         [Min(0)]
         public float speedLimit;
 
         /// <summary>
-        /// 自动吸附的触发条件。
+        /// The trigger conditions for auto-snap.
         /// </summary>
         public ScrollViewSnapTrigger snapTrigger;
 
         /// <summary>
-        /// 当标准化滚动位置改变时，如果速率小于这个值，将触发自动吸附。
+        /// When the normalized scroll position changes, if the velocity is less than this value, auto-snap is triggered.
         /// </summary>
         [Min(0)]
         public float snapSpeedThreshold = 300;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示寻找最靠近此标准化视口位置的项。
+        /// Used in computing the "auto-snap target position"; it indicates searching for the item closest to this normalized viewport position.
         /// </summary>
         [Range(0, 1)]
         public float snapFindNormalizedViewportPosition = 0.5f;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示在计算项的开始位置和结束位置时，是否还应该考虑项之前和之后的空白。
+        /// Used in computing the "auto-snap target position"; it indicates whether the whitespace before and after an item should also be considered when computing the start and end positions of the item.
         /// <br/>
-        /// 项之前或之后的空白，是指，如果项是第一项，那么项之前的空白是前内边距，否则是间距，如果项是最后一项，那么项之后的空白是后内边距，否则是间距。
+        /// The whitespace before or after an item means: if the item is the first item, the whitespace before it is the leading padding, otherwise it is the spacing; if the item is the last item, the whitespace after it is the trailing padding, otherwise it is the spacing.
         /// </summary>
         public bool snapIncludingSpacing;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示在寻找到要自动吸附的项时，对项的开始位置和结束位置使用此权重进行线性插值，以计算目标位置。
+        /// Used in computing the "auto-snap target position"; it indicates that when the item to snap to is found, this weight is used to linearly interpolate between the start and end positions of the item to compute the target position.
         /// </summary>
         [Range(0, 1)]
         public float snapNormalizedItemPosition = 0.5f;
 
         /// <summary>
-        /// 用于参与“自动吸附的目标位置”的计算，它表示将目标位置逐渐“吸附”到此标准化视口位置。
+        /// Used in computing the "auto-snap target position"; it indicates that the target position is gradually "snapped" to this normalized viewport position.
         /// </summary>
         [Range(0, 1)]
         public float snapJumpNormalizedViewportPosition = 0.5f;
 
         /// <summary>
-        /// 如何计算自动吸附的耗时。
+        /// How the duration of auto-snap is computed.
         /// </summary>
         public ScrollViewSnapDurationMode snapDurationMode;
 
         /// <summary>
-        /// 自动吸附的耗时。
+        /// The duration of auto-snap.
         /// </summary>
-        /// <remarks>当 <see cref="snapDurationMode"/> 为 <see cref="ScrollViewSnapDurationMode.Fixed"/> 时，将使用此值。</remarks>
+        /// <remarks>This value is used when <see cref="snapDurationMode"/> is <see cref="ScrollViewSnapDurationMode.Fixed"/>.</remarks>
         [Min(0)]
         public float snapDuration = 0.25f;
 
         /// <summary>
-        /// 自动吸附的速度。
+        /// The speed of auto-snap.
         /// </summary>
-        /// <remarks>当 <see cref="snapDurationMode"/> 为 <see cref="ScrollViewSnapDurationMode.Dynamic"/> 时，将使用此值。</remarks>
+        /// <remarks>This value is used when <see cref="snapDurationMode"/> is <see cref="ScrollViewSnapDurationMode.Dynamic"/>.</remarks>
         [Min(0)]
         public float snapSpeed = 900;
 
         /// <summary>
-        /// 在自动吸附过程中使用的插值类型。
+        /// The interpolation type used during auto-snap.
         /// </summary>
         public Interpolation snapInterpolation = Interpolation.OutCubic;
 
         /// <summary>
-        /// 当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时，如果标准化滚动位置的改变是因操作鼠标滚轮、操作滚动条引起的，将在这个延迟时间后执行吸附，而不是在每帧立即吸附。
+        /// When <see cref="snapTrigger"/> defines the <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> bit, if the normalized scroll position change is caused by operating the mouse wheel or the scrollbar, snap is performed after this delay instead of immediately every frame.
         /// </summary>
         [Range(0.2f, 0.4f)]
         public float scrollSnapDelay = 0.3f;
@@ -187,11 +187,11 @@ namespace Aurora.Unity.UI
         private bool _dragging;
 
         /// <summary>
-        /// 在 <see cref="IScrollHandler.OnScroll"/>（<see cref="EventSystem.Update">EventSystem.Update</see>）中设为 <see langword="true"/>，
+        /// Set to <see langword="true"/> in <see cref="IScrollHandler.OnScroll"/> (<see cref="EventSystem.Update">EventSystem.Update</see>),
         /// <br/>
-        /// 在 <see cref="OnScrollRectValueChanged"/>（<see cref="ScrollRect.LateUpdate">ScrollRect.LateUpdate</see>）中被使用，
+        /// used in <see cref="OnScrollRectValueChanged"/> (<see cref="ScrollRect.LateUpdate">ScrollRect.LateUpdate</see>),
         /// <br/>
-        /// 在 <see cref="PlayerLoopPhase.LateUpdated"/> 中设为 <see langword="false"/>。
+        /// set to <see langword="false"/> in <see cref="PlayerLoopPhase.LateUpdated"/>.
         /// </summary>
         [NonSerialized]
         private bool _scrolling;
@@ -205,37 +205,37 @@ namespace Aurora.Unity.UI
         private int _itemCount;
 
         /// <summary>
-        /// 全体项的开始处和结尾处的内容位置。内部排列如下：
+        /// The content positions at the start and end of all items. The internal arrangement is as follows:
         /// <list type="bullet">
-        /// <item><description>第一项的开始位置</description></item>
-        /// <item><description>第一项的结束位置</description></item>
-        /// <item><description>第二项的开始位置</description></item>
-        /// <item><description>第二项的结束位置</description></item>
-        /// <item><description>……（略）</description></item>
-        /// <item><description>最后一项的开始位置</description></item>
-        /// <item><description>最后一项的结束位置</description></item>
+        /// <item><description>The start position of the first item</description></item>
+        /// <item><description>The end position of the first item</description></item>
+        /// <item><description>The start position of the second item</description></item>
+        /// <item><description>The end position of the second item</description></item>
+        /// <item><description>... (omitted)</description></item>
+        /// <item><description>The start position of the last item</description></item>
+        /// <item><description>The end position of the last item</description></item>
         /// </list>
         /// </summary>
-        /// <remarks>长度为 <see cref="_itemCount"/> 的 2 倍。</remarks>
+        /// <remarks>The length is 2 times <see cref="_itemCount"/>.</remarks>
         private readonly List<float> _itemPositions = new();
 
         /// <summary>
-        /// 活动的 <see cref="ScrollViewItem"/>。
+        /// The active <see cref="ScrollViewItem"/>s.
         /// </summary>
         private readonly Deque<ScrollViewItem> _activeItems = new();
 
         /// <summary>
-        /// 已回收的 <see cref="ScrollViewItem"/>。
+        /// The recycled <see cref="ScrollViewItem"/>s.
         /// </summary>
         private readonly List<ScrollViewItem> _recycledItems = new();
 
-        /// <remarks>当内容大小较大、<see cref="snapSpeedThreshold"/> 较小时，<see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>不再每帧触发，不可靠，因此趁它还在触发的时候开启计数器，并且在速度降低到阈值之前持续刷新计数器，这样才可以实现当速度低于阈值时吸附（当 <see cref="snapTrigger"/> 定义了 <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> 位时）。</remarks>
+        /// <remarks>When the content size is large and <see cref="snapSpeedThreshold"/> is small, <see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see> no longer triggers every frame and is unreliable, so the counter is enabled while it is still triggering, and the counter is continuously refreshed until the velocity drops below the threshold, so that snapping can be achieved when the velocity is below the threshold (when <see cref="snapTrigger"/> defines the <see cref="ScrollViewSnapTrigger.OnNormalizedScrollPositionChanged"/> bit).</remarks>
         private ICounter _valueChangeCounter;
 
         private ITimer _scrollTimer;
 
         /// <summary>
-        /// 获取控制器。
+        /// Gets the controller.
         /// </summary>
         public IScrollViewController Controller
         {
@@ -244,7 +244,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取滚动区域。
+        /// Gets the scroll area.
         /// </summary>
         public ScrollRect ScrollRect
         {
@@ -253,7 +253,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取视口大小。
+        /// Gets the viewport size.
         /// </summary>
         public float ViewportSize
         {
@@ -262,7 +262,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取内容大小。
+        /// Gets the content size.
         /// </summary>
         public float ContentSize
         {
@@ -271,9 +271,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取内容超出视口的大小。
+        /// Gets the size by which the content exceeds the viewport.
         /// </summary>
-        /// <remarks>如果 <see cref="ContentSize"/> 小于或等于 <see cref="ViewportSize"/>，则为 0。</remarks>
+        /// <remarks>If <see cref="ContentSize"/> is less than or equal to <see cref="ViewportSize"/>, it is 0.</remarks>
         public float OverflowedContentSize
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -281,7 +281,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置内容位置。
+        /// Gets or sets the content position.
         /// </summary>
         public float ContentPosition
         {
@@ -292,12 +292,12 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置标准化滚动位置。
+        /// Gets or sets the normalized scroll position.
         /// </summary>
         /// <remarks>
-        /// 标准化滚动位置通常在 [0, 1] 范围内，使用 <see cref="double"/> 类型以提供更大的精度。
+        /// The normalized scroll position is usually in the [0, 1] range; the <see cref="double"/> type is used to provide greater precision.
         /// <br/>
-        /// 内部计算时，不会使用 <see cref="ScrollRect.normalizedPosition"/>，因为 <see cref="ScrollRect.normalizedPosition"/> 的精度不够。
+        /// Internally, <see cref="ScrollRect.normalizedPosition"/> is not used because its precision is insufficient.
         /// </remarks>
         public double NormalizedScrollPosition
         {
@@ -308,10 +308,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置内容的内边距。
+        /// Gets or sets the padding of the content.
         /// </summary>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="NotSupportedException"><paramref name="value"/> 有至少一个分量为负数。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+        /// <exception cref="NotSupportedException">At least one component of <paramref name="value"/> is negative.</exception>
         public RectOffset Padding
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -327,7 +327,7 @@ namespace Aurora.Unity.UI
                 {
                     throw new NotSupportedException();
                 }
-                // 由于 RectOffset 是引用类型，可以直接修改其内部成员，因此跳过相等性检查
+                // Since RectOffset is a reference type, its internal members can be modified directly, so the equality check is skipped
                 padding = value;
 #if UNITY_EDITOR
                 Undo.RecordObject(contentLayoutGroup, $"set {nameof(LayoutGroup.padding)}");
@@ -341,24 +341,24 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 返回滚动方向的内边距。
+        /// Returns the padding along the scrolling direction.
         /// </summary>
         protected abstract float PaddingAlongAxis { get; }
 
         /// <summary>
-        /// 返回滚动方向的前半部分内边距。
+        /// Returns the first half of the padding along the scrolling direction.
         /// </summary>
         protected abstract float FirstPaddingAlongAxis { get; }
 
         /// <summary>
-        /// 返回滚动方向的后半部分内边距。
+        /// Returns the last half of the padding along the scrolling direction.
         /// </summary>
         protected abstract float LastPaddingAlongAxis { get; }
 
         /// <summary>
-        /// 获取或设置各项的间距。
+        /// Gets or sets the spacing among items.
         /// </summary>
-        /// <exception cref="NotSupportedException"><paramref name="value"/> 不满足“大于或等于 0”。</exception>
+        /// <exception cref="NotSupportedException"><paramref name="value"/> does not satisfy "greater than or equal to 0".</exception>
         public float Spacing
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -384,9 +384,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置一个值，这个值指示是否要在非滚动方向上让项占满内容。
+        /// Gets or sets a value indicating whether items should fill the content in the non-scrolling direction.
         /// </summary>
-        /// <remarks>如果是水平滚动视图，则让项的高度占满内容的高度；如果是垂直滚动视图，则让项的宽度占满内容的宽度。</remarks>
+        /// <remarks>For a horizontal scroll view, the item height fills the content height; for a vertical scroll view, the item width fills the content width.</remarks>
         public bool ChildForceExpandSize
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -407,7 +407,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取第一个活动项的索引。如果没有活动项，则返回 -1。
+        /// Gets the index of the first active item. If there is no active item, returns -1.
         /// </summary>
         public int FirstActiveIndex
         {
@@ -416,7 +416,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取第一个可见项的索引。如果没有可见项，则返回 -1.
+        /// Gets the index of the first visible item. If there is no visible item, returns -1.
         /// </summary>
         public int FirstVisibleIndex
         {
@@ -439,7 +439,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取最后一个可见项的索引。如果没有可见项，则返回 -1.
+        /// Gets the index of the last visible item. If there is no visible item, returns -1.
         /// </summary>
         public int LastVisibleIndex
         {
@@ -462,7 +462,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取最后一个活动项的索引。如果没有活动项，则返回 -1。
+        /// Gets the index of the last active item. If there is no active item, returns -1.
         /// </summary>
         public int LastActiveIndex
         {
@@ -471,7 +471,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取项的数量。
+        /// Gets the number of items.
         /// </summary>
         public int ItemCount
         {
@@ -480,7 +480,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取或设置滚动条的可见性。
+        /// Gets or sets the visibility of the scrollbar.
         /// </summary>
         public ScrollbarVisibility ScrollbarVisibility
         {
@@ -502,7 +502,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否正在被拖拽。
+        /// Whether it is currently being dragged.
         /// </summary>
         public bool Dragging
         {
@@ -511,7 +511,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否正在播放补间动画。
+        /// Whether a tween animation is currently playing.
         /// </summary>
         public bool Tweening
         {
@@ -520,46 +520,46 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 返回 <paramref name="vector2"/> 的滚动方向分量。
+        /// Returns the scrolling-direction component of <paramref name="vector2"/>.
         /// </summary>
         protected abstract float Get(Vector2 vector2);
 
         /// <summary>
-        /// 返回内容位置。
+        /// Returns the content position.
         /// </summary>
-        /// <param name="contentAnchoredPosition"><see cref="content"/> 的 <see cref="RectTransform.anchoredPosition"/>。</param>
-        /// <remarks>方向为水平时，取反。</remarks>
+        /// <param name="contentAnchoredPosition">The <see cref="RectTransform.anchoredPosition"/> of <see cref="content"/>.</param>
+        /// <remarks>When the direction is horizontal, the sign is inverted.</remarks>
         protected abstract float GetContentPosition(Vector2 contentAnchoredPosition);
 
         /// <summary>
-        /// 将 <paramref name="vector2"/> 的滚动方向分量设置为 <paramref name="value"/>，然后返回设置后的值。
+        /// Sets the scrolling-direction component of <paramref name="vector2"/> to <paramref name="value"/>, then returns the set value.
         /// </summary>
         protected abstract Vector2 Set(Vector2 vector2, float value);
 
         /// <summary>
-        /// 设置内容位置。
+        /// Sets the content position.
         /// </summary>
-        /// <param name="contentAnchoredPosition"><see cref="content"/> 的 <see cref="RectTransform.anchoredPosition"/>。</param>
-        /// <param name="contentPosition">内容位置。</param>
-        /// <remarks>方向为水平时，取反。</remarks>
+        /// <param name="contentAnchoredPosition">The <see cref="RectTransform.anchoredPosition"/> of <see cref="content"/>.</param>
+        /// <param name="contentPosition">The content position.</param>
+        /// <remarks>When the direction is horizontal, the sign is inverted.</remarks>
         protected abstract Vector2 SetContentPosition(Vector2 contentAnchoredPosition, float contentPosition);
 
         /// <summary>
-        /// 设置 <paramref name="layoutElement"/> 在滚动方向上的最小大小。
+        /// Sets the minimum size of <paramref name="layoutElement"/> along the scrolling direction.
         /// </summary>
         protected abstract void SetMinSize(LayoutElement layoutElement, float minSize);
 
         /// <summary>
-        /// 设置是否要在非滚动方向上让项占满内容。
+        /// Sets whether items should fill the content in the non-scrolling direction.
         /// </summary>
         protected abstract void SetLayoutGroupChildForceExpandSize(
             HorizontalOrVerticalLayoutGroup horizontalOrVerticalLayoutGroup,
             bool                            forceExpand);
 
         /// <summary>
-        /// 设置滚动条。
+        /// Sets the scrollbar.
         /// </summary>
-        /// <remarks>执行此操作通常是为了防止 <see cref="UnityEngine.UI.ScrollRect"/> 修改滚动条的可见性。</remarks>
+        /// <remarks>This is usually done to prevent <see cref="UnityEngine.UI.ScrollRect"/> from modifying the scrollbar visibility.</remarks>
         protected abstract void SetScrollRectScrollbar(ScrollRect sr, Scrollbar sb);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -608,12 +608,12 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取位于指定索引处的项。
+        /// Gets the item at the specified index.
         /// </summary>
-        /// <param name="index">索引。</param>
-        /// <returns>如果位于指定索引处的项是活动的，则为该项；否则为 <see langword="null"/>。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
-        /// <remarks>活动的项在此类注册到 <see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>的回调中刷新；如果你在调用 <see cref="set_ContentPosition"/>、<see cref="set_NormalizedScrollPosition"/> 后需要立即获取最新的活动的项，请使用 <see cref="Refresh"/> 手动刷新。</remarks>
+        /// <param name="index">The index.</param>
+        /// <returns>The item if the item at the specified index is active; otherwise <see langword="null"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0, or greater than or equal to <see cref="ItemCount"/>.</exception>
+        /// <remarks>Active items are refreshed in the callback registered by this class to <see cref="ScrollRect.onValueChanged">ScrollRect.onValueChanged</see>; if you need the latest active items immediately after calling <see cref="set_ContentPosition"/> or <see cref="set_NormalizedScrollPosition"/>, use <see cref="Refresh"/> to refresh manually.</remarks>
         public ScrollViewItem this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -628,10 +628,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取所有指定类型的活动的项，将他们存入指定的集合。
+        /// Gets all active items of the specified type and stores them into the specified collection.
         /// </summary>
-        /// <param name="results">用于存放结果的集合。</param>
-        /// <typeparam name="T">要获取的项的类型。</typeparam>
+        /// <param name="results">The collection used to hold the results.</param>
+        /// <typeparam name="T">The type of items to get.</typeparam>
         public void GetActiveItems<T>(ICollection<T> results)
         {
             if (results == null)
@@ -652,11 +652,11 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取位于指定索引处的项的开始（内容）位置。
+        /// Gets the begin (content) position of the item at the specified index.
         /// </summary>
-        /// <param name="index">索引。</param>
-        /// <returns>项的开始（内容）位置。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
+        /// <param name="index">The index.</param>
+        /// <returns>The begin (content) position of the item.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0, or greater than or equal to <see cref="ItemCount"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float GetItemBeginPosition(int index)
         {
@@ -674,11 +674,11 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取位于指定索引处的项的结束（内容）位置。
+        /// Gets the end (content) position of the item at the specified index.
         /// </summary>
-        /// <param name="index">索引。</param>
-        /// <returns>项的结束（内容）位置。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，或者大于或等于 <see cref="ItemCount"/>。</exception>
+        /// <param name="index">The index.</param>
+        /// <returns>The end (content) position of the item.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than 0, or greater than or equal to <see cref="ItemCount"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float GetItemEndPosition(int index)
         {
@@ -696,9 +696,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置控制器，保持当前内容位置，重新加载。
+        /// Sets the controller, keeps the current content position, and reloads.
         /// </summary>
-        /// <param name="controller">控制器。</param>
+        /// <param name="controller">The controller.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReload(IScrollViewController controller)
         {
@@ -707,10 +707,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置控制器，设置内容位置，重新加载。
+        /// Sets the controller, sets the content position, and reloads.
         /// </summary>
-        /// <param name="controller">控制器。</param>
-        /// <param name="contentPosition">内容位置。</param>
+        /// <param name="controller">The controller.</param>
+        /// <param name="contentPosition">The content position.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReloadWithContentPosition(IScrollViewController controller, float contentPosition)
         {
@@ -719,10 +719,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置控制器，设置标准化滚动位置，重新加载。
+        /// Sets the controller, sets the normalized scroll position, and reloads.
         /// </summary>
-        /// <param name="controller">控制器。</param>
-        /// <param name="normalizedScrollPosition">标准化滚动位置。</param>
+        /// <param name="controller">The controller.</param>
+        /// <param name="normalizedScrollPosition">The normalized scroll position.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetControllerAndReloadWithNormalizedScrollPosition(
             IScrollViewController controller,
@@ -733,9 +733,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 保持当前内容位置，重新加载。
+        /// Keeps the current content position and reloads.
         /// </summary>
-        /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        /// <remarks>The caller should ensure this is called once immediately after model data changes.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reload()
         {
@@ -743,10 +743,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置内容位置，重新加载。
+        /// Sets the content position and reloads.
         /// </summary>
-        /// <param name="contentPosition">内容位置。</param>
-        /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        /// <param name="contentPosition">The content position.</param>
+        /// <remarks>The caller should ensure this is called once immediately after model data changes.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReloadWithContentPosition(float contentPosition)
         {
@@ -754,10 +754,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 设置标准化滚动位置，重新加载。
+        /// Sets the normalized scroll position and reloads.
         /// </summary>
-        /// <param name="normalizedScrollPosition">标准化滚动位置。</param>
-        /// <remarks>调用方应确保在模型数据改变后立即调用一次。</remarks>
+        /// <param name="normalizedScrollPosition">The normalized scroll position.</param>
+        /// <remarks>The caller should ensure this is called once immediately after model data changes.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ReloadWithNormalizedScrollPosition(double normalizedScrollPosition)
         {
@@ -807,9 +807,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 回收超出范围的项、添加新进入范围的项、刷新滚动条的可见性。
+        /// Recycles items out of range, adds items newly entering the range, and refreshes the scrollbar visibility.
         /// </summary>
-        /// <remarks>此方法将在 <see cref="ScrollRect.onValueChanged"/> 事件引发时调用。</remarks>
+        /// <remarks>This method is called when the <see cref="ScrollRect.onValueChanged"/> event is raised.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Refresh()
         {
@@ -872,7 +872,7 @@ namespace Aurora.Unity.UI
             }
             else if (_controller.GetItemCount(this) is var itemCount && itemCount < 0)
             {
-                Log.E($"{nameof(IScrollViewController)}.{nameof(IScrollViewController.GetItemCount)} 的返回值 < 0");
+                Log.E($"{nameof(IScrollViewController)}.{nameof(IScrollViewController.GetItemCount)} returned < 0");
 
                 _itemCount = 0;
                 _itemPositions.Clear();
@@ -882,8 +882,8 @@ namespace Aurora.Unity.UI
                 _itemCount = itemCount;
                 _itemPositions.Clear();
                 /*
-                 * 虽然保存的值的类型是 float，但在累加时使用 double 以减少精度损失
-                 * 别小看了这里的作用，如果每次计算新的位置的时候都使用列表中最后一项作为基础，当项的数量很多、在编辑器中拖动修改间距的时候，将产生明显的抖动现象
+                 * Although the stored value type is float, double is used during accumulation to reduce precision loss
+                 * Do not underestimate the effect here: if the last item in the list is used as the base every time a new position is computed, when there are many items and spacing is dragged in the editor, noticeable jitter will occur
                  */
                 double itemPosition = 0;
                 for (var itemIndex = 0; itemIndex < _itemCount; itemIndex++)
@@ -900,7 +900,7 @@ namespace Aurora.Unity.UI
                         else
                         {
                             // @formatter:max_line_length 10000
-                            Log.W($"{nameof(IScrollViewController)}.{nameof(IScrollViewController.GetItemSize)} 的返回值不 >= 0");
+                            Log.W($"{nameof(IScrollViewController)}.{nameof(IScrollViewController.GetItemSize)} returned not >= 0");
                             // @formatter:max_line_length restore
 
                             itemSize = 0;
@@ -1024,12 +1024,12 @@ namespace Aurora.Unity.UI
             scrollbar.gameObject.SetActive(scrollbarActive);
             if (!scrollbarActive)
             {
-                SetScrollRectScrollbar(scrollRect, null); // 防止 ScrollRect 设置 ScrollBar 为活动
+                SetScrollRectScrollbar(scrollRect, null); // prevent ScrollRect from setting the ScrollBar active
             }
         }
 
         /// <summary>
-        /// 终止补间动画。
+        /// Stops the tween animation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void StopTween()
@@ -1072,7 +1072,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 吸附。
+        /// Snaps.
         /// </summary>
         /// <seealso cref="snapFindNormalizedViewportPosition"/>
         /// <seealso cref="snapIncludingSpacing"/>
@@ -1109,7 +1109,7 @@ namespace Aurora.Unity.UI
                 return;
             }
             var overflowedContentSize = GetOverflowedContentSize();
-            // 如果“内容大小”小于或等于“滚动视图自身大小”，且内容超出滚动视图时会受到严格限制或弹性限制，执行吸附没有意义
+            // If the "content size" is less than or equal to the "scroll view itself size", and the content is strictly or elastically restricted when it exceeds the scroll view, snapping is meaningless
             if (overflowedContentSize == 0 && scrollRect.movementType != ScrollRect.MovementType.Unrestricted)
             {
                 return;
@@ -1122,7 +1122,7 @@ namespace Aurora.Unity.UI
                 itemBeginPosition -= index == 0 ? FirstPaddingAlongAxis : spacing;
                 itemEndPosition   += index == _itemCount - 1 ? LastPaddingAlongAxis : spacing;
             }
-            // 限制内容位置的值，确保内容不会超出滚动视图
+            // Clamp the content position value to ensure the content does not exceed the scroll view
             var contentEndPosition = Mathf.Clamp(
                 (float)InterpolationUtility.LinearInterpolate(
                     itemBeginPosition,
@@ -1211,7 +1211,7 @@ namespace Aurora.Unity.UI
 
             SetContentPosition(contentEndPosition);
             scrollRect.velocity = Set(scrollRect.velocity, 0);
-            // 占据任务到 ScrollRect.LateUpdate 之后，防止在 OnScrollRectValueChange 中再次触发自动吸附
+            // Occupy the task until after ScrollRect.LateUpdate to prevent auto-snap from triggering again in OnScrollRectValueChange
             await new PlayerLoopPhaseAwaitable(PlayerLoopPhase.LateUpdated, cancellationToken);
         }
 
@@ -1251,10 +1251,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 寻找第一个开始（内容）位置大于或等于指定内容位置的项的索引。
+        /// Finds the index of the first item whose begin (content) position is greater than or equal to the specified content position.
         /// </summary>
-        /// <param name="contentPosition">内容位置。</param>
-        /// <returns>如果找到了第一个开始（内容）位置大于或等于指定内容位置的项，则为该项的索引；否则为 -1.</returns>
+        /// <param name="contentPosition">The content position.</param>
+        /// <returns>The index of the first item whose begin (content) position is greater than or equal to the specified content position, if found; otherwise -1.</returns>
         public int FindFirstIndex(float contentPosition)
         {
             return InternalFindFirstIndex(contentPosition);
@@ -1270,10 +1270,10 @@ namespace Aurora.Unity.UI
             }
             var comparer           = Comparer<float>.Default;
             var matchPositionIndex = _itemPositions.BinarySearch(0, positionCount, contentPosition, comparer);
-            // 精确匹配，但由于可能会存在相同的位置，需要继续寻找第一个
+            // Exact match, but since there may be identical positions, continue to search for the first one
             if (matchPositionIndex >= 0)
             {
-                // 向前查找相等的位置
+                // Search backward for an equal position
                 while (matchPositionIndex > 0 && comparer.Compare(
                            _itemPositions[matchPositionIndex - 1],
                            contentPosition
@@ -1288,10 +1288,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 寻找第一个结束（内容）位置大于或等于指定内容位置的项的索引。
+        /// Finds the index of the first item whose end (content) position is greater than or equal to the specified content position.
         /// </summary>
-        /// <param name="contentPosition">内容位置。</param>
-        /// <returns>如果找到了第一个结束（内容）位置大于或等于指定内容位置的项，则为该项的索引；否则为 -1.</returns>
+        /// <param name="contentPosition">The content position.</param>
+        /// <returns>The index of the first item whose end (content) position is greater than or equal to the specified content position, if found; otherwise -1.</returns>
         public int FindLastIndex(float contentPosition)
         {
             return InternalFindLastIndex(contentPosition);
@@ -1307,10 +1307,10 @@ namespace Aurora.Unity.UI
             }
             var comparer           = Comparer<float>.Default;
             var matchPositionIndex = _itemPositions.BinarySearch(0, positionCount, contentPosition, comparer);
-            // 精确匹配，但由于可能会存在相同的位置，需要继续寻找最后一个
+            // Exact match, but since there may be identical positions, continue to search for the last one
             if (matchPositionIndex >= 0)
             {
-                // 向后查找相等的值
+                // Search forward for an equal value
                 while (matchPositionIndex < positionCount - 1 && comparer.Compare(
                            contentPosition,
                            _itemPositions[matchPositionIndex + 1]
@@ -1325,10 +1325,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 寻找最靠近指定内容位置的项的索引。
+        /// Finds the index of the item closest to the specified content position.
         /// </summary>
-        /// <param name="contentPosition">内容位置。</param>
-        /// <returns>如果项的数量大于 0，则为最靠近 <paramref name="contentPosition"/> 的项的索引；否则为 -1.</returns>
+        /// <param name="contentPosition">The content position.</param>
+        /// <returns>The index of the item closest to <paramref name="contentPosition"/> if the item count is greater than 0; otherwise -1.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindClosestIndex(float contentPosition)
         {
@@ -1345,27 +1345,27 @@ namespace Aurora.Unity.UI
             }
             var comparer           = Comparer<float>.Default;
             var matchPositionIndex = _itemPositions.BinarySearch(0, positionCount, contentPosition, comparer);
-            // 精确匹配，虽然可能会存在相同的位置，但这里既不偏向于寻找第一个，也不偏向于寻找最后一个，所以就使用当前二分查找的结果吧
+            // Exact match. Although there may be identical positions, here we neither bias toward the first nor the last, so use the current binary search result
             if (matchPositionIndex >= 0)
             {
                 return matchPositionIndex / 2;
             }
             var insertPositionIndex = ~matchPositionIndex;
-            // 插入位置位于开头，所以第一项是最近的项
+            // The insertion position is at the beginning, so the first item is the closest
             if (insertPositionIndex == 0)
             {
                 return 0;
             }
-            // 插入位置位于末尾，所以最后一项是最近的项
+            // The insertion position is at the end, so the last item is the closest
             if (insertPositionIndex == positionCount)
             {
                 return positionCount / 2 - 1;
             }
             /*
-             * _itemPositions 中，“开始位置”“结束位置”依次排列。
-             * 所有“开始位置”的索引都是偶数，所有“结束位置”的索引都是奇数。
-             * 如果插入位置是偶数，说明位于前一个项的结束位置与后一个项的开始位置之间，通过比较两段距离即可得出结果；
-             * 如果插入位置是奇数，说明位于某一个项的开始位置和结束位置之间，自然就是该项。
+             * In _itemPositions, "begin position" and "end position" are arranged in order.
+             * All "begin position" indices are even, and all "end position" indices are odd.
+             * If the insertion position is even, it lies between the end position of the previous item and the begin position of the next item; the result can be obtained by comparing the two distances;
+             * If the insertion position is odd, it lies between the begin and end positions of some item, so that item is the result.
              */
             return (insertPositionIndex & 1) == 0
                        ? comparer.Compare(
@@ -1378,12 +1378,12 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取一个已回收的项，或实例化 <paramref name="itemPrefab"/> 以创建一个新项。
+        /// Gets a recycled item, or instantiates <paramref name="itemPrefab"/> to create a new item.
         /// </summary>
-        /// <param name="itemPrefab">项的预制体。如果在已回收的项中没有寻找到与 <paramref name="itemPrefab"/> 的 <see cref="ScrollViewItem.identifier"/> 相等的项，将会实例化该预制体以创建一个新项。</param>
-        /// <param name="isNewCreated">项是否是新创建的。</param>
-        /// <returns>从已回收的项中获取的或者新创建的项。</returns>
-        /// <remarks>此方法仅由 <see cref="IScrollViewController.GetItem"/> 的实现调用。</remarks>
+        /// <param name="itemPrefab">The item prefab. If no recycled item with an <see cref="ScrollViewItem.identifier"/> equal to that of <paramref name="itemPrefab"/> is found, this prefab is instantiated to create a new item.</param>
+        /// <param name="isNewCreated">Whether the item is newly created.</param>
+        /// <returns>The item obtained from recycled items or newly created.</returns>
+        /// <remarks>This method is called only by the implementation of <see cref="IScrollViewController.GetItem"/>.</remarks>
         public ScrollViewItem GetRecycledOrCreateNewItem(ScrollViewItem itemPrefab, out bool isNewCreated)
         {
             if (!itemPrefab)
@@ -1403,7 +1403,7 @@ namespace Aurora.Unity.UI
 #if UNITY_EDITOR
                 var itemPrefabName = itemPrefab.name;
 #endif
-                var item = Instantiate(itemPrefab, inactiveContainer, false); // 确保不活动
+                var item = Instantiate(itemPrefab, inactiveContainer, false); // ensure it is inactive
 #if UNITY_EDITOR
                 item.name = itemPrefabName;
 #endif
@@ -1538,7 +1538,7 @@ namespace Aurora.Unity.UI
 #endif
 
         /// <summary>
-        /// 将内容位置转换为标准化视口位置。
+        /// Converts a content position to a normalized viewport position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float ConvertContentPositionToNormalizedViewportPosition(float contentPosition)
@@ -1547,7 +1547,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 将标准化视口位置转换为内容位置。
+        /// Converts a normalized viewport position to a content position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float ConvertNormalizedViewportPositionToContentPosition(float normalizedViewportPosition)
@@ -1556,7 +1556,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 将内容位置转换为标准化滚动位置。
+        /// Converts a content position to a normalized scroll position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double ConvertContentPositionToNormalizedScrollPosition(float contentPosition)
@@ -1565,7 +1565,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 将标准化滚动位置转换为内容位置。
+        /// Converts a normalized scroll position to a content position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float ConvertNormalizedScrollPositionToContentPosition(double normalizedScrollPosition)
@@ -1664,8 +1664,8 @@ namespace Aurora.Unity.UI
             // }
 
             /*
-             * 这里暂时没有逻辑
-             * 不过，为了让 OnBeginDrag 和 OnEndDrag 执行，必须实现 OnDrag
+             * There is no logic here yet
+             * However, to make OnBeginDrag and OnEndDrag execute, OnDrag must be implemented
              */
         }
 
@@ -1798,7 +1798,7 @@ namespace Aurora.Unity.UI
                 }
                 else
                 {
-                    // 不满足条件，重新启用，下一帧继续检查
+                    // The condition is not satisfied; re-enable and continue checking next frame
                     EnableValueChangeCounter();
                 }
             }
@@ -1821,7 +1821,7 @@ namespace Aurora.Unity.UI
         {
             if (!_dragging && !_scrolling && !IsTweening())
             {
-                // 因为操作了滚动条，所以执行了此回调函数
+                // Because the scrollbar was operated, this callback is executed
                 if (scrollbar && scrollbar.IsActive() && SelectableUtility.IsPressed(scrollbar))
                 {
                     DisableValueChangeCounter();
@@ -1831,8 +1831,8 @@ namespace Aurora.Unity.UI
                          snapSpeedThreshold > 0 && Mathf.Abs(Get(scrollRect.velocity)) is var speed)
                 {
                     /*
-                     * 由于 ScrollRect.onValueChanged 的触发不可靠，需要使用另一种方式来检测速度小于阈值
-                     * 目前速度不小于阈值，启用计数器（即使已经启用了也没关系，反复启用只会生效最后一次），将在计数器的回调方法中检测速度是否低于阈值
+                     * Because ScrollRect.onValueChanged triggering is unreliable, another way is needed to detect that the velocity is below the threshold
+                     * Currently the velocity is not below the threshold, so enable the counter (even if already enabled, it is fine; repeated enabling only takes effect the last time); the counter callback will check whether the velocity is below the threshold
                      */
                     if (speed >= snapSpeedThreshold)
                     {
@@ -1846,7 +1846,7 @@ namespace Aurora.Unity.UI
 
         protected override void OnDestroy()
         {
-            // 确保 ScrollViewItem.OnInvisible 和 ScrollViewItem.OnReturn 的执行分别与 ScrollViewItem.OnVisible 和 ScrollViewItem.OnGet 成对出现
+            // Ensure that ScrollViewItem.OnInvisible and ScrollViewItem.OnReturn execute in pairs with ScrollViewItem.OnVisible and ScrollViewItem.OnGet respectively
             while (_activeItems.TryDequeueLast(out var item))
             {
                 ReturnItem(item, true);
@@ -1859,7 +1859,7 @@ namespace Aurora.Unity.UI
         {
             base.OnEnable();
 
-            // 避免因为单行字符过长而被格式化，保持与 OnDisable 对仗工整
+            // Avoid being reformatted because a single line is too long; keep it aligned with OnDisable
             // @formatter:max_line_length 10000
             PlayerLoopUtility.AddPlayerLoopItem(this, PlayerLoopPhase.LateUpdating);
             PlayerLoopUtility.AddPlayerLoopItem(this, PlayerLoopPhase.LateUpdated);

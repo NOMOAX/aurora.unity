@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IPointerDownHandler.OnPointerDown"/> 传递给父级。
+    /// Forwards <see cref="IPointerDownHandler.OnPointerDown"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentPointerDownHandler : SendToParentEventSystemHandler<IPointerDownHandler>,

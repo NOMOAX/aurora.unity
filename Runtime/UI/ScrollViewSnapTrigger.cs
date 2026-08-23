@@ -4,34 +4,34 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// <see cref="ScrollView"/> 自动吸附的触发条件。
+    /// The trigger conditions for the auto-snap of <see cref="ScrollView"/>.
     /// </summary>
     [Flags]
     public enum ScrollViewSnapTrigger
     {
         /// <summary>
-        /// 不吸附。
+        /// No snap.
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// 当结束拖拽时自动吸附。
+        /// Auto-snaps when dragging ends.
         /// </summary>
-        /// <remarks>简单、常见、好用，结束拖拽就自动吸附</remarks>
+        /// <remarks>Simple, common, and convenient; it auto-snaps as soon as dragging ends</remarks>
         OnEndDrag = 1 << 0,
 
         /// <summary>
-        /// 当不在拖拽中，标准化滚动位置改变，并且速率小于阈值时自动吸附。
+        /// Auto-snaps when not dragging, the normalized scroll position changes, and the velocity is below a threshold.
         /// </summary>
-        /// <remarks>一般用于用户快速拖拽，将内容“甩”出去，内容由于惯性（<see cref="ScrollRect.inertia">ScrollRect.inertia</see> 为 <see langword="true"/>）慢慢减速，在速率低于阈值时自动吸附</remarks>
+        /// <remarks>Generally used when the user quickly drags to "flick" the content out; the content decelerates slowly due to inertia (with <see cref="ScrollRect.inertia">ScrollRect.inertia</see> set to <see langword="true"/>), and auto-snaps when the velocity drops below the threshold</remarks>
         /// <seealso cref="ScrollView.snapSpeedThreshold"/>
         /// <seealso cref="ScrollView.scrollSnapDelay"/>
         OnNormalizedScrollPositionChanged = 1 << 1,
 
         /// <summary>
-        /// 当不在拖拽中，指针抬起，并且 <see cref="ScrollRect"/> 的速率很低时自动吸附。
+        /// Auto-snaps when not dragging, the pointer is released, and the velocity of <see cref="ScrollRect"/> is very low.
         /// </summary>
-        /// <remarks>一般与 <see cref="OnNormalizedScrollPositionChanged"/> 一起使用，在 <see cref="OnNormalizedScrollPositionChanged"/> 的基础上，用户没有将内容“甩”出去，而是在某次拖拽后按住不动，然后松手，此时 <see cref="ScrollRect"/> 的速率很低，自动吸附</remarks>
+        /// <remarks>Generally used together with <see cref="OnNormalizedScrollPositionChanged"/>; on the basis of <see cref="OnNormalizedScrollPositionChanged"/>, the user did not "flick" the content out but held still after a drag and then released, at which point the velocity of <see cref="ScrollRect"/> is very low, so it auto-snaps</remarks>
         OnPointerUpWithLowSpeed = 1 << 2
     }
 }

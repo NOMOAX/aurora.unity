@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IPointerUpHandler.OnPointerUp"/> 传递给父级。
+    /// Forwards <see cref="IPointerUpHandler.OnPointerUp"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentPointerUpHandler : SendToParentEventSystemHandler<IPointerUpHandler>,

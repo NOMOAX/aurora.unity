@@ -3,24 +3,24 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// <see cref="PlayerPrefs"/> 中的基本值的类型。
+    /// The type of the primitive value in <see cref="PlayerPrefs"/>.
     /// </summary>
     public enum PreferenceValueType
     {
         /// <summary>
-        /// 32 位有符号整数。
+        /// A 32-bit signed integer.
         /// </summary>
         /// <seealso cref="int"/>
         Int32,
 
         /// <summary>
-        /// 单精度浮点数。
+        /// A single-precision floating-point number.
         /// </summary>
         /// <seealso cref="float"/>
         Single,
 
         /// <summary>
-        /// 字符串。
+        /// A string.
         /// </summary>
         /// <seealso cref="string"/>
         String

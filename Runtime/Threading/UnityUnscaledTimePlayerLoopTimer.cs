@@ -10,7 +10,7 @@ using UnityEditor;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 使用 <see cref="Time.unscaledTime">Time.unscaledTime</see> 计时并在特定的主循环阶段中处理非立即执行的回调的计时器。
+    /// A timer that uses <see cref="Time.unscaledTime">Time.unscaledTime</see> to time and handles non-immediate callbacks in a specific player loop phase.
     /// </summary>
     public sealed class UnityUnscaledTimePlayerLoopTimer : ITimer, IPlayerLoopItem
     {
@@ -49,13 +49,13 @@ namespace Aurora.Unity.Threading
 #endif
 
         /// <summary>
-        /// 初始化 <see cref="UnityUnscaledTimePlayerLoopTimer"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityUnscaledTimePlayerLoopTimer"/> class.
         /// </summary>
-        /// <param name="callback">当计时器触发时执行的方法。</param>
-        /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
+        /// <param name="callback">The method executed when the timer triggers.</param>
+        /// <param name="state">The second parameter passed to <see cref="callback"/>.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> is not a member defined in the <see cref="PlayerLoopPhase"/> enum.</exception>
         public UnityUnscaledTimePlayerLoopTimer(
             TimerTriggerCallback callback,
             object               state,
@@ -80,30 +80,30 @@ namespace Aurora.Unity.Threading
         }
 
         /// <summary>
-        /// 初始化 <see cref="UnityUnscaledTimePlayerLoopTimer"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityUnscaledTimePlayerLoopTimer"/> class.
         /// </summary>
-        /// <param name="callback">当计时器触发时执行的方法。</param>
-        /// <param name="state">将传递给 <see cref="callback"/> 的第二个形参。</param>
+        /// <param name="callback">The method executed when the timer triggers.</param>
+        /// <param name="state">The second parameter passed to <see cref="callback"/>.</param>
         /// <param name="dueTime">
-        /// 计时器首次触发前的等待时间。
+        /// The wait time before the timer triggers for the first time.
         /// <list type="table">
-        /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器并立即触发</description></item>
-        /// <item><term>大于 <see cref="TimeSpan.Zero"/></term><description>禁用计时器，然后启用计时器，计时器将在指定的时间后触发（实际等待时间受计时器精度影响）</description></item>
+        /// <listheader><term>Value</term><description>Meaning</description></listheader>
+        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>Disables the timer</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/></term><description>Disables the timer, then enables it and triggers it immediately</description></item>
+        /// <item><term>Greater than <see cref="TimeSpan.Zero"/></term><description>Disables the timer, then enables it; the timer triggers after the specified time (the actual wait time is affected by timer precision)</description></item>
         /// </list>
         /// </param>
         /// <param name="period">
-        /// 计时器再次触发前的等待时间。
+        /// The wait time before the timer triggers again.
         /// <list type="table">
-        /// <listheader><term>值</term><description>含义</description></listheader>
-        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>在计时器首次触发后禁用计时器</description></item>
-        /// <item><term><see cref="TimeSpan.Zero"/> 以及大于 <see cref="TimeSpan.Zero"/></term><description>在计时器触发后，将在指定的时间后再次触发，反复如此，直至计时器被禁用（实际等待时间受计时器精度影响）</description></item>
+        /// <listheader><term>Value</term><description>Meaning</description></listheader>
+        /// <item><term><see cref="Timeout.InfiniteTimeSpan"/></term><description>Disables the timer after it triggers for the first time</description></item>
+        /// <item><term><see cref="TimeSpan.Zero"/> and greater than <see cref="TimeSpan.Zero"/></term><description>After the timer triggers, it triggers again after the specified time, repeating until the timer is disabled (the actual wait time is affected by timer precision)</description></item>
         /// </list>
         /// </param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueTime"/> 或 <paramref name="period"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它们的毫秒数不在 [0, 4294967294] 范围内；或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="dueTime"/> or <paramref name="period"/> is not <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>, and their milliseconds are not in the [0, 4294967294] range; or <paramref name="playerLoopPhase"/>'s value is undefined.</exception>
         public UnityUnscaledTimePlayerLoopTimer(
             TimerTriggerCallback callback,
             object               state,

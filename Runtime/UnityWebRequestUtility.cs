@@ -12,7 +12,7 @@ using UnityEngine.Networking;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="UnityWebRequest"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="UnityWebRequest"/> class.
     /// </summary>
     public static class UnityWebRequestUtility
     {
@@ -37,16 +37,16 @@ namespace Aurora.Unity
             "The HTTP status code ({0}) returned from the server is not a success status code.";
 
         /// <summary>
-        /// 使用指定的 <see cref="UnityWebRequest"/> 异步发送网络请求。
+        /// Asynchronously sends a web request using the specified <see cref="UnityWebRequest"/>.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放，或者在此异步操作执行过程中释放。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> 已调用 <see cref="UnityWebRequest.SendWebRequest"/>。</exception>
-        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> 已取消，或者在此异步操作执行过程中发出取消请求。</exception>
-        /// <exception cref="UnityWebRequestException">网络请求遇到错误（但不是由于 HTTP 状态码不表示成功状态）。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed, or is disposed during this asynchronous operation.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> has already called <see cref="UnityWebRequest.SendWebRequest"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled, or a cancellation request is issued during this asynchronous operation.</exception>
+        /// <exception cref="UnityWebRequestException">The web request encountered an error (but not because the HTTP status code does not indicate a success status).</exception>
         public static async Task SendWebRequestAsync(
             UnityWebRequest   unityWebRequest,
             CancellationToken cancellationToken = default)
@@ -67,11 +67,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 如果指定的 <see cref="UnityWebRequest"/> 已释放，则抛出 <see cref="ObjectDisposedException"/>。
+        /// Throws an <see cref="ObjectDisposedException"/> if the specified <see cref="UnityWebRequest"/> has been disposed.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed.</exception>
         public static void ThrowIfDisposed(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)
@@ -82,11 +82,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示 <see cref="UnityWebRequest"/> 是否已释放。
+        /// Gets a value indicating whether the <see cref="UnityWebRequest"/> has been disposed.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <returns>如果 <paramref name="unityWebRequest"/> 已释放，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <returns><see langword="true"/> if <paramref name="unityWebRequest"/> has been disposed; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
         public static bool IsDisposed(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)
@@ -97,14 +97,14 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 如果指定的 <see cref="UnityWebRequest"/> 遇到错误，则抛出 <see cref="UnityWebRequestException"/>。
+        /// Throws a <see cref="UnityWebRequestException"/> if the specified <see cref="UnityWebRequest"/> encounters an error.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> 正处于请求过程中。</exception>
-        /// <exception cref="UnityWebRequestException">网络请求遇到错误。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> is currently in the middle of a request.</exception>
+        /// <exception cref="UnityWebRequestException">The web request encountered an error.</exception>
         public static void ThrowIfFaulted(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)
@@ -116,12 +116,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 如果指定的 <see cref="UnityWebRequest"/> 的 HTTP 状态码不表示成功状态，则抛出 <see cref="ArgumentException"/>。
+        /// Throws an <see cref="ArgumentException"/> if the specified <see cref="UnityWebRequest"/>'s HTTP status code does not indicate a success status.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="UnityWebRequestException"><paramref name="unityWebRequest"/> 的 HTTP 状态码不表示成功状态。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="UnityWebRequestException">The HTTP status code of <paramref name="unityWebRequest"/> does not indicate a success status.</exception>
         public static void ThrowIfNotSuccessStatusCode(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)
@@ -132,17 +132,17 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的 <see cref="UnityWebRequest"/> 异步发送网络请求，然后返回接收到的数据（以字符串的形式）。
+        /// Asynchronously sends a web request using the specified <see cref="UnityWebRequest"/>, then returns the received data (as a string).
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>异步操作的任务对象，它的 <see cref="Task{TResult}.Result"/> 为字符串。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放，或者在此异步操作执行过程中释放。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> 已调用 <see cref="UnityWebRequest.SendWebRequest"/>。</exception>
-        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> 已取消，或者在此异步操作执行过程中发出取消请求。</exception>
-        /// <exception cref="UnityWebRequestException">网络请求遇到错误。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The task object of the asynchronous operation, whose <see cref="Task{TResult}.Result"/> is a string.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed, or is disposed during this asynchronous operation.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> has already called <see cref="UnityWebRequest.SendWebRequest"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled, or a cancellation request is issued during this asynchronous operation.</exception>
+        /// <exception cref="UnityWebRequestException">The web request encountered an error.</exception>
         public static async Task<string> GetStringAsync(
             UnityWebRequest   unityWebRequest,
             CancellationToken cancellationToken = default)
@@ -153,17 +153,17 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的 <see cref="UnityWebRequest"/> 异步发送网络请求，然后返回接收到的数据（以字节数组的形式）。
+        /// Asynchronously sends a web request using the specified <see cref="UnityWebRequest"/>, then returns the received data (as a byte array).
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>异步操作的任务对象，它的 <see cref="Task{TResult}.Result"/> 为字节数组。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放，或者在此异步操作执行过程中释放。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> 已调用 <see cref="UnityWebRequest.SendWebRequest"/>。</exception>
-        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> 已取消，或者在此异步操作执行过程中发出取消请求。</exception>
-        /// <exception cref="UnityWebRequestException">网络请求遇到错误。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The task object of the asynchronous operation, whose <see cref="Task{TResult}.Result"/> is a byte array.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed, or is disposed during this asynchronous operation.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> has already called <see cref="UnityWebRequest.SendWebRequest"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled, or a cancellation request is issued during this asynchronous operation.</exception>
+        /// <exception cref="UnityWebRequestException">The web request encountered an error.</exception>
         public static async Task<byte[]> GetByteArrayAsync(
             UnityWebRequest   unityWebRequest,
             CancellationToken cancellationToken = default)
@@ -174,17 +174,17 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的 <see cref="UnityWebRequest"/> 异步发送网络请求，然后返回接收到的数据（以流的形式）。
+        /// Asynchronously sends a web request using the specified <see cref="UnityWebRequest"/>, then returns the received data (as a stream).
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>异步操作的任务对象，它的 <see cref="Task{TResult}.Result"/> 为流。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> 已释放，或者在此异步操作执行过程中释放。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
-        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> 已调用 <see cref="UnityWebRequest.SendWebRequest"/>。</exception>
-        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> 已取消，或者在此异步操作执行过程中发出取消请求。</exception>
-        /// <exception cref="UnityWebRequestException">网络请求遇到错误。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The task object of the asynchronous operation, whose <see cref="Task{TResult}.Result"/> is a stream.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="unityWebRequest"/> has been disposed, or is disposed during this asynchronous operation.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
+        /// <exception cref="ArgumentException"><paramref name="unityWebRequest"/> has already called <see cref="UnityWebRequest.SendWebRequest"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled, or a cancellation request is issued during this asynchronous operation.</exception>
+        /// <exception cref="UnityWebRequestException">The web request encountered an error.</exception>
         public static async Task<Stream> GetStreamAsync(
             UnityWebRequest   unityWebRequest,
             CancellationToken cancellationToken = default)
@@ -195,12 +195,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示 <see cref="UnityWebRequest"/> 是否超时。
+        /// Gets a value indicating whether the <see cref="UnityWebRequest"/> has timed out.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <returns>如果 <paramref name="unityWebRequest"/> 超时，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <returns><see langword="true"/> if <paramref name="unityWebRequest"/> has timed out; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
         public static bool IsTimeout(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)
@@ -211,12 +211,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示 <see cref="UnityWebRequest"/> 的 HTTP 状态码是否表示成功状态。
+        /// Gets a value indicating whether the <see cref="UnityWebRequest"/>'s HTTP status code indicates a success status.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <returns>如果 <paramref name="unityWebRequest"/> 的 HTTP 状态码表示成功状态，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="UnityException">从非 Unity 主线程调用此方法。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <returns><see langword="true"/> if the HTTP status code of <paramref name="unityWebRequest"/> indicates a success status; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
+        /// <exception cref="UnityException">This method is called from off the Unity main thread.</exception>
         public static bool IsSuccessStatusCode(UnityWebRequest unityWebRequest)
         {
             if (unityWebRequest is null)

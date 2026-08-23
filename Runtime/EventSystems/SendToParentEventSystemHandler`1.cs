@@ -4,20 +4,20 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将事件传递给父级。
+    /// Forwards an event to the parent.
     /// </summary>
-    /// <typeparam name="T">事件处理程序。</typeparam>
+    /// <typeparam name="T">The event handler.</typeparam>
     public abstract class SendToParentEventSystemHandler<T> : MonoBehaviour where T : IEventSystemHandler
     {
         /// <summary>
-        /// 处理事件的回调。
+        /// The callback that handles the event.
         /// </summary>
         protected abstract ExecuteEvents.EventFunction<T> CallbackEventFunction { get; }
 
         /// <summary>
-        /// 将事件传递给父级。
+        /// Forwards an event to the parent.
         /// </summary>
-        /// <param name="eventData">事件数据。</param>
+        /// <param name="eventData">The event data.</param>
         protected void SendToParent(BaseEventData eventData)
         {
             if (transform.parent)

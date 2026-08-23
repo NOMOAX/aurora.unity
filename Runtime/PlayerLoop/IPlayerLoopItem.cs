@@ -1,14 +1,14 @@
 ﻿namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
-    /// 定义在主循环中运行的方法。
+    /// Defines a method that runs within the player loop.
     /// </summary>
     public interface IPlayerLoopItem
     {
         /// <summary>
-        /// 运行。
+        /// Runs.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         void Run(PlayerLoopPhase playerLoopPhase);
     }
 }

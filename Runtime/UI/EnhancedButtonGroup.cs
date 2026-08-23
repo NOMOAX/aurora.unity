@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 按钮组。
+    /// A button group.
     /// </summary>
     public sealed class EnhancedButtonGroup : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace Aurora.Unity.UI
         private readonly HashSet<EnhancedButton> _buttons = new(UnityEngineObjectEqualityComparer.Instance);
 
         /// <summary>
-        /// 获取一个值，这个值指示是否有至少一个按钮处于开启状态。
+        /// Gets a value indicating whether at least one button is on.
         /// </summary>
         public bool AnyButtonsOn
         {
@@ -35,10 +35,10 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取所有按钮，并将它们放入指定的列表。
+        /// Gets all buttons and puts them into the specified list.
         /// </summary>
-        /// <param name="result">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="result"/> 为 <see langword="null"/>。</exception>
+        /// <param name="result">The list used to hold the results.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="result"/> is <see langword="null"/>.</exception>
         public void GetButtons(List<EnhancedButton> result)
         {
             if (result is null)
@@ -49,20 +49,20 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 关闭所有按钮。
+        /// Turns off all buttons.
         /// </summary>
-        /// <param name="except">除了这个按钮之外。</param>
-        /// <remarks>请注意，只有当按钮 <see cref="Behaviour.isActiveAndEnabled"/> 时，按钮才可能会在按钮组中存在。</remarks>
+        /// <param name="except">Except for this button.</param>
+        /// <remarks>Note that a button can exist in the button group only when the button is <see cref="Behaviour.isActiveAndEnabled"/>.</remarks>
         public void SetAllButtonsOff(EnhancedButton except = null)
         {
             InternalSetAllButtonsOff(except, true);
         }
 
         /// <summary>
-        /// 关闭所有按钮。此操作不会触发回调。
+        /// Turns off all buttons. This operation does not trigger callbacks.
         /// </summary>
-        /// <param name="except">除了这个按钮之外。</param>
-        /// <remarks>请注意，只有当按钮 <see cref="Behaviour.isActiveAndEnabled"/> 时，按钮才可能会在按钮组中存在。</remarks>
+        /// <param name="except">Except for this button.</param>
+        /// <remarks>Note that a button can exist in the button group only when the button is <see cref="Behaviour.isActiveAndEnabled"/>.</remarks>
         public void SetAllButtonsOffWithoutNotify(EnhancedButton except = null)
         {
             InternalSetAllButtonsOff(except, false);
@@ -70,7 +70,7 @@ namespace Aurora.Unity.UI
 
         private void InternalSetAllButtonsOff(EnhancedButton except, bool sendCallback)
         {
-            // 借助另外一个哈希集来广播事件，防止在某个按钮的回调中出现了添加和删除操作
+            // Use another hash set to broadcast events to prevent add and remove operations inside a button's callback
             var buttons = EnhancedButtonHashSetPool.Get();
             try
             {

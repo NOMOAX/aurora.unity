@@ -10,28 +10,28 @@ using UnityEngine;
 namespace Aurora.Unity.Threading.Tasks
 {
     /// <summary>
-    /// 提供一组返回值为 <see cref="Task"/> 或 <see cref="Task{TResult}"/> 的方法。
+    /// Provides a set of methods whose return values are <see cref="Task"/> or <see cref="Task{TResult}"/>.
     /// </summary>
     public static class UnityTasks
     {
         #region PlayerLoopPhase、Any PlayerLoopPhase
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于指定的主循环阶段时完成。
+        /// Creates a task that completes when the specified player loop phase is reached.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <returns>在处于指定的主循环阶段时完成的任务。</returns>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <returns>A task that completes when the specified player loop phase is reached.</returns>
         public static Task WhenPlayerLoopPhase(PlayerLoopPhase playerLoopPhase)
         {
             return InternalWhenPlayerLoopPhase(playerLoopPhase, CancellationToken.None);
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于指定的主循环阶段时完成。
+        /// Creates a task that completes when the specified player loop phase is reached.
         /// </summary>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在处于指定的主循环阶段时完成的任务。</returns>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that completes when the specified player loop phase is reached.</returns>
         public static Task WhenPlayerLoopPhase(PlayerLoopPhase playerLoopPhase, CancellationToken cancellationToken)
         {
             return InternalWhenPlayerLoopPhase(playerLoopPhase, cancellationToken);
@@ -58,12 +58,12 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于多个指定的主循环阶段中的任何一个时完成。
+        /// Creates a task that completes when any of the specified player loop phases is reached.
         /// </summary>
-        /// <param name="playerLoopPhases">多个主循环阶段。</param>
-        /// <returns>在处于多个指定的主循环阶段中的任何一个时完成的任务。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
+        /// <param name="playerLoopPhases">Multiple player loop phases.</param>
+        /// <returns>A task that completes when any of the specified player loop phases is reached.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The length of <paramref name="playerLoopPhases"/> is 0.</exception>
         public static Task WhenAnyPlayerLoopPhase(PlayerLoopPhase[] playerLoopPhases)
         {
             if (playerLoopPhases == null)
@@ -78,13 +78,13 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在处于多个指定的主循环阶段中的任何一个时完成。
+        /// Creates a task that completes when any of the specified player loop phases is reached.
         /// </summary>
-        /// <param name="playerLoopPhases">多个主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在处于多个指定的主循环阶段中的任何一个时完成的任务。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="playerLoopPhases"/> 的长度为 0。</exception>
+        /// <param name="playerLoopPhases">Multiple player loop phases.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that completes when any of the specified player loop phases is reached.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The length of <paramref name="playerLoopPhases"/> is 0.</exception>
         public static Task WhenAnyPlayerLoopPhase(
             PlayerLoopPhase[] playerLoopPhases,
             CancellationToken cancellationToken)
@@ -208,12 +208,12 @@ namespace Aurora.Unity.Threading.Tasks
         #region AsyncOperation
 
         /// <summary>
-        /// 创建一个任务，该任务将在 Unity 异步操作完成时完成。
+        /// Creates a task that completes when the Unity asynchronous operation completes.
         /// </summary>
-        /// <param name="asyncOperation">Unity 异步操作。</param>
-        /// <returns>在 Unity 异步操作完成时完成的任务。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="asyncOperation"/> 已释放。</exception>
+        /// <param name="asyncOperation">The Unity asynchronous operation.</param>
+        /// <returns>A task that completes when the Unity asynchronous operation completes.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="asyncOperation"/> has been disposed.</exception>
         public static Task WhenAsyncOperation(AsyncOperation asyncOperation)
         {
             if (asyncOperation == null)
@@ -224,13 +224,13 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在 Unity 异步操作完成时完成。
+        /// Creates a task that completes when the Unity asynchronous operation completes.
         /// </summary>
-        /// <param name="asyncOperation">Unity 异步操作。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在 Unity 异步操作完成时完成的任务。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ObjectDisposedException"><paramref name="asyncOperation"/> 已释放。</exception>
+        /// <param name="asyncOperation">The Unity asynchronous operation.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that completes when the Unity asynchronous operation completes.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ObjectDisposedException"><paramref name="asyncOperation"/> has been disposed.</exception>
         public static Task WhenAsyncOperation(AsyncOperation asyncOperation, CancellationToken cancellationToken)
         {
             if (asyncOperation == null)
@@ -361,12 +361,12 @@ namespace Aurora.Unity.Threading.Tasks
         #region Delay
 
         /// <summary>
-        /// 创建一个任务，该任务将在指定的延迟后完成。
+        /// Creates a task that completes after the specified delay.
         /// </summary>
-        /// <param name="delay">延迟。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <returns>表示时间延迟的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
+        /// <param name="delay">The delay.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <returns>A task representing a time delay.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> is not <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>, and its milliseconds are not in the [0, 4294967294] range.</exception>
         public static Task Delay(TimeSpan delay, PlayerLoopPhase playerLoopPhase)
         {
             ThrowIfDelayIsInvalid(delay, nameof(delay));
@@ -374,13 +374,13 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在指定的延迟后完成。
+        /// Creates a task that completes after the specified delay.
         /// </summary>
-        /// <param name="delay">延迟。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>表示时间延迟的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
+        /// <param name="delay">The delay.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task representing a time delay.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> is not <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>, and its milliseconds are not in the [0, 4294967294] range.</exception>
         public static Task Delay(TimeSpan delay, PlayerLoopPhase playerLoopPhase, CancellationToken cancellationToken)
         {
             ThrowIfDelayIsInvalid(delay, nameof(delay));
@@ -418,7 +418,7 @@ namespace Aurora.Unity.Threading.Tasks
 
             internal DelayPromise(TimeSpan delay, PlayerLoopPhase playerLoopPhase)
             {
-                // 对于无限期的延迟，不创建计时器
+                // For an infinite delay, do not create a timer
                 if (delay == Timeout.InfiniteTimeSpan)
                 {
                     return;
@@ -492,13 +492,13 @@ namespace Aurora.Unity.Threading.Tasks
         #region Delay Unity Time
 
         /// <summary>
-        /// 创建一个任务，该任务将在指定的延迟后完成。
+        /// Creates a task that completes after the specified delay.
         /// </summary>
-        /// <param name="delay">延迟。</param>
-        /// <param name="unscaled">如果为 <see langword="false"/>，则使用 <see cref="Time.time">Time.time</see> 来计时；如果为 <see langword="true"/>，则使用 <see cref="Time.unscaledTime">Time.unscaledTime</see> 来计时。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <returns>表示时间延迟的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
+        /// <param name="delay">The delay.</param>
+        /// <param name="unscaled">If <see langword="false"/>, <see cref="Time.time">Time.time</see> is used to time; if <see langword="true"/>, <see cref="Time.unscaledTime">Time.unscaledTime</see> is used to time.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <returns>A task representing a time delay.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> is not <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>, and its milliseconds are not in the [0, 4294967294] range.</exception>
         public static Task DelayUnityTime(TimeSpan delay, bool unscaled, PlayerLoopPhase playerLoopPhase)
         {
             ThrowIfDelayIsInvalid(delay, nameof(delay));
@@ -506,14 +506,14 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在指定的延迟后完成。
+        /// Creates a task that completes after the specified delay.
         /// </summary>
-        /// <param name="delay">延迟。</param>
-        /// <param name="unscaled">如果为 <see langword="false"/>，则使用 <see cref="Time.time">Time.time</see> 来计时；如果为 <see langword="true"/>，则使用 <see cref="Time.unscaledTime">Time.unscaledTime</see> 来计时。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>表示时间延迟的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
+        /// <param name="delay">The delay.</param>
+        /// <param name="unscaled">If <see langword="false"/>, <see cref="Time.time">Time.time</see> is used to time; if <see langword="true"/>, <see cref="Time.unscaledTime">Time.unscaledTime</see> is used to time.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task representing a time delay.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> is not <see cref="Timeout.InfiniteTimeSpan">Timeout.InfiniteTimeSpan</see>, and its milliseconds are not in the [0, 4294967294] range.</exception>
         public static Task DelayUnityTime(
             TimeSpan          delay,
             bool              unscaled,
@@ -556,7 +556,7 @@ namespace Aurora.Unity.Threading.Tasks
 
             internal DelayUnityTimePromise(TimeSpan delay, bool unscaled, PlayerLoopPhase playerLoopPhase)
             {
-                // 对于无限期的延迟，不创建计时器
+                // For an infinite delay, do not create a timer
                 if (delay == Timeout.InfiniteTimeSpan)
                 {
                     return;
@@ -642,12 +642,12 @@ namespace Aurora.Unity.Threading.Tasks
         #region Delay Frame
 
         /// <summary>
-        /// 创建一个任务，该任务将在几帧后完成。
+        /// Creates a task that completes after several frames.
         /// </summary>
-        /// <param name="frameCount">帧数。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <returns>在几帧后完成的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> 小于 0，但不为 -1。</exception>
+        /// <param name="frameCount">The number of frames.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <returns>A task that completes after several frames.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> is less than 0 but not -1.</exception>
         public static Task DelayFrame(int frameCount, PlayerLoopPhase playerLoopPhase)
         {
             ThrowIfDelayFrameCountIsInvalid(frameCount, nameof(frameCount));
@@ -655,13 +655,13 @@ namespace Aurora.Unity.Threading.Tasks
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在几帧后完成。
+        /// Creates a task that completes after several frames.
         /// </summary>
-        /// <param name="frameCount">帧数。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在几帧后完成的任务。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> 小于 0，但不为 -1。</exception>
+        /// <param name="frameCount">The number of frames.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that completes after several frames.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="frameCount"/> is less than 0 but not -1.</exception>
         public static Task DelayFrame(
             int               frameCount,
             PlayerLoopPhase   playerLoopPhase,
@@ -790,23 +790,23 @@ namespace Aurora.Unity.Threading.Tasks
         #region Capture Screenshot
 
         /// <summary>
-        /// 创建一个任务，该任务将在捕获屏幕截图完成时完成。
+        /// Creates a task that completes when the screen screenshot is captured.
         /// </summary>
-        /// <param name="path">截图文件保存的路径。</param>
-        /// <returns>在捕获屏幕截图完成时完成的任务。</returns>
-        /// <remarks>截图为 PNG 文件。</remarks>
+        /// <param name="path">The path where the screenshot file is saved.</param>
+        /// <returns>A task that completes when the screen screenshot is captured.</returns>
+        /// <remarks>The screenshot is a PNG file.</remarks>
         public static Task WhenScreenshotCaptured(string path)
         {
             return InternalWhenScreenshotCaptured(path, CancellationToken.None);
         }
 
         /// <summary>
-        /// 创建一个任务，该任务将在捕获屏幕截图完成时完成。
+        /// Creates a task that completes when the screen screenshot is captured.
         /// </summary>
-        /// <param name="path">截图文件保存的路径。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>在捕获屏幕截图完成时完成的任务。</returns>
-        /// <remarks>截图为 PNG 文件。</remarks>
+        /// <param name="path">The path where the screenshot file is saved.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A task that completes when the screen screenshot is captured.</returns>
+        /// <remarks>The screenshot is a PNG file.</remarks>
         public static Task WhenScreenshotCaptured(string path, CancellationToken cancellationToken)
         {
             return InternalWhenScreenshotCaptured(path, cancellationToken);
@@ -838,7 +838,7 @@ namespace Aurora.Unity.Threading.Tasks
                 exists        = fileInfo.Exists;
                 if (exists)
                 {
-                    // 检查文件是否被占用
+                    // Check whether the file is locked
                     using (fileInfo.Open(FileMode.Open, FileAccess.Write, FileShare.Read))
                     {
                     }

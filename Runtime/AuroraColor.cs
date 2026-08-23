@@ -14,42 +14,42 @@ namespace Aurora.Unity
         private int _rgba;
 
         /// <summary>
-        /// 红。
+        /// Red.
         /// </summary>
         [FieldOffset(0)]
         public byte R;
 
         /// <summary>
-        /// 绿。
+        /// Green.
         /// </summary>
         [FieldOffset(1)]
         public byte G;
 
         /// <summary>
-        /// 蓝。
+        /// Blue.
         /// </summary>
         [FieldOffset(2)]
         public byte B;
 
         /// <summary>
-        /// 不透明度。
+        /// Alpha.
         /// </summary>
         [FieldOffset(3)]
         public byte A;
 
         /// <summary>
-        /// 根据索引获取或设置颜色分量：
+        /// Gets or sets a color component by index:
         /// <list type="table">
-        /// <listheader><term>索引</term><description>颜色分量</description></listheader>
+        /// <listheader><term>Index</term><description>Color component</description></listheader>
         /// <item><term>0</term><description><see cref="R"/></description></item>
         /// <item><term>1</term><description><see cref="G"/></description></item>
         /// <item><term>2</term><description><see cref="B"/></description></item>
         /// <item><term>3</term><description><see cref="A"/></description></item>
-        /// <item><term>其他</term><description>抛出 <see cref="IndexOutOfRangeException"/> 异常</description></item>
+        /// <item><term>Other</term><description>Throws an <see cref="IndexOutOfRangeException"/></description></item>
         /// </list>
         /// </summary>
-        /// <param name="index">索引。</param>
-        /// <exception cref="IndexOutOfRangeException">索引超出范围。</exception>
+        /// <param name="index">The index.</param>
+        /// <exception cref="IndexOutOfRangeException">The index is out of range.</exception>
         public byte this[int index]
         {
             get
@@ -86,12 +86,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="AuroraColor"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AuroraColor"/> struct.
         /// </summary>
-        /// <param name="r">红。</param>
-        /// <param name="g">绿。</param>
-        /// <param name="b">蓝。</param>
-        /// <param name="a">不透明度。</param>
+        /// <param name="r">Red.</param>
+        /// <param name="g">Green.</param>
+        /// <param name="b">Blue.</param>
+        /// <param name="a">Alpha.</param>
         public AuroraColor(byte r, byte g, byte b, byte a = byte.MaxValue)
         {
             _rgba = 0;
@@ -103,26 +103,26 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 根据指定的 HTML 颜色字符串，初始化 <see cref="AuroraColor"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AuroraColor"/> struct based on the specified HTML color string.
         /// </summary>
         /// <param name="htmlColor">
-        /// HTML 颜色字符串。
+        /// The HTML color string.
         /// <br/>
-        /// 允许的格式见下表：
+        /// Allowed formats are listed in the table below:
         /// <list type="bullet">
         /// <item><description><c>#RGB</c></description></item>
         /// <item><description><c>#RRGGBB</c></description></item>
         /// <item><description><c>#RGBA</c></description></item>
         /// <item><description><c>#RRGGBBAA</c></description></item>
         /// </list>
-        /// 前导 <c>#</c> 可省略。
+        /// The leading <c>#</c> may be omitted.
         /// <br/>
-        /// <c>R</c> <c>G</c> <c>B</c> 大小写不敏感。
+        /// <c>R</c> <c>G</c> <c>B</c> are case-insensitive.
         /// <br/>
-        /// 不支持颜色名称，例如 <c>red</c>。
+        /// Color names such as <c>red</c> are not supported.
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="htmlColor"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="htmlColor"/> 格式不正确。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="htmlColor"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="htmlColor"/> is improperly formatted.</exception>
         public AuroraColor(string htmlColor)
         {
             _rgba = 0;
@@ -263,22 +263,22 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 比较两个 <see cref="AuroraColor"/> 是否相等。
+        /// Compares whether two <see cref="AuroraColor"/> are equal.
         /// </summary>
-        /// <param name="left">左操作数。</param>
-        /// <param name="right">右操作数。</param>
-        /// <returns>如果 <paramref name="left"/> 与 <paramref name="right"/> 相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> equals <paramref name="right"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator ==(AuroraColor left, AuroraColor right)
         {
             return left.Equals(right);
         }
 
         /// <summary>
-        /// 比较两个 <see cref="AuroraColor"/> 是否不相等。
+        /// Compares whether two <see cref="AuroraColor"/> are not equal.
         /// </summary>
-        /// <param name="left">左操作数。</param>
-        /// <param name="right">右操作数。</param>
-        /// <returns>如果 <paramref name="left"/> 与 <paramref name="right"/> 不相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="left">The left operand.</param>
+        /// <param name="right">The right operand.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> does not equal <paramref name="right"/>; otherwise <see langword="false"/>.</returns>
         public static bool operator !=(AuroraColor left, AuroraColor right)
         {
             return !(left == right);

@@ -7,9 +7,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到加载资源完毕时的可等待上下文。
+    /// Provides an awaitable context for switching to when resource loading finishes.
     /// </summary>
-    /// <typeparam name="T">资源类型。</typeparam>
+    /// <typeparam name="T">The resource type.</typeparam>
     public readonly struct ResourceRequestAwaitable<T> : IAwaitable<T> where T : Object
     {
         private readonly ResourceRequest _resourceRequest;
@@ -17,9 +17,9 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="ResourceRequestAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="ResourceRequestAwaitable"/> struct.
         /// </summary>
-        /// <param name="resourceRequest">异步加载资源的请求。</param>
+        /// <param name="resourceRequest">The request that asynchronously loads a resource.</param>
         public ResourceRequestAwaitable(ResourceRequest resourceRequest)
         {
             _resourceRequest   = resourceRequest;
@@ -27,10 +27,10 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="ResourceRequestAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="ResourceRequestAwaitable"/> struct.
         /// </summary>
-        /// <param name="resourceRequest">异步加载资源的请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="resourceRequest">The request that asynchronously loads a resource.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public ResourceRequestAwaitable(ResourceRequest resourceRequest, CancellationToken cancellationToken)
         {
             _resourceRequest   = resourceRequest;

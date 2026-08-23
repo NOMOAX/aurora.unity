@@ -4,28 +4,28 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供一对转换器方法，可将用户使用的值与 <see cref="PlayerPrefs"/> 中的基本值互相转换。
+    /// Provides a pair of converter methods to convert between the user's value and the primitive value in <see cref="PlayerPrefs"/>.
     /// </summary>
-    /// <typeparam name="TValue">用户使用的值的类型。</typeparam>
-    /// <typeparam name="TPreferenceValue"><see cref="PlayerPrefs"/> 中的基本值的类型。</typeparam>
+    /// <typeparam name="TValue">The type of the user's value.</typeparam>
+    /// <typeparam name="TPreferenceValue">The type of the primitive value in <see cref="PlayerPrefs"/>.</typeparam>
     public class PreferenceConverterPair<TValue, TPreferenceValue>
     {
         /// <summary>
-        /// 表示一个方法，用于将用户使用的值转换为 <see cref="PlayerPrefs"/> 中的基本值。
+        /// Represents a method used to convert the user's value to the primitive value in <see cref="PlayerPrefs"/>.
         /// </summary>
         public readonly Converter<TValue, TPreferenceValue> ToPreferenceValue;
 
         /// <summary>
-        /// 表示一个方法，用于将 <see cref="PlayerPrefs"/> 中的基本值转换为用户使用的值。
+        /// Represents a method used to convert the primitive value in <see cref="PlayerPrefs"/> to the user's value.
         /// </summary>
         public readonly Converter<TPreferenceValue, TValue> ToValue;
 
         /// <summary>
-        /// 初始化 <see cref="PreferenceConverterPair{TValue,TPreferenceValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PreferenceConverterPair{TValue,TPreferenceValue}"/> class.
         /// </summary>
-        /// <param name="toPreferenceValue">表示一个方法，用于将用户使用的值转换为 <see cref="PlayerPrefs"/> 中的基本值。</param>
-        /// <param name="toValue">表示一个方法，用于将 <see cref="PlayerPrefs"/> 中的基本值转换为用户使用的值。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="toPreferenceValue"/> 或 <paramref name="toValue"/> 为 <see langword="null"/>。</exception>
+        /// <param name="toPreferenceValue">Represents a method used to convert the user's value to the primitive value in <see cref="PlayerPrefs"/>.</param>
+        /// <param name="toValue">Represents a method used to convert the primitive value in <see cref="PlayerPrefs"/> to the user's value.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="toPreferenceValue"/> or <paramref name="toValue"/> is <see langword="null"/>.</exception>
         public PreferenceConverterPair(
             Converter<TValue, TPreferenceValue> toPreferenceValue,
             Converter<TPreferenceValue, TValue> toValue)

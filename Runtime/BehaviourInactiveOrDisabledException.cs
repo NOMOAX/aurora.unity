@@ -4,20 +4,20 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 在行为所关联的游戏物体处于未激活状态或者行为禁用时引发的异常。
+    /// The exception thrown when the game object associated with a behaviour is inactive or the behaviour is disabled.
     /// </summary>
     public class BehaviourInactiveOrDisabledException : UnityException
     {
         /// <summary>
-        /// 行为。
+        /// The behaviour.
         /// </summary>
         public Behaviour Behaviour { get; }
 
         /// <summary>
-        /// 使用指定的行为初始化 <see cref="BehaviourInactiveOrDisabledException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="BehaviourInactiveOrDisabledException"/> class with the specified behaviour.
         /// </summary>
-        /// <param name="behaviour">行为。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="behaviour"/> 为 <see langword="null"/>。</exception>
+        /// <param name="behaviour">The behaviour.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="behaviour"/> is <see langword="null"/>.</exception>
         public BehaviourInactiveOrDisabledException(Behaviour behaviour)
         {
             if (behaviour is null)
@@ -28,11 +28,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的行为和错误消息初始化 <see cref="BehaviourInactiveOrDisabledException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="BehaviourInactiveOrDisabledException"/> class with the specified behaviour and error message.
         /// </summary>
-        /// <param name="behaviour">行为。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="behaviour"/> 为 <see langword="null"/>。</exception>
+        /// <param name="behaviour">The behaviour.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="behaviour"/> is <see langword="null"/>.</exception>
         public BehaviourInactiveOrDisabledException(Behaviour behaviour, string message) : base(message)
         {
             if (behaviour is null)
@@ -43,11 +43,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 使用指定的行为、错误消息和内部异常初始化 <see cref="BehaviourInactiveOrDisabledException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="BehaviourInactiveOrDisabledException"/> class with the specified behaviour, error message, and inner exception.
         /// </summary>
-        /// <param name="behaviour">行为。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <param name="innerException">造成此异常的异常。</param>
+        /// <param name="behaviour">The behaviour.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <param name="innerException">The exception that caused this exception.</param>
         public BehaviourInactiveOrDisabledException(Behaviour behaviour, string message, Exception innerException) :
             base(message, innerException)
         {

@@ -1,27 +1,27 @@
 ﻿namespace Aurora.Unity
 {
     /// <summary>
-    /// 音频源的状态。
+    /// The status of an audio source.
     /// </summary>
     public enum AudioSourceStatus
     {
         /// <summary>
-        /// 没有音频剪辑。
+        /// No audio clip.
         /// </summary>
         None,
 
         /// <summary>
-        /// 停止。
+        /// Stopped.
         /// </summary>
         Stopped,
 
         /// <summary>
-        /// 播放。
+        /// Playing.
         /// </summary>
         Playing,
 
         /// <summary>
-        /// 暂停。
+        /// Paused.
         /// </summary>
         Paused
     }

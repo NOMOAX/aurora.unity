@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供一种机制，客户端可以在某一时刻设置服务器时间，然后就可以在之后的任何时间获取即时的服务器时间。
+    /// Provides a mechanism by which a client can set the server time at some moment and then obtain the instantaneous server time at any later time.
     /// </summary>
     public sealed class ServerTimeOwner
     {
@@ -13,7 +13,7 @@ namespace Aurora.Unity
         private double _realTimeSinceStartupWhenServerTimeIsSet;
 
         /// <summary>
-        /// 获取或设置当前时间。
+        /// Gets or sets the current time.
         /// </summary>
         public DateTimeOffset? CurrentTime
         {

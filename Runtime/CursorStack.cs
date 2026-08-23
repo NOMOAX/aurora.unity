@@ -5,15 +5,15 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供设置与恢复光标的方法。
+    /// Provides methods to set and restore the cursor.
     /// </summary>
-    /// <remarks>如果你在 PlayerSettings 中设置了默认光标，则应在程序启动后调用 <see cref="set_InitialCursorInfo"/>。</remarks>
+    /// <remarks>If you set a default cursor in PlayerSettings, you should call <see cref="set_InitialCursorInfo"/> after the program starts.</remarks>
     public static class CursorStack
     {
         /// <summary>
-        /// 设置初始光标信息。
+        /// Sets the initial cursor info.
         /// </summary>
-        /// <remarks>如果你在 PlayerSettings 中设置了默认光标，则应在程序启动后调用 <see cref="set_InitialCursorInfo"/>。</remarks>
+        /// <remarks>If you set a default cursor in PlayerSettings, you should call <see cref="set_InitialCursorInfo"/> after the program starts.</remarks>
         public static CursorInfo InitialCursorInfo { set => _initialCursorInfo = value; }
 
         private static readonly Stack<CursorInfo> CursorInfos = new(16);
@@ -21,14 +21,14 @@ namespace Aurora.Unity
         private static CursorInfo _initialCursorInfo;
 
         /// <summary>
-        /// 获取暂存的光标信息的数量。
+        /// Gets the number of temporarily stored cursor infos.
         /// </summary>
         public static int Count => CursorInfos.Count;
 
         /// <summary>
-        /// 设置光标。
+        /// Sets the cursor.
         /// </summary>
-        /// <param name="cursorInfo">光标信息。</param>
+        /// <param name="cursorInfo">The cursor info.</param>
         public static void Push(CursorInfo cursorInfo)
         {
             CursorInfos.Push(cursorInfo);
@@ -36,13 +36,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 恢复光标到上一次调用 <see cref="Push"/> 之前的状态。
+        /// Restores the cursor to the state before the most recent call to <see cref="Push"/>.
         /// </summary>
         public static void Pop()
         {
             if (CursorInfos.Count == 0)
             {
-                Log.E($"调用 {nameof(Pop)} 与调用 {nameof(Push)} 的次数不匹配");
+                Log.E($"The number of calls to {nameof(Pop)} does not match the number of calls to {nameof(Push)}");
                 return;
             }
             CursorInfos.Pop();

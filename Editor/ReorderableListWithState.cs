@@ -9,9 +9,9 @@ using UnityEngine;
 namespace Aurora.UnityEditor
 {
     /// <summary>
-    /// 可传入用户自定义状态的 <see cref="ReorderableList"/>。
+    /// A <see cref="ReorderableList"/> that can accept user-defined state.
     /// </summary>
-    /// <remarks>虽然依然没能在此类内部避免闭包，但此类将闭包行为限制在了此类的内部。</remarks>
+    /// <remarks>Although closures still cannot be avoided inside this class, this class confines the closure behavior to within this class.</remarks>
     public sealed class ReorderableListWithState : ReorderableList
     {
         private HeaderCallbackDelegate _drawHeaderCallback;
@@ -510,7 +510,7 @@ namespace Aurora.UnityEditor
         private readonly object _state;
 
         /// <summary>
-        /// 初始化 <see cref="ReorderableListWithState"/> 时，传入的自定义状态。
+        /// The custom state passed in when <see cref="ReorderableListWithState"/> is initialized.
         /// </summary>
         public object State => _state;
 

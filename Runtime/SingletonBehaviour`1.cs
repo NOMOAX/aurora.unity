@@ -4,29 +4,29 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为使用单一实例模式的单一行为提供基类。
+    /// Provides a base class for a singleton behaviour that uses the singleton pattern.
     /// </summary>
-    /// <typeparam name="T">要使用单一实例模式的单一行为的类型。</typeparam>
-    /// <remarks>你可以为 <typeparamref name="T"/> 类型添加 <see cref="DoNotDestroyOnLoadAttribute"/> 特性，以便在首次获取或创建 <see cref="Instance"/> 时对该单一实例执行 <see cref="UnityEngine.Object.DontDestroyOnLoad"/>。</remarks>
+    /// <typeparam name="T">The type of the singleton behaviour that uses the singleton pattern.</typeparam>
+    /// <remarks>You can add the <see cref="DoNotDestroyOnLoadAttribute"/> attribute to the <typeparamref name="T"/> type to execute <see cref="UnityEngine.Object.DontDestroyOnLoad"/> on the single instance when <see cref="Instance"/> is first retrieved or created.</remarks>
     public abstract class SingletonBehaviour<T> : MonoBehaviour where T : SingletonBehaviour<T>
     {
         /// <summary>
-        /// 获取 <typeparamref name="T"/> 的单一实例，若不存在则寻找或创建新的。
+        /// Gets the single instance of <typeparamref name="T"/>, or finds or creates a new one if it does not exist.
         /// </summary>
-        /// <exception cref="InvalidOperationException">应用程序即将结束运行，或者在编辑器环境下并且不在播放模式中。</exception>
+        /// <exception cref="InvalidOperationException">The application is about to quit, or in the editor environment and not in play mode.</exception>
         public static T Instance => InstanceAlreadyExists
                                         ? InstanceAlreadyExists
                                         : InstanceAlreadyExists = FetchOrCreateInstance();
 
         /// <summary>
-        /// 获取 <typeparamref name="T"/> 的单一实例，若不存在则返回 <see langword="null"/>。
+        /// Gets the single instance of <typeparamref name="T"/>, or returns <see langword="null"/> if it does not exist.
         /// </summary>
         public static T InstanceAlreadyExists { get; private set; }
 
         /// <summary>
-        /// 确保单一实例存在。
+        /// Ensures the single instance exists.
         /// </summary>
-        /// <exception cref="InvalidOperationException">应用程序即将结束运行，或者在编辑器环境下并且不在播放模式中。</exception>
+        /// <exception cref="InvalidOperationException">The application is about to quit, or in the editor environment and not in play mode.</exception>
         public static void EnsureInstanceExists()
         {
             if (!InstanceAlreadyExists)
@@ -40,9 +40,11 @@ namespace Aurora.Unity
             if (!UnityEnvironment.IsPlaying)
             {
 #if UNITY_EDITOR
-                throw new InvalidOperationException("在编辑器环境下，并且不在播放模式中，不能执行此操作");
+                throw new InvalidOperationException(
+                    "This operation cannot be performed in the editor environment while not in play mode"
+                );
 #else
-                throw new InvalidOperationException($"应用程序程序已结束，不应该执行此操作；若要避免此异常，请确保 {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} 的值为 {bool.TrueString}");
+                throw new InvalidOperationException($"The application has ended; this operation should not be performed. To avoid this exception, ensure that the value of {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} is {bool.TrueString}");
 #endif
             }
             var        type  = typeof(T);

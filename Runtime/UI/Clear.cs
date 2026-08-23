@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 透明。
+    /// Transparent.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class Clear : MaskableGraphic

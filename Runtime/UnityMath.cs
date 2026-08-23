@@ -6,15 +6,15 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供一组数学方法。
+    /// Provides a set of mathematical methods.
     /// </summary>
     public static class UnityMath
     {
         /// <summary>
-        /// 获取一个平面向量，它的 <see cref="Vector2.x"/> 分量是指定角的余弦，<see cref="Vector2.y"/> 分量是指定角的正弦。
+        /// Gets a plane vector whose <see cref="Vector2.x"/> component is the cosine of the specified angle and whose <see cref="Vector2.y"/> component is the sine of the specified angle.
         /// </summary>
-        /// <param name="angle">以弧度为单位的角。</param>
-        /// <returns>一个平面向量，它的 <see cref="Vector2.x"/> 分量是 <paramref name="angle"/> 的余弦，<see cref="Vector2.y"/> 分量是 <paramref name="angle"/> 的正弦。</returns>
+        /// <param name="angle">The angle, in radians.</param>
+        /// <returns>A plane vector whose <see cref="Vector2.x"/> component is the cosine of <paramref name="angle"/> and whose <see cref="Vector2.y"/> component is the sine of <paramref name="angle"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 CosSin(float angle)
         {
@@ -22,11 +22,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 与 <see cref="Rect.PointToNormalized"/> 类似，但不会将输出值的每个分量限制在 [0, 1] 范围内。
+        /// Similar to <see cref="Rect.PointToNormalized"/>, but does not clamp each component of the output value to the [0, 1] range.
         /// </summary>
-        /// <param name="pixelAdjustedRect">矩形。</param>
-        /// <param name="point">点。</param>
-        /// <returns><paramref name="point"/> 处于 <paramref name="pixelAdjustedRect"/> 中的标准化位置。</returns>
+        /// <param name="pixelAdjustedRect">The rectangle.</param>
+        /// <param name="point">The point.</param>
+        /// <returns>The normalized position of <paramref name="point"/> within <paramref name="pixelAdjustedRect"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 GetUV(Rect pixelAdjustedRect, Vector2 point)
         {
@@ -34,12 +34,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 在 <paramref name="a"/> 与 <paramref name="b"/> 之间通过 <paramref name="t"/> 进行线性插值。
+        /// Linearly interpolates between <paramref name="a"/> and <paramref name="b"/> by <paramref name="t"/>.
         /// </summary>
-        /// <param name="a">进行线性插值的开始值。</param>
-        /// <param name="b">进行线性插值的结束值。</param>
-        /// <param name="t">插值。它的各个分量将分别用于对 <paramref name="a"/> 与 <paramref name="b"/> 的对应分量进行插值。</param>
-        /// <returns>线性插值的结果。</returns>
+        /// <param name="a">The start value for the linear interpolation.</param>
+        /// <param name="b">The end value for the linear interpolation.</param>
+        /// <param name="t">The interpolation. Each of its components will be used to interpolate the corresponding component of <paramref name="a"/> and <paramref name="b"/>.</param>
+        /// <returns>The result of the linear interpolation.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 LerpUnclamped(Vector2 a, Vector2 b, Vector2 t)
         {
@@ -47,12 +47,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 在 <paramref name="a"/> 与 <paramref name="b"/> 之间通过 <paramref name="t"/> 进行线性插值。
+        /// Linearly interpolates between <paramref name="a"/> and <paramref name="b"/> by <paramref name="t"/>.
         /// </summary>
-        /// <param name="a">进行线性插值的开始值。</param>
-        /// <param name="b">进行线性插值的结束值。</param>
-        /// <param name="t">插值。它的各个分量将分别用于对 <paramref name="a"/> 与 <paramref name="b"/> 的对应分量进行插值。</param>
-        /// <returns>线性插值的结果。</returns>
+        /// <param name="a">The start value for the linear interpolation.</param>
+        /// <param name="b">The end value for the linear interpolation.</param>
+        /// <param name="t">The interpolation. Each of its components will be used to interpolate the corresponding component of <paramref name="a"/> and <paramref name="b"/>.</param>
+        /// <returns>The result of the linear interpolation.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 LerpUnclamped(Vector3 a, Vector3 b, Vector3 t)
         {
@@ -64,12 +64,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 在 <paramref name="a"/> 与 <paramref name="b"/> 之间通过 <paramref name="t"/> 进行线性插值。
+        /// Linearly interpolates between <paramref name="a"/> and <paramref name="b"/> by <paramref name="t"/>.
         /// </summary>
-        /// <param name="a">进行线性插值的开始值。</param>
-        /// <param name="b">进行线性插值的结束值。</param>
-        /// <param name="t">插值。它的各个分量将分别用于对 <paramref name="a"/> 与 <paramref name="b"/> 的对应分量进行插值。</param>
-        /// <returns>线性插值的结果。</returns>
+        /// <param name="a">The start value for the linear interpolation.</param>
+        /// <param name="b">The end value for the linear interpolation.</param>
+        /// <param name="t">The interpolation. Each of its components will be used to interpolate the corresponding component of <paramref name="a"/> and <paramref name="b"/>.</param>
+        /// <returns>The result of the linear interpolation.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector4 LerpUnclamped(Vector4 a, Vector4 b, Vector4 t)
         {
@@ -82,7 +82,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 与 <see cref="Rect.NormalizedToPoint"/> 类似，但不会将返回值的各分量限制在 [0, 1] 范围内。
+        /// Similar to <see cref="Rect.NormalizedToPoint"/>, but does not clamp each component of the return value to the [0, 1] range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizedToPointUnclamped(Rect rectangle, Vector2 normalizedRectCoordinates)
@@ -94,7 +94,7 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 与 <see cref="Rect.PointToNormalized"/> 类似，但不会将返回值的各分量限制在 [0, 1] 范围内。
+        /// Similar to <see cref="Rect.PointToNormalized"/>, but does not clamp each component of the return value to the [0, 1] range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 PointToNormalizedUnclamped(Rect rectangle, Vector2 point)
@@ -106,15 +106,15 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取点 <paramref name="p"/> 或者其投影在三角形 <paramref name="a"/><paramref name="b"/><paramref name="c"/> 上的重心坐标。
+        /// Gets the barycentric coordinates of point <paramref name="p"/>, or of its projection, on triangle <paramref name="a"/><paramref name="b"/><paramref name="c"/>.
         /// </summary>
-        /// <param name="p">一个点。</param>
-        /// <param name="a">三角形的一个顶点。</param>
-        /// <param name="b">三角形的另一个顶点。</param>
-        /// <param name="c">三角形的又一个顶点。</param>
-        /// <returns>如果点 <paramref name="p"/> 在平面 <paramref name="a"/><paramref name="b"/><paramref name="c"/> 中，则为 <paramref name="p"/> 在三角形 <paramref name="a"/><paramref name="b"/><paramref name="c"/> 上的重心坐标；否则，为其在平面的投影的重心坐标。</returns>
+        /// <param name="p">A point.</param>
+        /// <param name="a">A vertex of the triangle.</param>
+        /// <param name="b">Another vertex of the triangle.</param>
+        /// <param name="c">Yet another vertex of the triangle.</param>
+        /// <returns>If point <paramref name="p"/> is in plane <paramref name="a"/><paramref name="b"/><paramref name="c"/>, the barycentric coordinates of <paramref name="p"/> on triangle <paramref name="a"/><paramref name="b"/><paramref name="c"/>; otherwise, the barycentric coordinates of its projection on the plane.</returns>
         /// <remarks>
-        /// 三角形上的重心坐标为 3 个值，一般分别写作 α、β、γ，这里使用一个 <see cref="Vector3"/> 值将它们聚合起来。
+        /// The barycentric coordinates on a triangle are 3 values, generally written as α, β, γ; here a <see cref="Vector3"/> value aggregates them.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 GetBarycentricCoordinatesOfTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
@@ -130,19 +130,19 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 已知点或其投影在三角形上的重心坐标，判断该点或其投影是否在三角形内。
+        /// Given the barycentric coordinates of a point (or its projection) on a triangle, determines whether that point (or its projection) is inside the triangle.
         /// </summary>
         /// <param name="barycentricCoordinates">
-        /// 点或其投影在三角形上的重心坐标。
+        /// The barycentric coordinates of the point (or its projection) on the triangle.
         /// <br/>
-        /// 建议传入 <see cref="GetBarycentricCoordinatesOfTriangle"/> 方法的返回值。
+        /// It is recommended to pass the return value of <see cref="GetBarycentricCoordinatesOfTriangle"/>. 
         /// </param>
         /// <param name="error">
-        /// 允许的最大误差。
+        /// The maximum allowed error.
         /// <br/>
-        /// 由于浮点数的不精确性，误差难以避免，请实际情况调整该值。
+        /// Due to the imprecision of floating-point numbers, error is difficult to avoid; adjust this value according to the actual situation.
         /// </param>
-        /// <returns>判断其本身或其投影在三角形上的重心坐标为 <paramref name="barycentricCoordinates"/> 的点是否在三角形内。</returns>
+        /// <returns>Determines whether the point whose barycentric coordinates (of itself or its projection) on the triangle are <paramref name="barycentricCoordinates"/> is inside the triangle.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPointInsideTriangle(Vector3 barycentricCoordinates, float error = 0.00001f)
         {
@@ -154,13 +154,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 判断点是否处于多边形内部。
+        /// Determines whether a point is inside a polygon.
         /// </summary>
-        /// <param name="point">点。</param>
-        /// <param name="polygonVertices">连成多边形的各点。</param>
-        /// <returns>如果 <paramref name="point"/> 位于由 <paramref name="polygonVertices"/> 连成的多边形内，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="polygonVertices"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="polygonVertices"/> 的长度小于 3（不能连成多边形）。</exception>
+        /// <param name="point">The point.</param>
+        /// <param name="polygonVertices">The vertices that form the polygon.</param>
+        /// <returns><see langword="true"/> if <paramref name="point"/> is inside the polygon formed by <paramref name="polygonVertices"/>; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="polygonVertices"/> is <see langword="null"/>.</exception>
+        /// <exception cref="System.ArgumentException">The length of <paramref name="polygonVertices"/> is less than 3 (cannot form a polygon).</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPointInsidePolygon(Vector2 point, IList<Vector2> polygonVertices)
         {

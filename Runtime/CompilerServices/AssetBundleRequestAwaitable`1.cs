@@ -7,9 +7,9 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到从资源包加载资源完毕时的可等待上下文。
+    /// Provides an awaitable context for switching to when resources are loaded from an asset bundle.
     /// </summary>
-    /// <typeparam name="T">资源类型。</typeparam>
+    /// <typeparam name="T">The resource type.</typeparam>
     public readonly struct AssetBundleRequestAwaitable<T> : IAwaitable<T> where T : Object
     {
         private readonly AssetBundleRequest _assetBundleRequest;
@@ -17,9 +17,9 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="AssetBundleRequestAwaitable{T}"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AssetBundleRequestAwaitable{T}"/> struct.
         /// </summary>
-        /// <param name="assetBundleRequest">异步从资源包加载资源的请求。</param>
+        /// <param name="assetBundleRequest">The request that asynchronously loads resources from an asset bundle.</param>
         public AssetBundleRequestAwaitable(AssetBundleRequest assetBundleRequest)
         {
             _assetBundleRequest = assetBundleRequest;
@@ -27,10 +27,10 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="AssetBundleRequestAwaitable{T}"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AssetBundleRequestAwaitable{T}"/> struct.
         /// </summary>
-        /// <param name="assetBundleRequest">异步从资源包加载资源的请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="assetBundleRequest">The request that asynchronously loads resources from an asset bundle.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public AssetBundleRequestAwaitable(AssetBundleRequest assetBundleRequest, CancellationToken cancellationToken)
         {
             _assetBundleRequest = assetBundleRequest;
@@ -79,7 +79,7 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 提供用于切换到从资源包加载所有资源完毕时的可等待上下文。
+        /// Provides an awaitable context for switching to when all resources are loaded from an asset bundle.
         /// </summary>
         public readonly struct All : IAwaitable<T[]>
         {
@@ -88,9 +88,9 @@ namespace Aurora.Unity.CompilerServices
             private readonly CancellationToken _cancellationToken;
 
             /// <summary>
-            /// 初始化 <see cref="AssetBundleRequestAwaitable.All"/> 结构的新实例。
+            /// Initializes a new instance of the <see cref="AssetBundleRequestAwaitable.All"/> struct.
             /// </summary>
-            /// <param name="assetBundleRequest">异步从资源包加载资源的请求。</param>
+            /// <param name="assetBundleRequest">The request that asynchronously loads resources from an asset bundle.</param>
             public All(AssetBundleRequest assetBundleRequest)
             {
                 _assetBundleRequest = assetBundleRequest;
@@ -98,10 +98,10 @@ namespace Aurora.Unity.CompilerServices
             }
 
             /// <summary>
-            /// 初始化 <see cref="AssetBundleRequestAwaitable.All"/> 结构的新实例。
+            /// Initializes a new instance of the <see cref="AssetBundleRequestAwaitable.All"/> struct.
             /// </summary>
-            /// <param name="assetBundleRequest">异步从资源包加载资源的请求。</param>
-            /// <param name="cancellationToken">取消令牌。</param>
+            /// <param name="assetBundleRequest">The request that asynchronously loads resources from an asset bundle.</param>
+            /// <param name="cancellationToken">The cancellation token.</param>
             public All(AssetBundleRequest assetBundleRequest, CancellationToken cancellationToken)
             {
                 _assetBundleRequest = assetBundleRequest;

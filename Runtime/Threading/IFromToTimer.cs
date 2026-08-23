@@ -3,72 +3,72 @@ using System;
 namespace Aurora.Unity.Threading
 {
     /// <summary>
-    /// 从指定的起点计时到终点的计时器。
+    /// A timer that counts from a specified start point to an end point.
     /// </summary>
     public interface IFromToTimer : IDisposable
     {
         /// <summary>
-        /// 获取或设置计时器是否在运行。
+        /// Gets or sets whether the timer is running.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         bool Running { get; set; }
 
         /// <summary>
-        /// 获取或设置起点。
+        /// Gets or sets the start point.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字或无穷大。</exception>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number or is infinity.</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         double From { get; set; }
 
         /// <summary>
-        /// 获取或设置终点。
+        /// Gets or sets the end point.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字。</exception>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number.</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         double To { get; set; }
 
         /// <summary>
-        /// 获取或设置当前时间。
+        /// Gets or sets the current time.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字。</exception>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number.</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         double Time { get; set; }
 
         /// <summary>
-        /// 获取截断小数部分的当前时间。
+        /// Gets the current time with its fractional part truncated.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         double TimeTruncated { get; }
 
         /// <summary>
-        /// 获取或设置进度。
+        /// Gets or sets the progress.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [0, 1] 范围内。</exception>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not in the [0, 1] range.</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         double Progress { get; set; }
 
         /// <summary>
-        /// <see cref="Time"/> 发生改变。
+        /// <see cref="Time"/> changes.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         event FromToTimerValueChangedEventHandler TimeChanged;
 
         /// <summary>
-        /// <see cref="TimeTruncated"/> 发生改变。
+        /// <see cref="TimeTruncated"/> changes.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         event FromToTimerValueChangedEventHandler TimeTruncatedChanged;
 
         /// <summary>
-        /// <see cref="Progress"/> 发生改变。
+        /// <see cref="Progress"/> changes.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         event FromToTimerValueChangedEventHandler ProgressChanged;
 
         /// <summary>
-        /// 计时结束。
+        /// Timing ends.
         /// </summary>
-        /// <exception cref="ObjectDisposedException">此实例已释放。</exception>
+        /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
         event FromToTimerCompletedEventHandler Completed;
     }
 }

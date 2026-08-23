@@ -13,7 +13,7 @@ using UnityEngine.Networking;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 使用 <see cref="UnityWebRequest"/> 实现 <see cref="HttpMessageHandler"/>。
+    /// Implements <see cref="HttpMessageHandler"/> using <see cref="UnityWebRequest"/>.
     /// </summary>
     public sealed class UnityWebRequestHandler : HttpMessageHandler
     {
@@ -24,16 +24,16 @@ namespace Aurora.Unity
         private const string ContentTypeName = "Content-Type";
 
         /// <summary>
-        /// 初始化 <see cref="UnityWebRequestHandler"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityWebRequestHandler"/> class.
         /// </summary>
         public UnityWebRequestHandler()
         {
         }
 
         /// <summary>
-        /// 初始化 <see cref="UnityWebRequestHandler"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityWebRequestHandler"/> class.
         /// </summary>
-        /// <param name="actionPrepareUnityWebRequest">一个对即将用于发起请求的 <see cref="UnityWebRequest"/> 实例进行一些自定义设置的方法。</param>
+        /// <param name="actionPrepareUnityWebRequest">A method that performs some custom setup on the <see cref="UnityWebRequest"/> instance that will be used to make the request.</param>
         public UnityWebRequestHandler(Action<UnityWebRequest> actionPrepareUnityWebRequest)
         {
             _actionPrepareUnityWebRequest = actionPrepareUnityWebRequest;

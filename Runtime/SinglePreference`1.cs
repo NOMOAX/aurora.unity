@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 表示 <see cref="PlayerPrefs"/> 中的基本值为 <see cref="float"/> 的一项。
+    /// Represents an item in <see cref="PlayerPrefs"/> whose primitive value is a <see cref="float"/>.
     /// </summary>
     /// <inheritdoc />
     public class SinglePreference<TValue> : Preference<TValue>
@@ -12,11 +12,11 @@ namespace Aurora.Unity
         private readonly PreferenceConverterPair<TValue, float> _converterPair;
 
         /// <summary>
-        /// 初始化 <see cref="SinglePreference{TValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="SinglePreference{TValue}"/> class.
         /// </summary>
-        /// <param name="key">键。</param>
-        /// <param name="converterPair">一个对象，它提供一对转换器方法，可将用户使用的值与 <see cref="PlayerPrefs"/> 中的基本值互相转换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> 或 <paramref name="converterPair"/> 为 <see langword="null"/>。</exception>
+        /// <param name="key">The key.</param>
+        /// <param name="converterPair">An object that provides a pair of converter methods to convert between the user's value and the primitive value in <see cref="PlayerPrefs"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="converterPair"/> is <see langword="null"/>.</exception>
         public SinglePreference(string key, PreferenceConverterPair<TValue, float> converterPair) : base(key)
         {
             if (converterPair == null)

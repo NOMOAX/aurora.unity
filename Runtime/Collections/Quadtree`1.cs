@@ -7,9 +7,9 @@ using UnityEngine;
 namespace Aurora.Unity.Collections
 {
     /// <summary>
-    /// 四叉树。
+    /// A quadtree.
     /// </summary>
-    /// <typeparam name="TElementPosition">四叉树的元素的位置的类型。</typeparam>
+    /// <typeparam name="TElementPosition">The type of the position of a quadtree element.</typeparam>
     public abstract class Quadtree<TElementPosition>
     {
         private readonly ICreateNodeHandler _createNodeHandler;
@@ -23,23 +23,23 @@ namespace Aurora.Unity.Collections
         private readonly int _maxElements;
 
         /// <summary>
-        /// 初始化 <see cref="Quadtree{TElementPosition}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="Quadtree{TElementPosition}"/> class.
         /// </summary>
-        /// <param name="createNodeHandler">用于创建四叉树结点的处理程序。</param>
-        /// <param name="aabb2">四叉树的范围。</param>
+        /// <param name="createNodeHandler">The handler used to create quadtree nodes.</param>
+        /// <param name="aabb2">The range of the quadtree.</param>
         /// <param name="levels">
-        /// 四叉树结点层次个数的最大值。
+        /// The maximum number of quadtree node levels.
         /// <br/>
-        /// 推荐值为 5。
+        /// The recommended value is 5.
         /// </param>
         /// <param name="maxElements">
-        /// 四叉树单个结点直接持有元素数量的最大值。
+        /// The maximum number of elements a single quadtree node directly holds.
         /// <br/>
-        /// 推荐值为 8。
+        /// The recommended value is 8.
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="createNodeHandler"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">调用 <paramref name="createNodeHandler"/> 创建的根结点为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="aabb2"/> 的任何分量为非数字或无穷大，或者 <paramref name="levels"/> 小于 1，或者 <paramref name="maxElements"/> 小于 1。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="createNodeHandler"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The root node created by calling <paramref name="createNodeHandler"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Any component of <paramref name="aabb2"/> is not a number or is infinity, or <paramref name="levels"/> is less than 1, or <paramref name="maxElements"/> is less than 1.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected Quadtree(ICreateNodeHandler createNodeHandler, Aabb2 aabb2, int levels, int maxElements)
         {
@@ -74,7 +74,7 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取根结点。
+        /// Gets the root node.
         /// </summary>
         public Node RootNode
         {
@@ -83,7 +83,7 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取范围。
+        /// Gets the range.
         /// </summary>
         public Aabb2 Aabb2
         {
@@ -92,7 +92,7 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取结点层次个数的最大值。
+        /// Gets the maximum number of node levels.
         /// </summary>
         public int Levels
         {
@@ -101,13 +101,13 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取单个结点直接持有元素数量的最大值。
+        /// Gets the maximum number of elements a single node directly holds.
         /// </summary>
         /// <remarks>
-        /// 存在例外情况，见下表：
+        /// There are exceptional cases, see the table below:
         /// <list type="bullet">
-        /// <item><description>结点的层次已达到最大值（<see cref="Levels"/> 减 1）</description></item>
-        /// <item><description>元素不能被任何子结点包含，或者能被多个子结点同时包含</description></item>
+        /// <item><description>The node level has reached the maximum value (<see cref="Levels"/> minus 1)</description></item>
+        /// <item><description>An element cannot be contained by any child node, or can be contained by multiple child nodes simultaneously</description></item>
         /// </list>
         /// </remarks>
         public int MaxElements
@@ -117,11 +117,11 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 判断四叉树是否包含指定元素的位置。
+        /// Determines whether the quadtree contains the position of the specified element.
         /// </summary>
-        /// <param name="element">元素。</param>
-        /// <returns>如果四叉树包含 <paramref name="element"/> 的 <see cref="IQuadtreeElement{TPosition}.Position"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="element"/> 为 <see langword="null"/>。</exception>
+        /// <param name="element">The element.</param>
+        /// <returns><see langword="true"/> if the quadtree contains <see cref="IQuadtreeElement{TPosition}.Position"/> of <paramref name="element"/>; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(IQuadtreeElement<TElementPosition> element)
         {
@@ -133,10 +133,10 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 判断四叉树是否包含指定的位置。
+        /// Determines whether the quadtree contains the specified position.
         /// </summary>
-        /// <param name="elementPosition">位置。</param>
-        /// <returns>如果四叉树包含 <paramref name="elementPosition"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <param name="elementPosition">The position.</param>
+        /// <returns><see langword="true"/> if the quadtree contains <paramref name="elementPosition"/>; otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(TElementPosition elementPosition)
         {
@@ -144,11 +144,11 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 将元素添加到四叉树。
+        /// Adds an element to the quadtree.
         /// </summary>
-        /// <param name="element">要添加到四叉树的元素。</param>
-        /// <returns>如果成功地添加到了四叉树中，则为 <see langword="true"/>；否则为 <see langword="false"/>，添加失败的原因是“就连四叉树的根结点都无法容纳要添加到四叉树的元素”。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="element"/> 为 <see langword="null"/>。</exception>
+        /// <param name="element">The element to add to the quadtree.</param>
+        /// <returns><see langword="true"/> if successfully added to the quadtree; otherwise <see langword="false"/>, the reason for failure is "even the quadtree root node cannot hold the element to add to the quadtree".</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Add(IQuadtreeElement<TElementPosition> element)
         {
@@ -165,13 +165,13 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取四叉树中被指定的圆包含的所有元素。
+        /// Gets all elements contained in the specified circle in the quadtree.
         /// </summary>
-        /// <param name="center">圆心。</param>
-        /// <param name="radius">圆半径</param>
-        /// <param name="results">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="center"/> 的任何分量为非数字或无穷大，或者 <paramref name="radius"/> 为非数字或负数或正无穷大。</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+        /// <param name="center">The circle center.</param>
+        /// <param name="radius">The circle radius</param>
+        /// <param name="results">The list used to hold the results.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Any component of <paramref name="center"/> is not a number or is infinity, or <paramref name="radius"/> is not a number or is negative or is positive infinity.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInCircle(Vector2 center, float radius, List<IQuadtreeElement<TElementPosition>> results)
         {
@@ -192,12 +192,12 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 获取四叉树中被指定的范围包含的所有元素。
+        /// Gets all elements contained in the specified range in the quadtree.
         /// </summary>
-        /// <param name="aabb2">范围。</param>
-        /// <param name="results">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="aabb2"/> 的任何分量为非数字或无穷大。</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+        /// <param name="aabb2">The range.</param>
+        /// <param name="results">The list used to hold the results.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Any component of <paramref name="aabb2"/> is not a number or is infinity.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetElementsInAabb2(Aabb2 aabb2, List<IQuadtreeElement<TElementPosition>> results)
         {
@@ -215,7 +215,7 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 四叉树结点。
+        /// A quadtree node.
         /// </summary>
         public abstract class Node
         {
@@ -240,7 +240,7 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取所在的四叉树。
+            /// Gets the quadtree that this node belongs to.
             /// </summary>
             public Quadtree<TElementPosition> Tree
             {
@@ -249,7 +249,7 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取父结点。
+            /// Gets the parent node.
             /// </summary>
             public Node Parent
             {
@@ -258,9 +258,9 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取层次。
+            /// Gets the level.
             /// </summary>
-            /// <remarks>根结点的层次为 0。</remarks>
+            /// <remarks>The root node level is 0.</remarks>
             public int Level
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -268,7 +268,7 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取范围。
+            /// Gets the range.
             /// </summary>
             public Aabb2 Aabb2
             {
@@ -277,7 +277,7 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取（直接和非直接地）持有的元素数。
+            /// Gets the number of elements held (directly and indirectly).
             /// </summary>
             public int Count
             {
@@ -296,11 +296,11 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 判断四叉树结点是否包含指定元素的位置。
+            /// Determines whether the quadtree node contains the position of the specified element.
             /// </summary>
-            /// <param name="element">元素。</param>
-            /// <returns>如果四叉树结点包含 <paramref name="element"/> 的 <see cref="IQuadtreeElement{TPosition}.Position"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            /// <exception cref="ArgumentNullException"><paramref name="element"/> 为 <see langword="null"/>。</exception>
+            /// <param name="element">The element.</param>
+            /// <returns><see langword="true"/> if the quadtree node contains <see cref="IQuadtreeElement{TPosition}.Position"/> of <paramref name="element"/>; otherwise <see langword="false"/>.</returns>
+            /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool Contains(IQuadtreeElement<TElementPosition> element)
             {
@@ -312,10 +312,10 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 判断四叉树结点是否包含指定的位置。
+            /// Determines whether the quadtree node contains the specified position.
             /// </summary>
-            /// <param name="elementPosition">位置。</param>
-            /// <returns>如果四叉树结点包含 <paramref name="elementPosition"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+            /// <param name="elementPosition">The position.</param>
+            /// <returns><see langword="true"/> if the quadtree node contains <paramref name="elementPosition"/>; otherwise <see langword="false"/>.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool Contains(TElementPosition elementPosition)
             {
@@ -323,18 +323,18 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 判断指定的范围是否包含指定的位置。
+            /// Determines whether the specified range contains the specified position.
             /// </summary>
-            /// <param name="aabb2">范围。</param>
-            /// <param name="elementPosition">位置。</param>
-            /// <returns>如果 <paramref name="aabb2"/> 包含 <paramref name="elementPosition"/>，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+            /// <param name="aabb2">The range.</param>
+            /// <param name="elementPosition">The position.</param>
+            /// <returns><see langword="true"/> if <paramref name="aabb2"/> contains <paramref name="elementPosition"/>; otherwise <see langword="false"/>.</returns>
             protected abstract bool Contains(Aabb2 aabb2, TElementPosition elementPosition);
 
             /// <summary>
-            /// 获取直接持有的子元素。
+            /// Gets the directly held child elements.
             /// </summary>
-            /// <param name="results">用于存放结果的列表。</param>
-            /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+            /// <param name="results">The list used to hold the results.</param>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElements(List<IQuadtreeElement<TElementPosition>> results)
             {
@@ -346,11 +346,11 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取直接持有的属于指定类型的子元素。
+            /// Gets the directly held child elements of the specified type.
             /// </summary>
-            /// <param name="results">用于存放结果的列表。</param>
-            /// <typeparam name="T">子元素的类型。</typeparam>
-            /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+            /// <param name="results">The list used to hold the results.</param>
+            /// <typeparam name="T">The type of the child elements.</typeparam>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElements<T>(List<T> results) where T : IQuadtreeElement<TElementPosition>
             {
@@ -368,11 +368,11 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取 4 个子结点。
+            /// Gets the 4 child nodes.
             /// </summary>
-            /// <param name="results">用于存放结果的数组。</param>
-            /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
-            /// <exception cref="ArgumentException"><paramref name="results"/> 的长度小于 4，无法将结果存放到其中。</exception>
+            /// <param name="results">The array used to hold the results.</param>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
+            /// <exception cref="ArgumentException">The length of <paramref name="results"/> is less than 4, so the results cannot be stored in it.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetChildren(Node[] results)
             {
@@ -386,19 +386,19 @@ namespace Aurora.Unity.Collections
                 }
                 if (results.Length < 4)
                 {
-                    throw new ArgumentException("数组长度不足", nameof(results));
+                    throw new ArgumentException("The array length is insufficient", nameof(results));
                 }
                 Array.Copy(_children, 0, results, 0, 4);
             }
 
             /// <summary>
-            /// 获取四叉树结点中被指定的圆包含的所有元素。
+            /// Gets all elements contained in the specified circle in the quadtree node.
             /// </summary>
-            /// <param name="center">圆心。</param>
-            /// <param name="radius">圆半径</param>
-            /// <param name="results">用于存放结果的列表。</param>
-            /// <exception cref="ArgumentOutOfRangeException"><paramref name="center"/> 的任何分量为非数字或无穷大，或者 <paramref name="radius"/> 为非数字或负数或正无穷大。</exception>
-            /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+            /// <param name="center">The circle center.</param>
+            /// <param name="radius">The circle radius</param>
+            /// <param name="results">The list used to hold the results.</param>
+            /// <exception cref="ArgumentOutOfRangeException">Any component of <paramref name="center"/> is not a number or is infinity, or <paramref name="radius"/> is not a number or is negative or is positive infinity.</exception>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElementsInCircle(
                 Vector2                                  center,
@@ -450,12 +450,12 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取四叉树结点中被指定的范围包含的所有元素。
+            /// Gets all elements contained in the specified range in the quadtree node.
             /// </summary>
-            /// <param name="aabb2">范围。</param>
-            /// <param name="results">用于存放结果的列表。</param>
-            /// <exception cref="ArgumentOutOfRangeException"><paramref name="aabb2"/> 的任何分量为非数字或无穷大。</exception>
-            /// <exception cref="ArgumentNullException"><paramref name="results"/> 为 <see langword="null"/>。</exception>
+            /// <param name="aabb2">The range.</param>
+            /// <param name="results">The list used to hold the results.</param>
+            /// <exception cref="ArgumentOutOfRangeException">Any component of <paramref name="aabb2"/> is not a number or is infinity.</exception>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void GetElementsInAabb2(Aabb2 aabb2, List<IQuadtreeElement<TElementPosition>> results)
             {
@@ -496,29 +496,29 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 获取指定的位置与指定的点之间的距离的平方。
+            /// Gets the squared distance between the specified position and the specified point.
             /// </summary>
-            /// <param name="elementPosition">位置。</param>
-            /// <param name="point">点。</param>
-            /// <returns><paramref name="elementPosition"/> 与 <paramref name="point"/> 之间的距离的平方。</returns>
+            /// <param name="elementPosition">The position.</param>
+            /// <param name="point">The point.</param>
+            /// <returns>The squared distance between <paramref name="elementPosition"/> and <paramref name="point"/>.</returns>
             protected abstract float GetSquareDistance(TElementPosition elementPosition, Vector2 point);
 
             internal void Add(IQuadtreeElement<TElementPosition> element)
             {
-                // 此结点不是叶子结点，可以分裂
+                // This node is not a leaf node and can split
                 if (_level < _tree._levels - 1)
                 {
-                    // 没有子结点
+                    // No child nodes
                     if (_children is null)
                     {
-                        // 先设为自己的直接元素，然后再检查是否需要分裂
+                        // Set it as a direct element of itself first, then check whether splitting is needed
                         _elements.Add(element);
                         element.SetOwner(this);
                         TrySplitIfExceeded();
                     }
-                    // 有子结点
-                    // 应该尽量先往子结点里放
-                    // 实在不行再设为自己的直接元素
+                    // There are child nodes
+                    // Try to put it into a child node first
+                    // If that is not possible, set it as a direct element of itself
                     else
                     {
                         var childIndex = GetOnlyContainsElementChildIndex(element);
@@ -533,7 +533,7 @@ namespace Aurora.Unity.Collections
                         }
                     }
                 }
-                // 此结点是叶子结点，没有什么选择，只能设为自己的直接元素
+                // This node is a leaf node; there is no choice but to set it as a direct element of itself
                 else
                 {
                     _elements.Add(element);
@@ -547,20 +547,20 @@ namespace Aurora.Unity.Collections
                 {
                     return;
                 }
-                // 元素数超过了最大值
-                // 尝试分裂，但不一定会分裂，因为如果这些元素都不能放到子结点里，那么分裂是没有意义的
+                // The element count exceeds the maximum value
+                // Try to split, but it will not necessarily split, because if none of these elements can be put into a child node, splitting is meaningless
                 for (var i = 0; i < _elements.Count;)
                 {
                     var element    = _elements[i];
                     var childIndex = GetOnlyContainsElementChildIndex(element);
-                    // 这个元素应该放到子结点里
+                    // This element should be put into a child node
                     if (childIndex >= 0)
                     {
                         _elements.RemoveAt(i);
                         if (_children is null)
                         {
-                            // 创建子结点
-                            // 调用此方法的方法已经判断过 _level < _tree._levels - 1，这里不用再判断了，可以创建子结点
+                            // Create a child node
+                            // The method that calls this method has already checked _level < _tree._levels - 1, so there is no need to check again here; a child node can be created
                             _children = PredefinedPools<Node>.ArrayLength4.Get();
                             for (var j = 0; j < 4; j++)
                             {
@@ -570,7 +570,7 @@ namespace Aurora.Unity.Collections
                             }
                         }
                         _children[childIndex].Add(element);
-                        // 从 _elements 移除元素后，后面的元素都会向前移动，因此 i 不递增
+                        // After removing an element from _elements, the following elements all move forward, so i is not incremented
                     }
                     else
                     {
@@ -598,14 +598,14 @@ namespace Aurora.Unity.Collections
             }
 
             /// <summary>
-            /// 从四叉树结点中移除指定的元素。
+            /// Removes the specified element from the quadtree node.
             /// </summary>
-            /// <param name="element">元素。</param>
-            /// <exception cref="ArgumentNullException"><paramref name="element"/> 为 <see langword="null"/>。</exception>
+            /// <param name="element">The element.</param>
+            /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
             /// <exception cref="ArgumentException">
-            /// <paramref name="element"/> 不是此四叉树结点直接持有的元素。
+            /// <paramref name="element"/> is not an element directly held by this quadtree node.
             /// <br/>
-            /// 请使用最新的在 <see cref="IQuadtreeElement{TPosition}.SetOwner"/> 执行时参数的值。
+            /// Please use the latest value of the parameter at the time <see cref="IQuadtreeElement{TPosition}.SetOwner"/> was executed.
             /// </exception>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Remove(IQuadtreeElement<TElementPosition> element)
@@ -616,7 +616,7 @@ namespace Aurora.Unity.Collections
                 }
                 if (!_elements.Remove(element))
                 {
-                    throw new ArgumentException("此结点不直接持有该元素", nameof(element));
+                    throw new ArgumentException("This node does not directly hold this element", nameof(element));
                 }
                 element.SetOwner(null);
                 OnElementRemoved();
@@ -671,19 +671,19 @@ namespace Aurora.Unity.Collections
         }
 
         /// <summary>
-        /// 定义创建四叉树节点的方法。
+        /// Defines the method to create a quadtree node.
         /// </summary>
         public interface ICreateNodeHandler
         {
             /// <summary>
-            /// 创建一个四叉树结点。
+            /// Creates a quadtree node.
             /// </summary>
-            /// <param name="tree">结点所在的四叉树。</param>
-            /// <param name="parent">结点的父结点。如果结点为根结点，则为 <see langword="null"/>。</param>
-            /// <param name="level">结点的层次（根结点的层次为 0）。</param>
-            /// <param name="aabb2">结点的范围。</param>
-            /// <returns>创建出来的四叉树结点。</returns>
-            /// <remarks>这些参数应该原样传递给 <see cref="Node"/> 的构造函数。</remarks>
+            /// <param name="tree">The quadtree the node belongs to.</param>
+            /// <param name="parent">The parent node of the node. If the node is the root node, it is <see langword="null"/>.</param>
+            /// <param name="level">The level of the node (the root node level is 0).</param>
+            /// <param name="aabb2">The range of the node.</param>
+            /// <returns>The created quadtree node.</returns>
+            /// <remarks>These parameters should be passed as-is to the constructor of <see cref="Node"/>.</remarks>
             Node CreateNode(Quadtree<TElementPosition> tree, Node parent, int level, Aabb2 aabb2);
         }
     }

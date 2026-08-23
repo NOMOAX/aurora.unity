@@ -5,20 +5,20 @@ using UnityEngine;
 namespace Aurora.Unity.Pooling
 {
     /// <summary>
-    /// 管理池中的字典的策略。
+    /// The policy for managing pooled dictionaries.
     /// </summary>
-    /// <typeparam name="TKey">字典的键的类型。它是 <see cref="Object"/> 类型或其派生类型。</typeparam>
-    /// <typeparam name="TValue">字典的值的类型。</typeparam>
+    /// <typeparam name="TKey">The type of the dictionary keys. It is <see cref="Object"/> or a type derived from it.</typeparam>
+    /// <typeparam name="TValue">The type of the dictionary values.</typeparam>
     public class PooledUnityEngineObjectDictionaryPolicy<TKey, TValue> : IPooledObjectPolicy<Dictionary<TKey, TValue>>
         where TKey : Object
     {
         /// <summary>
-        /// 获取或设置池化的字典的初始容量。
+        /// Gets or sets the initial capacity of the pooled dictionary.
         /// </summary>
         public int InitialCapacity { get; set; } = 17;
 
         /// <summary>
-        /// 获取或设置允许被放入池的字典的最大长度。
+        /// Gets or sets the maximum length of a dictionary that is allowed to be put into the pool.
         /// </summary>
         public int MaximumRetainedCount { get; set; } = 293;
 

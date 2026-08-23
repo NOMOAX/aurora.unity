@@ -5,15 +5,15 @@ namespace Aurora.Unity.Collections
 {
     /// <inheritdoc />
     /// <summary>
-    /// 在 Unity 帧更新时执行自定义操作的有限状态机。
+    /// A finite state machine that executes a custom action during Unity frame update.
     /// </summary>
     public class UnityUpdateStateMachine<T> : StateMachine<T>
     {
         /// <summary>
-        /// 在 Unity 帧更新时执行自定义逻辑。
+        /// Executes custom logic during Unity frame update.
         /// </summary>
-        /// <exception cref="InvalidOperationException">有限状态机正在进入或退出状态。</exception>
-        /// <remarks>在每帧的某个时刻，先反复调用 <see cref="StateMachine{T}.Update"/> 直到返回值为 <see langword="false"/>，然后调用此方法一次。</remarks>
+        /// <exception cref="InvalidOperationException">The finite state machine is entering or exiting a state.</exception>
+        /// <remarks>At some point each frame, repeatedly call <see cref="StateMachine{T}.Update"/> until it returns <see langword="false"/>, then call this method once.</remarks>
         public void UnityUpdate()
         {
             ThrowIfEnteringOrExiting();

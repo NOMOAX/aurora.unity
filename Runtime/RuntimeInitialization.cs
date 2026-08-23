@@ -93,7 +93,7 @@ namespace Aurora.Unity
             }
         }
 
-        /// <remarks>除非程序结束，否则应确保在调用 <see cref="EnterPlayMode"/> 之后无论隔多久总会调用一次 <see cref="ExitPlayMode"/>。</remarks>
+        /// <remarks>Unless the program ends, <see cref="ExitPlayMode"/> must be called once no matter how much time passes after <see cref="EnterPlayMode"/> is called.</remarks>
         private static void EnterPlayMode(StringBuilder stringBuilder)
         {
             UnityEnvironment.IsPlaying       = true;
@@ -110,7 +110,7 @@ namespace Aurora.Unity
             }
         }
 
-        /// <remarks>除非程序结束，否则应确保在调用 <see cref="EnterPlayMode"/> 之后无论隔多久总会调用一次 <see cref="ExitPlayMode"/>。</remarks>
+        /// <remarks>Unless the program ends, <see cref="ExitPlayMode"/> must be called once no matter how much time passes after <see cref="EnterPlayMode"/> is called.</remarks>
         internal static void ExitPlayMode(StringBuilder stringBuilder)
         {
             UnityEnvironment.IsPlaying = false;
@@ -133,7 +133,9 @@ namespace Aurora.Unity
             catch (Exception e)
             {
                 Log.E(e);
-                Log.W($"不应在 {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.ExitToken)} 令牌的回调函数中抛出异常。");
+                Log.W(
+                    $"An exception should not be thrown in the callback of the {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.ExitToken)} token."
+                );
             }
             finally
             {

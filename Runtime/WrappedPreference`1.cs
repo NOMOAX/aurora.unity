@@ -3,7 +3,7 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 对另一个 <see cref="Preference{TValue}"/> 进行包装，以便执行额外操作。
+    /// Wraps another <see cref="Preference{TValue}"/> to perform additional operations.
     /// </summary>
     /// <inheritdoc />
     public class WrappedPreference<TValue> : Preference<TValue>
@@ -11,10 +11,10 @@ namespace Aurora.Unity
         public readonly Preference<TValue> Preference;
 
         /// <summary>
-        /// 初始化 <see cref="WrappedPreference{TValue}"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="WrappedPreference{TValue}"/> class.
         /// </summary>
-        /// <param name="preference">被包装的 <see cref="Preference{TValue}"/>。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="preference"/> 为 <see langword="null"/>。</exception>
+        /// <param name="preference">The wrapped <see cref="Preference{TValue}"/>.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="preference"/> is <see langword="null"/>.</exception>
         public WrappedPreference(Preference<TValue> preference) : base(preference?.Key ?? string.Empty)
         {
             if (preference == null)

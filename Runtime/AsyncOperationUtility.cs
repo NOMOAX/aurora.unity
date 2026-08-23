@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="AsyncOperation"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="AsyncOperation"/> class.
     /// </summary>
     public static class AsyncOperationUtility
     {
@@ -16,11 +16,11 @@ namespace Aurora.Unity
         );
 
         /// <summary>
-        /// 判断指定的 <see cref="AsyncOperation"/> 是否已释放。
+        /// Determines whether the specified <see cref="AsyncOperation"/> has been disposed.
         /// </summary>
-        /// <param name="asyncOperation">异步操作。</param>
-        /// <returns>如果 <paramref name="asyncOperation"/> 已释放，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> 为 <see langword="null"/>。</exception>
+        /// <param name="asyncOperation">The asynchronous operation.</param>
+        /// <returns><see langword="true"/> if <paramref name="asyncOperation"/> has been disposed; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="asyncOperation"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDisposed(AsyncOperation asyncOperation)
         {

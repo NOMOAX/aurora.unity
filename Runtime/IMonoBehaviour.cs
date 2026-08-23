@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 提供一组成员，它们与 <see cref="MonoBehaviour"/> 的一些公开的实例成员具有相同的签名。
+    /// Provides a set of members that have the same signatures as some public instance members of <see cref="MonoBehaviour"/>.
     /// </summary>
     public interface IMonoBehaviour : IBehaviour
     {

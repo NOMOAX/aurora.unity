@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Aurora.Unity.UI
 {
     /// <summary>
-    /// 圆角矩形。
+    /// A rounded rectangle.
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class RoundedRectangle : MaskableGraphic, ILayoutElement, ICanvasRaycastFilter
@@ -76,7 +76,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 纹理。
+        /// The texture.
         /// </summary>
         public Texture Texture
         {
@@ -94,9 +94,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 边数。
+        /// The segment count.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 不在 [1, 16248] 范围内。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is outside the range [1, 16248].</exception>
         public int Segments
         {
             get => segments;
@@ -116,7 +116,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示左上圆角半径。
+        /// Whether to use a normalized length to represent the top-left corner radius.
         /// </summary>
         public bool TopLeftCornerRadiusNormalized
         {
@@ -132,9 +132,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 左上圆角半径。
+        /// The top-left corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="TopLeftCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="TopLeftCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float TopLeftCornerRadius
         {
             get => topLeftCornerRadius;
@@ -154,7 +154,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示右上圆角半径。
+        /// Whether to use a normalized length to represent the top-right corner radius.
         /// </summary>
         public bool TopRightCornerRadiusNormalized
         {
@@ -170,9 +170,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 右上圆角半径。
+        /// The top-right corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="TopRightCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="TopRightCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float TopRightCornerRadius
         {
             get => topRightCornerRadius;
@@ -192,7 +192,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示左下圆角半径。
+        /// Whether to use a normalized length to represent the bottom-left corner radius.
         /// </summary>
         public bool BottomLeftCornerRadiusNormalized
         {
@@ -208,9 +208,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 左下圆角半径。
+        /// The bottom-left corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="BottomLeftCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="BottomLeftCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float BottomLeftCornerRadius
         {
             get => bottomLeftCornerRadius;
@@ -230,7 +230,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用标准化长度表示右下圆角半径。
+        /// Whether to use a normalized length to represent the bottom-right corner radius.
         /// </summary>
         public bool BottomRightCornerRadiusNormalized
         {
@@ -246,9 +246,9 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 右下圆角半径。
+        /// The bottom-right corner radius.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> 为非数字，或者 <paramref name="value"/> 小于 0，或者当 <see cref="BottomRightCornerRadiusNormalized"/> 为 <see langword="true"/> 时 <paramref name="value"/> 大于 1。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="value"/> is not a number, or <paramref name="value"/> is less than 0, or <paramref name="value"/> is greater than 1 when <see cref="BottomRightCornerRadiusNormalized"/> is <see langword="true"/>.</exception>
         public float BottomRightCornerRadius
         {
             get => bottomRightCornerRadius;
@@ -268,7 +268,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 是否使用精确点击区域。
+        /// Whether to use an exact click area.
         /// </summary>
         public bool UseExactRaycastLocation
         {
@@ -316,7 +316,7 @@ namespace Aurora.Unity.UI
         }
 
         /// <summary>
-        /// 获取非标准化、实际有效的值。
+        /// Gets the non-normalized, actually effective value.
         /// </summary>
         private static float GetActualValue(bool normalized, float value, float halfMinSide)
         {
@@ -350,7 +350,7 @@ namespace Aurora.Unity.UI
             var pixelAdjustedRect = GetPixelAdjustedRect();
             var halfMinSide       = Mathf.Min(pixelAdjustedRect.width, pixelAdjustedRect.height) * 0.5f;
 
-            // 各圆角半径
+            // Each corner radius
             var cornerRadii = new Vector4(
                 GetActualValue(topRightCornerRadiusNormalized,    topRightCornerRadius,    halfMinSide),
                 GetActualValue(topLeftCornerRadiusNormalized,     topLeftCornerRadius,     halfMinSide),
@@ -363,37 +363,37 @@ namespace Aurora.Unity.UI
             var center   = pixelAdjustedRect.center;
             var halfSize = pixelAdjustedRect.size * 0.5f;
 
-            // 添加中心点
+            // Add the center point
             vh.AddVert(center, color32, new Vector2(0.5f, 0.5f));
 
             /*
-             * 各象限的单位向量，用于参与乘法运算
-             * 使用 stackalloc 关键字确保仅分配在栈内存上，提高性能
+             * The unit vectors of each quadrant, used in multiplication operations
+             * The stackalloc keyword is used to ensure allocation only on the stack, improving performance
              */
             var multipliers = stackalloc Vector2[4]
             {
-                Vector2.right + Vector2.up,  // 右上（第Ⅰ象限）
-                Vector2.left + Vector2.up,   // 左上（第Ⅱ象限）
-                Vector2.left + Vector2.down, // 左下（第Ⅲ象限）
-                Vector2.right + Vector2.down // 右下（第Ⅳ象限）
+                Vector2.right + Vector2.up,  // top-right (quadrant I)
+                Vector2.left + Vector2.up,   // top-left (quadrant II)
+                Vector2.left + Vector2.down, // bottom-left (quadrant III)
+                Vector2.right + Vector2.down // bottom-right (quadrant IV)
             };
 
-            // 每个象限使用 0.5π
+            // Each quadrant uses 0.5π
             var stepAngle = 0.5f * Mathf.PI / segments;
-            // 添加四个象限的各点
+            // Add the points of the four quadrants
             for (var i = 0; i < 4; i++)
             {
-                // 此象限的首个顶点的索引（注意，每个象限的最后一个顶点与它的下个象限的首个顶点具有相同的角度，此时将这两个顶点当作具有相同的索引）
+                // The index of the first vertex of this quadrant (note that the last vertex of each quadrant and the first vertex of the next quadrant have the same angle, so these two vertices are treated as having the same index)
                 var firstVertexIndex     = segments * i;
-                // 圆角半径
+                // The corner radius
                 var cornerRadius         = cornerRadii[i];
-                // 圆角圆心到中心的相对位置
+                // The relative position from the corner center to the center
                 var cornerCenterToCenter = (halfSize - Vector2.one * cornerRadius) * multipliers[i];
-                // 因为每个象限有 segments 条边，所以有 segments + 1 个顶点
+                // Because each quadrant has segments edges, there are segments + 1 vertices
                 for (var j = 0; j < segments + 1; j++)
                 {
                     var angle                  = stepAngle * (firstVertexIndex + j);
-                    // 此顶点到圆角圆心的相对位置
+                    // The relative position from this vertex to the corner center
                     var positionToCornerCenter = UnityMath.CosSin(angle) * cornerRadius;
                     var position               = center + cornerCenterToCenter + positionToCornerCenter;
                     if (useExactRaycastLocation)

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IDropHandler.OnDrop"/> 传递给父级。
+    /// Forwards <see cref="IDropHandler.OnDrop"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentDropHandler : SendToParentEventSystemHandler<IDropHandler>, IDropHandler

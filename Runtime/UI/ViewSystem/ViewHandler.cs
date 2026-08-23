@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.UI.ViewSystem
 {
     /// <summary>
-    /// 界面处理程序。
+    /// A view handler.
     /// </summary>
     public abstract class ViewHandler
     {
@@ -20,10 +20,10 @@ namespace Aurora.Unity.UI.ViewSystem
             new ReversedComparer<ViewHandler>(new ViewHandlerComparer());
 
         /// <summary>
-        /// 注册界面处理程序。
+        /// Registers a view handler.
         /// </summary>
-        /// <param name="viewHandler">界面处理程序。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="viewHandler"/> 为 <see langword="null"/>。</exception>
+        /// <param name="viewHandler">The view handler.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="viewHandler"/> is <see langword="null"/>.</exception>
         public static void Register(ViewHandler viewHandler)
         {
             if (viewHandler is null)
@@ -33,33 +33,35 @@ namespace Aurora.Unity.UI.ViewSystem
             var handleableLeastDerivedViewType = viewHandler.HandleableLeastDerivedViewType;
             if (handleableLeastDerivedViewType == null)
             {
-                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} 为 null");
+                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} is null");
             }
             if (handleableLeastDerivedViewType != typeof(View) &&
                 !handleableLeastDerivedViewType.IsSubclassOf(typeof(View)))
             {
-                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} 不是界面类型");
+                throw new ArgumentException(
+                    $"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} is not a view type"
+                );
             }
             ViewHandlers.Add(viewHandler);
         }
 
         /// <summary>
-        /// 获取最适合于处理指定类型界面的界面处理程序。
+        /// Gets the view handler most suitable for handling a view of the specified type.
         /// </summary>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <returns>最适合于处理指定类型界面的界面处理程序。</returns>
+        /// <typeparam name="T">The type of the view.</typeparam>
+        /// <returns>The view handler most suitable for handling a view of the specified type.</returns>
         public static ViewHandler Get<T>() where T : View
         {
             return InternalGet(typeof(T));
         }
 
         /// <summary>
-        /// 获取最适合于处理指定类型界面的界面处理程序。
+        /// Gets the view handler most suitable for handling a view of the specified type.
         /// </summary>
-        /// <param name="viewType">界面的类型。</param>
-        /// <returns>最适合于处理指定类型界面的界面处理程序。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="viewType"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="viewType"/> 不是界面类型。</exception>
+        /// <param name="viewType">The type of the view.</param>
+        /// <returns>The view handler most suitable for handling a view of the specified type.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="viewType"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="viewType"/> is not a view type.</exception>
         public static ViewHandler Get(Type viewType)
         {
             if (viewType == null)
@@ -68,7 +70,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             if (viewType != typeof(View) && !viewType.IsSubclassOf(typeof(View)))
             {
-                throw new ArgumentException($"{nameof(viewType)} 不是界面类型", nameof(viewType));
+                throw new ArgumentException($"{nameof(viewType)} is not a view type", nameof(viewType));
             }
             return InternalGet(viewType);
         }
@@ -97,26 +99,26 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取此 <see cref="ViewHandler"/> 可处理的最小派生界面类型。
+        /// Gets the least derived view type that this <see cref="ViewHandler"/> can handle.
         /// </summary>
         public abstract Type HandleableLeastDerivedViewType { get; }
 
         /// <summary>
-        /// 创建“所关联的游戏物体处于未激活状态，或者其本身禁用”的界面。
+        /// Creates a view whose associated game object is inactive, or who is itself disabled.
         /// </summary>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <typeparam name="T">要创建的界面的类型。</typeparam>
-        /// <returns>异步操作的任务对象。</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="T"/> 是抽象类型，或 <typeparamref name="T"/> 与 <see cref="HandleableLeastDerivedViewType"/> 冲突。</exception>
-        /// <remarks>要求界面满足“所关联的游戏物体处于未激活状态，或者其本身禁用”的原因是确保可以在界面脚本的 <c>OnEnable</c> 中编写初始化代码。</remarks>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to create.</typeparam>
+        /// <returns>The task object of the asynchronous operation.</returns>
+        /// <exception cref="ArgumentException"><typeparamref name="T"/> is an abstract type, or <typeparamref name="T"/> conflicts with <see cref="HandleableLeastDerivedViewType"/>.</exception>
+        /// <remarks>The reason a view must satisfy "the associated game object is inactive, or the view is itself disabled" is to ensure initialization code can be written in the view script's <c>OnEnable</c>.</remarks>
         public abstract Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken = default)
             where T : View;
 
         /// <summary>
-        /// 释放界面。
+        /// Releases a view.
         /// </summary>
-        /// <param name="view">界面。</param>
-        /// <remarks>此方法仅用于界面系统调用，请勿自行调用。</remarks>
+        /// <param name="view">The view.</param>
+        /// <remarks>This method is intended only for the view system to call; do not call it yourself.</remarks>
         public virtual void ReleaseView(View view)
         {
             Object.Destroy(view.gameObject);

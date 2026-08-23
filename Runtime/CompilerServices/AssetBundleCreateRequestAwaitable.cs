@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Aurora.Unity.CompilerServices
 {
     /// <summary>
-    /// 提供用于切换到创建资源包完毕时的可等待上下文。
+    /// Provides an awaitable context for switching to when asset bundle creation finishes.
     /// </summary>
     public readonly struct AssetBundleCreateRequestAwaitable : IAwaitable<AssetBundle>
     {
@@ -15,9 +15,9 @@ namespace Aurora.Unity.CompilerServices
         private readonly CancellationToken _cancellationToken;
 
         /// <summary>
-        /// 初始化 <see cref="AssetBundleCreateRequestAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AssetBundleCreateRequestAwaitable"/> struct.
         /// </summary>
-        /// <param name="assetBundleCreateRequest">异步创建资源包的请求。</param>
+        /// <param name="assetBundleCreateRequest">The request that asynchronously creates an asset bundle.</param>
         public AssetBundleCreateRequestAwaitable(AssetBundleCreateRequest assetBundleCreateRequest)
         {
             _assetBundleCreateRequest = assetBundleCreateRequest;
@@ -25,10 +25,10 @@ namespace Aurora.Unity.CompilerServices
         }
 
         /// <summary>
-        /// 初始化 <see cref="AssetBundleCreateRequestAwaitable"/> 结构的新实例。
+        /// Initializes a new instance of the <see cref="AssetBundleCreateRequestAwaitable"/> struct.
         /// </summary>
-        /// <param name="assetBundleCreateRequest">异步创建资源包的请求。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
+        /// <param name="assetBundleCreateRequest">The request that asynchronously creates an asset bundle.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         public AssetBundleCreateRequestAwaitable(
             AssetBundleCreateRequest assetBundleCreateRequest,
             CancellationToken        cancellationToken)

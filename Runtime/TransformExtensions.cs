@@ -7,17 +7,17 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Transform"/> 类提供扩展方法。
+    /// Provides extension methods for the <see cref="Transform"/> class.
     /// </summary>
     public static class TransformExtensions
     {
         /// <summary>
-        /// 交换当前 <see cref="Transform"/> 与指定的兄弟变换的索引。
+        /// Swaps the index of the current <see cref="Transform"/> with the specified sibling transform.
         /// </summary>
-        /// <param name="transform">此变换.</param>
-        /// <param name="sibling">兄弟变换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="sibling"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <param name="sibling">The sibling transform.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> or <paramref name="sibling"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="transform"/> and <paramref name="sibling"/> are not siblings.</exception>
         public static void SwapSibling(this Transform transform, Transform sibling)
         {
             if (!transform)
@@ -51,12 +51,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 设置当前 <see cref="Transform"/> 的索引，使得它的索引刚好位于指定的兄弟变换前。
+        /// Sets the index of the current <see cref="Transform"/> so that its index is just before the specified sibling transform.
         /// </summary>
-        /// <param name="transform">此变换.</param>
-        /// <param name="sibling">兄弟变换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="sibling"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系，或者 <paramref name="transform"/> 与 <paramref name="sibling"/> 为相同实例。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <param name="sibling">The sibling transform.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> or <paramref name="sibling"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="transform"/> and <paramref name="sibling"/> are not siblings, or <paramref name="transform"/> and <paramref name="sibling"/> are the same instance.</exception>
         public static void SetBeforeSibling(this Transform transform, Transform sibling)
         {
             if (!transform)
@@ -81,12 +81,12 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 设置当前 <see cref="Transform"/> 的索引，使得它的索引刚好位于指定的兄弟变换后。
+        /// Sets the index of the current <see cref="Transform"/> so that its index is just after the specified sibling transform.
         /// </summary>
-        /// <param name="transform">此变换.</param>
-        /// <param name="sibling">兄弟变换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="sibling"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="transform"/> 与 <paramref name="sibling"/> 不是兄弟关系，或者 <paramref name="transform"/> 与 <paramref name="sibling"/> 为相同实例。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <param name="sibling">The sibling transform.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> or <paramref name="sibling"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="transform"/> and <paramref name="sibling"/> are not siblings, or <paramref name="transform"/> and <paramref name="sibling"/> are the same instance.</exception>
         public static void SetAfterSibling(this Transform transform, Transform sibling)
         {
             if (!transform)
@@ -111,11 +111,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取当前 <see cref="Transform"/> 的层级，并将结果存入指定的列表。
+        /// Gets the hierarchy of the current <see cref="Transform"/> and stores the result in the specified list.
         /// </summary>
-        /// <param name="transform">此变换.</param>
-        /// <param name="result">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="result"/> 为 <see langword="null"/>。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <param name="result">The list used to hold the results.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
         public static void GetHierarchies(this Transform transform, List<Transform> result)
         {
             if (!transform)
@@ -144,11 +144,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取当前 <see cref="Transform"/> 的层级中各层变换的名称，并将结果存入指定的列表。
+        /// Gets the names of each transform level in the hierarchy of the current <see cref="Transform"/> and stores the result in the specified list.
         /// </summary>
-        /// <param name="transform">此变换.</param>
-        /// <param name="result">用于存放结果的列表。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 或 <paramref name="result"/> 为 <see langword="null"/>。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <param name="result">The list used to hold the results.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
         public static void GetHierarchyNames(this Transform transform, List<string> result)
         {
             if (!transform)
@@ -177,11 +177,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取当前 <see cref="Transform"/> 在场景中的路径。
+        /// Gets the path of the current <see cref="Transform"/> in the scene.
         /// </summary>
-        /// <param name="transform">此变换。</param>
-        /// <returns>这个变换在场景中的路径。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 为 <see langword="null"/>。</exception>
+        /// <param name="transform">This transform.</param>
+        /// <returns>The path of this transform in the scene.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
         public static string GetScenePath(this Transform transform)
         {
             if (!transform)
@@ -206,11 +206,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 销毁当前 <see cref="Transform"/> 的所有子变换。
+        /// Destroys all child transforms of the current <see cref="Transform"/>.
         /// </summary>
-        /// <param name="transform">此变换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 为 <see langword="null"/>。</exception>
-        /// <remarks>销毁按倒序进行，即首先销毁最后的子变换，最后销毁第一个子变换。</remarks>
+        /// <param name="transform">This transform.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+        /// <remarks>Destruction is in reverse order, i.e. the last child transform is destroyed first and the first child transform is destroyed last.</remarks>
         public static void DestroyChildren(this Transform transform)
         {
             if (!transform)
@@ -226,11 +226,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 立即销毁当前 <see cref="Transform"/> 的所有子变换。
+        /// Immediately destroys all child transforms of the current <see cref="Transform"/>.
         /// </summary>
-        /// <param name="transform">此变换。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="transform"/> 为 <see langword="null"/>。</exception>
-        /// <remarks>销毁按倒序进行，即首先销毁最后的子变换，最后销毁第一个子变换。</remarks>
+        /// <param name="transform">This transform.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+        /// <remarks>Destruction is in reverse order, i.e. the last child transform is destroyed first and the first child transform is destroyed last.</remarks>
         public static void DestroyChildrenImmediate(this Transform transform)
         {
             if (!transform)

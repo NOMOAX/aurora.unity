@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="IDeselectHandler.OnDeselect"/> 传递给父级。
+    /// Forwards <see cref="IDeselectHandler.OnDeselect"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentDeselectHandler : SendToParentEventSystemHandler<IDeselectHandler>, IDeselectHandler

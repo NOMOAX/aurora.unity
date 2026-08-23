@@ -1,47 +1,47 @@
 ﻿namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
-    /// Unity 主循环阶段。
+    /// Unity player loop phases.
     /// </summary>
     public enum PlayerLoopPhase : byte
     {
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.FixedUpdate.ScriptRunBehaviourFixedUpdate"/> 之前。
+        /// Before <see cref="UnityEngine.PlayerLoop.FixedUpdate.ScriptRunBehaviourFixedUpdate"/>.
         /// </summary>
         FixedUpdating,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.FixedUpdate.ScriptRunBehaviourFixedUpdate"/> 之后。
+        /// After <see cref="UnityEngine.PlayerLoop.FixedUpdate.ScriptRunBehaviourFixedUpdate"/>.
         /// </summary>
         FixedUpdated,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.Update.ScriptRunBehaviourUpdate"/> 之前。
+        /// Before <see cref="UnityEngine.PlayerLoop.Update.ScriptRunBehaviourUpdate"/>.
         /// </summary>
         Updating,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.Update.ScriptRunBehaviourUpdate"/> 之后，<see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedDynamicFrameRate"/> 之前。
+        /// After <see cref="UnityEngine.PlayerLoop.Update.ScriptRunBehaviourUpdate"/> and before <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedDynamicFrameRate"/>.
         /// </summary>
         Updated,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedDynamicFrameRate"/> 之后，<see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedTasks"/> 之前。
+        /// After <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedDynamicFrameRate"/> and before <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedTasks"/>.
         /// </summary>
         UpdateYielded,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedTasks"/> 之后。
+        /// After <see cref="UnityEngine.PlayerLoop.Update.ScriptRunDelayedTasks"/>.
         /// </summary>
         UpdatePosted,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.PreLateUpdate.ScriptRunBehaviourLateUpdate"/> 之前。
+        /// Before <see cref="UnityEngine.PlayerLoop.PreLateUpdate.ScriptRunBehaviourLateUpdate"/>.
         /// </summary>
         LateUpdating,
 
         /// <summary>
-        /// <see cref="UnityEngine.PlayerLoop.PreLateUpdate.ScriptRunBehaviourLateUpdate"/> 之后。
+        /// After <see cref="UnityEngine.PlayerLoop.PreLateUpdate.ScriptRunBehaviourLateUpdate"/>.
         /// </summary>
         LateUpdated
     }

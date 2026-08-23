@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
-    /// 更新范围。
+    /// An update scope.
     /// </summary>
     public sealed class PlayerLoopScope : IPlayerLoopItem, IDisposable
     {
@@ -13,10 +13,10 @@ namespace Aurora.Unity.PlayerLoop
         private readonly PlayerLoopPhase _playerLoopPhase;
 
         /// <summary>
-        /// 初始化 <see cref="PlayerLoopScope"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PlayerLoopScope"/> class.
         /// </summary>
-        /// <param name="action">更新时执行的操作。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="action">The action to execute on update.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         public PlayerLoopScope(Action action, PlayerLoopPhase playerLoopPhase)
         {
             if (action != null)
@@ -28,11 +28,11 @@ namespace Aurora.Unity.PlayerLoop
         }
 
         /// <summary>
-        /// 初始化 <see cref="PlayerLoopScope"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="PlayerLoopScope"/> class.
         /// </summary>
-        /// <param name="action">更新时执行的操作，它具有一个 <see cref="object"/> 类型的参数。</param>
-        /// <param name="state">要传递给 <paramref name="action"/> 的参数。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
+        /// <param name="action">The action to execute on update; it has an <see cref="object"/> parameter.</param>
+        /// <param name="state">The argument to pass to <paramref name="action"/>.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
         public PlayerLoopScope(Action<object> action, object state, PlayerLoopPhase playerLoopPhase)
         {
             if (action != null)
@@ -45,7 +45,7 @@ namespace Aurora.Unity.PlayerLoop
 
         ~PlayerLoopScope()
         {
-            Debug.LogError("应在使用完之后显式地释放此实例，而不是丢给 GC 来处理");
+            Debug.LogError("This instance should be explicitly disposed after use instead of being left to the GC");
             InternalDispose();
         }
 

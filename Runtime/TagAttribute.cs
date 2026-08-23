@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 使用下拉框选择标签。
+    /// Selects a tag from a dropdown.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class TagAttribute : PropertyAttribute

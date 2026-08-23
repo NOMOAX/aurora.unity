@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Aurora.UnityEditor.UI
 {
     /// <summary>
-    /// 为 <see cref="EnhancedButton"/> 类绘制编辑器视图。
+    /// Draws the editor view for the <see cref="EnhancedButton"/> class.
     /// </summary>
     [CustomEditor(typeof(EnhancedButton))]
     [CanEditMultipleObjects]
@@ -50,11 +50,11 @@ namespace Aurora.UnityEditor.UI
             _buttonGroup         = serializedObject.FindProperty(GroupName);
             _rightClick          = serializedObject.FindProperty(RightClickName);
             _doubleClick         = serializedObject.FindProperty(DoubleClickName);
-            _interactableContent = new GUIContent("Interactable", "是否可交互");
-            _isOnContent         = new GUIContent("IsOn",         "开启/关闭");
-            _buttonGroupContent  = new GUIContent("Group",        "组");
-            _rightClickContent   = new GUIContent("Right Click",  "是否允许右键单击");
-            _doubleClickContent  = new GUIContent("Double Click", "是否允许左键双击");
+            _interactableContent = new GUIContent("Interactable", "Whether it is interactable");
+            _isOnContent         = new GUIContent("IsOn",         "On/Off");
+            _buttonGroupContent  = new GUIContent("Group",        "Group");
+            _rightClickContent   = new GUIContent("Right Click",  "Whether right-click is allowed");
+            _doubleClickContent  = new GUIContent("Double Click", "Whether left double-click is allowed");
         }
 
         /// <inheritdoc />
@@ -66,7 +66,7 @@ namespace Aurora.UnityEditor.UI
         }
 
         /// <summary>
-        /// 绘制基本信息。
+        /// Draws basic information.
         /// </summary>
         protected void GeneralInformationGUI()
         {
@@ -263,7 +263,7 @@ namespace Aurora.UnityEditor.UI
 
                 property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, EditorGUIUtility.TrTempContent(property.displayName));
 
-                // 右键点击 Foldout 这一行，将弹出上下文菜单，实现多种复杂功能
+                // Right-clicking the Foldout row shows a context menu implementing several complex features
                 if (GUI.Button(position, GUIContent.none, GUIStyle.none) && Event.current.button == 1)
                 {
                     var genericMenu = new GenericMenu();

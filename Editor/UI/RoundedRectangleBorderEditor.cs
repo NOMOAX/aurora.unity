@@ -146,37 +146,52 @@ namespace Aurora.UnityEditor.UI
         protected override void OnEnable()
         {
             base.OnEnable();
-            _texture = serializedObject.FindProperty(TextureName);
-            _segments = serializedObject.FindProperty(SegmentsName);
-            _topLeftCornerRadiusNormalized = serializedObject.FindProperty(TopLeftCornerRadiusNormalizedName);
-            _topLeftCornerRadius = serializedObject.FindProperty(TopLeftCornerRadiusName);
-            _topRightCornerRadiusNormalized = serializedObject.FindProperty(TopRightCornerRadiusNormalizedName);
-            _topRightCornerRadius = serializedObject.FindProperty(TopRightCornerRadiusName);
-            _bottomLeftCornerRadiusNormalized = serializedObject.FindProperty(BottomLeftCornerRadiusNormalizedName);
-            _bottomLeftCornerRadius = serializedObject.FindProperty(BottomLeftCornerRadiusName);
+            _texture                           = serializedObject.FindProperty(TextureName);
+            _segments                          = serializedObject.FindProperty(SegmentsName);
+            _topLeftCornerRadiusNormalized     = serializedObject.FindProperty(TopLeftCornerRadiusNormalizedName);
+            _topLeftCornerRadius               = serializedObject.FindProperty(TopLeftCornerRadiusName);
+            _topRightCornerRadiusNormalized    = serializedObject.FindProperty(TopRightCornerRadiusNormalizedName);
+            _topRightCornerRadius              = serializedObject.FindProperty(TopRightCornerRadiusName);
+            _bottomLeftCornerRadiusNormalized  = serializedObject.FindProperty(BottomLeftCornerRadiusNormalizedName);
+            _bottomLeftCornerRadius            = serializedObject.FindProperty(BottomLeftCornerRadiusName);
             _bottomRightCornerRadiusNormalized = serializedObject.FindProperty(BottomRightCornerRadiusNormalizedName);
-            _bottomRightCornerRadius = serializedObject.FindProperty(BottomRightCornerRadiusName);
-            _thicknessNormalized = serializedObject.FindProperty(ThicknessNormalizedName);
-            _thickness = serializedObject.FindProperty(ThicknessName);
-            _useExactRaycastLocation = serializedObject.FindProperty(UseExactRaycastLocationName);
-            _textureGUIContent = new GUIContent("Texture", "纹理");
-            _segmentsGUIContent = new GUIContent("Segments", "边数");
-            _topLeftCornerGUIContent = new GUIContent("Top Left Corner", "左上圆角");
-            _topRightCornerGUIContent = new GUIContent("Top Right Corner", "右上圆角");
-            _bottomLeftCornerGUIContent = new GUIContent("Bottom Left Corner", "左下圆角");
-            _bottomRightCornerGUIContent = new GUIContent("Bottom Right Corner", "右下圆角");
-            _thicknessGUIContent = new GUIContent("Thickness", "粗细");
-            _topLeftCornerRadiusNormalizedGUIContent = new GUIContent("Normalized", "是否使用标准化长度表示左上圆角半径");
-            _topLeftCornerRadiusGUIContent = new GUIContent("Radius", "左上圆角半径");
-            _topRightCornerRadiusNormalizedGUIContent = new GUIContent("Normalized", "是否使用标准化长度表示右上圆角半径");
-            _topRightCornerRadiusGUIContent = new GUIContent("Radius", "右上圆角半径");
-            _bottomLeftCornerRadiusNormalizedGUIContent = new GUIContent("Normalized", "是否使用标准化长度表示左下圆角半径");
-            _bottomLeftCornerRadiusGUIContent = new GUIContent("Radius", "左下圆角半径");
-            _bottomRightCornerRadiusNormalizedGUIContent = new GUIContent("Normalized", "是否使用标准化长度表示右下圆角半径");
-            _bottomRightCornerRadiusGUIContent = new GUIContent("Radius", "右下圆角半径");
-            _thicknessNormalizedGUIContents = new GUIContent("Normalized", "是否使用标准化长度表示粗细");
-            _thicknessValueGUIContent = new GUIContent("Value", "粗细");
-            _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "使用精确点击区域");
+            _bottomRightCornerRadius           = serializedObject.FindProperty(BottomRightCornerRadiusName);
+            _thicknessNormalized               = serializedObject.FindProperty(ThicknessNormalizedName);
+            _thickness                         = serializedObject.FindProperty(ThicknessName);
+            _useExactRaycastLocation           = serializedObject.FindProperty(UseExactRaycastLocationName);
+            _textureGUIContent                 = new GUIContent("Texture",             "Texture");
+            _segmentsGUIContent                = new GUIContent("Segments",            "Segment Count");
+            _topLeftCornerGUIContent           = new GUIContent("Top Left Corner",     "Top Left Rounded Corner");
+            _topRightCornerGUIContent          = new GUIContent("Top Right Corner",    "Top Right Rounded Corner");
+            _bottomLeftCornerGUIContent        = new GUIContent("Bottom Left Corner",  "Bottom Left Rounded Corner");
+            _bottomRightCornerGUIContent       = new GUIContent("Bottom Right Corner", "Bottom Right Rounded Corner");
+            _thicknessGUIContent               = new GUIContent("Thickness",           "Thickness");
+            _topLeftCornerRadiusNormalizedGUIContent = new GUIContent(
+                "Normalized",
+                "Whether to use a normalized length to represent the top-left corner radius"
+            );
+            _topLeftCornerRadiusGUIContent = new GUIContent("Radius", "Top-Left Corner Radius");
+            _topRightCornerRadiusNormalizedGUIContent = new GUIContent(
+                "Normalized",
+                "Whether to use a normalized length to represent the top-right corner radius"
+            );
+            _topRightCornerRadiusGUIContent = new GUIContent("Radius", "Top-Right Corner Radius");
+            _bottomLeftCornerRadiusNormalizedGUIContent = new GUIContent(
+                "Normalized",
+                "Whether to use a normalized length to represent the bottom-left corner radius"
+            );
+            _bottomLeftCornerRadiusGUIContent = new GUIContent("Radius", "Bottom-Left Corner Radius");
+            _bottomRightCornerRadiusNormalizedGUIContent = new GUIContent(
+                "Normalized",
+                "Whether to use a normalized length to represent the bottom-right corner radius"
+            );
+            _bottomRightCornerRadiusGUIContent = new GUIContent("Radius", "Bottom-Right Corner Radius");
+            _thicknessNormalizedGUIContents = new GUIContent(
+                "Normalized",
+                "Whether to use a normalized length to represent the thickness"
+            );
+            _thicknessValueGUIContent          = new GUIContent("Value",                      "Thickness");
+            _useExactRaycastLocationGUIContent = new GUIContent("Use Exact Raycast Location", "Use Exact Hit Area");
             SetShowNativeSize(_texture.objectReferenceValue, true);
         }
 

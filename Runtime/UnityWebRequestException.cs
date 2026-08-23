@@ -5,43 +5,43 @@ using UnityEngine.Networking;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 在 Unity 网络请求遇到错误时引发的异常。
+    /// The exception thrown when a Unity web request encounters an error.
     /// </summary>
     public class UnityWebRequestException : UnityException
     {
         /// <summary>
-        /// Unity 网络请求。
+        /// The Unity web request.
         /// </summary>
         public UnityWebRequest UnityWebRequest { get; }
 
         /// <summary>
-        /// 使用指定的 Unity 网络请求初始化 <see cref="UnityWebRequestException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityWebRequestException"/> class with the specified Unity web request.
         /// </summary>
-        /// <param name="unityWebRequest">Unity 网络请求。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
+        /// <param name="unityWebRequest">The Unity web request.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
         public UnityWebRequestException(UnityWebRequest unityWebRequest)
         {
             UnityWebRequest = unityWebRequest ?? throw new ArgumentNullException(nameof(unityWebRequest));
         }
 
         /// <summary>
-        /// 使用指定的 Unity 网络请求和错误消息初始化 <see cref="UnityWebRequestException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityWebRequestException"/> class with the specified Unity web request and error message.
         /// </summary>
-        /// <param name="unityWebRequest">遇到错误的 Unity 网络请求。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
+        /// <param name="unityWebRequest">The Unity web request that encountered the error.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
         public UnityWebRequestException(UnityWebRequest unityWebRequest, string message) : base(message)
         {
             UnityWebRequest = unityWebRequest ?? throw new ArgumentNullException(nameof(unityWebRequest));
         }
 
         /// <summary>
-        /// 使用指定的 Unity 网络请求、错误消息和内部异常初始化 <see cref="UnityWebRequestException"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="UnityWebRequestException"/> class with the specified Unity web request, error message, and inner exception.
         /// </summary>
-        /// <param name="unityWebRequest">遇到错误的 Unity 网络请求。</param>
-        /// <param name="message">描述错误的消息。</param>
-        /// <param name="innerException">造成此异常的异常。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> 为 <see langword="null"/>。</exception>
+        /// <param name="unityWebRequest">The Unity web request that encountered the error.</param>
+        /// <param name="message">The message describing the error.</param>
+        /// <param name="innerException">The exception that caused this exception.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="unityWebRequest"/> is <see langword="null"/>.</exception>
         public UnityWebRequestException(UnityWebRequest unityWebRequest, string message, Exception innerException) :
             base(message, innerException)
         {

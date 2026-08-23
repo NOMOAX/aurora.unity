@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 响应 <see cref="ISubmitHandler.OnSubmit"/>，但不执行任何操作。
+    /// Responds to <see cref="ISubmitHandler.OnSubmit"/> but performs no action.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class NullSubmitHandler : MonoBehaviour, ISubmitHandler

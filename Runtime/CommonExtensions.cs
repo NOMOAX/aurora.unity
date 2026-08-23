@@ -6,16 +6,16 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 通用扩展方法。
+    /// Common extension methods.
     /// </summary>
     public static class CommonExtensions
     {
         /// <summary>
-        /// 销毁当前 <see cref="List{T}"/> 中的所有对象，然后清空列表。如果列表中的成员是 <see cref="UnityEngine.Component"/> 类型，则改为销毁它所在的游戏物体。
+        /// Destroys all objects in the current <see cref="List{T}"/> and then clears the list. If a member is a <see cref="UnityEngine.Component"/> type, destroys the game object it belongs to instead.
         /// </summary>
-        /// <param name="list">列表、</param>
-        /// <typeparam name="T">列表中成员的类型。</typeparam>
-        /// <exception cref="System.ArgumentNullException"><paramref name="list"/> 为 <see langword="null"/>。</exception>
+        /// <param name="list">The list.</param>
+        /// <typeparam name="T">The type of the list members.</typeparam>
+        /// <exception cref="System.ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
         public static void ClearAndDestroy<T>(this List<T> list) where T : Object
         {
             if (list is null)
@@ -40,11 +40,11 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 立即销毁当前 <see cref="List{T}"/> 中的所有对象，然后清空列表。如果列表中的成员是 <see cref="UnityEngine.Component"/> 类型，则改为立即销毁它所在的游戏物体。
+        /// Immediately destroys all objects in the current <see cref="List{T}"/> and then clears the list. If a member is a <see cref="UnityEngine.Component"/> type, immediately destroys the game object it belongs to instead.
         /// </summary>
-        /// <param name="list">列表、</param>
-        /// <typeparam name="T">列表中成员的类型。</typeparam>
-        /// <exception cref="System.ArgumentNullException"><paramref name="list"/> 为 <see langword="null"/>。</exception>
+        /// <param name="list">The list.</param>
+        /// <typeparam name="T">The type of the list members.</typeparam>
+        /// <exception cref="System.ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
         public static void ClearAndDestroyImmediate<T>(this List<T> list) where T : Object
         {
             if (list is null)

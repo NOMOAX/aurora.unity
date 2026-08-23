@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 响应 <see cref="IInitializePotentialDragHandler.OnInitializePotentialDrag"/>，但不执行任何操作。
+    /// Responds to <see cref="IInitializePotentialDragHandler.OnInitializePotentialDrag"/> but performs no action.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class NullInitializePotentialDragHandler : MonoBehaviour, IInitializePotentialDragHandler

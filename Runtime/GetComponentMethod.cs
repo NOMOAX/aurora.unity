@@ -3,7 +3,7 @@
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 从游戏物体获取组件的方法。
+    /// The method used to get a component from a game object.
     /// </summary>
     public enum GetComponentMethod
     {

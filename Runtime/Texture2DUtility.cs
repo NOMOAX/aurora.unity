@@ -7,18 +7,18 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="Texture2D"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="Texture2D"/> class.
     /// </summary>
     public static class Texture2DUtility
     {
         private static readonly byte[] RawRedQuestionMarkTextureData = GetRawRedQuestionMarkTextureData();
 
         /// <summary>
-        /// 判断指定的二维纹理是否是默认的红色问号8×8二维纹理。
+        /// Determines whether the specified 2D texture is the default red question-mark 8x8 texture.
         /// </summary>
-        /// <param name="texture">二维纹理。</param>
-        /// <returns><paramref name="texture"/> 是否是默认的红色问号8×8二维纹理。</returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="texture"/> 为 <see langword="null"/>。</exception>
+        /// <param name="texture">The 2D texture.</param>
+        /// <returns>Whether <paramref name="texture"/> is the default red question-mark 8x8 texture.</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="texture"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool IsRedQuestionMarkTexture(Texture2D texture)
         {

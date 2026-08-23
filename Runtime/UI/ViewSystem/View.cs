@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 namespace Aurora.Unity.UI.ViewSystem
 {
     /// <summary>
-    /// 界面。
+    /// A view.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
@@ -32,7 +32,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 ReferenceEquals(container.RectTransform, rectTransform);
 
         /// <summary>
-        /// 第一个参数（<see cref="View"/>）与第二个元组参数的 <see cref="View"/> 不相等，并且第一个参数（<see cref="View"/>）是第二个元组参数的 <see cref="Type"/> 的实例。
+        /// The first parameter (<see cref="View"/>) is not equal to the <see cref="View"/> of the second tuple parameter, and the first parameter (<see cref="View"/>) is an instance of the <see cref="Type"/> of the second tuple parameter.
         /// </summary>
         private static readonly ParameterizedPredicate<View, ValueTuple<Object, Type>>
             ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate = (view, state) =>
@@ -42,21 +42,21 @@ namespace Aurora.Unity.UI.ViewSystem
             };
 
         /// <summary>
-        /// 第一个参数（<see cref="View"/>）是第二个参数（<see cref="Type"/>）的实例。
+        /// The first parameter (<see cref="View"/>) is an instance of the second parameter (<see cref="Type"/>).
         /// </summary>
         private static readonly ParameterizedPredicate<View, Type> ViewIsInstanceOfTypePredicate =
             (view, type) => type.IsInstanceOfType(view);
 
         /// <summary>
-        /// 获取界面容器的数量。
+        /// Gets the number of view containers.
         /// </summary>
         public static int ContainerCount => Containers.Count;
 
         /// <summary>
-        /// 添加界面容器。
+        /// Adds a view container.
         /// </summary>
-        /// <param name="rectTransform">一个矩形变换，它将作为该界面容器下的根界面的父物体。</param>
-        /// <returns>将 <paramref name="rectTransform"/> 作为其下的根界面的父物体的界面容器。</returns>
+        /// <param name="rectTransform">A RectTransform that will serve as the parent object of the root views under this view container.</param>
+        /// <returns>The view container that uses <paramref name="rectTransform"/> as the parent object of its root views.</returns>
         public static ViewContainer AddContainer(RectTransform rectTransform)
         {
             if (!rectTransform)
@@ -77,16 +77,16 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 移除位于指定索引处的界面容器。
+        /// Removes the view container at the specified index.
         /// </summary>
-        /// <param name="index">界面容器的索引。</param>
-        /// <exception cref="InvalidOperationException">要移除的界面容器下界面的数量不为 0。</exception>
+        /// <param name="index">The index of the view container.</param>
+        /// <exception cref="InvalidOperationException">The number of views under the view container to remove is not 0.</exception>
         public static void RemoveContainerAt(int index)
         {
             var container = Containers[index];
             if (container.Views.Count != 0)
             {
-                throw new InvalidOperationException("无法移除此界面容器，因为它仍然容纳着界面");
+                throw new InvalidOperationException("Cannot remove this view container because it still holds views");
             }
             Containers.RemoveAt(index);
 #if UNITY_EDITOR
@@ -95,9 +95,9 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取位于指定索引处的界面容器。
+        /// Gets the view container at the specified index.
         /// </summary>
-        /// <param name="index">界面容器的索引。</param>
+        /// <param name="index">The index of the view container.</param>
         public static ViewContainer GetContainer(int index)
         {
             return Containers[index];
@@ -116,11 +116,11 @@ namespace Aurora.Unity.UI.ViewSystem
 #endif
 
         /// <summary>
-        /// 判断指定的界面是否是最上层界面。
+        /// Determines whether the specified view is the topmost view.
         /// </summary>
-        /// <param name="view">界面。</param>
-        /// <returns>如果 <paramref name="view"/> 是最上层界面，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="view"/> 为 <see langword="null"/>。</exception>
+        /// <param name="view">The view.</param>
+        /// <returns><see langword="true"/> if <paramref name="view"/> is the topmost view; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>.</exception>
         public static bool IsTopmost(View view)
         {
             if (!view)
@@ -131,13 +131,13 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 判断指定的界面是否是最上层界面。
+        /// Determines whether the specified view is the topmost view.
         /// </summary>
-        /// <param name="view">界面。</param>
-        /// <param name="exclusions">包含要排除的界面或者界面的类型的数组。</param>
-        /// <returns>如果 <paramref name="view"/> 是最上层界面，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="view"/> 为 <see langword="null"/>，或者 <paramref name="exclusions"/> 含有 <see langword="null"/> 元素。</exception>
-        /// <exception cref="ArgumentException"><paramref name="exclusions"/> 含有 <paramref name="view"/>，或含有既不是 <see cref="View"/> 类型又不是 <see cref="Type"/> 类型的元素。</exception>
+        /// <param name="view">The view.</param>
+        /// <param name="exclusions">An array containing the views or view types to exclude.</param>
+        /// <returns><see langword="true"/> if <paramref name="view"/> is the topmost view; otherwise <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>, or <paramref name="exclusions"/> contains a <see langword="null"/> element.</exception>
+        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains <paramref name="view"/>, or contains an element that is neither a <see cref="View"/> type nor a <see cref="Type"/> type.</exception>
         public static bool IsTopmost(View view, object[] exclusions)
         {
             if (!view)
@@ -191,21 +191,21 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取最上层界面。
+        /// Gets the topmost view.
         /// </summary>
-        /// <returns>最上层界面。</returns>
+        /// <returns>The topmost view.</returns>
         public static View GetTopmostView()
         {
             return InternalGetTopmostView();
         }
 
         /// <summary>
-        /// 获取最上层界面。
+        /// Gets the topmost view.
         /// </summary>
-        /// <param name="exclusions">包含要排除的界面或者界面的类型的数组。</param>
-        /// <returns>最上层界面。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="exclusions"/> 含有 <see langword="null"/> 元素。</exception>
-        /// <exception cref="ArgumentException"><paramref name="exclusions"/> 含有既不是 <see cref="View"/> 类型又不是 <see cref="Type"/> 类型的元素。</exception>
+        /// <param name="exclusions">An array containing the views or view types to exclude.</param>
+        /// <returns>The topmost view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="exclusions"/> contains a <see langword="null"/> element.</exception>
+        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains an element that is neither a <see cref="View"/> type nor a <see cref="Type"/> type.</exception>
         public static View GetTopmostView(object[] exclusions)
         {
             return exclusions == null || exclusions.Length == 0
@@ -216,7 +216,7 @@ namespace Aurora.Unity.UI.ViewSystem
         private static View InternalGetTopmostView()
         {
             // return GetView<View>(TreeEnumOrder.DepthFirstRld);
-            // 下面的实现消耗更少的内存和性能
+            // The implementation below consumes less memory and performance
 
             var containersCount = Containers.Count;
             if (containersCount == 0)
@@ -269,7 +269,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照 <see cref="TreeEnumOrder.DepthFirstRld"/> 枚举顺序枚举所有界面，并返回第一个满足指定类型的界面。
+        /// Enumerates all views in <see cref="TreeEnumOrder.DepthFirstRld"/> order and returns the first view that satisfies the specified type.
         /// </summary>
         public static T GetView<T>() where T : class
         {
@@ -277,7 +277,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照指定的枚举顺序枚举所有界面，并返回第一个满足指定类型的界面。
+        /// Enumerates all views in the specified enumeration order and returns the first view that satisfies the specified type.
         /// </summary>
         public static T GetView<T>(TreeEnumOrder order) where T : class
         {
@@ -405,7 +405,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照指定的枚举顺序枚举所有界面，并将指定类型的界面存入指定的集合。
+        /// Enumerates all views in the specified enumeration order and stores the views of the specified type into the specified collection.
         /// </summary>
         public static void GetViews<T>(TreeEnumOrder order, ICollection<T> results) where T : class
         {
@@ -542,7 +542,7 @@ namespace Aurora.Unity.UI.ViewSystem
             if (handler == null)
             {
                 throw new InvalidOperationException(
-                    $"无法获取适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型的界面处理程序"
+                    $"Unable to get a view handler suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))}"
                 );
             }
             var view = await handler.CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
@@ -551,7 +551,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开根界面。
+        /// Begins asynchronously opening a root view.
         /// </summary>
         public static async void BeginOpen<T>(ViewContainer container) where T : View
         {
@@ -563,7 +563,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开根界面。
+        /// Begins asynchronously opening a root view.
         /// </summary>
         public static async void BeginOpen<T>(ViewContainer container, CancellationToken cancellationToken)
             where T : View
@@ -577,7 +577,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开根界面。
+        /// Begins asynchronously opening a root view.
         /// </summary>
         public static async void BeginOpen<T>(ViewContainer container, object state) where T : View
         {
@@ -589,7 +589,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开根界面。
+        /// Begins asynchronously opening a root view.
         /// </summary>
         public static async void BeginOpen<T>(
             ViewContainer     container,
@@ -605,7 +605,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开界面。
+        /// Begins asynchronously opening a view.
         /// </summary>
         public static async void BeginOpen<T>(View parent) where T : View
         {
@@ -617,7 +617,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开界面。
+        /// Begins asynchronously opening a view.
         /// </summary>
         public static async void BeginOpen<T>(View parent, CancellationToken cancellationToken) where T : View
         {
@@ -630,7 +630,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开界面。
+        /// Begins asynchronously opening a view.
         /// </summary>
         public static async void BeginOpen<T>(View parent, object state) where T : View
         {
@@ -642,7 +642,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 开始异步打开界面。
+        /// Begins asynchronously opening a view.
         /// </summary>
         public static async void BeginOpen<T>(View parent, object state, CancellationToken cancellationToken)
             where T : View
@@ -656,7 +656,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开根界面。
+        /// Asynchronously opens a root view.
         /// </summary>
         public static Task<T> OpenAsync<T>(ViewContainer container) where T : View
         {
@@ -668,7 +668,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开根界面。
+        /// Asynchronously opens a root view.
         /// </summary>
         public static Task<T> OpenAsync<T>(ViewContainer container, CancellationToken cancellationToken) where T : View
         {
@@ -682,7 +682,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开根界面。
+        /// Asynchronously opens a root view.
         /// </summary>
         public static Task<T> OpenAsync<T>(ViewContainer container, object state) where T : View
         {
@@ -694,7 +694,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开根界面。
+        /// Asynchronously opens a root view.
         /// </summary>
         public static Task<T> OpenAsync<T>(ViewContainer container, object state, CancellationToken cancellationToken)
             where T : View
@@ -717,14 +717,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面为 null"
+                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} is null"
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面所关联的游戏物体处于激活状态并且界面启用"
+                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} has an associated game object that is active and the view is enabled"
                 );
             }
 
@@ -754,7 +754,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开界面。
+        /// Asynchronously opens a view.
         /// </summary>
         public static Task<T> OpenAsync<T>(View parent) where T : View
         {
@@ -766,7 +766,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开界面。
+        /// Asynchronously opens a view.
         /// </summary>
         public static Task<T> OpenAsync<T>(View parent, CancellationToken cancellationToken) where T : View
         {
@@ -780,7 +780,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开界面。
+        /// Asynchronously opens a view.
         /// </summary>
         public static Task<T> OpenAsync<T>(View parent, object state) where T : View
         {
@@ -792,7 +792,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 异步打开界面。
+        /// Asynchronously opens a view.
         /// </summary>
         public static Task<T> OpenAsync<T>(View parent, object state, CancellationToken cancellationToken)
             where T : View
@@ -815,14 +815,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面为 null"
+                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} is null"
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"最适合于处理 {TypeUtility.GetNicelyFormattedName(typeof(T))} 类型界面的界面处理程序创建出的界面所关联的游戏物体处于激活状态并且界面启用"
+                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} has an associated game object that is active and the view is enabled"
                 );
             }
 
@@ -861,33 +861,33 @@ namespace Aurora.Unity.UI.ViewSystem
         private View _parent;
 
         /// <summary>
-        /// 子界面的容器。
+        /// The container of child views.
         /// </summary>
         public RectTransform childContainer;
 
         private readonly List<View> _children = new();
 
         /// <summary>
-        /// 获取与此实例关联的矩形变换。
+        /// Gets the RectTransform associated with this instance.
         /// </summary>
         public RectTransform RectTransform => _rectTransform ??= (RectTransform)transform;
 
         /// <summary>
-        /// 由用户定义的数据。将在打开界面时赋值。
+        /// User-defined data. It is assigned when the view is opened.
         /// </summary>
         public object State { get; private set; }
 
         /// <summary>
-        /// 由用户定义的数据。将在关闭界面时赋值。
+        /// User-defined data. It is assigned when the view is closed.
         /// </summary>
         public object CloseState { get; private set; }
 
         private RectTransform ChildContainerOrRectTransformIfNull => childContainer ?? RectTransform;
 
         /// <summary>
-        /// 获取或设置容器。
+        /// Gets or sets the container.
         /// </summary>
-        /// <remarks>不能设置为 <see langword="null"/>。</remarks>
+        /// <remarks>Cannot be set to <see langword="null"/>.</remarks>
         public ViewContainer Container
         {
             get => _container;
@@ -929,7 +929,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取或设置父界面。
+        /// Gets or sets the parent view.
         /// </summary>
         public View Parent
         {
@@ -951,11 +951,11 @@ namespace Aurora.Unity.UI.ViewSystem
                 {
                     if (ReferenceEquals(value, this))
                     {
-                        throw new ArgumentException("不能设置自己为自己的父界面", nameof(value));
+                        throw new ArgumentException("Cannot set itself as its own parent view", nameof(value));
                     }
                     if (value.InternalIsChildOf(this))
                     {
-                        throw new ArgumentException("不能设置子界面为父界面", nameof(value));
+                        throw new ArgumentException("Cannot set a child view as the parent view", nameof(value));
                     }
                     if (_parent is null)
                     {
@@ -987,7 +987,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取根界面。
+        /// Gets the root view.
         /// </summary>
         public View Root
         {
@@ -1003,38 +1003,38 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示这个界面是否是根界面。
+        /// Gets a value indicating whether this view is a root view.
         /// </summary>
         public bool IsRoot => _parent is null;
 
         /// <summary>
-        /// 获取一个值，这个值指示这个界面是否是叶子界面。
+        /// Gets a value indicating whether this view is a leaf view.
         /// </summary>
         public bool IsLeaf => _children.Count == 0;
 
         /// <summary>
-        /// 获取一个值，这个值指示这个界面是否是最上层界面。
+        /// Gets a value indicating whether this view is the topmost view.
         /// </summary>
-        /// <returns>如果这个界面是否是最上层界面，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <remarks>此方法是虚方法，若子类未重写，实际执行 <see cref="IsTopmost(View)"/>。</remarks>
+        /// <returns><see langword="true"/> if this view is the topmost view; otherwise <see langword="false"/>.</returns>
+        /// <remarks>This is a virtual method; if a subclass does not override it, <see cref="IsTopmost(View)"/> is actually executed.</remarks>
         public virtual bool IsTopmost()
         {
             return InternalIsTopmost(this);
         }
 
         /// <summary>
-        /// 在打开界面的最后一步“激活此界面所关联的游戏物体，并启用此界面”前调用此方法。
+        /// Called before the last step of opening a view: activating the game object associated with this view and enabling this view.
         /// </summary>
         protected virtual void OnSettingActiveAndEnabling()
         {
         }
 
         /// <summary>
-        /// 获取一个值，这个值指示这个界面是否是指定界面的子界面。
+        /// Gets a value indicating whether this view is a child view of the specified view.
         /// </summary>
-        /// <param name="view">指定的界面。</param>
-        /// <returns>这个界面是否是指定界面的子界面。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="view"/> 为 <see langword="null"/>。</exception>
+        /// <param name="view">The specified view.</param>
+        /// <returns>Whether this view is a child view of the specified view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>.</exception>
         public bool IsChildOf(View view)
         {
             if (!view)
@@ -1061,10 +1061,10 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取指定类型的子界面。
+        /// Gets a child view of the specified type.
         /// </summary>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <returns>如果存在指定类型的子界面，则返回第一个匹配项；否则为 <see langword="null"/>。</returns>
+        /// <typeparam name="T">The type of the view.</typeparam>
+        /// <returns>The first matching child view if one of the specified type exists; otherwise <see langword="null"/>.</returns>
         public T GetChild<T>() where T : View
         {
             foreach (var child in _children)
@@ -1078,10 +1078,10 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 获取指定类型的子界面，并将结果存入指定的列表。
+        /// Gets child views of the specified type and stores the results into the specified list.
         /// </summary>
-        /// <param name="results">存放结果的列表。</param>
-        /// <typeparam name="T">界面的类型。</typeparam>
+        /// <param name="results">The list used to hold the results.</param>
+        /// <typeparam name="T">The type of the view.</typeparam>
         public void GetChildren<T>(List<T> results)
         {
             if (results is null)
@@ -1098,7 +1098,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照指定的枚举顺序枚举此界面，并返回第一个满足指定类型的界面。
+        /// Enumerates this view in the specified enumeration order and returns the first view that satisfies the specified type.
         /// </summary>
         public T GetViewFromThis<T>(TreeEnumOrder order) where T : class
         {
@@ -1114,7 +1114,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 按照指定的枚举顺序枚举此界面，并将指定类型的界面存入指定的集合。
+        /// Enumerates this view in the specified enumeration order and stores the views of the specified type into the specified collection.
         /// </summary>
         public void GetViewsFromThis<T>(TreeEnumOrder order, ICollection<T> results)
         {
@@ -1142,9 +1142,9 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 关闭界面。
+        /// Closes the view.
         /// </summary>
-        /// <param name="closeState">由用户定义的数据，将赋值给 <see cref="View.CloseState"/>。</param>
+        /// <param name="closeState">User-defined data, assigned to <see cref="View.CloseState"/>.</param>
         public void Close(object closeState = null)
         {
             InternalClose(closeState);
@@ -1197,13 +1197,13 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             else
             {
-                Log.E("界面的处理程序为 null");
+                Log.E("The view handler is null");
                 Destroy(gameObject);
             }
         }
 
         /// <summary>
-        /// 获取枚举此 <see cref="View"/> 的直接子界面的枚举器。
+        /// Gets an enumerator that enumerates the direct child views of this <see cref="View"/>.
         /// </summary>
         public IEnumerator<View> GetEnumerator()
         {
@@ -1211,11 +1211,11 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 根据指定的枚举顺序，获取一个枚举此 <see cref="View"/> 的枚举器。
+        /// Gets an enumerator that enumerates this <see cref="View"/> according to the specified enumeration order.
         /// </summary>
-        /// <param name="order">枚举顺序。</param>
-        /// <returns>用于枚举此 <see cref="Node"/> 的枚举器。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="order"/> 不是在 <see cref="TreeEnumOrder"/> 枚举中定义的成员。</exception>
+        /// <param name="order">The enumeration order.</param>
+        /// <returns>The enumerator used to enumerate this <see cref="Node"/>.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="order"/> is not a member defined in the <see cref="TreeEnumOrder"/> enum.</exception>
         public IEnumerator<View> GetEnumerator(TreeEnumOrder order)
         {
             return InternalGetEnumerator(order);
@@ -1248,12 +1248,12 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 界面容器。
+        /// A view container.
         /// </summary>
         public sealed class ViewContainer
         {
             /// <summary>
-            /// <see cref="ViewContainer"/> 下的根界面的父物体。
+            /// The parent object of the root views under <see cref="ViewContainer"/>.
             /// </summary>
             public readonly RectTransform RectTransform;
 
@@ -1278,7 +1278,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 按照指定的枚举顺序枚举此容器，并返回第一个满足指定类型的界面。
+            /// Enumerates this container in the specified enumeration order and returns the first view that satisfies the specified type.
             /// </summary>
             public T GetViewFromContainer<T>(TreeEnumOrder order) where T : class
             {
@@ -1392,7 +1392,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 按照指定的枚举顺序枚举此容器，并将指定类型的界面存入指定的集合。
+            /// Enumerates this container in the specified enumeration order and stores the views of the specified type into the specified collection.
             /// </summary>
             public void GetViewsFromContainer<T>(TreeEnumOrder order, ICollection<T> results) where T : class
             {
@@ -1514,10 +1514,10 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// 界面范围。
+        /// A view scope.
         /// </summary>
-        /// <typeparam name="T">界面的类型。</typeparam>
-        /// <remarks><see cref="Scope{T}"/> 实现 <see cref="IDisposable"/>，调用 <see cref="Dispose"/> 会关闭界面。</remarks>
+        /// <typeparam name="T">The type of the view.</typeparam>
+        /// <remarks><see cref="Scope{T}"/> implements <see cref="IDisposable"/>; calling <see cref="Dispose"/> closes the view.</remarks>
         public sealed class Scope<T> : IDisposable where T : View
         {
             private T _view;
@@ -1525,9 +1525,9 @@ namespace Aurora.Unity.UI.ViewSystem
             private Invocation<object> _closeStateGetter;
 
             /// <summary>
-            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
+            /// Initializes a new instance of the <see cref="Scope{T}"/> class.
             /// </summary>
-            /// <param name="view">界面。</param>
+            /// <param name="view">The view.</param>
             public Scope(T view)
             {
                 _view             = view;
@@ -1535,10 +1535,10 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
+            /// Initializes a new instance of the <see cref="Scope{T}"/> class.
             /// </summary>
-            /// <param name="view">界面。</param>
-            /// <param name="closeState">由用户定义的数据。将赋值给 <see cref="CloseState"/>。</param>
+            /// <param name="view">The view.</param>
+            /// <param name="closeState">User-defined data. It is assigned to <see cref="CloseState"/>.</param>
             public Scope(T view, object closeState)
             {
                 _view             = view;
@@ -1546,10 +1546,10 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 初始化 <see cref="Scope{T}"/> 类的新实例。
+            /// Initializes a new instance of the <see cref="Scope{T}"/> class.
             /// </summary>
-            /// <param name="view">界面。</param>
-            /// <param name="closeStateGetter">一个调用，可以通过它获取到由用户定义的数据。该数据将赋值给 <see cref="CloseState"/>。</param>
+            /// <param name="view">The view.</param>
+            /// <param name="closeStateGetter">A call through which user-defined data can be obtained. That data is assigned to <see cref="CloseState"/>.</param>
             public Scope(T view, Invocation<object> closeStateGetter)
             {
                 _view             = view;
@@ -1557,7 +1557,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 关闭界面。
+            /// Closes the view.
             /// </summary>
             public void Dispose()
             {
@@ -1573,7 +1573,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// 获取界面。
+            /// Gets the view.
             /// </summary>
             public T View => _view;
         }

@@ -1,21 +1,21 @@
 namespace Aurora.Unity.Collections
 {
     /// <summary>
-    /// 八叉树的元素。
+    /// An octree element.
     /// </summary>
-    /// <typeparam name="TPosition">元素的位置。</typeparam>
+    /// <typeparam name="TPosition">The position of the element.</typeparam>
     public interface IOctreeElement<TPosition>
     {
         /// <summary>
-        /// 获取位置。
+        /// Gets the position.
         /// </summary>
         TPosition Position { get; }
 
         /// <summary>
-        /// 设置直接持有此元素的八叉树结点。
+        /// Sets the octree node that directly holds this element.
         /// </summary>
-        /// <param name="owner">如果此元素在八叉树中，则为直接持有此元素的八叉树结点；否则为 <see langword="null"/>。</param>
-        /// <remarks>此方法被设计为仅由 <see cref="Octree{TElementPosition}.Node"/> 调用，开发者在实现中只需要更新记录这个值的引用即可，以便可以正确地调用 <see cref="Octree{TElementPosition}.Node.Remove"/>。</remarks>
+        /// <param name="owner">If this element is in the octree, the octree node that directly holds this element; otherwise <see langword="null"/>.</param>
+        /// <remarks>This method is designed to be called only by <see cref="Octree{TElementPosition}.Node"/>; developers only need to update the reference that records this value in their implementation so that <see cref="Octree{TElementPosition}.Node.Remove"/> can be called correctly.</remarks>
         void SetOwner(Octree<TPosition>.Node owner);
     }
 }

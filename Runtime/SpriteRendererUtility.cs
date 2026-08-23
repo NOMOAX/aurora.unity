@@ -5,18 +5,18 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 为 <see cref="SpriteRenderer"/> 类提供工具方法。
+    /// Provides utility methods for the <see cref="SpriteRenderer"/> class.
     /// </summary>
     public static class SpriteRendererUtility
     {
         /// <summary>
-        /// 将精灵渲染器中的标准化位置转换为世界位置。
+        /// Converts a normalized position in a sprite renderer to a world position.
         /// </summary>
-        /// <param name="spriteRenderer">精灵渲染器。</param>
-        /// <param name="normalizedPosition">标准化位置。</param>
-        /// <returns><paramref name="spriteRenderer"/> 中标准化位置为 <paramref name="normalizedPosition"/> 的点在世界坐标系中的位置。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.sprite"/> 值为 <see langword="null"/>。</exception>
+        /// <param name="spriteRenderer">The sprite renderer.</param>
+        /// <param name="normalizedPosition">The normalized position.</param>
+        /// <returns>The position in world space of the point whose normalized position in <paramref name="spriteRenderer"/> is <paramref name="normalizedPosition"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The <see cref="SpriteRenderer.sprite"/> value of <paramref name="spriteRenderer"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 NormalizedToWorldPosition(SpriteRenderer spriteRenderer, Vector2 normalizedPosition)
         {
@@ -37,13 +37,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 将精灵渲染器中的标准化位置转换为本地位置。
+        /// Converts a normalized position in a sprite renderer to a local position.
         /// </summary>
-        /// <param name="spriteRenderer">精灵渲染器。</param>
-        /// <param name="normalizedPosition">标准化位置。</param>
-        /// <returns><paramref name="spriteRenderer"/> 中标准化位置为 <paramref name="normalizedPosition"/> 的点在 <paramref name="spriteRenderer"/> 本地坐标系中的位置。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.sprite"/> 值为 <see langword="null"/>。</exception>
+        /// <param name="spriteRenderer">The sprite renderer.</param>
+        /// <param name="normalizedPosition">The normalized position.</param>
+        /// <returns>The position in <paramref name="spriteRenderer"/>'s local coordinate system of the point whose normalized position in <paramref name="spriteRenderer"/> is <paramref name="normalizedPosition"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The <see cref="SpriteRenderer.sprite"/> value of <paramref name="spriteRenderer"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 NormalizedToLocalPosition(SpriteRenderer spriteRenderer, Vector2 normalizedPosition)
         {
@@ -70,20 +70,20 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 获取与精灵渲染器的 <see cref="SpriteRenderer.flipX"/> 和 <see cref="SpriteRenderer.flipY"/> 有关的因数，该因数可用于参与特定的乘法计算。
+        /// Gets the factor related to the <see cref="SpriteRenderer.flipX"/> and <see cref="SpriteRenderer.flipY"/> of the sprite renderer, which can be used in a specific multiplication calculation.
         /// </summary>
-        /// <param name="spriteRenderer">精灵渲染器。</param>
+        /// <param name="spriteRenderer">The sprite renderer.</param>
         /// <returns>
-        /// 一个 <see cref="Vector2"/> 值，它的值见下表。
+        /// A <see cref="Vector2"/> value; see the table below.
         /// <list type="table">
-        /// <listheader><term>情形</term><description>描述</description></listheader>
-        /// <item><term><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.flipX"/> 为 <see langword="true"/></term><description>返回值的 <see cref="Vector2.x"/> 分量为 1</description></item>
-        /// <item><term><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.flipX"/> 为 <see langword="false"/></term><description>返回值的 <see cref="Vector2.x"/> 分量为 -1</description></item>
-        /// <item><term><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.flipY"/> 为 <see langword="true"/></term><description>返回值的 <see cref="Vector2.y"/> 分量为 1</description></item>
-        /// <item><term><paramref name="spriteRenderer"/> 的 <see cref="SpriteRenderer.flipY"/> 为 <see langword="false"/></term><description>返回值的 <see cref="Vector2.y"/> 分量为 -1</description></item>
+        /// <listheader><term>Case</term><description>Description</description></listheader>
+        /// <item><term>the <see cref="SpriteRenderer.flipX"/> of <paramref name="spriteRenderer"/> is <see langword="true"/></term><description>the <see cref="Vector2.x"/> component of the return value is 1</description></item>
+        /// <item><term>the <see cref="SpriteRenderer.flipX"/> of <paramref name="spriteRenderer"/> is <see langword="false"/></term><description>the <see cref="Vector2.x"/> component of the return value is -1</description></item>
+        /// <item><term>the <see cref="SpriteRenderer.flipY"/> of <paramref name="spriteRenderer"/> is <see langword="true"/></term><description>the <see cref="Vector2.y"/> component of the return value is 1</description></item>
+        /// <item><term>the <see cref="SpriteRenderer.flipY"/> of <paramref name="spriteRenderer"/> is <see langword="false"/></term><description>the <see cref="Vector2.y"/> component of the return value is -1</description></item>
         /// </list>
         /// </returns>
-        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="spriteRenderer"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 GetFlipMultiplier(SpriteRenderer spriteRenderer)
         {

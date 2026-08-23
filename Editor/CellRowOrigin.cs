@@ -1,17 +1,17 @@
 namespace Aurora.UnityEditor
 {
     /// <summary>
-    /// 单元格区域的行索引起始方向。
+    /// The starting direction of the row index of a cell region.
     /// </summary>
     public enum CellRowOrigin
     {
         /// <summary>
-        /// 行索引 0 位于底部，向上递增。
+        /// Row index 0 is at the bottom and increases upward.
         /// </summary>
         Bottom,
 
         /// <summary>
-        /// 行索引 0 位于顶部，向下递增。
+        /// Row index 0 is at the top and increases downward.
         /// </summary>
         Top
     }

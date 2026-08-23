@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 通知屏幕方向更改范围。
+    /// A scope that notifies about screen orientation changes.
     /// </summary>
     public sealed class NotifyScreenOrientationChangedScope : IPlayerLoopItem, IDisposable
     {
@@ -21,12 +21,12 @@ namespace Aurora.Unity
         private bool _delayGetScreenOrientation;
 
         /// <summary>
-        /// 初始化 <see cref="NotifyScreenOrientationChangedScope"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="NotifyScreenOrientationChangedScope"/> class.
         /// </summary>
-        /// <param name="callback">当屏幕方向更改时执行的方法。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> 不是在 <see cref="PlayerLoopPhase"/> 枚举中定义的成员。</exception>
+        /// <param name="callback">The method to execute when the screen orientation changes.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="playerLoopPhase"/> is not a member defined in the <see cref="PlayerLoopPhase"/> enum.</exception>
         public NotifyScreenOrientationChangedScope(Action<ScreenOrientation> callback, PlayerLoopPhase playerLoopPhase)
         {
             if (callback == null)
@@ -52,13 +52,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 初始化 <see cref="NotifyScreenOrientationChangedScope"/> 类的新实例。
+        /// Initializes a new instance of the <see cref="NotifyScreenOrientationChangedScope"/> class.
         /// </summary>
-        /// <param name="callback">当屏幕方向更改时执行的方法。</param>
-        /// <param name="screenOrientation">屏幕方向。</param>
-        /// <param name="playerLoopPhase">主循环阶段。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="callback"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="screenOrientation"/> 不是基本方向（<see cref="ScreenOrientation.Portrait"/>、<see cref="ScreenOrientation.PortraitUpsideDown"/>、<see cref="ScreenOrientation.LandscapeLeft"/>、<see cref="ScreenOrientation.LandscapeRight"/>），或者 <paramref name="playerLoopPhase"/> 的值未定义。</exception>
+        /// <param name="callback">The method to execute when the screen orientation changes.</param>
+        /// <param name="screenOrientation">The screen orientation.</param>
+        /// <param name="playerLoopPhase">The player loop phase.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="screenOrientation"/> is not a base orientation (<see cref="ScreenOrientation.Portrait"/>, <see cref="ScreenOrientation.PortraitUpsideDown"/>, <see cref="ScreenOrientation.LandscapeLeft"/>, <see cref="ScreenOrientation.LandscapeRight"/>), or <paramref name="playerLoopPhase"/>'s value is undefined.</exception>
         public NotifyScreenOrientationChangedScope(
             Action<ScreenOrientation> callback,
             ScreenOrientation         screenOrientation,

@@ -19,7 +19,7 @@ using UnityEditor;
 namespace Aurora.Unity
 {
     /// <summary>
-    /// 封装常用功能。
+    /// Wraps common functionality.
     /// </summary>
     public static class UnityUtility
     {
@@ -50,25 +50,25 @@ namespace Aurora.Unity
         };
 
         /// <summary>
-        /// 连击时，两次点击的最大间隔时间。
+        /// The maximum interval between two clicks in a combo.
         /// </summary>
         public const float ClickDelayTime = 0.3f;
 
         /// <summary>
-        /// 由于超时的原因而完成时，<see cref="UnityWebRequest"/><c>.</c><see cref="UnityWebRequest.error"/> 的值。
+        /// The value of <see cref="UnityWebRequest"/><c>.</c><see cref="UnityWebRequest.error"/> when it completes due to a timeout.
         /// </summary>
         public const string UnityWebRequestTimeoutString = "Request timeout";
 
         /// <summary>
-        /// 每个网格可包含的最大顶点数量。
+        /// The maximum number of vertices that can be contained in each mesh.
         /// </summary>
         public const int VertexCountPerMeshMaxValue = 65000 - 1;
 
         /// <summary>
-        /// 优化 Unity 对象的名称。
+        /// Optimizes the name of a Unity object.
         /// </summary>
-        /// <param name="object">Unity 对象。</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="object"/> 为 <see langword="null"/>。</exception>
+        /// <param name="object">The Unity object.</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="object"/> is <see langword="null"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void OptimizeName(Object @object)
         {
@@ -97,9 +97,9 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 如果指定的游戏物体是当前事件系统的当前选定的游戏物体，就把事件系统的当前选定的游戏物体设为 <see langword="null"/>。
+        /// If the specified game object is the current selected game object of the current event system, sets the current selected game object of the event system to <see langword="null"/>.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
+        /// <param name="gameObject">The game object.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeselectEventSystemCurrentSelectedGameObject(GameObject gameObject)
         {
@@ -107,10 +107,10 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 如果指定的游戏物体是指定的事件系统的当前选定的游戏物体，就把事件系统的当前选定的游戏物体设为 <see langword="null"/>。
+        /// If the specified game object is the current selected game object of the specified event system, sets the current selected game object of the event system to <see langword="null"/>.
         /// </summary>
-        /// <param name="gameObject">游戏物体。</param>
-        /// <param name="eventSystem">事件系统。</param>
+        /// <param name="gameObject">The game object.</param>
+        /// <param name="eventSystem">The event system.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeselectEventSystemCurrentSelectedGameObject(GameObject gameObject, EventSystem eventSystem)
         {
@@ -133,13 +133,13 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 安排取消请求。
+        /// Schedules a cancellation request.
         /// </summary>
-        /// <param name="cancellationTokenSource">取消令牌源。</param>
-        /// <param name="delay">发出取消请求前的等待时间。</param>
-        /// <returns>一个可释放对象，释放该对象以终止此方法。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="cancellationTokenSource"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> 不为 <see cref="Timeout.InfiniteTimeSpan"/>，并且它的毫秒数不在 [0, 4294967294] 范围内。</exception>
+        /// <param name="cancellationTokenSource">The cancellation token source.</param>
+        /// <param name="delay">The wait time before the cancellation request is issued.</param>
+        /// <returns>A disposable object; dispose it to terminate this method.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="cancellationTokenSource"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="delay"/> is not <see cref="Timeout.InfiniteTimeSpan"/>, and its milliseconds are not in the [0, 4294967294] range.</exception>
         public static IDisposable CancelAfter(CancellationTokenSource cancellationTokenSource, TimeSpan delay)
         {
             if (cancellationTokenSource == null)
@@ -171,16 +171,16 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 捕获屏幕截图，但不会等待该过程完成。
+        /// Captures a screenshot, but does not wait for the process to finish.
         /// </summary>
-        /// <param name="path">截图文件保存的路径。</param>
-        /// <remarks>截图为 PNG 文件。</remarks>
+        /// <param name="path">The path where the screenshot file is saved.</param>
+        /// <remarks>The screenshot is a PNG file.</remarks>
         public static void BeginCaptureScreenshot(string path)
         {
             var fullPath = Path.GetFullPath(path);
             if (File.Exists(fullPath))
             {
-                // 检查文件是否被占用
+                // Check whether the file is locked
                 using (new FileStream(fullPath, FileMode.Open, FileAccess.Write, FileShare.Read))
                 {
                 }
@@ -189,23 +189,23 @@ namespace Aurora.Unity
         }
 
         /// <summary>
-        /// 异步捕获屏幕截图。
+        /// Asynchronously captures a screenshot.
         /// </summary>
-        /// <param name="path">截图文件保存的路径。</param>
-        /// <returns>异步操作的任务对象。</returns>
-        /// <remarks>截图为 PNG 文件。</remarks>
+        /// <param name="path">The path where the screenshot file is saved.</param>
+        /// <returns>The task object of the asynchronous operation.</returns>
+        /// <remarks>The screenshot is a PNG file.</remarks>
         public static Task CaptureScreenshotAsync(string path)
         {
             return UnityTasks.WhenScreenshotCaptured(path);
         }
 
         /// <summary>
-        /// 异步捕获屏幕截图。
+        /// Asynchronously captures a screenshot.
         /// </summary>
-        /// <param name="path">截图文件保存的路径。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>异步操作的任务对象。</returns>
-        /// <remarks>截图为 PNG 文件。</remarks>
+        /// <param name="path">The path where the screenshot file is saved.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The task object of the asynchronous operation.</returns>
+        /// <remarks>The screenshot is a PNG file.</remarks>
         public static Task CaptureScreenshotAsync(string path, CancellationToken cancellationToken)
         {
             return UnityTasks.WhenScreenshotCaptured(path, cancellationToken);

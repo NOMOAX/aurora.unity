@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace Aurora.Unity.EventSystems
 {
     /// <summary>
-    /// 将 <see cref="ICancelHandler.OnCancel"/> 传递给父级。
+    /// Forwards <see cref="ICancelHandler.OnCancel"/> to the parent.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SendToParentCancelHandler : SendToParentEventSystemHandler<ICancelHandler>, ICancelHandler
