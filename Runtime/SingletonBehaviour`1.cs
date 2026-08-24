@@ -44,7 +44,9 @@ namespace Aurora.Unity
                     "This operation cannot be performed in the editor environment while not in play mode"
                 );
 #else
-                throw new InvalidOperationException($"The application has ended; this operation should not be performed. To avoid this exception, ensure that the value of {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} is {bool.TrueString}");
+                throw new InvalidOperationException(
+                    $"The application has ended; this operation should not be performed. To avoid this exception, ensure that the value of {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} is {bool.TrueString}"
+                );
 #endif
             }
             var        type  = typeof(T);
