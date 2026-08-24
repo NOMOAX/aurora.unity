@@ -118,6 +118,7 @@ namespace Aurora.Unity
             }
         }
 #endif
+
 #if UNITY_EDITOR
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Color32 GetColor(LogLevel logLevel)
@@ -153,6 +154,7 @@ namespace Aurora.Unity
             };
         }
 #endif
+
 #if UNITY_EDITOR
         private struct BoldScope : IDisposable
         {
@@ -177,6 +179,7 @@ namespace Aurora.Unity
             }
         }
 #endif
+
 #if UNITY_EDITOR
         private struct ColorScope : IDisposable
         {

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -9,11 +8,13 @@ namespace Aurora.Unity
     public interface IBehaviour : IComponent
     {
         /// <seealso cref="Behaviour.enabled"/>
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        // ReSharper disable InconsistentNaming
         bool enabled { get; set; }
+        // ReSharper restore InconsistentNaming
 
         /// <seealso cref="Behaviour.isActiveAndEnabled"/>
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        // ReSharper disable InconsistentNaming
         bool isActiveAndEnabled { get; }
+        // ReSharper restore InconsistentNaming
     }
 }

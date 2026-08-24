@@ -230,6 +230,7 @@ namespace Aurora.Unity.PlayerLoop
             }
         }
 #endif
+
 #if UNITY_EDITOR
         internal static void Run()
         {

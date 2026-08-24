@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Aurora.UnityEditor
 {
+    [EditorWindowTitle(title = Title)]
     internal sealed class ViewInspectorWindow : EditorWindow
     {
         private const string Title = "View Inspector";
@@ -13,7 +14,7 @@ namespace Aurora.UnityEditor
         [MenuItem("Window" + "/" + UnityEditorUtility.DisplayName + "/" + Title)]
         public static void OpenWindow()
         {
-            GetWindow<ViewInspectorWindow>(Title);
+            GetWindow<ViewInspectorWindow>();
         }
 
         private void OnInspectorUpdate()

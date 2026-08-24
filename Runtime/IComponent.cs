@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace Aurora.Unity
@@ -9,11 +8,13 @@ namespace Aurora.Unity
     public interface IComponent
     {
         /// <seealso cref="Component.gameObject"/>
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        // ReSharper disable InconsistentNaming
         GameObject gameObject { get; }
+        // ReSharper restore InconsistentNaming
 
         /// <seealso cref="Component.transform"/>
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
+        // ReSharper disable InconsistentNaming
         Transform transform { get; }
+        // ReSharper restore InconsistentNaming
     }
 }

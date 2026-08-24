@@ -47,7 +47,7 @@ namespace Aurora.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsHUndefined(this Color32 color)
         {
-            return color.r.Equals(color.g) && color.r.Equals(color.b);
+            return color.r == color.g && color.r == color.b;
         }
 
         /// <summary>
