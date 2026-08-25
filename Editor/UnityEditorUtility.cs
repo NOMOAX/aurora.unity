@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Aurora.Diagnostics;
+using Aurora.IO;
 using Aurora.Pooling;
 using Aurora.Unity;
 using UnityEditor;
@@ -477,14 +478,14 @@ namespace Aurora.UnityEditor
             [MenuItem(DisplayName + "/" + OpenPersistentDataPathName, priority = OpenPersistentDataPathPriority)]
             private static void OpenPersistentDataPath()
             {
-                var persistentDataPath = Application.persistentDataPath.ReplaceBackslashWithSlash();
+                var persistentDataPath = PathUtility.ReplaceBackslashWithForwardSlash(Application.persistentDataPath);
                 Process.Start(persistentDataPath);
             }
 
             [MenuItem(DisplayName + "/" + OpenPersistentDataPathName, true)]
             private static bool ValidateOpenPersistentDataPath()
             {
-                var persistentDataPath = Application.persistentDataPath.ReplaceBackslashWithSlash();
+                var persistentDataPath = PathUtility.ReplaceBackslashWithForwardSlash(Application.persistentDataPath);
                 return Directory.Exists(persistentDataPath);
             }
 
@@ -543,47 +544,7 @@ namespace Aurora.UnityEditor
         /// The project path.
         /// </summary>
         public static readonly string ProjectPath =
-            new DirectoryInfo(Application.dataPath).Parent!.FullName.ReplaceBackslashWithSlash();
-
-        /// <summary>
-        /// Gets the path of the specified path relative to the project path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="relativePath">
-        /// As shown in the table below:
-        /// <list type="table">
-        /// <listheader><term><paramref name="path"/>'s value</term><description><paramref name="relativePath"/>'s value</description></listheader>
-        /// <item><term><see cref="ProjectPath"/></term><description><see cref="string.Empty"/></description></item>
-        /// <item><term>A sub-path of <see cref="ProjectPath"/></term><description>The relative path from <see cref="ProjectPath"/> to <paramref name="path"/></description></item>
-        /// <item><term>Other</term><description><see langword="null"/></description></item>
-        /// </list>
-        /// </param>
-        /// <returns><see langword="true"/> if <paramref name="path"/> is <see cref="ProjectPath"/> itself or a sub-path of it; otherwise <see langword="false"/>.</returns>
-        /// <exception cref="ArgumentException"><paramref name="path"/> is <see cref="string.Empty"/>, or is effectively empty (contains only whitespace), or contains invalid characters, or the system cannot get its absolute path.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
-        /// <exception cref="PathTooLongException"><paramref name="path"/>'s length exceeds the system-defined maximum length.</exception>
-        public static bool TryGetProjectRelativePath(string path, out string relativePath)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-            var normalizedPath         = Path.GetFullPath(path).ReplaceBackslashWithSlash();
-            var normalizedRelativePath = Path.GetRelativePath(ProjectPath, normalizedPath).ReplaceBackslashWithSlash();
-            if (normalizedRelativePath is ".")
-            {
-                relativePath = "";
-                return true;
-            }
-            if (normalizedRelativePath is ".." || normalizedRelativePath == normalizedPath ||
-                normalizedRelativePath.StartsWith("../", StringComparison.Ordinal))
-            {
-                relativePath = null;
-                return false;
-            }
-            relativePath = normalizedRelativePath;
-            return true;
-        }
+            PathUtility.ReplaceBackslashWithForwardSlash(new DirectoryInfo(Application.dataPath).Parent!.FullName);
 
         private static readonly Regex SymbolRegex = new(@"\A[A-Za-z_][A-Za-z0-9_]*\z", RegexOptions.Compiled);
 
