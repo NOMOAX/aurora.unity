@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 using InstanceIdType =
 #if UNITY_6000_3_OR_NEWER
-    EntityId
+    UnityEngine.EntityId
 #else
     System.Int32
 #endif
