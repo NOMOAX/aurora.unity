@@ -3,6 +3,13 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
+using InstanceIdType =
+#if UNITY_6000_3_OR_NEWER
+    EntityId
+#else
+    System.Int32
+#endif
+    ;
 
 namespace Aurora.Unity
 {
@@ -13,13 +20,7 @@ namespace Aurora.Unity
     {
         private static readonly Func<Object, IntPtr> FuncGetCachedPtr;
 
-        private static readonly Func<
-#if UNITY_6000_3_OR_NEWER
-            EntityId
-#else
-            int
-#endif
-            , bool> FuncDoesObjectWithInstanceIdExist;
+        private static readonly Func<InstanceIdType, bool> FuncDoesObjectWithInstanceIdExist;
 
         static UnityEngineObjectUtility()
         {
@@ -44,33 +45,12 @@ namespace Aurora.Unity
                 BindingFlags.Static | BindingFlags.NonPublic,
                 null,
                 CallingConventions.Standard,
-                new[]
-                {
-                    typeof(
-#if UNITY_6000_3_OR_NEWER
-                        EntityId
-#else
-                        int
-#endif
-                    )
-                },
+                new[] { typeof(InstanceIdType) },
                 null
             );
             Assert.IsNotNull(doesObjectWithInstanceIdExistMethodInfo);
-            FuncDoesObjectWithInstanceIdExist = (Func<
-#if UNITY_6000_3_OR_NEWER
-                EntityId
-#else
-                int
-#endif
-                , bool>)Delegate.CreateDelegate(
-                typeof(Func<
-#if UNITY_6000_3_OR_NEWER
-                    EntityId
-#else
-                    int
-#endif
-                    , bool>),
+            FuncDoesObjectWithInstanceIdExist = (Func<InstanceIdType, bool>)Delegate.CreateDelegate(
+                typeof(Func<InstanceIdType, bool>),
                 doesObjectWithInstanceIdExistMethodInfo
             );
         }
@@ -97,13 +77,7 @@ namespace Aurora.Unity
         /// <param name="obj">The <see cref="Object"/> instance.</param>
         /// <returns>The identifier of <paramref name="obj"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-        public static
-#if UNITY_6000_3_OR_NEWER
-            EntityId GetEntityId
-#else
-            int GetInstanceId
-#endif
-            (Object obj)
+        public static InstanceIdType GetInstanceId(Object obj)
         {
             if (obj is null)
             {
@@ -134,7 +108,7 @@ namespace Aurora.Unity
         /// </summary>
         /// <param name="instanceId">The identifier.</param>
         /// <returns><see langword="true"/> if an <see cref="Object"/> instance with identifier <paramref name="instanceId"/> exists; otherwise <see langword="false"/>.</returns>
-        public static bool DoesObjectWithInstanceIdExist(int instanceId)
+        public static bool DoesObjectWithInstanceIdExist(InstanceIdType instanceId)
         {
             var objectWithInstanceIdExist = InternalDoesObjectWithInstanceIdExist(instanceId);
             return objectWithInstanceIdExist;
@@ -174,28 +148,18 @@ namespace Aurora.Unity
             return cachedPtr;
         }
 
-        internal static
-#if UNITY_6000_3_OR_NEWER
-            EntityId
-#else
-            int
-#endif
-            InternalGetInstanceId(Object obj)
+        internal static InstanceIdType InternalGetInstanceId(Object obj)
         {
-            var instanceId =
-#if UNITY_6000_3_OR_NEWER
-                    /*
-                     * Deliberately derived from GetHashCode() instead of GetEntityId():
-                     * it produces the same EntityId value but skips the main-thread check
-                     * (GetEntityId() calls EnsureRunningOnMainThread() and throws on other threads),
-                     * so equality/liveness checks stay usable from background threads.
-                     * The hash is used only transiently for comparison — never stored or persisted.
-                     */
-                    (EntityId)obj.GetHashCode()
-#else
-                    obj.GetHashCode()
-#endif
-                ;
+            /*
+             * For Unity 6.3+:
+             *
+             * Deliberately derived from GetHashCode() instead of GetEntityId():
+             * it produces the same EntityId value but skips the main-thread check
+             * (GetEntityId() calls EnsureRunningOnMainThread() and throws on other threads),
+             * so equality/liveness checks stay usable from background threads.
+             * The hash is used only transiently for comparison — never stored or persisted.
+             */
+            var instanceId = obj.GetHashCode();
             return instanceId;
         }
 
@@ -215,13 +179,7 @@ namespace Aurora.Unity
             return objectWithInstanceIdExist;
         }
 
-        private static bool InternalDoesObjectWithInstanceIdExist(
-#if UNITY_6000_3_OR_NEWER
-            EntityId
-#else
-            int
-#endif
-                instanceId)
+        private static bool InternalDoesObjectWithInstanceIdExist(InstanceIdType instanceId)
         {
             var objectWithInstanceIdExist = FuncDoesObjectWithInstanceIdExist(instanceId);
             return objectWithInstanceIdExist;
