@@ -99,6 +99,7 @@ namespace Aurora.Unity
         {
             UnityEnvironment.IsPlaying         = true;
             UnityEnvironment.ExitTokenSource   = new CancellationTokenSource();
+            UnityEnvironment.AuroraContainer   = CreateAuroraContainer();
             UnityEnvironment.InactiveContainer = CreateInactiveContainer();
 
             var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {true};";
@@ -111,13 +112,24 @@ namespace Aurora.Unity
                 Debug.Log(message);
             }
 
+            static Transform CreateAuroraContainer()
+            {
+                const string name       = nameof(Aurora);
+                var          gameObject = new GameObject(name);
+                gameObject.hideFlags |= HideFlags.DontSave | HideFlags.NotEditable;
+                Object.DontDestroyOnLoad(gameObject);
+                return gameObject.transform;
+            }
+
             static Transform CreateInactiveContainer()
             {
                 const string name       = nameof(UnityEnvironment) + "." + nameof(UnityEnvironment.InactiveContainer);
                 var          gameObject = new GameObject(name);
+                gameObject.hideFlags |= HideFlags.DontSave | HideFlags.NotEditable;
                 gameObject.SetActive(false);
-                gameObject.hideFlags |= HideFlags.HideAndDontSave;
-                return gameObject.transform;
+                var transform = gameObject.transform;
+                transform.SetParent(UnityEnvironment.AuroraContainer.transform);
+                return transform;
             }
         }
 

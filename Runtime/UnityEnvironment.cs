@@ -21,6 +21,8 @@ namespace Aurora.Unity
         /// <remarks>When this value is <see langword="false"/>, complex and time-consuming operations should be skipped so that the program can end as quickly as possible.</remarks>
         public static bool IsPlaying { get; internal set; }
 
+        internal static Transform AuroraContainer { get; set; }
+
         /// <summary>
         /// A <see cref="Transform"/> that is always inactive during play mode. Use it as the parent when instantiating objects so that their <see cref="MonoBehaviour"/><c>.OnEnable</c>s are not executed immediately.
         /// </summary>
