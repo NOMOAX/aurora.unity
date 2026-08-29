@@ -8,6 +8,7 @@ using Aurora.Pooling;
 using Aurora.Unity.PlayerLoop;
 using Aurora.Unity.UI.ViewSystem;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Aurora.Unity
 {
@@ -96,8 +97,9 @@ namespace Aurora.Unity
         /// <remarks>Unless the program ends, <see cref="ExitPlayMode"/> must be called once no matter how much time passes after <see cref="EnterPlayMode"/> is called.</remarks>
         private static void EnterPlayMode(StringBuilder stringBuilder)
         {
-            UnityEnvironment.IsPlaying       = true;
-            UnityEnvironment.ExitTokenSource = new CancellationTokenSource();
+            UnityEnvironment.IsPlaying         = true;
+            UnityEnvironment.ExitTokenSource   = new CancellationTokenSource();
+            UnityEnvironment.InactiveContainer = CreateInactiveContainer();
 
             var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {true};";
             if (stringBuilder != null)
@@ -107,6 +109,15 @@ namespace Aurora.Unity
             else
             {
                 Debug.Log(message);
+            }
+
+            static Transform CreateInactiveContainer()
+            {
+                const string name       = nameof(UnityEnvironment) + "." + nameof(UnityEnvironment.InactiveContainer);
+                var          gameObject = new GameObject(name);
+                gameObject.SetActive(false);
+                gameObject.hideFlags |= HideFlags.HideAndDontSave;
+                return gameObject.transform;
             }
         }
 
@@ -142,6 +153,8 @@ namespace Aurora.Unity
                 UnityEnvironment.ExitTokenSource.Dispose();
                 UnityEnvironment.ExitTokenSource = null;
             }
+            Object.DestroyImmediate(UnityEnvironment.InactiveContainer.gameObject);
+            UnityEnvironment.InactiveContainer = null;
 
             var message = $"{nameof(UnityEnvironment)}.{nameof(UnityEnvironment.IsPlaying)} = {false};";
             if (stringBuilder != null)

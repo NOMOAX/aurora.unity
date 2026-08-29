@@ -21,6 +21,14 @@ namespace Aurora.Unity
         /// <remarks>When this value is <see langword="false"/>, complex and time-consuming operations should be skipped so that the program can end as quickly as possible.</remarks>
         public static bool IsPlaying { get; internal set; }
 
+        /// <summary>
+        /// A <see cref="Transform"/> that is always inactive during play mode. Use it as the parent when instantiating objects so that their <see cref="MonoBehaviour"/><c>.OnEnable</c>s are not executed immediately.
+        /// </summary>
+        /// <remarks>
+        /// This transform stays inactive for the whole play mode. Do not set it active. It is created at runtime when play mode starts and is destroyed when play mode ends or when the program exits.
+        /// </remarks>
+        public static Transform InactiveContainer { get; internal set; }
+
         internal static readonly Stack<IDisposable> Disposables = new();
 
         internal static CancellationTokenSource ExitTokenSource { get; set; }
