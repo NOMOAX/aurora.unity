@@ -85,6 +85,13 @@ namespace Aurora.Unity
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private AuroraColor(int rgba)
+        {
+            Unsafe.SkipInit(out this);
+            _rgba = rgba;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AuroraColor"/> struct.
         /// </summary>
@@ -92,14 +99,9 @@ namespace Aurora.Unity
         /// <param name="g">Green.</param>
         /// <param name="b">Blue.</param>
         /// <param name="a">Alpha.</param>
-        public AuroraColor(byte r, byte g, byte b, byte a = byte.MaxValue)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public AuroraColor(byte r, byte g, byte b, byte a = byte.MaxValue) : this(r | (g << 8) | (b << 16) | (a << 24))
         {
-            _rgba = 0;
-
-            R = r;
-            G = g;
-            B = b;
-            A = a;
         }
 
         /// <summary>
@@ -125,8 +127,6 @@ namespace Aurora.Unity
         /// <exception cref="ArgumentException"><paramref name="htmlColor"/> is improperly formatted.</exception>
         public AuroraColor(string htmlColor)
         {
-            _rgba = 0;
-
             if (htmlColor == null)
             {
                 throw new ArgumentNullException(nameof(htmlColor));
@@ -143,75 +143,26 @@ namespace Aurora.Unity
                 {
                     stringBuilder.Remove(0, 1);
                 }
-                switch (stringBuilder.Length)
+                this = stringBuilder.Length switch
                 {
-                    case 3:
-                    {
-                        if (TryParseOne(stringBuilder, 0, out var r) && TryParseOne(stringBuilder, 1, out var g) &&
-                            TryParseOne(stringBuilder, 2, out var b))
-                        {
-                            R = r;
-                            G = g;
-                            B = b;
-                            A = byte.MaxValue;
-                        }
-                        else
-                        {
-                            throw new ArgumentException(htmlColor, nameof(htmlColor));
-                        }
-                        break;
-                    }
-                    case 4:
-                    {
-                        if (TryParseOne(stringBuilder, 0, out var r) && TryParseOne(stringBuilder, 1, out var g) &&
-                            TryParseOne(stringBuilder, 2, out var b) && TryParseOne(stringBuilder, 3, out var a))
-                        {
-                            R = r;
-                            G = g;
-                            B = b;
-                            A = a;
-                        }
-                        else
-                        {
-                            throw new ArgumentException(htmlColor, nameof(htmlColor));
-                        }
-                        break;
-                    }
-                    case 6:
-                    {
-                        if (TryParseTwo(stringBuilder, 0, out var r) && TryParseTwo(stringBuilder, 2, out var g) &&
-                            TryParseTwo(stringBuilder, 4, out var b))
-                        {
-                            R = r;
-                            G = g;
-                            B = b;
-                            A = byte.MaxValue;
-                        }
-                        else
-                        {
-                            throw new ArgumentException(htmlColor, nameof(htmlColor));
-                        }
-                        break;
-                    }
-                    case 8:
-                    {
-                        if (TryParseTwo(stringBuilder, 0, out var r) && TryParseTwo(stringBuilder, 2, out var g) &&
-                            TryParseTwo(stringBuilder, 4, out var b) && TryParseTwo(stringBuilder, 6, out var a))
-                        {
-                            R = r;
-                            G = g;
-                            B = b;
-                            A = a;
-                        }
-                        else
-                        {
-                            throw new ArgumentException(htmlColor, nameof(htmlColor));
-                        }
-                        break;
-                    }
-                    default:
-                        throw new ArgumentException(htmlColor, nameof(htmlColor));
-                }
+                    3 => TryParseOne(stringBuilder, 0, out var r) && TryParseOne(stringBuilder, 1, out var g) &&
+                         TryParseOne(stringBuilder, 2, out var b)
+                             ? new AuroraColor(r, g, b)
+                             : throw new ArgumentException(htmlColor, nameof(htmlColor)),
+                    4 => TryParseOne(stringBuilder, 0, out var r) && TryParseOne(stringBuilder, 1, out var g) &&
+                         TryParseOne(stringBuilder, 2, out var b) && TryParseOne(stringBuilder, 3, out var a)
+                             ? new AuroraColor(r, g, b, a)
+                             : throw new ArgumentException(htmlColor, nameof(htmlColor)),
+                    6 => TryParseTwo(stringBuilder, 0, out var r) && TryParseTwo(stringBuilder, 2, out var g) &&
+                         TryParseTwo(stringBuilder, 4, out var b)
+                             ? new AuroraColor(r, g, b)
+                             : throw new ArgumentException(htmlColor, nameof(htmlColor)),
+                    8 => TryParseTwo(stringBuilder, 0, out var r) && TryParseTwo(stringBuilder, 2, out var g) &&
+                         TryParseTwo(stringBuilder, 4, out var b) && TryParseTwo(stringBuilder, 6, out var a)
+                             ? new AuroraColor(r, g, b, a)
+                             : throw new ArgumentException(htmlColor, nameof(htmlColor)),
+                    _ => throw new ArgumentException(htmlColor, nameof(htmlColor))
+                };
             }
             finally
             {
