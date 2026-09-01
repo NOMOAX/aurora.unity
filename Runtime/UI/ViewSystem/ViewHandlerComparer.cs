@@ -14,8 +14,8 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 return 1;
             }
-            var t1 = x.HandleableLeastDerivedViewType;
-            var t2 = y.HandleableLeastDerivedViewType;
+            var t1 = x.HandledViewType;
+            var t2 = y.HandledViewType;
             return t1 == t2 ? 0 : new BaseTypeCountComparer().Compare(t1, t2);
         }
     }

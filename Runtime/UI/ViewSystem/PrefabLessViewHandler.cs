@@ -20,7 +20,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <inheritdoc />
-        public override Type HandleableLeastDerivedViewType => typeof(PrefabLessView);
+        public override Type HandledViewType => typeof(PrefabLessView);
 
         /// <inheritdoc />
         public override Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken = default)

@@ -32,7 +32,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 ReferenceEquals(container.RectTransform, rectTransform);
 
         /// <summary>
-        /// The first parameter (<see cref="View"/>) is not equal to the <see cref="View"/> of the second tuple parameter, and the first parameter (<see cref="View"/>) is an instance of the <see cref="Type"/> of the second tuple parameter.
+        /// The view (first parameter) is not the state's view and is an instance of the state's type.
         /// </summary>
         private static readonly ParameterizedPredicate<View, ValueTuple<Object, Type>>
             ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate = (view, state) =>
@@ -42,7 +42,7 @@ namespace Aurora.Unity.UI.ViewSystem
             };
 
         /// <summary>
-        /// The first parameter (<see cref="View"/>) is an instance of the second parameter (<see cref="Type"/>).
+        /// The view (first parameter) is an instance of the type (second parameter).
         /// </summary>
         private static readonly ParameterizedPredicate<View, Type> ViewIsInstanceOfTypePredicate =
             (view, type) => type.IsInstanceOfType(view);
@@ -80,7 +80,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// Removes the view container at the specified index.
         /// </summary>
         /// <param name="index">The index of the view container.</param>
-        /// <exception cref="InvalidOperationException">The number of views under the view container to remove is not 0.</exception>
+        /// <exception cref="InvalidOperationException">The view container to remove is not empty.</exception>
         public static void RemoveContainerAt(int index)
         {
             var container = Containers[index];
@@ -175,8 +175,10 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.Remove(excludedView);
                             break;
                         case Type excludedViewType:
-                            var state = ValueTuple.Create(view, excludedViewType);
-                            views.RemoveAll(ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate, state);
+                            views.RemoveAll(
+                                ViewIsNotEqualToStateViewAndIsInstanceOfStateTypePredicate,
+                                ValueTuple.Create(view, excludedViewType)
+                            );
                             break;
                         default:
                             throw new ArgumentException(null, nameof(exclusions));
@@ -269,7 +271,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Enumerates all views in <see cref="TreeEnumOrder.DepthFirstRld"/> order and returns the first view that satisfies the specified type.
+        /// Enumerates all views in <see cref="TreeEnumOrder.DepthFirstRld"/> order and returns the first view that matches the specified type.
         /// </summary>
         public static T GetView<T>() where T : class
         {
@@ -277,7 +279,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Enumerates all views in the specified enumeration order and returns the first view that satisfies the specified type.
+        /// Enumerates all views in the specified enumeration order and returns the first view that matches the specified type.
         /// </summary>
         public static T GetView<T>(TreeEnumOrder order) where T : class
         {
@@ -542,7 +544,7 @@ namespace Aurora.Unity.UI.ViewSystem
             if (handler == null)
             {
                 throw new InvalidOperationException(
-                    $"Unable to get a view handler suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))}"
+                    $"No view handler found for view type {TypeUtility.GetNicelyFormattedName(typeof(T))}"
                 );
             }
             var view = await handler.CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
@@ -717,14 +719,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} is null"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view"
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} has an associated game object that is active and the view is enabled"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view"
                 );
             }
 
@@ -815,14 +817,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} is null"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view"
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"The view created by the view handler most suitable for handling a view of type {TypeUtility.GetNicelyFormattedName(typeof(T))} has an associated game object that is active and the view is enabled"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view"
                 );
             }
 
@@ -1016,7 +1018,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// Gets a value indicating whether this view is the topmost view.
         /// </summary>
         /// <returns><see langword="true"/> if this view is the topmost view; otherwise <see langword="false"/>.</returns>
-        /// <remarks>This is a virtual method; if a subclass does not override it, <see cref="IsTopmost(View)"/> is actually executed.</remarks>
+        /// <remarks>This is a virtual method; if a subclass does not override it, the static <see cref="IsTopmost(View)"/> method is executed.</remarks>
         public virtual bool IsTopmost()
         {
             return InternalIsTopmost(this);
@@ -1033,7 +1035,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// Gets a value indicating whether this view is a child view of the specified view.
         /// </summary>
         /// <param name="view">The specified view.</param>
-        /// <returns>Whether this view is a child view of the specified view.</returns>
+        /// <returns><see langword="true"/> if this view is a child view of the specified view; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>.</exception>
         public bool IsChildOf(View view)
         {
@@ -1098,7 +1100,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Enumerates this view in the specified enumeration order and returns the first view that satisfies the specified type.
+        /// Enumerates this view in the specified enumeration order and returns the first view that matches the specified type.
         /// </summary>
         public T GetViewFromThis<T>(TreeEnumOrder order) where T : class
         {
@@ -1214,7 +1216,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// Gets an enumerator that enumerates this <see cref="View"/> according to the specified enumeration order.
         /// </summary>
         /// <param name="order">The enumeration order.</param>
-        /// <returns>The enumerator used to enumerate this <see cref="Node"/>.</returns>
+        /// <returns>The enumerator used to enumerate this <see cref="View"/>.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="order"/> is not a member defined in the <see cref="TreeEnumOrder"/> enum.</exception>
         public IEnumerator<View> GetEnumerator(TreeEnumOrder order)
         {
@@ -1278,7 +1280,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
 
             /// <summary>
-            /// Enumerates this container in the specified enumeration order and returns the first view that satisfies the specified type.
+            /// Enumerates this container in the specified enumeration order and returns the first view that matches the specified type.
             /// </summary>
             public T GetViewFromContainer<T>(TreeEnumOrder order) where T : class
             {
@@ -1549,7 +1551,7 @@ namespace Aurora.Unity.UI.ViewSystem
             /// Initializes a new instance of the <see cref="Scope{T}"/> class.
             /// </summary>
             /// <param name="view">The view.</param>
-            /// <param name="closeStateGetter">A call through which user-defined data can be obtained. That data is assigned to <see cref="CloseState"/>.</param>
+            /// <param name="closeStateGetter">A callback through which user-defined data can be obtained. That data is assigned to <see cref="CloseState"/>.</param>
             public Scope(T view, Invocation<object> closeStateGetter)
             {
                 _view             = view;

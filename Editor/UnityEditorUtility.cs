@@ -8,6 +8,7 @@ using Aurora.Diagnostics;
 using Aurora.IO;
 using Aurora.Pooling;
 using Aurora.Unity;
+using Aurora.Unity.UI.ViewSystem;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
@@ -487,6 +488,81 @@ namespace Aurora.UnityEditor
             {
                 var persistentDataPath = PathUtility.ReplaceBackslashWithForwardSlash(Application.persistentDataPath);
                 return Directory.Exists(persistentDataPath);
+            }
+
+            #endregion
+
+            #region Validate View Prefabs
+
+            private const string ValidateViewPrefabsName = "Validate View Prefabs";
+
+            private const int ValidateViewPrefabsPriority = OpenPersistentDataPathPriority + 1;
+
+            [MenuItem(DisplayName + "/" + ValidateViewPrefabsName, priority = ValidateViewPrefabsPriority)]
+            private static void ValidateViewPrefabs()
+            {
+                var messages = PredefinedPools<string>.List.Get();
+                var prefabs  = PredefinedPools<GameObject>.List.Get();
+                try
+                {
+                    foreach (var assetPath in AssetDatabase.GetAllAssetPaths())
+                    {
+                        if (!assetPath.EndsWith(".prefab", StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+                        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                        if (!prefab)
+                        {
+                            continue;
+                        }
+                        var views = PredefinedPools<View>.List.Get();
+                        try
+                        {
+                            prefab.GetComponentsInChildren(true, views);
+                            foreach (var view in views)
+                            {
+                                if (view.gameObject.activeSelf && view.enabled)
+                                {
+                                    messages.Add(
+                                        $"- {assetPath}: {view.GetType().Name} on '{view.gameObject.name}' is active and enabled"
+                                    );
+                                    prefabs.Add(prefab);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            PredefinedPools<View>.List.Return(views);
+                        }
+                    }
+                    var count = messages.Count;
+                    if (count == 0)
+                    {
+                        Debug.Log("All view prefabs satisfy inactive or disabled.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning(
+                            $"{count} view {EnglishUtility.Pluralize("prefab", "prefabs", count)} with an active and enabled view:"
+                        );
+                        for (var i = 0; i < count; i++)
+                        {
+                            Debug.LogWarning(messages[i], prefabs[i]);
+                        }
+                    }
+                }
+                finally
+                {
+                    PredefinedPools<string>.List.Return(messages);
+                    PredefinedPools<GameObject>.List.Return(prefabs);
+                }
+            }
+
+            [MenuItem(DisplayName + "/" + ValidateViewPrefabsName, true)]
+            private static bool ValidateValidateViewPrefabs()
+            {
+                return !EditorApplication.isCompiling && !EditorApplication.isUpdating;
             }
 
             #endregion

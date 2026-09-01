@@ -1,7 +1,7 @@
 {
   "name": "com.kevin-games.aurora.unity",
   "displayName": "Aurora Unity",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "unity": "2021.2",
   "description": "High-performance, low-memory-consumption toolkit for Unity.\n\nDependencies:\n- Aurora (https://github.com/NOMOAX/aurora.git)\n- Unity UI",
   "keywords": [

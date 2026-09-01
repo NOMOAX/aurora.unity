@@ -30,17 +30,14 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 throw new ArgumentNullException(nameof(viewHandler));
             }
-            var handleableLeastDerivedViewType = viewHandler.HandleableLeastDerivedViewType;
-            if (handleableLeastDerivedViewType == null)
+            var handledViewType = viewHandler.HandledViewType;
+            if (handledViewType == null)
             {
-                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} is null");
+                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is null");
             }
-            if (handleableLeastDerivedViewType != typeof(View) &&
-                !handleableLeastDerivedViewType.IsSubclassOf(typeof(View)))
+            if (handledViewType != typeof(View) && !handledViewType.IsSubclassOf(typeof(View)))
             {
-                throw new ArgumentException(
-                    $"{nameof(viewHandler)}.{nameof(HandleableLeastDerivedViewType)} is not a view type"
-                );
+                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is not a view type");
             }
             ViewHandlers.Add(viewHandler);
         }
@@ -82,9 +79,8 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 foreach (var viewHandler in ViewHandlers)
                 {
-                    var handleableLeastDerivedViewType = viewHandler.HandleableLeastDerivedViewType;
-                    if (viewType == handleableLeastDerivedViewType ||
-                        viewType.IsSubclassOf(handleableLeastDerivedViewType))
+                    var handledViewType = viewHandler.HandledViewType;
+                    if (viewType == handledViewType || viewType.IsSubclassOf(handledViewType))
                     {
                         list.Add(viewHandler);
                     }
@@ -99,18 +95,18 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Gets the least derived view type that this <see cref="ViewHandler"/> can handle.
+        /// Gets the view type that this <see cref="ViewHandler"/> handles.
         /// </summary>
-        public abstract Type HandleableLeastDerivedViewType { get; }
+        public abstract Type HandledViewType { get; }
 
         /// <summary>
-        /// Creates a view whose associated game object is inactive, or who is itself disabled.
+        /// Creates an inactive or disabled view.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <typeparam name="T">The type of the view to create.</typeparam>
         /// <returns>The task object of the asynchronous operation.</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="T"/> is an abstract type, or <typeparamref name="T"/> conflicts with <see cref="HandleableLeastDerivedViewType"/>.</exception>
-        /// <remarks>The reason a view must satisfy "the associated game object is inactive, or the view is itself disabled" is to ensure initialization code can be written in the view script's <c>OnEnable</c>.</remarks>
+        /// <exception cref="ArgumentException"><typeparamref name="T"/> is an abstract type, or <typeparamref name="T"/> is not derived from <see cref="HandledViewType"/>.</exception>
+        /// <remarks>The view is inactive or disabled so that its <c>OnEnable</c> is not invoked prematurely during creation, allowing developers to safely write initialization code in <c>OnEnable</c>.</remarks>
         public abstract Task<T> CreateInactiveOrDisabledViewAsync<T>(CancellationToken cancellationToken = default)
             where T : View;
 
