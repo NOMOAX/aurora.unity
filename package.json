@@ -8,7 +8,7 @@
     "aurora"
   ],
   "dependencies": {
-    "com.kevin-games.aurora": "1.0.0",
+    "com.kevin-games.aurora": "1.2.0",
     "com.unity.ugui": "1.0.0"
   },
   "author": {
