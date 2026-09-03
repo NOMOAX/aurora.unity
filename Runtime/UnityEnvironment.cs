@@ -16,9 +16,13 @@ namespace Aurora.Unity
     public static class UnityEnvironment
     {
         /// <summary>
-        /// Whether the program is running.
+        /// Gets a value indicating whether the program is running; in the editor environment, indicates that play mode is active.
         /// </summary>
-        /// <remarks>When this value is <see langword="false"/>, complex and time-consuming operations should be skipped so that the program can end as quickly as possible.</remarks>
+        /// <remarks>
+        /// The value is set to <see langword="true"/> when the program starts, and to <see langword="false"/> when the program ends; in the editor environment, these correspond to entering and exiting play mode.
+        /// <br/>
+        /// When the program is ending, complex and time-consuming operations should be skipped so that it can end as quickly as possible.
+        /// </remarks>
         public static bool IsPlaying { get; internal set; }
 
         internal static Transform AuroraContainer { get; set; }
@@ -54,12 +58,23 @@ namespace Aurora.Unity
         public static TaskScheduler UnitySynchronizationContextTaskScheduler { get; internal set; }
 
         /// <summary>
-        /// In the editor environment, gets a cancellation token initialized when entering play mode and that emits a cancellation notification when exiting play mode; in other cases, it directly returns an already-canceled token;
-        /// <br/>
-        /// In a non-editor environment, gets a cancellation token initialized when the program starts and that emits a cancellation notification when the program ends.
+        /// Gets a cancellation token that is canceled when the program ends; in the editor environment, when exiting play mode.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The token is created when the program starts and canceled when the program ends.
+        /// <br/>
+        /// In the editor environment, the token is created when play mode starts and canceled when exiting play mode; if play mode is not active, an already-canceled token is returned.
+        /// <br/>
+        /// Pass this token to asynchronous or long-running operations so that they can be canceled when the program ends.
+        /// </para>
+        /// <para>
+        /// Callbacks registered on this token should not throw; exceptions thrown in callbacks are logged when the program ends.
+        /// </para>
+        /// </remarks>
         public static CancellationToken ExitToken
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
 #if UNITY_EDITOR

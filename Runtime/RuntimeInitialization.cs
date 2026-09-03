@@ -75,7 +75,7 @@ namespace Aurora.Unity
             SetIsProSkin(false, stringBuilder);
             PlayerLoopUtilityInitialize(stringBuilder);
             RegisterPrefabLessViewHandler(stringBuilder);
-            ApplicationQuitListener.EnsureInstanceExists();
+            ApplicationQuitListener.CreateInstance();
 #endif
         }
 
@@ -157,7 +157,7 @@ namespace Aurora.Unity
             {
                 Log.E(e);
                 Log.W(
-                    $"An exception should not be thrown in the callback of the {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.ExitToken)} token."
+                    $"An exception was thrown in a callback of {nameof(UnityEnvironment)}.{nameof(UnityEnvironment.ExitToken)}; callbacks registered on it should not throw."
                 );
             }
             finally
