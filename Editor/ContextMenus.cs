@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Aurora.Pooling;
 using Aurora.Unity.UI;
 using UnityEditor;

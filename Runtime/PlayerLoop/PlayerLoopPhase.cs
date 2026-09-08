@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.PlayerLoop
+namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
     /// Unity player loop phases.

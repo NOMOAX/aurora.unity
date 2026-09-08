@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.UI
+namespace Aurora.Unity.UI
 {
     /// <summary>
     /// The state of an <see cref="EnhancedButton"/>.

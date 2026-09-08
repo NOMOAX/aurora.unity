@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using Aurora.Pooling;
 using Aurora.Unity;

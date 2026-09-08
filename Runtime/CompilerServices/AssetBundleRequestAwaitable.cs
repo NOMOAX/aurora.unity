@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using Aurora.CompilerServices;
 using UnityEngine;
 

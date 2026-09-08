@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.UI
+namespace Aurora.Unity.UI
 {
     /// <summary>
     /// The controller of a scroll view.

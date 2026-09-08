@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace Aurora.Unity.PlayerLoop
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double GetNextTrimTime(double currentTime)
         {
-            return currentTime + InterpolationUtility.LinearInterpolate(60, 120, RandomUtility.Shared.NextDouble());
+            return currentTime + InterpolationUtility.LinearInterpolate(60, 120, AuroraRandom.Instance.NextDouble());
         }
 
         internal void Add(IPlayerLoopItem item)

@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.UI
+namespace Aurora.Unity.UI
 {
     /// <summary>
     /// How the duration of <see cref="ScrollView"/> auto-snap is computed.

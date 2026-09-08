@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity
+namespace Aurora.Unity
 {
     /// <summary>
     /// The status of an audio source.

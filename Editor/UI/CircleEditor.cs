@@ -1,4 +1,4 @@
-﻿using Aurora.Unity.UI;
+using Aurora.Unity.UI;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;

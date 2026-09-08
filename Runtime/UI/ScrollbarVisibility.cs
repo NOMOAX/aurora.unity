@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.UI
+namespace Aurora.Unity.UI
 {
     /// <summary>
     /// Represents the visibility of a scrollbar.

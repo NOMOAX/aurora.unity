@@ -1,4 +1,4 @@
-﻿namespace Aurora.Unity.PlayerLoop
+namespace Aurora.Unity.PlayerLoop
 {
     /// <summary>
     /// Defines a method that runs within the player loop.

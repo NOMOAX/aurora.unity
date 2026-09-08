@@ -1,4 +1,4 @@
-﻿using Aurora.Collections;
+using Aurora.Collections;
 using Aurora.Pooling;
 using Aurora.Unity.UI.ViewSystem;
 using UnityEditor;

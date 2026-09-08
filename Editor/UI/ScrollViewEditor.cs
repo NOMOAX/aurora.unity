@@ -1,4 +1,4 @@
-﻿// @formatter:max_line_length 10000
+// @formatter:max_line_length 10000
 
 using System.Globalization;
 using Aurora.Unity.UI;
