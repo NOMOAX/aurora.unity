@@ -25,7 +25,7 @@ namespace Aurora.Unity
         /// </remarks>
         public static bool IsPlaying { get; internal set; }
 
-        internal static Transform AuroraContainer { get; set; }
+        public static Transform AuroraContainer { get; internal set; }
 
         /// <summary>
         /// A <see cref="Transform"/> that is always inactive during play mode. Use it as the parent when instantiating objects so that their <see cref="MonoBehaviour"/><c>.OnEnable</c>s are not executed immediately.
