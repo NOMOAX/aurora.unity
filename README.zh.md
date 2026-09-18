@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![许可](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![版本](https://img.shields.io/badge/version-2.0.2-blue)
+![版本](https://img.shields.io/badge/version-2.0.3-blue)
 ![最低 Unity 版本](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 适用于 Unity 的高性能、低内存消耗的工具包。
@@ -81,8 +81,7 @@ UnityEnvironment.QuitApplication(0);
 UnityEnvironment.DisposeOnApplicationQuit(disposable);
 ```
 
-`InactiveContainer` 是一个在整个播放模式期间始终保持 inactive 的 `Transform`：把要实例化的对象挂在它下面，就不会在实例化过程中立刻执行
-`MonoBehaviour.OnEnable`，从而可以放心地把初始化代码写在 `OnEnable` 里。不要在运行时把它设为 active。
+`InactiveContainer` 是一个在整个播放模式期间始终保持 inactive 的 `Transform`：把要实例化的对象挂在它下面，就不会在实例化过程中立刻执行 `MonoBehaviour.OnEnable`，从而可以放心地把初始化代码写在 `OnEnable` 里。不要在运行时把它设为 active。
 
 ```csharp
 var instance = Instantiate(prefab, UnityEnvironment.InactiveContainer, false); // 此时 OnEnable 尚未执行
@@ -105,9 +104,7 @@ public sealed class GameManager : SingletonBehaviour<GameManager>
 }
 ```
 
-`Instance` 在实例 `Awake` 时被赋值。对于场景中 inactive 或 disabled 的实例，`Awake` 可能还没有执行，此时 `Instance` 还是
-`null`，可以显式调用 `FindInstance` 去场景里查找（也会查找未激活的对象），或者调用 `CreateInstance` 创建一个新的
-`GameObject`。
+`Instance` 在实例 `Awake` 时被赋值。对于场景中 inactive 或 disabled 的实例，`Awake` 可能还没有执行，此时 `Instance` 还是 `null`，可以显式调用 `FindInstance` 去场景里查找（也会查找未激活的对象），或者调用 `CreateInstance` 创建一个新的 `GameObject`。
 
 ```csharp
 GameManager.FindInstance(); // 在场景中查找并赋值；已经赋值时什么都不做，找不到时记录一条警告
@@ -116,8 +113,7 @@ GameManager.CreateInstance(); // 新建一个名为 "GameManager" 的 GameObject
 var gameManager = GameManager.Instance;
 ```
 
-如果已经存在一个单例实例，而这个实例既不是由 `FindInstance` 找到的、也不是由 `CreateInstance` 创建的，那么再出现第二个实例会被视为程序错误并抛出
-`InvalidOperationException`。
+如果已经存在一个单例实例，而这个实例既不是由 `FindInstance` 找到的、也不是由 `CreateInstance` 创建的，那么再出现第二个实例会被视为程序错误并抛出 `InvalidOperationException`。
 
 - `[DoNotDestroyOnLoad]`：实例被赋值时对它执行 `Object.DontDestroyOnLoad`。
 - `[WithHideFlags(HideFlags)]`：实例被赋值时把指定的 `HideFlags` 与 `hideFlags` 做按位 `OR` 运算。
@@ -133,8 +129,7 @@ await SomeLongRunningOperationAsync(disableToken); // 对象失活时自动取�
 
 ## 主循环
 
-Unity 主循环（player loop）由一系列按固定顺序执行的阶段组成，每个阶段又由若干子系统构成。Unity 允许在任意位置插入自定义的子系统，
-`PlayerLoopUtility` 就是基于这一点实现的：它在每个阶段的脚本回调前后插入了多个自定义代码执行点，于是这些代码会在每一帧的指定位置被调用。
+Unity 主循环（player loop）由一系列按固定顺序执行的阶段组成，每个阶段又由若干子系统构成。Unity 允许在任意位置插入自定义的子系统，`PlayerLoopUtility` 就是基于这一点实现的：它在每个阶段的脚本回调前后插入了多个自定义代码执行点，于是这些代码会在每一帧的指定位置被调用。
 
 ### PlayerLoopPhase
 
@@ -175,8 +170,7 @@ PlayerLoopUtility.RemovePlayerLoopItem(item, PlayerLoopPhase.Updated);
 var currentPhase = PlayerLoopUtility.CurrentPhase; // 当前正在执行的阶段，不在任何阶段内时为 null
 ```
 
-自己实现 `IPlayerLoopItem` 有很多好处：可以拿它取代 `Update`——大量的 `MonoBehaviour.Update` 会带来额外的调用开销，让执行时间变长；也可以把逻辑挂到
-`Update` 之外的阶段上。本包的 `PlayerLoopScope`、各种计时器/计数器、`ScrollView`、`UnityMainThreadTaskScheduler` 等类型就都实现了它。
+自己实现 `IPlayerLoopItem` 有很多好处：可以拿它取代 `Update`——大量的 `MonoBehaviour.Update` 会带来额外的调用开销，让执行时间变长；也可以把逻辑挂到 `Update` 之外的阶段上。本包的 `PlayerLoopScope`、各种计时器/计数器、`ScrollView`、`UnityMainThreadTaskScheduler` 等类型就都实现了它。
 
 除了实现接口，也可以直接注册一个委托作为"延续"（continuation），它只会被执行一次。带状态参数的重载可以避免闭包分配。
 
@@ -195,8 +189,7 @@ PlayerLoopUtility.AddContinuation(
 
 ### PlayerLoopScope
 
-`PlayerLoopScope` 把"每帧执行 → 停止执行"包装成 `IDisposable`，用 `using` 语句管理生命周期。除了直接传一个委托，也可以使用带
-`object` 状态参数的构造函数，把要访问的对象一次性传进去，避免为闭包分配内存。
+`PlayerLoopScope` 把"每帧执行 → 停止执行"包装成 `IDisposable`，用 `using` 语句管理生命周期。除了直接传一个委托，也可以使用带 `object` 状态参数的构造函数，把要访问的对象一次性传进去，避免为闭包分配内存。
 
 ```csharp
 // 加载进度条：任务需要一定时间，期间每帧刷新进度
@@ -228,8 +221,7 @@ public sealed class LoadingScreen : MonoBehaviour
 
 ### 每帧更新的有限状态机
 
-`UnityUpdateStateMachine<T>` 是 `StateMachine<T>`（来自 Aurora 包）的派生类，状态除了进入/退出回调之外，还可以实现
-`IUnityUpdateState<T>`，从而在当前状态下每帧执行一次自定义逻辑。
+`UnityUpdateStateMachine<T>` 是 `StateMachine<T>`（来自 Aurora 包）的派生类，状态除了进入/退出回调之外，还可以实现 `IUnityUpdateState<T>`，从而在当前状态下每帧执行一次自定义逻辑。
 
 ```csharp
 public sealed class IdleState : IUnityUpdateState<Type>
@@ -289,8 +281,7 @@ protected override void DoUnityUpdate(IUnityUpdateState<Type> currentUnityUpdate
 
 ## 可等待对象
 
-这些结构体实现了 C# 的可等待约定，可以直接 `await`，用于在 `async` 方法中等待 Unity 的异步操作。它们都提供了接受
-`CancellationToken` 的重载。
+这些结构体实现了 C# 的可等待约定，可以直接 `await`，用于在 `async` 方法中等待 Unity 的异步操作。它们都提供了接受 `CancellationToken` 的重载。
 
 ```csharp
 // 等待任意 AsyncOperation
@@ -307,9 +298,7 @@ var allObjects = await new AssetBundleRequestAwaitable.All(assetBundle.LoadAllAs
 var allTypedObjects = await new AssetBundleRequestAwaitable<GameObject>.All(assetBundle.LoadAllAssetsAsync<GameObject>());
 ```
 
-`DelayFrameAwaitable` 等待若干帧之后继续，帧数在指定的阶段上计数，因此它同时也会等待该阶段的到来；
-`PlayerLoopPhaseAwaitable` 等待下一个指定阶段的到来，它的嵌套结构体 `Any`
-则在传入的多个阶段里最早执行的那一个继续。
+`DelayFrameAwaitable` 等待若干帧之后继续，帧数在指定的阶段上计数，因此它同时也会等待该阶段的到来；`PlayerLoopPhaseAwaitable` 等待下一个指定阶段的到来，它的嵌套结构体 `Any` 则在传入的多个阶段里最早执行的那一个继续。
 
 ```csharp
 // 等待 1 帧，并且等待到 Updated 阶段
@@ -360,20 +349,17 @@ await UnityTasks.WhenScreenshotCaptured(@"D:\screenshot.png");
 
 ### UnityMainThreadTaskScheduler
 
-`UnityMainThreadTaskScheduler` 是把任务调度到 Unity 主线程的 `TaskScheduler`。它每帧在 `PlayerLoopPhase.UpdateYielded`
-阶段执行排队中的任务。
+`UnityMainThreadTaskScheduler` 是把任务调度到 Unity 主线程的 `TaskScheduler`。它每帧在 `PlayerLoopPhase.UpdateYielded` 阶段执行排队中的任务。
 
 为了让 Unity 主线程不被死锁，它拒绝接受带 `TaskCreationOptions.LongRunning` 的任务（会记录一条错误日志）。
 
-`BeginProcess` 与 `Continue` 是 `protected virtual`
-属性，分别控制"是否可以开始新一轮处理"和"是否可以处理下一个任务"，可以在派生类中重写以实现自己的调度策略（例如每帧只处理固定数量的任务）。
+`BeginProcess` 与 `Continue` 是 `protected virtual` 属性，分别控制"是否可以开始新一轮处理"和"是否可以处理下一个任务"，可以在派生类中重写以实现自己的调度策略（例如每帧只处理固定数量的任务）。
 
 ## 计时器与计数器
 
 ### Timer
 
-`ITimer` 是计时器接口，`Change` 用来更新首次触发之前的等待时间，以及之后再次触发的间隔。`dueTime` 与 `period` 的含义与
-`System.Threading.Timer` 一致。
+`ITimer` 是计时器接口，`Change` 用来更新首次触发之前的等待时间，以及之后再次触发的间隔。`dueTime` 与 `period` 的含义与 `System.Threading.Timer` 一致。
 
 实现有三个，区别在于用什么来计时，三者都在指定的主循环阶段检查是否到时：
 
@@ -409,8 +395,7 @@ timer.Dispose();
 timer2.Dispose(); // 不再使用时记得释放
 ```
 
-`UnityUtility.CancelAfter` 就是基于 `StopwatchPlayerLoopTimer` 实现的：它在指定的等待时间之后取消一个
-`CancellationTokenSource`，返回的对象释放时终止这次取消。
+`UnityUtility.CancelAfter` 就是基于 `StopwatchPlayerLoopTimer` 实现的：它在指定的等待时间之后取消一个 `CancellationTokenSource`，返回的对象释放时终止这次取消。
 
 ```csharp
 using (UnityUtility.CancelAfter(cancellationTokenSource, TimeSpan.FromSeconds(3)))
@@ -421,8 +406,7 @@ using (UnityUtility.CancelAfter(cancellationTokenSource, TimeSpan.FromSeconds(3)
 
 ### Counter
 
-`ICounter` 是计数器接口，`Change` 的参数含义与 `ITimer.Change` 一一对应，只是单位是帧数而不是时间：`dueCount` 为 -1 时禁用，为
-0 时立即触发，大于 0 时在指定帧数之后触发；`period` 为 -1 时首次触发后禁用。
+`ICounter` 是计数器接口，`Change` 的参数含义与 `ITimer.Change` 一一对应，只是单位是帧数而不是时间：`dueCount` 为 -1 时禁用，为 0 时立即触发，大于 0 时在指定帧数之后触发；`period` 为 -1 时首次触发后禁用。
 
 `UnityFrameCountPlayerLoopCounter` 使用 `Time.frameCount` 计数，并在指定的主循环阶段检查。
 
@@ -456,8 +440,7 @@ counter2.Dispose();
 
 ### FromToTimer
 
-`IFromToTimer` 表示一个"从起点计数到终点"的计时器，适合做进度条、倒计时、数值动画之类的东西。`PlayerLoopFromToTimer`
-是它的实现，在指定的主循环阶段用 `Time.deltaTime` 或 `Time.unscaledDeltaTime` 推进当前时间。
+`IFromToTimer` 表示一个"从起点计数到终点"的计时器，适合做进度条、倒计时、数值动画之类的东西。`PlayerLoopFromToTimer` 是它的实现，在指定的主循环阶段用 `Time.deltaTime` 或 `Time.unscaledDeltaTime` 推进当前时间。
 
 ```csharp
 // 从 0 计数到 100，使用缩放时间推进
@@ -490,14 +473,12 @@ timer.Dispose();
 - `Progress`：进度，取值 `[0, 1]`；`From` 与 `To` 相等时恒为 1。
 - `Running`：是否正在计时。设为 `true` 时把计时器注册到主循环，设为 `false` 时注销。
 - `UseUnscaledTime`：推进时间时使用未缩放时间还是缩放时间。
-- `TimeChanged` / `TimeTruncatedChanged` / `ProgressChanged` 的事件参数是 `FromToTimerValueChangedEventArgs`，包含
-  `PreviousValue`、`NewValue`，以及表示变化原因的 `Causation`：`Timing` 表示由计时引起，`Modification` 表示由外部赋值引起。
+- `TimeChanged` / `TimeTruncatedChanged` / `ProgressChanged` 的事件参数是 `FromToTimerValueChangedEventArgs`，包含 `PreviousValue`、`NewValue`，以及表示变化原因的 `Causation`：`Timing` 表示由计时引起，`Modification` 表示由外部赋值引起。
 - `Completed` 在计时到达 `To` 时触发。
 
 ## 图形
 
-这一组组件都直接继承 `MaskableGraphic`，用 `OnPopulateMesh` 现场生成网格，因此不需要任何图片资源就能得到形状；它们同时实现了
-`ILayoutElement`，在 `Image` 那样的场合也可以作为布局元素使用。
+这一组组件都直接继承 `MaskableGraphic`，用 `OnPopulateMesh` 现场生成网格，因此不需要任何图片资源就能得到形状；它们同时实现了 `ILayoutElement`，在 `Image` 那样的场合也可以作为布局元素使用。
 
 | 组件                     | 说明                               |
 |--------------------------|------------------------------------|
@@ -511,26 +492,21 @@ timer.Dispose();
 
 除了颜色（继承自 `Graphic` 的 `color`）之外，这些图形的公共属性有：
 
-- `Texture`：贴图。设置之后，顶点的 UV 会按照图形在自身矩形内的归一化位置来计算，于是贴图会被"裁剪"成图形的形状；不设置时 UV
-  没有意义，图形只用 `color` 着色。
+- `Texture`：贴图。设置之后，顶点的 UV 会按照图形在自身矩形内的归一化位置来计算，于是贴图会被"裁剪"成图形的形状；不设置时 UV 没有意义，图形只用 `color` 着色。
 - `Segments`：圆弧的细分段数。段数越多越平滑，顶点也越多。
-- `UseExactRaycastLocation`：是否使用精确的点击区域。默认的 `false` 表示用图形的矩形来判定点击；设为 `true`
-  之后会用多边形的"点在多边形内"算法判定，圆形的四个角上不会再误判，代价是每次判定都要遍历多边形的顶点。
+- `UseExactRaycastLocation`：是否使用精确的点击区域。默认的 `false` 表示用图形的矩形来判定点击；设为 `true` 之后会用多边形的"点在多边形内"算法判定，圆形的四个角上不会再误判，代价是每次判定都要遍历多边形的顶点。
 
 圆角矩形还有四个角各自的半径，每个角都有一个"是否使用归一化长度"的开关和半径值。
 
 `RoundedRectangleBorder` 在此基础上多了 `ThicknessNormalized` 与 `Thickness`，用来描述边框的粗细。
 
-`CustomGraphic` 用两个列表描述整张网格：`Vertices` 是顶点的归一化位置与颜色，`Triangles` 是三个一组、按顺时针排列的顶点下标。因为这两个列表是
-`List<T>` 字段，修改之后需要调用 `SetVerticesDirty`（或通过 Inspector 触发一次重绘）才会生效。`NormalizedPositionAndColor`
-就是"归一化位置 + 颜色"的一对值。
+`CustomGraphic` 用两个列表描述整张网格：`Vertices` 是顶点的归一化位置与颜色，`Triangles` 是三个一组、按顺时针排列的顶点下标。因为这两个列表是 `List<T>` 字段，修改之后需要调用 `SetVerticesDirty`（或通过 Inspector 触发一次重绘）才会生效。`NormalizedPositionAndColor` 就是"归一化位置 + 颜色"的一对值。
 
 ## 控件
 
 ### EnhancedButton
 
-`EnhancedButton` 是按钮控件，它没有继承 `Button`，而是从 `UIBehaviour` 重写的一套实现，因此不受 `Selectable` 限制，功能也比
-`Button` 多：内置了"开关"（toggle）能力，并且可以直接对 `Graphic` 的 `color` 做状态着色。
+`EnhancedButton` 是按钮控件，它没有继承 `Button`，而是从 `UIBehaviour` 重写的一套实现，因此不受 `Selectable` 限制，功能也比 `Button` 多：内置了"开关"（toggle）能力，并且可以直接对 `Graphic` 的 `color` 做状态着色。
 
 ```csharp
 public class Example : MonoBehaviour
@@ -572,8 +548,7 @@ public class Example : MonoBehaviour
 }
 ```
 
-`State`（`EnhancedButtonState`）由指针的位置与按下状态决定：指针不在按钮内是 `Default`，指针在按钮内是 `Hovered`
-，在按钮内按下且仍然可以触发点击是 `Pressed`。
+`State`（`EnhancedButtonState`）由指针的位置与按下状态决定：指针不在按钮内是 `Default`，指针在按钮内是 `Hovered`，在按钮内按下且仍然可以触发点击是 `Pressed`。
 
 四个事件的触发时机：
 
@@ -602,8 +577,7 @@ var colorBlock = new EnhancedButton.ColorBlock
 var color = colorBlock.GetColor(button);
 ```
 
-`ColorBlock` 里的颜色只由 `State` 与 `Interactable` 决定，与 `IsOn` 无关。如果你需要为 On / Off 状态下的按钮使用不同的颜色，可以使用两个
-`ColorBlock`，根据 `IsOn` 选用：
+`ColorBlock` 里的颜色只由 `State` 与 `Interactable` 决定，与 `IsOn` 无关。如果你需要为 On / Off 状态下的按钮使用不同的颜色，可以使用两个 `ColorBlock`，根据 `IsOn` 选用：
 
 ```csharp
 [SerializeField]
@@ -621,8 +595,7 @@ private void OnButtonUpdated(EnhancedButton b)
 
 ### EnhancedButtonGroup
 
-`EnhancedButtonGroup` 是按钮组：把按钮通过 `EnhancedButton.Group`
-注册进来，标题栏、工具栏、单选按钮组这类"同一时刻最多只有一个按钮处于开启状态"的场合都由它来协调。按钮组不要求与按钮处于同一层级，注册关系完全由引用决定。
+`EnhancedButtonGroup` 是按钮组：把按钮通过 `EnhancedButton.Group` 注册进来，标题栏、工具栏、单选按钮组这类"同一时刻最多只有一个按钮处于开启状态"的场合都由它来协调。按钮组不要求与按钮处于同一层级，注册关系完全由引用决定。
 
 ```csharp
 public sealed class SingleSelectionExample : MonoBehaviour
@@ -686,9 +659,7 @@ var isOperating = slider.IsOperating; // 是否正在被操作
 
 `ScrollView` 原本应该放在"控件"一节内，但它的体量太大，因此独立成节。
 
-`ScrollView` 是一个大量复用子对象的滚动列表，用来替代 `UnityEngine.UI.ScrollRect`
-之上的常见做法：数据量很大时只实例化"能看见的那几个"item，滚出可视范围的 item 会被回收再用。它建立在 `ScrollRect` 之上，使用它自己的
-`ScrollRect` 组件。
+`ScrollView` 是一个大量复用子对象的滚动列表，用来替代 `UnityEngine.UI.ScrollRect` 之上的常见做法：数据量很大时只实例化"能看见的那几个"item，滚出可视范围的 item 会被回收再用。它建立在 `ScrollRect` 之上，使用它自己的 `ScrollRect` 组件。
 
 `ScrollView` 是抽象基类，实际使用 `HorizontalScrollView` 或 `VerticalScrollView`。
 
@@ -735,12 +706,9 @@ public sealed class MyScrollViewController : MonoBehaviour, IScrollViewControlle
 }
 ```
 
-`GetItem` 里调用 `GetRecycledOrCreateNewItem(itemPrefab, out isNewCreated)` 是必须的，它会按 `ScrollViewItem.identifier`
-去找已回收的 item，找不到才实例化传入的预制体。通常情况下，`GetItem` 只做这件事，再将 item
-的数据交给它；真正做到"新建时初始化一次"与"每次取用时刷新"的区分，交给 `ScrollViewItem` 子类重写的
-`OnGet(bool isNewCreated)`（见下一节）。
+`GetItem` 里调用 `GetRecycledOrCreateNewItem(itemPrefab, out isNewCreated)` 是必须的，它会按 `ScrollViewItem.identifier` 去找已回收的 item，找不到才实例化传入的预制体。通常情况下，`GetItem` 只做这件事，再将 item 的数据交给它；真正做到"新建时初始化一次"与"每次取用时刷新"的区分，交给 `ScrollViewItem` 子类重写的 `OnGet(bool isNewCreated)`（见下一节）。
 
-`GetItemName` 只在编辑器环境下编译，仅用于给层级窗口里的 item 起一个可读的名字。
+`GetItemName` 只在编辑器环境下编译，仅用于给 Hierarchy 窗口里的 item 起一个可读的名字。
 
 ### ScrollViewItem
 
@@ -787,9 +755,7 @@ public sealed class MyScrollViewItem : ScrollViewItem
 - `Index`：当前在列表中的下标；不在使用中时为 -1。
 - `Visible`：是否已经进入视口。
 
-`OnGet` 与 `OnReturn` 成对出现，`OnVisible` 与 `OnInvisible`
-成对出现，它们的关系可以这样理解：item 被取出使用时还没有进入视口，滚动到视口之内才触发 `OnVisible`；滚出视口先触发
-`OnInvisible`，被回收时才触发 `OnReturn`。
+`OnGet` 与 `OnReturn` 成对出现，`OnVisible` 与 `OnInvisible` 成对出现，它们的关系可以这样理解：item 被取出使用时还没有进入视口，滚动到视口之内才触发 `OnVisible`；滚出视口先触发 `OnInvisible`，被回收时才触发 `OnReturn`。
 
 ### 挂载与刷新
 
@@ -806,8 +772,7 @@ scrollView.ReloadWithNormalizedScrollPosition(0.5);
 
 `Reload` 会清空当前所有 item、重新向控制器询问 item 数量与每个 item 的尺寸，然后重新摆放。数据变化之后应当立刻调用一次。
 
-`Refresh` 则是"保持数据不变、只按当前位置重新计算哪些 item 该存在"，它由 `ScrollRect.onValueChanged` 自动驱动；如果手动改了
-`ContentPosition` 或 `NormalizedScrollPosition` 之后需要立刻拿到最新的活动 item，可以自己调用一次 `Refresh`。
+`Refresh` 则是"保持数据不变、只按当前位置重新计算哪些 item 该存在"，它由 `ScrollRect.onValueChanged` 自动驱动；如果手动改了 `ContentPosition` 或 `NormalizedScrollPosition` 之后需要立刻拿到最新的活动 item，可以自己调用一次 `Refresh`。
 
 ```csharp
 scrollView.Refresh();
@@ -866,8 +831,7 @@ var contentPosition3 = scrollView.ConvertNormalizedScrollPositionToContentPositi
 
 ### 内边距、间距与预加载
 
-`Padding`（`RectOffset`）与 `Spacing` 会被转发给内容对象上的布局组，设置之后会自动重新加载；`ChildForceExpandSize`
-决定 item 在非滚动方向上是否填满内容。
+`Padding`（`RectOffset`）与 `Spacing` 会被转发给内容对象上的布局组，设置之后会自动重新加载；`ChildForceExpandSize` 决定 item 在非滚动方向上是否填满内容。
 
 ```csharp
 scrollView.Padding = new RectOffset(8, 8, 8, 8);
@@ -875,9 +839,7 @@ scrollView.Spacing = 4;
 scrollView.ChildForceExpandSize = true;
 ```
 
-`leadingActiveOffset` 与 `trailingActiveOffset` 用来做预加载：在视口的起点与终点之外再多保留一段距离，让即将进入视口的
-item 提前被创建好，从而避免滚动时出现空白。取值应当大于等于
-0，设置之后在下次刷新时生效。
+`leadingActiveOffset` 与 `trailingActiveOffset` 用来做预加载：在视口的起点与终点之外再多保留一段距离，让即将进入视口的 item 提前被创建好，从而避免滚动时出现空白。取值应当大于等于 0，设置之后在下次刷新时生效。
 
 ```csharp
 scrollView.leadingActiveOffset = 100; // 视口起点之前 100 像素内的 item 也保持活动
@@ -933,16 +895,13 @@ var isTweening = scrollView.Tweening; // 是否正在播放吸附动画
 
 ### 创建 ScrollView
 
-手动创建 `ScrollView` 的过程非常繁琐，`GameObject/UI/Scroll View - Aurora Unity` 菜单会打开 `Create New ScrollView`
-窗口，让你选好方向、尺寸与滚动条位置之后，一次性生成结构完整的`HorizontalScrollView` / `VerticalScrollView`
-（包括视口、内容、滚动条，并且把该接的引用都接好）。
+手动创建 `ScrollView` 的过程非常繁琐，`GameObject/UI/Scroll View - Aurora Unity` 菜单会打开 `Create New ScrollView` 窗口，让你选好方向、尺寸与滚动条位置之后，一次性生成结构完整的`HorizontalScrollView` / `VerticalScrollView`（包括视口、内容、滚动条，并且把该接的引用都接好）。
 
 ## 布局
 
 ### FlowLayoutGroup
 
-`FlowLayoutGroup` 是流式布局组，对应 `HorizontalLayoutGroup` / `VerticalLayoutGroup`
-的"一行放不下就换行"版本：先沿着主轴排列子对象，一行（或一列）放不下时自动换到下一行（或下一列）。
+`FlowLayoutGroup` 是流式布局组，对应 `HorizontalLayoutGroup` / `VerticalLayoutGroup` 的"一行放不下就换行"版本：先沿着主轴排列子对象，一行（或一列）放不下时自动换到下一行（或下一列）。
 
 ```csharp
 var flowLayoutGroup = gameObject.AddComponent<FlowLayoutGroup>();
@@ -990,11 +949,9 @@ var rectMask2D = scrollLayoutGroup.RectMask2D; // 同一对象上的 RectMask2D
 
 ## 界面系统
 
-界面系统把界面（`View`）组织成一棵树：每个界面都是一个节点，每个界面都可以拥有多个子界面，整棵树挂在界面容器（`ViewContainer`
-）之下。容器负责把根界面放到合适的父对象上，也负责"谁在最上面"这类查询。
+界面系统把界面（`View`）组织成一棵树：每个界面都是一个节点，每个界面都可以拥有多个子界面，整棵树挂在界面容器（`ViewContainer`）之下。容器负责把根界面放到合适的父对象上，也负责"谁在最上面"这类查询。
 
-界面不是"自己 `new` 出来"的：它由 `ViewHandler` 创建，并且要求创建出来的界面处于未激活或未启用状态，这样在打开流程的最后一步才激活它，
-`OnEnable` 里就可以放心地写初始化代码。
+界面不是"自己 `new` 出来"的：它由 `ViewHandler` 创建，并且要求创建出来的界面处于未激活或未启用状态，这样在打开流程的最后一步才激活它，`OnEnable` 里就可以放心地写初始化代码。
 
 ### ViewHandler
 
@@ -1042,9 +999,7 @@ ViewHandler.Register(new GeneralViewHandler());
 
 `PrefabLessViewHandler` 已经由本包自动注册（见本文档的"运行环境与初始化"一节），它负责创建不带预制体的 `PrefabLessView`。
 
-`ViewHandler.Get<T>()`（或 `Get(Type)`）会从所有已注册的处理器里挑出最合适的一个：先筛出 `HandledViewType` 是 `T` 本身或
-`T` 的基类的处理器，再取继承链条最短的那个；因为 `PrefabLessViewHandler` 的 `HandledViewType` 是 `PrefabLessView`，所以只实现了
-`PrefabLessView` 的界面会落到它上面。找不到时会返回 `null`。
+`ViewHandler.Get<T>()`（或 `Get(Type)`）会从所有已注册的处理器里挑出最合适的一个：先筛出 `HandledViewType` 是 `T` 本身或 `T` 的基类的处理器，再取继承链条最短的那个；因为 `PrefabLessViewHandler` 的 `HandledViewType` 是 `PrefabLessView`，所以只实现了 `PrefabLessView` 的界面会落到它上面。找不到时会返回 `null`。
 
 ### 打开界面
 
@@ -1071,8 +1026,7 @@ View.BeginOpen<MainMenuView>(container);
 View.BeginOpen<ItemDetailView>(parentView, state);
 ```
 
-打开流程的最后一步会把界面激活并启用；在这之前，`OnSettingActiveAndEnabling`
-会被调用一次，可以在派生类里重写它，做"激活之前"的准备工作。
+打开流程的最后一步会把界面激活并启用；在这之前，`OnSettingActiveAndEnabling` 会被调用一次，可以在派生类里重写它，做"激活之前"的准备工作。
 
 ```csharp
 protected override void OnSettingActiveAndEnabling()
@@ -1081,9 +1035,7 @@ protected override void OnSettingActiveAndEnabling()
 }
 ```
 
-如果处理器创建出来的界面已经是激活且启用状态，打开时会抛出 `BehaviourActiveAndEnabledException`，所以
-**界面预制体必须是未激活或已禁用的**。本包在编辑器下提供了 `Aurora Unity/Validate View Prefabs`
-菜单，可以批量检查工程里所有预制体是否符合这个要求。
+如果处理器创建出来的界面已经是激活且启用状态，打开时会抛出 `BehaviourActiveAndEnabledException`，所以 **界面预制体必须是未激活或已禁用的**。本包在编辑器下提供了 `Aurora Unity/Validate View Prefabs` 菜单，可以批量检查工程里所有预制体是否符合这个要求。
 
 所有打开方式都有接受 `CancellationToken` 的重载。
 
@@ -1170,13 +1122,11 @@ var views = new List<MainMenuView>();
 container.GetViewsFromContainer(TreeEnumOrder.BreadthFirstLr, views);
 ```
 
-容器要求传入的 `RectTransform` 处于激活状态，并且能在父级上找到一个 `Canvas`，否则会抛出 `GameObjectInactiveException` 或
-`ComponentNotGotException`。
+容器要求传入的 `RectTransform` 处于激活状态，并且能在父级上找到一个 `Canvas`，否则会抛出 `GameObjectInactiveException` 或 `ComponentNotGotException`。
 
 ### View.Scope\<T\>
 
-`View.Scope<T>` 把"打开 → 使用 → 关闭"包装成 `IDisposable`，适合用 `using`
-语句表达"这个界面只在这个作用域内存在"。典型用法有两种：
+`View.Scope<T>` 把"打开 → 使用 → 关闭"包装成 `IDisposable`，适合用 `using` 语句表达"这个界面只在这个作用域内存在"。典型用法有两种：
 
 - 显示 **加载界面**：在执行长时间加载任务期间挡住屏幕，任务结束后自动关闭。
 - 显示 **全屏遮挡界面**：在显示 **对话框界面** 期间挡住下层界面，避免用户操作到对话框背后的内容。
@@ -1192,11 +1142,9 @@ using (new View.Scope<MainMenuView>(view))
 
 ### PrefabLessView 与 MaskView
 
-`PrefabLessView` 是"不需要预制体、在运行时直接创建"的界面基类。它由 `PrefabLessViewHandler` 创建（本包已经注册好），并且在
-`Awake` 里把 `GameObject.layer` 设为 "UI" 层。
+`PrefabLessView` 是"不需要预制体、在运行时直接创建"的界面基类。它由 `PrefabLessViewHandler` 创建（本包已经注册好），并且在 `Awake` 里把 `GameObject.layer` 设为 "UI" 层。
 
-`MaskView` 是现成的遮罩界面：一个填满父对象的半透明色块，点击时可以选择关闭自己，也可以执行一段逻辑。它的参数通过 `State`
-传入。
+`MaskView` 是现成的遮罩界面：一个填满父对象的半透明色块，点击时可以选择关闭自己，也可以执行一段逻辑。它的参数通过 `State` 传入。
 
 ```csharp
 await View.OpenAsync<MaskView>(
@@ -1217,23 +1165,19 @@ var maskGraphic = maskView.MaskGraphic; // 遮罩用的 Graphic
 
 ### View Inspector
 
-`Window/Aurora Unity/View Inspector` 会打开一个名为 `View Inspector` 的窗口，按层级缩进列出当前所有的界面容器，
-以及每个容器里的界面树：容器一层列出它的 `RectTransform`，下面递归缩进列出它包含的每一个界面（从根界面到子界面）。
+`Window/Aurora Unity/View Inspector` 会打开一个名为 `View Inspector` 的窗口，按层级缩进列出当前所有的界面容器，以及每个容器里的界面树：容器一层列出它的 `RectTransform`，下面递归缩进列出它包含的每一个界面（从根界面到子界面）。
 
-这个窗口是只读的（整体套在 `EditorGUI.DisabledScope(true)` 里），只能看不能改；`View.Dirty` 被置位时它会自动重绘，所以打开界面、
-关闭界面都会立刻反映出来。当还没有任何界面容器时，窗口里只显示一句 `There is nothing here.`。
+这个窗口是只读的（整体套在 `EditorGUI.DisabledScope(true)` 里），只能看不能改；`View.Dirty` 被置位时它会自动重绘，所以打开界面、关闭界面都会立刻反映出来。当还没有任何界面容器时，窗口里只显示一句 `There is nothing here.`。
 
-调试界面系统时很有用：打开某个界面后它能直接告诉你这个界面挂在了哪个容器、是谁的子界面、嵌了多深，不必去层级窗口里手工找对象。
+调试界面系统时很有用：打开某个界面后它能直接告诉你这个界面挂在了哪个容器、是谁的子界面、嵌了多深，不必去 Hierarchy 窗口里手工找对象。
 
 ## 空间索引
 
 ### Quadtree\<T\>
 
-`Quadtree<TElementPosition>` 是四叉树：把二维空间递归地四等分，用空间换时间，让"查询某个圆形或矩形范围内的元素"不必遍历全部元素。
-`TElementPosition` 是元素的位置类型。
+`Quadtree<TElementPosition>` 是四叉树：把二维空间递归地四等分，用空间换时间，让"查询某个圆形或矩形范围内的元素"不必遍历全部元素。`TElementPosition` 是元素的位置类型。
 
-`Quadtree<T>` 是抽象类：元素需要实现 `IQuadtreeElement<T>`（提供 `Position` 与 `SetOwner`），节点需要由 `ICreateNodeHandler`
-创建。
+`Quadtree<T>` 是抽象类：元素需要实现 `IQuadtreeElement<T>`（提供 `Position` 与 `SetOwner`），节点需要由 `ICreateNodeHandler` 创建。
 
 ```csharp
 public sealed class MyQuadtree : Quadtree<Vector2>
@@ -1338,8 +1282,7 @@ node.Remove(element);
 
 ### Octree\<T\>
 
-`Octree<TElementPosition>` 是八叉树，用法与四叉树完全对应，只是空间从二维变成三维：节点各有 8 个子节点，范围类型是 `Aabb3`
-，位置类型通常用 `Vector3`。
+`Octree<TElementPosition>` 是八叉树，用法与四叉树完全对应，只是空间从二维变成三维：节点各有 8 个子节点，范围类型是 `Aabb3`，位置类型通常用 `Vector3`。
 
 ```csharp
 public sealed class MyOctree : Octree<Vector3>
@@ -1386,8 +1329,7 @@ var inAabb3 = new List<IOctreeElement<Vector3>>();
 octree.GetElementsInAabb3(Aabb3.CenterSize(Vector3.zero, new Vector3(200, 200, 200)), inAabb3);
 ```
 
-两个索引在构造时都会校验：范围里不能出现 `NaN` 或无穷大，`levels` 与 `maxElements` 都必须大于等于 1，`createNodeHandler`
-不能为 `null`。
+两个索引在构造时都会校验：范围里不能出现 `NaN` 或无穷大，`levels` 与 `maxElements` 都必须大于等于 1，`createNodeHandler` 不能为 `null`。
 
 ## 数学与几何
 
@@ -1448,8 +1390,7 @@ Aabb3 aabb3 = aabb2; // 隐式转换到三维
 Aabb2 back2 = aabb3;
 ```
 
-需要注意的是 `Contains(Vector2)` 的判定是"包含下边界与左边界，不包含上边界与右边界"（`minX <= x && maxX > x`），与 `Rect`
-的约定一致。
+需要注意的是 `Contains(Vector2)` 的判定是"包含下边界与左边界，不包含上边界与右边界"（`minX <= x && maxX > x`），与 `Rect` 的约定一致。
 
 ### Aabb3
 
@@ -1511,8 +1452,7 @@ var contains = outer.Contains(inner); // true
 
 ### 点是否在多边形内
 
-`IInclusionOfAPointInAPolygonAlgorithm` 定义了"判断点是否在多边形内"的算法接口，本包提供了基于环绕数（winding number）的实现
-`WindingNumber`。`UnityMath.IsPointInsidePolygon` 内部用的就是它。
+`IInclusionOfAPointInAPolygonAlgorithm` 定义了"判断点是否在多边形内"的算法接口，本包提供了基于环绕数（winding number）的实现 `WindingNumber`。`UnityMath.IsPointInsidePolygon` 内部用的就是它。
 
 ```csharp
 IInclusionOfAPointInAPolygonAlgorithm algorithm = new WindingNumber();
@@ -1523,9 +1463,7 @@ var isInside = algorithm.IsPointInsidePolygon(point, polygonVertices);
 
 ### UnityEngineObjectUtility
 
-`UnityEngineObjectUtility` 主要是为了绕过 Unity 主线程的限制：像 `UnityEngine.Object`
-的相等判断这类操作，默认只能在主线程调用，而这些方法可以安全地在其他线程上使用。它通过反射取到 Unity
-内部能力（只在类型初始化时做一次），从而可以在非主线程上判断对象的存活、相等与实例 ID。
+`UnityEngineObjectUtility` 主要是为了绕过 Unity 主线程的限制：像 `UnityEngine.Object` 的相等判断这类操作，默认只能在主线程调用，而这些方法可以安全地在其他线程上使用。它通过反射取到 Unity 内部能力（只在类型初始化时做一次），从而可以在非主线程上判断对象的存活、相等与实例 ID。
 
 ```csharp
 var ptr = UnityEngineObjectUtility.GetCachedPtr(obj); // 包装的原生 C++ 对象的内存地址
@@ -1541,8 +1479,7 @@ if (UnityEngineObjectUtility.Equals(a, b))
 }
 ```
 
-`UnityEngineObjectEqualityComparer.Instance` 是与之配套的 `IEqualityComparer<Object>`，可以用在 `Dictionary`、`HashSet`
-等集合里，让已销毁的对象与 `null` 被视为相等。
+`UnityEngineObjectEqualityComparer.Instance` 是与之配套的 `IEqualityComparer<Object>`，可以用在 `Dictionary`、`HashSet` 等集合里，让已销毁的对象与 `null` 被视为相等。
 
 ```csharp
 var set = new HashSet<GameObject>(UnityEngineObjectEqualityComparer.Instance);
@@ -1610,8 +1547,7 @@ var same4 = TransformUtility.AreTransformsShareSameParent(transforms); // params
 
 ### 父子层级深度比较器
 
-`GameObjectParentCountComparer` 与 `ComponentParentCountComparer` 按"父级层数"（在层级窗口中嵌套的深度）比较对象，用于给排序提供稳定且符合直觉的顺序（例如
-UI 里越靠上的对象越先更新）。
+`GameObjectParentCountComparer` 与 `ComponentParentCountComparer` 按"父级层数"（在 Hierarchy 窗口中嵌套的深度）比较对象，用于给排序提供稳定且符合直觉的顺序（例如 UI 里越靠上的对象越先更新）。
 
 ```csharp
 objects.Sort(GameObjectParentCountComparer.Instance);
@@ -1653,8 +1589,7 @@ throw new UnityWebRequestException(unityWebRequest); // 网络请求出错时
 
 ### UnityWebRequestUtility 与 UnityWebRequestExtensions
 
-`UnityWebRequestUtility` 提供一组基于任务（Task）的方法，用来替代 `UnityWebRequest` 的回调式 API。
-`UnityWebRequestExtensions` 是同样功能的扩展方法版本，可以链式书写。
+`UnityWebRequestUtility` 提供一组基于任务（Task）的方法，用来替代 `UnityWebRequest` 的回调式 API。`UnityWebRequestExtensions` 是同样功能的扩展方法版本，可以链式书写。
 
 ```csharp
 using var unityWebRequest = UnityWebRequest.Get("https://example.com");
@@ -1696,13 +1631,11 @@ UnityWebRequestUtility.ThrowIfNotSuccessStatusCode(unityWebRequest); // 状态�
 unityWebRequest.ThrowIfNotSuccessStatusCode();
 ```
 
-注意 `GetStringAsync` 等方法在请求出错时会抛出 `UnityWebRequestException`，取消时抛出 `OperationCanceledException`；它们只有在
-Unity 主线程上调用才是安全的（否则会抛出 `UnityException`）。
+注意 `GetStringAsync` 等方法在请求出错时会抛出 `UnityWebRequestException`，取消时抛出 `OperationCanceledException`；它们只有在 Unity 主线程上调用才是安全的（否则会抛出 `UnityException`）。
 
 ### UnityWebRequestHandler
 
-`UnityWebRequestHandler` 是用 `UnityWebRequest` 实现的 `HttpMessageHandler`，于是可以直接把 Unity 的网络栈接到
-`System.Net.Http.HttpClient` 上，用 `HttpClient` 的全部能力（`HttpRequestMessage`、`HttpResponseMessage`、拦截器等）。
+`UnityWebRequestHandler` 是用 `UnityWebRequest` 实现的 `HttpMessageHandler`，于是可以直接把 Unity 的网络栈接到 `System.Net.Http.HttpClient` 上，用 `HttpClient` 的全部能力（`HttpRequestMessage`、`HttpResponseMessage`、拦截器等）。
 
 ```csharp
 // 基本用法
@@ -1722,16 +1655,14 @@ var content = await response.Content.ReadAsStringAsync();
 
 它有两个职责值得注意：
 
-- 如果 `SendAsync` 不是在 Unity 主线程上调用的（例如在 `Task.Run` 里，或者 `HttpClient` 把请求调度到了线程池），它会先等待并回到主线程再发起请求。这是
-  `UnityWebRequest` 本身的限制。
+- 如果 `SendAsync` 不是在 Unity 主线程上调用的（例如在 `Task.Run` 里，或者 `HttpClient` 把请求调度到了线程池），它会先等待并回到主线程再发起请求。这是 `UnityWebRequest` 本身的限制。
 - `UnityWebRequest` 抛出的 `UnityWebRequestException` 会被转换成 `HttpRequestException`，以符合 `HttpMessageHandler` 的约定。
 
 ## Preference
 
 ### Preference\<TValue\>
 
-`Preference<TValue>` 是对 `UnityEngine.PlayerPrefs` 的封装基类：用 `UnityEngine.PlayerPrefs` 支持的三种基本类型（`int`、
-`float`、`string`）存放值，再用一对转换方法把它与用户真正使用的类型 `TValue` 对应起来。
+`Preference<TValue>` 是对 `UnityEngine.PlayerPrefs` 的封装基类：用 `UnityEngine.PlayerPrefs` 支持的三种基本类型（`int`、`float`、`string`）存放值，再用一对转换方法把它与用户真正使用的类型 `TValue` 对应起来。
 
 派生类按基本类型分三种，它们的构造函数需要一个 `PreferenceConverterPair`：
 
@@ -1774,8 +1705,7 @@ playerName.SetValue("Kevin");
 var name = playerName.GetValue();
 ```
 
-用户类型不是基本类型时，传入自己的转换方法；`PreferenceConverterPair<TValue, TPreferenceValue>` 就是"值 →
-基本值"与"基本值 → 值"这一对转换：
+用户类型不是基本类型时，传入自己的转换方法；`PreferenceConverterPair<TValue, TPreferenceValue>` 就是"值 → 基本值"与"基本值 → 值"这一对转换：
 
 ```csharp
 // 用 Vector2Int 作为用户类型，底层用 string 存放
@@ -1801,22 +1731,18 @@ public sealed class Vector2IntPreference : StringPreference<Vector2Int>
 
 ### 包装与被覆盖的偏好设置
 
-`WrappedPreference<TValue>` 包装了另一个 `Preference<TValue>`，用来在它的基础上附加行为；`DefaultValuePreference<TValue>`
-进一步附加了一个默认值。本包提供两个现成的实现：
+`WrappedPreference<TValue>` 包装了另一个 `Preference<TValue>`，用来在它的基础上附加行为；`DefaultValuePreference<TValue>` 进一步附加了一个默认值。本包提供两个现成的实现：
 
-- `OverridePreference<TValue>`：当被包装的 `GetValue()` 抛出异常时，把原始值覆盖为 `DefaultValue`
-  再返回它（读取原始值会抛异常，所以要把它覆盖掉）。
+- `OverridePreference<TValue>`：当被包装的 `GetValue()` 抛出异常时，把原始值覆盖为 `DefaultValue` 再返回它（读取原始值会抛异常，所以要把它覆盖掉）。
 - `OverlyPreference<TValue>`：当被包装的值不存在时，强行把 `DefaultValue` 写入原始值再返回它；其余情况一律返回被包装的值。
 
 `PreferenceValueType` 是"底层基本类型"的枚举：`Int32`、`Single`、`String`。
 
-如果需要"原样存取值"（不做任何转换），可以用 `IdentityInt32Preference`、`IdentitySinglePreference`、
-`IdentityStringPreference`。
+如果需要"原样存取值"（不做任何转换），可以用 `IdentityInt32Preference`、`IdentitySinglePreference`、`IdentityStringPreference`。
 
 ## 光标
 
-`CursorInfo` 是"光标贴图 + 热点 + 模式"的一组值；`CursorStack` 用栈的形式管理光标：`Push`
-设置一个新光标（通常是"鼠标悬停在某个区域上"），`Pop` 恢复到上一个。
+`CursorInfo` 是"光标贴图 + 热点 + 模式"的一组值；`CursorStack` 用栈的形式管理光标：`Push` 设置一个新光标（通常是"鼠标悬停在某个区域上"），`Pop` 恢复到上一个。
 
 ```csharp
 // 如果在 PlayerSettings 里设置了默认光标，程序启动之后应当把初始光标告诉它
@@ -1844,8 +1770,7 @@ var count = CursorStack.Count; // 栈里暂存的光标个数
 
 ### AuroraColor
 
-`AuroraColor` 是用四个 `byte`（RGBA）表示的颜色，它通过 `StructLayout(LayoutKind.Explicit)` 把一个 `int` 和四个 `byte`
-重叠在同一个 4 字节内存上，因此和 `Color32` 的布局一致，转换不需要任何额外开销。
+`AuroraColor` 是用四个 `byte`（RGBA）表示的颜色，它通过 `StructLayout(LayoutKind.Explicit)` 把一个 `int` 和四个 `byte` 重叠在同一个 4 字节内存上，因此和 `Color32` 的布局一致，转换不需要任何额外开销。
 
 ```csharp
 var color = new AuroraColor(255, 0, 0); // 默认不透明
@@ -1937,7 +1862,7 @@ var clickDelayTime = UnityUtility.ClickDelayTime; // 连击的两次点击之间
 var timeoutString = UnityUtility.UnityWebRequestTimeoutString; // "Request timeout"
 var vertexCountMax = UnityUtility.VertexCountPerMeshMaxValue; // 65000 - 1
 
-// 把对象名字里多余的内容去掉，变成更适合日志与层级窗口显示的形式
+// 把对象名字里多余的内容去掉，变成更适合日志与 Hierarchy 窗口显示的形式
 UnityUtility.OptimizeName(@object);
 
 // 如果指定的对象正是当前事件系统的选中对象，就取消选中
@@ -2010,8 +1935,7 @@ var currentTime = serverTimeOwner.CurrentTime; // 未设置时为 null
 
 ### 屏幕变化通知
 
-`NotifyScreenSizeChangedScope` 与 `NotifyScreenOrientationChangedScope` 把"监听屏幕尺寸/方向变化"包装成 `IDisposable`
-：变化时在指定的主循环阶段回调，释放时停止监听。
+`NotifyScreenSizeChangedScope` 与 `NotifyScreenOrientationChangedScope` 把"监听屏幕尺寸/方向变化"包装成 `IDisposable`：变化时在指定的主循环阶段回调，释放时停止监听。
 
 ```csharp
 using (var scope = new NotifyScreenSizeChangedScope(
@@ -2034,19 +1958,16 @@ using var scope = new NotifyScreenOrientationChangedScope(
 
 ### 右键菜单
 
-在层级窗口或检视窗口中右键组件标题，会出现一组互转菜单，用来把一种 UI 组件替换成另一种，并尽量保留原有的属性（颜色、材质、射线检测开关、是否可遮罩等），同时保持组件在
-`GameObject` 上的顺序：
+在 Inspector 窗口中右键组件标题，会出现一组互转菜单，用来把一种 UI 组件替换成另一种，并尽量保留原有的属性（颜色、材质、射线检测开关、是否可遮罩等），同时保持组件在 `GameObject` 上的顺序：
 
 - `Button` ⇄ `EnhancedButton`
-- `Image`、`RawImage`、`Clear`、`Block`、`Circle`、`Annulus`、`RoundedRectangle`、`RoundedRectangleBorder`、`CustomGraphic`
-  之间可以两两互转
+- `Image`、`RawImage`、`Clear`、`Block`、`Circle`、`Annulus`、`RoundedRectangle`、`RoundedRectangleBorder`、`CustomGraphic` 之间可以两两互转
 - `HorizontalLayoutGroup` ⇄ `VerticalLayoutGroup`
 - `Clear` 上还有 `Delete Useless Properties`，用来删掉透明图形上那些没有意义的属性
 
 ### Aurora Unity 菜单
 
-`Aurora Unity` 菜单（在 Unity 主菜单栏上）收集了日常开发中用得上的小工具，每一项都可以用 `UnityEditorUtility.MenuItems`
-里的名字定位：
+`Aurora Unity` 菜单（在 Unity 主菜单栏上）收集了日常开发中用得上的小工具，每一项都可以用 `UnityEditorUtility.MenuItems` 里的名字定位：
 
 | 菜单项                                  | 说明                                                                                                 |
 |-----------------------------------------|------------------------------------------------------------------------------------------------------|
@@ -2128,11 +2049,9 @@ var consoleWindowType = UnityEditorUtility.EditorWindowTypes.Console; // 还有 
 
 ### UnityEditorGUIUtility
 
-`UnityEditorGUIUtility` 提供 IMGUI 绘制辅助：`DrawOuterBorder`、`DrawInnerBorder` 与把网格状区域一次画完的 `DrawCellsArea`
-（配合 `DrawCellsAreaOptions` 使用）。
+`UnityEditorGUIUtility` 提供 IMGUI 绘制辅助：`DrawOuterBorder`、`DrawInnerBorder` 与把网格状区域一次画完的 `DrawCellsArea`（配合 `DrawCellsAreaOptions` 使用）。
 
-`DrawCellsAreaOptions` 描述网格区域的绘制方式：行下标从下往上还是从上往下（`CellRowOrigin.Bottom` / `Top`
-）、背景与单元格怎么画、增删行列按钮怎么画、轴标签与下标标签的样式与偏移。
+`DrawCellsAreaOptions` 描述网格区域的绘制方式：行下标从下往上还是从上往下（`CellRowOrigin.Bottom` / `Top`）、背景与单元格怎么画、增删行列按钮怎么画、轴标签与下标标签的样式与偏移。
 
 ```csharp
 var options = new DrawCellsAreaOptions

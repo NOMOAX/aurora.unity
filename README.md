@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![license](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![version](https://img.shields.io/badge/version-2.0.2-blue)
+![version](https://img.shields.io/badge/version-2.0.3-blue)
 ![lowest Unity version](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 High-performance, low-memory-consumption toolkit for Unity.
@@ -21,8 +21,7 @@ English | [中文](README.zh.md)
 
 ## Runtime Environment and Initialization
 
-This package requires no manual initialization. When the program starts, a series of initialization steps is performed automatically, and the process
-is printed to the Unity console. These steps include:
+This package requires no manual initialization. When the program starts, a series of initialization steps is performed automatically, and the process is printed to the Unity console. These steps include:
 
 - switching `Log.Logger` to `UnityConsoleLogger.Instance` so that logs are written to the Unity console;
 - recording the Unity main thread ID, the `SynchronizationContext`, and its `TaskScheduler`;
@@ -31,8 +30,7 @@ is printed to the Unity console. These steps include:
 - creating `UnityEnvironment.InactiveContainer`;
 - in a player (non-editor) environment, additionally creating the quit listener object.
 
-In the editor environment, entering and exiting play mode additionally handles the cleanup of `PlayerLoopUtility`, view containers, and the cursor
-stack.
+In the editor environment, entering and exiting play mode additionally handles the cleanup of `PlayerLoopUtility`, view containers, and the cursor stack.
 
 ### UnityEnvironment
 
@@ -83,9 +81,7 @@ UnityEnvironment.QuitApplication(0);
 UnityEnvironment.DisposeOnApplicationQuit(disposable);
 ```
 
-`InactiveContainer` is a `Transform` that stays inactive throughout play mode: parenting the object to be instantiated under it prevents
-`MonoBehaviour.OnEnable` from being executed immediately during instantiation, so initialization code can safely be written in `OnEnable`. Do not
-set it active at runtime.
+`InactiveContainer` is a `Transform` that stays inactive throughout play mode: parenting the object to be instantiated under it prevents `MonoBehaviour.OnEnable` from being executed immediately during instantiation, so initialization code can safely be written in `OnEnable`. Do not set it active at runtime.
 
 ```csharp
 var instance = Instantiate(prefab, UnityEnvironment.InactiveContainer, false); // OnEnable has not run yet
@@ -94,9 +90,7 @@ instance.transform.SetParent(realParent, false);
 instance.SetActive(true); // OnEnable runs here
 ```
 
-`ExitToken` is created when the program starts and is cancelled when the program ends; in the editor environment, an already cancelled token is
-returned when not in play mode. Callbacks registered on it should not throw exceptions (a thrown exception is logged as an error when the program
-ends).
+`ExitToken` is created when the program starts and is cancelled when the program ends; in the editor environment, an already cancelled token is returned when not in play mode. Callbacks registered on it should not throw exceptions (a thrown exception is logged as an error when the program ends).
 
 ### SingletonBehaviour\<T\>
 
@@ -110,9 +104,7 @@ public sealed class GameManager : SingletonBehaviour<GameManager>
 }
 ```
 
-`Instance` is assigned when the instance's `Awake` runs. For an instance that is inactive or disabled in the scene, `Awake` may not have run yet, in
-which case `Instance` is still `null`. You can explicitly call `FindInstance` to look it up in the scene (inactive objects are searched as well), or
-call `CreateInstance` to create a new `GameObject`.
+`Instance` is assigned when the instance's `Awake` runs. For an instance that is inactive or disabled in the scene, `Awake` may not have run yet, in which case `Instance` is still `null`. You can explicitly call `FindInstance` to look it up in the scene (inactive objects are searched as well), or call `CreateInstance` to create a new `GameObject`.
 
 ```csharp
 GameManager.FindInstance(); // Finds it in the scene and assigns it; does nothing when already assigned, logs a warning when not found
@@ -121,16 +113,14 @@ GameManager.CreateInstance(); // Creates a new GameObject named "GameManager" an
 var gameManager = GameManager.Instance;
 ```
 
-If a singleton instance already exists, and that instance was neither found by `FindInstance` nor created by `CreateInstance`, then the appearance of
-a second instance is treated as a program error and throws `InvalidOperationException`.
+If a singleton instance already exists, and that instance was neither found by `FindInstance` nor created by `CreateInstance`, then the appearance of a second instance is treated as a program error and throws `InvalidOperationException`.
 
 - `[DoNotDestroyOnLoad]`: calls `Object.DontDestroyOnLoad` on the instance when it is assigned.
 - `[WithHideFlags(HideFlags)]`: performs a bitwise `OR` of the specified `HideFlags` with `hideFlags` when the instance is assigned.
 
 ### Cancellation Tokens Bound to the Active State
 
-`GameObjectExtensions.GetDisableToken` returns a cancellation token bound to the active state of a `GameObject`: the token is cancelled when the
-object becomes inactive.
+`GameObjectExtensions.GetDisableToken` returns a cancellation token bound to the active state of a `GameObject`: the token is cancelled when the object becomes inactive.
 
 ```csharp
 var disableToken = gameObject.GetDisableToken();
@@ -139,24 +129,22 @@ await SomeLongRunningOperationAsync(disableToken); // Cancelled automatically wh
 
 ## Player Loop
 
-The Unity player loop consists of a series of phases executed in a fixed order, and each phase consists of several subsystems. Unity allows custom
-subsystems to be inserted at any position, and `PlayerLoopUtility` is built on this: it inserts multiple custom code execution points before and
-after the script callbacks of each phase, so that these pieces of code are invoked at the specified position in every frame.
+The Unity player loop consists of a series of phases executed in a fixed order, and each phase consists of several subsystems. Unity allows custom subsystems to be inserted at any position, and `PlayerLoopUtility` is built on this: it inserts multiple custom code execution points before and after the script callbacks of each phase, so that these pieces of code are invoked at the specified position in every frame.
 
 ### PlayerLoopPhase
 
 `PlayerLoopPhase` represents a phase in the Unity player loop. There are 8 of them:
 
-| Value           | Meaning                                                                                       |
-|-----------------|-----------------------------------------------------------------------------------------------|
-| `FixedUpdating` | Before `FixedUpdate.ScriptRunBehaviourFixedUpdate`                                            |
-| `FixedUpdated`  | After `FixedUpdate.ScriptRunBehaviourFixedUpdate`                                             |
-| `Updating`      | Before `Update.ScriptRunBehaviourUpdate`                                                      |
-| `Updated`       | After `Update.ScriptRunBehaviourUpdate` and before `Update.ScriptRunDelayedDynamicFrameRate`  |
-| `UpdateYielded` | After `Update.ScriptRunDelayedDynamicFrameRate` and before `Update.ScriptRunDelayedTasks`     |
-| `UpdatePosted`  | After `Update.ScriptRunDelayedTasks`                                                          |
-| `LateUpdating`  | Before `PreLateUpdate.ScriptRunBehaviourLateUpdate`                                           |
-| `LateUpdated`   | After `PreLateUpdate.ScriptRunBehaviourLateUpdate`                                            |
+| Value           | Meaning                                                                                      |
+|-----------------|----------------------------------------------------------------------------------------------|
+| `FixedUpdating` | Before `FixedUpdate.ScriptRunBehaviourFixedUpdate`                                           |
+| `FixedUpdated`  | After `FixedUpdate.ScriptRunBehaviourFixedUpdate`                                            |
+| `Updating`      | Before `Update.ScriptRunBehaviourUpdate`                                                     |
+| `Updated`       | After `Update.ScriptRunBehaviourUpdate` and before `Update.ScriptRunDelayedDynamicFrameRate` |
+| `UpdateYielded` | After `Update.ScriptRunDelayedDynamicFrameRate` and before `Update.ScriptRunDelayedTasks`    |
+| `UpdatePosted`  | After `Update.ScriptRunDelayedTasks`                                                         |
+| `LateUpdating`  | Before `PreLateUpdate.ScriptRunBehaviourLateUpdate`                                          |
+| `LateUpdated`   | After `PreLateUpdate.ScriptRunBehaviourLateUpdate`                                           |
 
 ### IPlayerLoopItem and PlayerLoopUtility
 
@@ -182,12 +170,9 @@ PlayerLoopUtility.RemovePlayerLoopItem(item, PlayerLoopPhase.Updated);
 var currentPhase = PlayerLoopUtility.CurrentPhase; // The phase being executed, or null when not inside any phase
 ```
 
-Implementing `IPlayerLoopItem` yourself has many benefits: it can replace `Update` — a large number of `MonoBehaviour.Update` calls add call overhead
-and make execution time longer; logic can also be hooked to phases other than `Update`. Types in this package such as `PlayerLoopScope`, the various
-timers and counters, `ScrollView`, and `UnityMainThreadTaskScheduler` all implement it.
+Implementing `IPlayerLoopItem` yourself has many benefits: it can replace `Update` — a large number of `MonoBehaviour.Update` calls add call overhead and make execution time longer; logic can also be hooked to phases other than `Update`. Types in this package such as `PlayerLoopScope`, the various timers and counters, `ScrollView`, and `UnityMainThreadTaskScheduler` all implement it.
 
-Besides implementing the interface, a delegate can be registered directly as a "continuation", which is executed only once. The overload taking a
-state parameter avoids a closure allocation.
+Besides implementing the interface, a delegate can be registered directly as a "continuation", which is executed only once. The overload taking a state parameter avoids a closure allocation.
 
 ```csharp
 PlayerLoopUtility.AddContinuation(
@@ -204,9 +189,7 @@ PlayerLoopUtility.AddContinuation(
 
 ### PlayerLoopScope
 
-`PlayerLoopScope` wraps "execute every frame → stop executing" as an `IDisposable` and uses a `using` statement to manage the lifetime. Besides
-passing a delegate directly, the constructor overload taking an `object` state can be used to pass the objects to be accessed in one go, avoiding a
-closure allocation.
+`PlayerLoopScope` wraps "execute every frame → stop executing" as an `IDisposable` and uses a `using` statement to manage the lifetime. Besides passing a delegate directly, the constructor overload taking an `object` state can be used to pass the objects to be accessed in one go, avoiding a closure allocation.
 
 ```csharp
 // A loading progress bar: the task takes some time, and the progress is refreshed every frame during it
@@ -238,8 +221,7 @@ public sealed class LoadingScreen : MonoBehaviour
 
 ### A Finite State Machine Updated Every Frame
 
-`UnityUpdateStateMachine<T>` is a derived class of `StateMachine<T>` (from the Aurora package). Besides enter and exit callbacks, a state can implement
-`IUnityUpdateState<T>`, so that custom logic is executed once per frame while that state is current.
+`UnityUpdateStateMachine<T>` is a derived class of `StateMachine<T>` (from the Aurora package). Besides enter and exit callbacks, a state can implement `IUnityUpdateState<T>`, so that custom logic is executed once per frame while that state is current.
 
 ```csharp
 public sealed class IdleState : IUnityUpdateState<Type>
@@ -284,8 +266,7 @@ private void Update()
 }
 ```
 
-`CurrentUnityUpdateState` is the result of converting `CurrentState` to `IUnityUpdateState<T>`; it is `null` when the current state does not implement
-that interface.
+`CurrentUnityUpdateState` is the result of converting `CurrentState` to `IUnityUpdateState<T>`; it is `null` when the current state does not implement that interface.
 
 `DoUnityUpdate` is a virtual method that can be overridden to insert custom logic before or after the current state's `OnUnityUpdate`.
 
@@ -300,8 +281,7 @@ protected override void DoUnityUpdate(IUnityUpdateState<Type> currentUnityUpdate
 
 ## Awaitables
 
-These structs implement the C# awaitable pattern and can be awaited directly, for waiting on Unity's asynchronous operations inside `async` methods.
-They all provide overloads that accept a `CancellationToken`.
+These structs implement the C# awaitable pattern and can be awaited directly, for waiting on Unity's asynchronous operations inside `async` methods. They all provide overloads that accept a `CancellationToken`.
 
 ```csharp
 // Wait for any AsyncOperation
@@ -318,9 +298,7 @@ var allObjects = await new AssetBundleRequestAwaitable.All(assetBundle.LoadAllAs
 var allTypedObjects = await new AssetBundleRequestAwaitable<GameObject>.All(assetBundle.LoadAllAssetsAsync<GameObject>());
 ```
 
-`DelayFrameAwaitable` continues after a number of frames, and the frame count is counted at the specified phase, so it also waits for that phase to
-arrive. `PlayerLoopPhaseAwaitable` waits for the next occurrence of the specified phase, and its nested `Any` struct continues at whichever of the
-passed phases is executed first.
+`DelayFrameAwaitable` continues after a number of frames, and the frame count is counted at the specified phase, so it also waits for that phase to arrive. `PlayerLoopPhaseAwaitable` waits for the next occurrence of the specified phase, and its nested `Any` struct continues at whichever of the passed phases is executed first.
 
 ```csharp
 // Wait for 1 frame, and wait until the Updated phase
@@ -340,8 +318,7 @@ await new PlayerLoopPhaseAwaitable.Any(new[] { PlayerLoopPhase.Updating, PlayerL
 
 ### UnityTasks
 
-`UnityTasks` provides methods that return a `Task` and are equivalent to the awaitables above, for cases where the task needs to be stored, composed,
-or awaited.
+`UnityTasks` provides methods that return a `Task` and are equivalent to the awaitables above, for cases where the task needs to be stored, composed, or awaited.
 
 ```csharp
 // Wait for the specified player loop phase
@@ -372,24 +349,19 @@ All methods provide overloads that accept a `CancellationToken`.
 
 ### UnityMainThreadTaskScheduler
 
-`UnityMainThreadTaskScheduler` is a `TaskScheduler` that schedules tasks onto the Unity main thread. It executes queued tasks every frame at the
-`PlayerLoopPhase.UpdateYielded` phase.
+`UnityMainThreadTaskScheduler` is a `TaskScheduler` that schedules tasks onto the Unity main thread. It executes queued tasks every frame at the `PlayerLoopPhase.UpdateYielded` phase.
 
 To keep the Unity main thread from deadlocking, it rejects tasks with `TaskCreationOptions.LongRunning` (and logs an error).
 
-`BeginProcess` and `Continue` are `protected virtual` properties that control "whether a new round of processing may begin" and "whether the next task
-may be processed". They can be overridden in a derived class to implement a custom scheduling policy (for example, processing only a fixed number of
-tasks per frame).
+`BeginProcess` and `Continue` are `protected virtual` properties that control "whether a new round of processing may begin" and "whether the next task may be processed". They can be overridden in a derived class to implement a custom scheduling policy (for example, processing only a fixed number of tasks per frame).
 
 ## Timers and Counters
 
 ### Timer
 
-`ITimer` is the timer interface. `Change` updates both the waiting time before the first trigger and the interval between subsequent triggers.
-`dueTime` and `period` have the same meaning as in `System.Threading.Timer`.
+`ITimer` is the timer interface. `Change` updates both the waiting time before the first trigger and the interval between subsequent triggers. `dueTime` and `period` have the same meaning as in `System.Threading.Timer`.
 
-There are three implementations, which differ in what they use to measure time. All three check whether the time is up at the specified player loop
-phase:
+There are three implementations, which differ in what they use to measure time. All three check whether the time is up at the specified player loop phase:
 
 - `UnityTimePlayerLoopTimer`: uses `Time.time`
 - `UnityUnscaledTimePlayerLoopTimer`: uses `Time.unscaledTime`
@@ -423,8 +395,7 @@ timer.Dispose();
 timer2.Dispose(); // Remember to dispose it when it is no longer used
 ```
 
-`UnityUtility.CancelAfter` is built on `StopwatchPlayerLoopTimer`: it cancels a `CancellationTokenSource` after the specified waiting time, and
-disposing the returned object terminates the cancellation.
+`UnityUtility.CancelAfter` is built on `StopwatchPlayerLoopTimer`: it cancels a `CancellationTokenSource` after the specified waiting time, and disposing the returned object terminates the cancellation.
 
 ```csharp
 using (UnityUtility.CancelAfter(cancellationTokenSource, TimeSpan.FromSeconds(3)))
@@ -435,9 +406,7 @@ using (UnityUtility.CancelAfter(cancellationTokenSource, TimeSpan.FromSeconds(3)
 
 ### Counter
 
-`ICounter` is the counter interface. The parameters of `Change` correspond one-to-one to those of `ITimer.Change`, except that the unit is frames
-rather than time: `dueCount` of -1 disables it, 0 triggers immediately, and a value greater than 0 triggers after that number of frames; `period` of
--1 disables it after the first trigger.
+`ICounter` is the counter interface. The parameters of `Change` correspond one-to-one to those of `ITimer.Change`, except that the unit is frames rather than time: `dueCount` of -1 disables it, 0 triggers immediately, and a value greater than 0 triggers after that number of frames; `period` of -1 disables it after the first trigger.
 
 `UnityFrameCountPlayerLoopCounter` counts with `Time.frameCount` and checks at the specified player loop phase.
 
@@ -471,9 +440,7 @@ counter2.Dispose();
 
 ### FromToTimer
 
-`IFromToTimer` represents a timer that counts from a start point to an end point, suitable for progress bars, countdowns, numeric animations and the
-like. `PlayerLoopFromToTimer` is its implementation, advancing the current time with `Time.deltaTime` or `Time.unscaledDeltaTime` at the specified
-player loop phase.
+`IFromToTimer` represents a timer that counts from a start point to an end point, suitable for progress bars, countdowns, numeric animations and the like. `PlayerLoopFromToTimer` is its implementation, advancing the current time with `Time.deltaTime` or `Time.unscaledDeltaTime` at the specified player loop phase.
 
 ```csharp
 // Count from 0 to 100, using scaled time
@@ -506,51 +473,40 @@ timer.Dispose();
 - `Progress`: the progress, in the range `[0, 1]`; it is always 1 when `From` equals `To`.
 - `Running`: whether it is counting. Setting it to `true` registers the timer on the player loop, and setting it to `false` unregisters it.
 - `UseUnscaledTime`: whether unscaled or scaled time is used to advance the time.
-- The event arguments of `TimeChanged` / `TimeTruncatedChanged` / `ProgressChanged` are `FromToTimerValueChangedEventArgs`, which contains
-  `PreviousValue`, `NewValue`, and a `Causation` indicating the reason for the change: `Timing` means it was caused by timing, `Modification` means it
-  was caused by an external assignment.
+- The event arguments of `TimeChanged` / `TimeTruncatedChanged` / `ProgressChanged` are `FromToTimerValueChangedEventArgs`, which contains `PreviousValue`, `NewValue`, and a `Causation` indicating the reason for the change: `Timing` means it was caused by timing, `Modification` means it was caused by an external assignment.
 - `Completed` is raised when the timer reaches `To`.
 
 ## Graphics
 
-These components all derive directly from `MaskableGraphic` and generate their mesh on the fly in `OnPopulateMesh`, so a shape is available without
-any image asset; they also implement `ILayoutElement`, so they can serve as layout elements in places like `Image` does.
+These components all derive directly from `MaskableGraphic` and generate their mesh on the fly in `OnPopulateMesh`, so a shape is available without any image asset; they also implement `ILayoutElement`, so they can serve as layout elements in places like `Image` does.
 
-| Component                | Description                                             |
-|--------------------------|---------------------------------------------------------|
-| `Block`                  | A solid color block                                     |
+| Component                | Description                                              |
+|--------------------------|----------------------------------------------------------|
+| `Block`                  | A solid color block                                      |
 | `Clear`                  | Transparent (draws nothing, but takes part in UI events) |
-| `Circle`                 | Circle                                                  |
-| `Annulus`                | Annulus                                                 |
-| `RoundedRectangle`       | Rounded rectangle                                       |
-| `RoundedRectangleBorder` | Rounded rectangle border                                |
-| `CustomGraphic`          | A graphic whose vertices and triangles are user-defined |
+| `Circle`                 | Circle                                                   |
+| `Annulus`                | Annulus                                                  |
+| `RoundedRectangle`       | Rounded rectangle                                        |
+| `RoundedRectangleBorder` | Rounded rectangle border                                 |
+| `CustomGraphic`          | A graphic whose vertices and triangles are user-defined  |
 
 Besides the color (the `color` inherited from `Graphic`), these graphics share the following properties:
 
-- `Texture`: the texture. Once set, the UVs of the vertices are computed from the normalized position of the shape inside its own rectangle, so the
-  texture is "clipped" into the shape; when not set, the UVs are meaningless and the shape is colored with `color` alone.
+- `Texture`: the texture. Once set, the UVs of the vertices are computed from the normalized position of the shape inside its own rectangle, so the texture is "clipped" into the shape; when not set, the UVs are meaningless and the shape is colored with `color` alone.
 - `Segments`: the number of subdivisions of the arc. More segments are smoother and produce more vertices.
-- `UseExactRaycastLocation`: whether to use an exact click area. The default `false` determines clicks with the rectangle of the shape; setting it to
-  `true` determines them with the polygon "point in polygon" algorithm, so the four corners of a circle are no longer misjudged, at the cost of
-  iterating over the polygon vertices on every hit test.
+- `UseExactRaycastLocation`: whether to use an exact click area. The default `false` determines clicks with the rectangle of the shape; setting it to `true` determines them with the polygon "point in polygon" algorithm, so the four corners of a circle are no longer misjudged, at the cost of iterating over the polygon vertices on every hit test.
 
 A rounded rectangle additionally has a radius for each of its four corners, and each corner has a "use a normalized length" toggle and a radius value.
 
 On top of that, `RoundedRectangleBorder` has `ThicknessNormalized` and `Thickness`, which describe the thickness of the border.
 
-`CustomGraphic` describes the whole mesh with two lists: `Vertices` holds the normalized position and color of each vertex, and `Triangles` holds
-vertex indices in groups of three in clockwise order. Since these two lists are `List<T>` fields, `SetVerticesDirty` must be called after modifying
-them (or a redraw has to be triggered through the Inspector) for the changes to take effect. `NormalizedPositionAndColor` is a "normalized position
-plus color" pair.
+`CustomGraphic` describes the whole mesh with two lists: `Vertices` holds the normalized position and color of each vertex, and `Triangles` holds vertex indices in groups of three in clockwise order. Since these two lists are `List<T>` fields, `SetVerticesDirty` must be called after modifying them (or a redraw has to be triggered through the Inspector) for the changes to take effect. `NormalizedPositionAndColor` is a "normalized position plus color" pair.
 
 ## Controls
 
 ### EnhancedButton
 
-`EnhancedButton` is a button control. It does not inherit `Button`, but is an implementation rewritten from `UIBehaviour`, so it is not constrained by
-`Selectable` and offers more than `Button`: it has built-in "toggle" capability, and it can color a `Graphic`'s `color` according to its state
-directly.
+`EnhancedButton` is a button control. It does not inherit `Button`, but is an implementation rewritten from `UIBehaviour`, so it is not constrained by `Selectable` and offers more than `Button`: it has built-in "toggle" capability, and it can color a `Graphic`'s `color` according to its state directly.
 
 ```csharp
 public class Example : MonoBehaviour
@@ -592,22 +548,20 @@ public class Example : MonoBehaviour
 }
 ```
 
-`State` (`EnhancedButtonState`) is determined by the pointer position and the pressed state: `Default` when the pointer is outside the button,
-`Hovered` when it is inside, and `Pressed` when it is pressed inside the button and a click can still be triggered.
+`State` (`EnhancedButtonState`) is determined by the pointer position and the pressed state: `Default` when the pointer is outside the button, `Hovered` when it is inside, and `Pressed` when it is pressed inside the button and a click can still be triggered.
 
 When the four events are raised:
 
-| Event           | When it is raised                                                                                                                |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------|
+| Event           | When it is raised                                                                                                                                  |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Clicked`       | On a left click (delayed until the double click interval has passed when `doubleClick` is `true`), or on a right click when `rightClick` is `true` |
-| `DoubleClicked` | On a double click (only when `doubleClick` is `true`)                                                                           |
-| `Toggled`       | When `IsOn` changes (`SetIsOnWithoutNotify` does not raise it)                                                                    |
-| `Updated`       | When the state, the toggle state, or the interactable state changes; it can also be raised manually with `Refresh`                |
+| `DoubleClicked` | On a double click (only when `doubleClick` is `true`)                                                                                              |
+| `Toggled`       | When `IsOn` changes (`SetIsOnWithoutNotify` does not raise it)                                                                                     |
+| `Updated`       | When the state, the toggle state, or the interactable state changes; it can also be raised manually with `Refresh`                                 |
 
 After the button is pressed, the click is cancelled as soon as the pointer leaves the button (`eventData.eligibleForClick` is set to `false`).
 
-`ColorBlock` describes the colors for six states, and `GetColor(button)` picks the corresponding color from the current state of the button and
-whether it is interactable.
+`ColorBlock` describes the colors for six states, and `GetColor(button)` picks the corresponding color from the current state of the button and whether it is interactable.
 
 ```csharp
 var colorBlock = new EnhancedButton.ColorBlock
@@ -623,8 +577,7 @@ var colorBlock = new EnhancedButton.ColorBlock
 var color = colorBlock.GetColor(button);
 ```
 
-The colors in `ColorBlock` are determined only by `State` and `Interactable`, and are unrelated to `IsOn`. If different colors are needed for the On
-and Off states of a button, use two `ColorBlock`s and pick between them according to `IsOn`:
+The colors in `ColorBlock` are determined only by `State` and `Interactable`, and are unrelated to `IsOn`. If different colors are needed for the On and Off states of a button, use two `ColorBlock`s and pick between them according to `IsOn`:
 
 ```csharp
 [SerializeField]
@@ -642,9 +595,7 @@ private void OnButtonUpdated(EnhancedButton b)
 
 ### EnhancedButtonGroup
 
-`EnhancedButtonGroup` is a button group: buttons are registered with it through `EnhancedButton.Group`, and it coordinates cases such as title bars,
-toolbars, and radio button groups, where "at most one button is on at a time". The group does not require the buttons to be on the same hierarchy
-level; the registration is decided entirely by references.
+`EnhancedButtonGroup` is a button group: buttons are registered with it through `EnhancedButton.Group`, and it coordinates cases such as title bars, toolbars, and radio button groups, where "at most one button is on at a time". The group does not require the buttons to be on the same hierarchy level; the registration is decided entirely by references.
 
 ```csharp
 public sealed class SingleSelectionExample : MonoBehaviour
@@ -709,9 +660,7 @@ var isOperating = slider.IsOperating; // Whether it is being operated
 
 `ScrollView` would have belonged in the "Controls" section, but it is too large, so it has a section of its own.
 
-`ScrollView` is a scrolling list that heavily reuses child objects, replacing the common approach built on `UnityEngine.UI.ScrollRect`: when there is
-a large amount of data, only the few items that are visible are instantiated, and items that scroll out of view are recycled. It is built on top of
-`ScrollRect` and uses its own `ScrollRect` component.
+`ScrollView` is a scrolling list that heavily reuses child objects, replacing the common approach built on `UnityEngine.UI.ScrollRect`: when there is a large amount of data, only the few items that are visible are instantiated, and items that scroll out of view are recycled. It is built on top of `ScrollRect` and uses its own `ScrollRect` component.
 
 `ScrollView` is an abstract base class; in practice `HorizontalScrollView` or `VerticalScrollView` is used.
 
@@ -759,12 +708,9 @@ public sealed class MyScrollViewController : MonoBehaviour, IScrollViewControlle
 }
 ```
 
-Calling `GetRecycledOrCreateNewItem(itemPrefab, out isNewCreated)` inside `GetItem` is mandatory: it looks for a recycled item by
-`ScrollViewItem.identifier`, and only instantiates the passed prefab when none is found. Usually `GetItem` does only this and then hands the item's
-data to it; the distinction between "initialize once when created" and "refresh on every use" is left to the `OnGet(bool isNewCreated)` override of
-the `ScrollViewItem` subclass (see the next section).
+Calling `GetRecycledOrCreateNewItem(itemPrefab, out isNewCreated)` inside `GetItem` is mandatory: it looks for a recycled item by `ScrollViewItem.identifier`, and only instantiates the passed prefab when none is found. Usually `GetItem` does only this and then hands the item's data to it; the distinction between "initialize once when created" and "refresh on every use" is left to the `OnGet(bool isNewCreated)` override of the `ScrollViewItem` subclass (see the next section).
 
-`GetItemName` is compiled only in the editor environment, and is used only to give the item a readable name in the hierarchy window.
+`GetItemName` is compiled only in the editor environment, and is used only to give the item a readable name in the Hierarchy window.
 
 ### ScrollViewItem
 
@@ -806,15 +752,12 @@ public sealed class MyScrollViewItem : ScrollViewItem
 }
 ```
 
-- `identifier`: distinguishes different types of `ScrollViewItem`; assign it in the editor and do not change it at runtime. Recycling matches by
-  `identifier`.
+- `identifier`: distinguishes different types of `ScrollViewItem`; assign it in the editor and do not change it at runtime. Recycling matches by `identifier`.
 - `ScrollView`: the scrolling list it belongs to.
 - `Index`: the current index in the list; -1 when it is not in use.
 - `Visible`: whether it has entered the viewport.
 
-`OnGet` and `OnReturn` come in pairs, and so do `OnVisible` and `OnInvisible`. Their relationship can be understood like this: an item has not yet
-entered the viewport when it is taken out for use, and `OnVisible` is raised only once it scrolls into the viewport; when it scrolls out of the
-viewport `OnInvisible` is raised first, and `OnReturn` is raised only when it is recycled.
+`OnGet` and `OnReturn` come in pairs, and so do `OnVisible` and `OnInvisible`. Their relationship can be understood like this: an item has not yet entered the viewport when it is taken out for use, and `OnVisible` is raised only once it scrolls into the viewport; when it scrolls out of the viewport `OnInvisible` is raised first, and `OnReturn` is raised only when it is recycled.
 
 ### Attaching and Refreshing
 
@@ -830,12 +773,9 @@ scrollView.ReloadWithContentPosition(0);
 scrollView.ReloadWithNormalizedScrollPosition(0.5);
 ```
 
-`Reload` clears all current items, asks the controller again for the item count and the size of each item, and then lays them out again. It should be
-called once immediately after the data changes.
+`Reload` clears all current items, asks the controller again for the item count and the size of each item, and then lays them out again. It should be called once immediately after the data changes.
 
-`Refresh`, on the other hand, "keeps the data unchanged and only recomputes which items should exist at the current position". It is driven
-automatically by `ScrollRect.onValueChanged`; if the latest active items are needed immediately after changing `ContentPosition` or
-`NormalizedScrollPosition` manually, `Refresh` can be called once by hand.
+`Refresh`, on the other hand, "keeps the data unchanged and only recomputes which items should exist at the current position". It is driven automatically by `ScrollRect.onValueChanged`; if the latest active items are needed immediately after changing `ContentPosition` or `NormalizedScrollPosition` manually, `Refresh` can be called once by hand.
 
 ```csharp
 scrollView.Refresh();
@@ -894,8 +834,7 @@ var contentPosition3 = scrollView.ConvertNormalizedScrollPositionToContentPositi
 
 ### Padding, Spacing, and Preloading
 
-`Padding` (`RectOffset`) and `Spacing` are forwarded to the layout group on the content object and trigger a reload when set; `ChildForceExpandSize`
-decides whether items fill the content along the non-scrolling axis.
+`Padding` (`RectOffset`) and `Spacing` are forwarded to the layout group on the content object and trigger a reload when set; `ChildForceExpandSize` decides whether items fill the content along the non-scrolling axis.
 
 ```csharp
 scrollView.Padding = new RectOffset(8, 8, 8, 8);
@@ -903,9 +842,7 @@ scrollView.Spacing = 4;
 scrollView.ChildForceExpandSize = true;
 ```
 
-`leadingActiveOffset` and `trailingActiveOffset` are used for preloading: keeping some extra distance beyond the start and the end of the viewport
-lets items that are about to enter the viewport be created in advance, which avoids blank areas while scrolling. The values should be greater than or
-equal to 0, and take effect on the next refresh.
+`leadingActiveOffset` and `trailingActiveOffset` are used for preloading: keeping some extra distance beyond the start and the end of the viewport lets items that are about to enter the viewport be created in advance, which avoids blank areas while scrolling. The values should be greater than or equal to 0, and take effect on the next refresh.
 
 ```csharp
 scrollView.leadingActiveOffset = 100; // Items within 100 pixels before the viewport start stay active as well
@@ -914,8 +851,7 @@ scrollView.trailingActiveOffset = 100;
 
 ### Automatic Snapping
 
-`ScrollView` has built-in automatic snapping: once the scroll speed drops, the item closest to a certain position is aligned to the middle of the
-viewport.
+`ScrollView` has built-in automatic snapping: once the scroll speed drops, the item closest to a certain position is aligned to the middle of the viewport.
 
 ```csharp
 scrollView.snapTrigger =
@@ -943,11 +879,11 @@ scrollView.StopTween();
 
 `ScrollViewSnapTrigger` is a `[Flags]` enum and can be combined:
 
-| Value                               | When it triggers                                                                                                                                                |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `None`                              | Never snaps                                                                                                                                                     |
-| `OnEndDrag`                         | Snaps immediately when the drag ends                                                                                                                            |
-| `OnNormalizedScrollPositionChanged` | Snaps when there is no drag, the scroll position changes, and the speed is below the threshold (useful for the case where the list is "flung" and then slows down by inertia) |
+| Value                               | When it triggers                                                                                                                                                                                                      |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `None`                              | Never snaps                                                                                                                                                                                                           |
+| `OnEndDrag`                         | Snaps immediately when the drag ends                                                                                                                                                                                  |
+| `OnNormalizedScrollPositionChanged` | Snaps when there is no drag, the scroll position changes, and the speed is below the threshold (useful for the case where the list is "flung" and then slows down by inertia)                                         |
 | `OnPointerUpWithLowSpeed`           | Snaps when there is no drag, the pointer is released, and the `ScrollRect` speed is extremely low (useful for the case where a drag is held and then released after stopping, usually combined with the previous one) |
 
 ### Scrollbar and Speed Limit
@@ -962,16 +898,13 @@ var isTweening = scrollView.Tweening; // Whether a snap animation is playing
 
 ### Creating a ScrollView
 
-Creating a `ScrollView` by hand is very tedious. The `GameObject/UI/Scroll View - Aurora Unity` menu opens the `Create New ScrollView` window, where
-after choosing the direction, the size, and the scrollbar position, a structurally complete `HorizontalScrollView` / `VerticalScrollView` is
-generated in one go (including the viewport, the content, and the scrollbar, with all the references wired up).
+Creating a `ScrollView` by hand is very tedious. The `GameObject/UI/Scroll View - Aurora Unity` menu opens the `Create New ScrollView` window, where after choosing the direction, the size, and the scrollbar position, a structurally complete `HorizontalScrollView` / `VerticalScrollView` is generated in one go (including the viewport, the content, and the scrollbar, with all the references wired up).
 
 ## Layout
 
 ### FlowLayoutGroup
 
-`FlowLayoutGroup` is a flow layout group, the "wrap when a line is full" version of `HorizontalLayoutGroup` / `VerticalLayoutGroup`: it first lays
-children out along the main axis, and automatically moves to the next line (or column) when a line (or column) is full.
+`FlowLayoutGroup` is a flow layout group, the "wrap when a line is full" version of `HorizontalLayoutGroup` / `VerticalLayoutGroup`: it first lays children out along the main axis, and automatically moves to the next line (or column) when a line (or column) is full.
 
 ```csharp
 var flowLayoutGroup = gameObject.AddComponent<FlowLayoutGroup>();
@@ -992,14 +925,11 @@ var childrenOfLine = new List<RectTransform>();
 flowLayoutGroup.GetLayoutChildrenOfLine(0, childrenOfLine); // Gets all children of line 0
 ```
 
-In addition, `FlowLayoutGroup` accumulates the preferred sizes by the number of lines (columns), so it also produces the correct height when used
-together with a `ContentSizeFitter` on the outermost object.
+In addition, `FlowLayoutGroup` accumulates the preferred sizes by the number of lines (columns), so it also produces the correct height when used together with a `ContentSizeFitter` on the outermost object.
 
 ### ScrollLayoutGroup
 
-`ScrollLayoutGroup` is a scrolling layout group: it arranges children in a single row with a fixed spacing along the horizontal (or vertical)
-direction, and a floating-point index decides which child is in the middle — this is the core of interactions such as pickers, date selection, and
-card carousels.
+`ScrollLayoutGroup` is a scrolling layout group: it arranges children in a single row with a fixed spacing along the horizontal (or vertical) direction, and a floating-point index decides which child is in the middle — this is the core of interactions such as pickers, date selection, and card carousels.
 
 ```csharp
 var scrollLayoutGroup = gameObject.AddComponent<ScrollLayoutGroup>();
@@ -1018,22 +948,17 @@ var index = scrollLayoutGroup.GetLayoutChildIndex(child); // Gets the index of t
 var rectMask2D = scrollLayoutGroup.RectMask2D; // The RectMask2D on the same object
 ```
 
-`CenterIndex` can be read (to get the current selection) and also written (to scroll to a certain entry; the float written in is the interpolation
-result of the animation).
+`CenterIndex` can be read (to get the current selection) and also written (to scroll to a certain entry; the float written in is the interpolation result of the animation).
 
 ## View System
 
-The view system organizes views (`View`) into a tree: every view is a node, every view can have multiple child views, and the whole tree is attached
-under a view container (`ViewContainer`). The container places root views under an appropriate parent, and also answers queries such as "which one is
-on top".
+The view system organizes views (`View`) into a tree: every view is a node, every view can have multiple child views, and the whole tree is attached under a view container (`ViewContainer`). The container places root views under an appropriate parent, and also answers queries such as "which one is on top".
 
-A view is not "`new`ed by itself": it is created by a `ViewHandler`, and the created view is required to be inactive or disabled, so that it is activated
-only in the last step of the opening flow, and initialization code can safely be written in `OnEnable`.
+A view is not "`new`ed by itself": it is created by a `ViewHandler`, and the created view is required to be inactive or disabled, so that it is activated only in the last step of the opening flow, and initialization code can safely be written in `OnEnable`.
 
 ### ViewHandler
 
-`ViewHandler` is responsible for creating and releasing a category of views. It has two members that must be implemented and two that can be
-overridden:
+`ViewHandler` is responsible for creating and releasing a category of views. It has two members that must be implemented and two that can be overridden:
 
 ```csharp
 public sealed class GeneralViewHandler : ViewHandler
@@ -1075,12 +1000,9 @@ The handler has to be registered before the view is opened:
 ViewHandler.Register(new GeneralViewHandler());
 ```
 
-`PrefabLessViewHandler` is already registered automatically by this package (see the "Runtime Environment and Initialization" section of this
-document); it creates `PrefabLessView`s that have no prefab.
+`PrefabLessViewHandler` is already registered automatically by this package (see the "Runtime Environment and Initialization" section of this document); it creates `PrefabLessView`s that have no prefab.
 
-`ViewHandler.Get<T>()` (or `Get(Type)`) picks the most suitable one from all registered handlers: it first filters for handlers whose
-`HandledViewType` is `T` itself or a base class of `T`, and then takes the one with the shortest inheritance chain; since the `HandledViewType` of
-`PrefabLessViewHandler` is `PrefabLessView`, views that implement only `PrefabLessView` land on it. It returns `null` when none is found.
+`ViewHandler.Get<T>()` (or `Get(Type)`) picks the most suitable one from all registered handlers: it first filters for handlers whose `HandledViewType` is `T` itself or a base class of `T`, and then takes the one with the shortest inheritance chain; since the `HandledViewType` of `PrefabLessViewHandler` is `PrefabLessView`, views that implement only `PrefabLessView` land on it. It returns `null` when none is found.
 
 ### Opening a View
 
@@ -1101,16 +1023,14 @@ Opening a "child view" requires a parent view instead:
 var childView = await View.OpenAsync<ItemDetailView>(parentView, state: new ItemDetailViewState { Id = 42 });
 ```
 
-Both ways of opening have a "do not wait" version, `BeginOpen`, whose return type is `void` and which runs as `async void` internally; it is suitable
-for cases where the result does not matter.
+Both ways of opening have a "do not wait" version, `BeginOpen`, whose return type is `void` and which runs as `async void` internally; it is suitable for cases where the result does not matter.
 
 ```csharp
 View.BeginOpen<MainMenuView>(container);
 View.BeginOpen<ItemDetailView>(parentView, state);
 ```
 
-The last step of the opening flow activates and enables the view; before that, `OnSettingActiveAndEnabling` is called once, and it can be overridden
-in a derived class to do preparation work "before activation".
+The last step of the opening flow activates and enables the view; before that, `OnSettingActiveAndEnabling` is called once, and it can be overridden in a derived class to do preparation work "before activation".
 
 ```csharp
 protected override void OnSettingActiveAndEnabling()
@@ -1119,9 +1039,7 @@ protected override void OnSettingActiveAndEnabling()
 }
 ```
 
-If the view created by the handler is already active and enabled, opening it throws `BehaviourActiveAndEnabledException`, so **a view prefab must be
-inactive or disabled**. In the editor, this package provides the `Aurora Unity/Validate View Prefabs` menu, which checks in bulk whether every
-prefab in the project meets this requirement.
+If the view created by the handler is already active and enabled, opening it throws `BehaviourActiveAndEnabledException`, so **a view prefab must be inactive or disabled**. In the editor, this package provides the `Aurora Unity/Validate View Prefabs` menu, which checks in bulk whether every prefab in the project meets this requirement.
 
 All ways of opening have overloads that accept a `CancellationToken`.
 
@@ -1167,8 +1085,7 @@ view.Close();
 view.Close(closeState: 42);
 ```
 
-`Container` and `Parent` can also be assigned, which moves the view under another container or another parent view; all descendant nodes in the view
-tree are moved together, and after the move they are realigned to the four edges of the parent.
+`Container` and `Parent` can also be assigned, which moves the view under another container or another parent view; all descendant nodes in the view tree are moved together, and after the move they are realigned to the four edges of the parent.
 
 `childContainer` is "the parent of child views": when it is not set, child views are attached directly under the `RectTransform` of the current view.
 
@@ -1209,17 +1126,14 @@ var views = new List<MainMenuView>();
 container.GetViewsFromContainer(TreeEnumOrder.BreadthFirstLr, views);
 ```
 
-The container requires the passed `RectTransform` to be active and to have a `Canvas` among its ancestors, otherwise it throws
-`GameObjectInactiveException` or `ComponentNotGotException`.
+The container requires the passed `RectTransform` to be active and to have a `Canvas` among its ancestors, otherwise it throws `GameObjectInactiveException` or `ComponentNotGotException`.
 
 ### View.Scope\<T\>
 
-`View.Scope<T>` wraps "open → use → close" as an `IDisposable`, so a `using` statement can express "this view exists only inside this scope". There
-are two typical uses:
+`View.Scope<T>` wraps "open → use → close" as an `IDisposable`, so a `using` statement can express "this view exists only inside this scope". There are two typical uses:
 
 - Showing a **loading view**: blocking the screen while a long loading task runs, and closing it automatically when the task is finished.
-- Showing a **full-screen blocking view**: blocking the layers below while a **dialog view** is shown, so the user cannot interact with what is
-  behind the dialog.
+- Showing a **full-screen blocking view**: blocking the layers below while a **dialog view** is shown, so the user cannot interact with what is behind the dialog.
 
 ```csharp
 using (new View.Scope<MainMenuView>(view))
@@ -1232,11 +1146,9 @@ using (new View.Scope<MainMenuView>(view))
 
 ### PrefabLessView and MaskView
 
-`PrefabLessView` is the base class of views that "need no prefab and are created directly at runtime". It is created by `PrefabLessViewHandler`
-(already registered by this package), and it sets `GameObject.layer` to the "UI" layer in `Awake`.
+`PrefabLessView` is the base class of views that "need no prefab and are created directly at runtime". It is created by `PrefabLessViewHandler` (already registered by this package), and it sets `GameObject.layer` to the "UI" layer in `Awake`.
 
-`MaskView` is a ready-made masking view: a semi-transparent block that fills its parent, which can either close itself on click or execute a piece of
-logic. Its arguments are passed in through `State`.
+`MaskView` is a ready-made masking view: a semi-transparent block that fills its parent, which can either close itself on click or execute a piece of logic. Its arguments are passed in through `State`.
 
 ```csharp
 await View.OpenAsync<MaskView>(
@@ -1257,27 +1169,19 @@ var maskGraphic = maskView.MaskGraphic; // The Graphic used for masking
 
 ### View Inspector
 
-`Window/Aurora Unity/View Inspector` opens a window named `View Inspector` that lists all current view containers with hierarchical indentation,
-along with the view tree inside each container: the container level lists its `RectTransform`, and below it every view it contains is listed
-recursively with more indentation (from root views down to child views).
+`Window/Aurora Unity/View Inspector` opens a window named `View Inspector` that lists all current view containers with hierarchical indentation, along with the view tree inside each container: the container level lists its `RectTransform`, and below it every view it contains is listed recursively with more indentation (from root views down to child views).
 
-This window is read-only (the whole content is wrapped in `EditorGUI.DisabledScope(true)`), so it can only be viewed, not modified; it repaints
-automatically whenever `View.Dirty` is set, so opening and closing views are reflected immediately. When there is no view container yet, the window
-only shows the sentence `There is nothing here.`.
+This window is read-only (the whole content is wrapped in `EditorGUI.DisabledScope(true)`), so it can only be viewed, not modified; it repaints automatically whenever `View.Dirty` is set, so opening and closing views are reflected immediately. When there is no view container yet, the window only shows the sentence `There is nothing here.`.
 
-It is very useful when debugging the view system: after opening a view, it tells you directly which container the view is attached to, whose child it
-is, and how deeply it is nested, without having to find the object by hand in the hierarchy window.
+It is very useful when debugging the view system: after opening a view, it tells you directly which container the view is attached to, whose child it is, and how deeply it is nested, without having to find the object by hand in the Hierarchy window.
 
 ## Spatial Indexing
 
 ### Quadtree\<T\>
 
-`Quadtree<TElementPosition>` is a quadtree: it recursively divides two-dimensional space into four equal parts, trading space for time so that
-"querying the elements within a circle or a rectangle" does not require iterating over all elements. `TElementPosition` is the position type of the
-elements.
+`Quadtree<TElementPosition>` is a quadtree: it recursively divides two-dimensional space into four equal parts, trading space for time so that "querying the elements within a circle or a rectangle" does not require iterating over all elements. `TElementPosition` is the position type of the elements.
 
-`Quadtree<T>` is an abstract class: elements have to implement `IQuadtreeElement<T>` (providing `Position` and `SetOwner`), and nodes have to be
-created by an `ICreateNodeHandler`.
+`Quadtree<T>` is an abstract class: elements have to implement `IQuadtreeElement<T>` (providing `Position` and `SetOwner`), and nodes have to be created by an `ICreateNodeHandler`.
 
 ```csharp
 public sealed class MyQuadtree : Quadtree<Vector2>
@@ -1383,8 +1287,7 @@ node.Remove(element);
 
 ### Octree\<T\>
 
-`Octree<TElementPosition>` is an octree whose usage corresponds exactly to the quadtree, except that the space goes from two dimensions to three:
-nodes have 8 children each, the range type is `Aabb3`, and the position type is usually `Vector3`.
+`Octree<TElementPosition>` is an octree whose usage corresponds exactly to the quadtree, except that the space goes from two dimensions to three: nodes have 8 children each, the range type is `Aabb3`, and the position type is usually `Vector3`.
 
 ```csharp
 public sealed class MyOctree : Octree<Vector3>
@@ -1431,8 +1334,7 @@ var inAabb3 = new List<IOctreeElement<Vector3>>();
 octree.GetElementsInAabb3(Aabb3.CenterSize(Vector3.zero, new Vector3(200, 200, 200)), inAabb3);
 ```
 
-Both indexes validate on construction: the range must not contain `NaN` or infinity, `levels` and `maxElements` must both be greater than or equal
-to 1, and `createNodeHandler` must not be `null`.
+Both indexes validate on construction: the range must not contain `NaN` or infinity, `levels` and `maxElements` must both be greater than or equal to 1, and `createNodeHandler` must not be `null`.
 
 ## Math and Geometry
 
@@ -1493,13 +1395,11 @@ Aabb3 aabb3 = aabb2; // An implicit conversion to three dimensions
 Aabb2 back2 = aabb3;
 ```
 
-Note that `Contains(Vector2)` is decided as "the lower and left boundaries are included, the upper and right boundaries are not"
-(`minX <= x && maxX > x`), consistent with the convention of `Rect`.
+Note that `Contains(Vector2)` is decided as "the lower and left boundaries are included, the upper and right boundaries are not" (`minX <= x && maxX > x`), consistent with the convention of `Rect`.
 
 ### Aabb3
 
-`Aabb3` is the three-dimensional version, corresponding one-to-one in usage to `Aabb2`. It can additionally contain two-dimensional points and boxes,
-and convert to and from `Bounds`.
+`Aabb3` is the three-dimensional version, corresponding one-to-one in usage to `Aabb2`. It can additionally contain two-dimensional points and boxes, and convert to and from `Bounds`.
 
 ```csharp
 var aabb3 = Aabb3.CenterSize(Vector3.zero, Vector3.one * 10);
@@ -1521,8 +1421,7 @@ Aabb3 back = (Aabb3)bounds;
 
 ### UnityMath
 
-`UnityMath` is a set of math methods that complement `Mathf`, covering trigonometry, interpolation without range limiting, conversions between
-coordinates inside and outside a rectangle, barycentric coordinates, and point-in-polygon tests.
+`UnityMath` is a set of math methods that complement `Mathf`, covering trigonometry, interpolation without range limiting, conversions between coordinates inside and outside a rectangle, barycentric coordinates, and point-in-polygon tests.
 
 ```csharp
 // Gets the cosine and the sine at once, avoiding two trigonometric calls
@@ -1558,8 +1457,7 @@ var contains = outer.Contains(inner); // true
 
 ### Point in Polygon
 
-`IInclusionOfAPointInAPolygonAlgorithm` defines the interface of a "determine whether a point is inside a polygon" algorithm. This package provides
-the implementation based on the winding number, `WindingNumber`. `UnityMath.IsPointInsidePolygon` uses it internally.
+`IInclusionOfAPointInAPolygonAlgorithm` defines the interface of a "determine whether a point is inside a polygon" algorithm. This package provides the implementation based on the winding number, `WindingNumber`. `UnityMath.IsPointInsidePolygon` uses it internally.
 
 ```csharp
 IInclusionOfAPointInAPolygonAlgorithm algorithm = new WindingNumber();
@@ -1570,10 +1468,7 @@ var isInside = algorithm.IsPointInsidePolygon(point, polygonVertices);
 
 ### UnityEngineObjectUtility
 
-`UnityEngineObjectUtility` exists mainly to bypass the restrictions of the Unity main thread: operations such as equality tests on
-`UnityEngine.Object` can by default only be called on the main thread, while these methods can safely be used on other threads. It retrieves Unity
-internals through reflection (only once, during type initialization), so that the liveness, equality, and instance ID of objects can be determined
-off the main thread.
+`UnityEngineObjectUtility` exists mainly to bypass the restrictions of the Unity main thread: operations such as equality tests on `UnityEngine.Object` can by default only be called on the main thread, while these methods can safely be used on other threads. It retrieves Unity internals through reflection (only once, during type initialization), so that the liveness, equality, and instance ID of objects can be determined off the main thread.
 
 ```csharp
 var ptr = UnityEngineObjectUtility.GetCachedPtr(obj); // The memory address of the wrapped native C++ object
@@ -1589,8 +1484,7 @@ if (UnityEngineObjectUtility.Equals(a, b))
 }
 ```
 
-`UnityEngineObjectEqualityComparer.Instance` is the accompanying `IEqualityComparer<Object>`, which can be used in collections such as
-`Dictionary` and `HashSet` to treat destroyed objects and `null` as equal.
+`UnityEngineObjectEqualityComparer.Instance` is the accompanying `IEqualityComparer<Object>`, which can be used in collections such as `Dictionary` and `HashSet` to treat destroyed objects and `null` as equal.
 
 ```csharp
 var set = new HashSet<GameObject>(UnityEngineObjectEqualityComparer.Instance);
@@ -1658,8 +1552,7 @@ var same4 = TransformUtility.AreTransformsShareSameParent(transforms); // The pa
 
 ### Parent Depth Comparers
 
-`GameObjectParentCountComparer` and `ComponentParentCountComparer` compare objects by "number of parent levels" (how deeply they are nested in the
-hierarchy window), providing a stable and intuitive order for sorting (for example, in UI the higher objects update first).
+`GameObjectParentCountComparer` and `ComponentParentCountComparer` compare objects by "number of parent levels" (how deeply they are nested in the Hierarchy window), providing a stable and intuitive order for sorting (for example, in UI the higher objects update first).
 
 ```csharp
 objects.Sort(GameObjectParentCountComparer.Instance);
@@ -1683,8 +1576,7 @@ throw new ComponentNotGotException(gameObject, GetComponentMethod.Self, typeof(C
 throw new UnityWebRequestException(unityWebRequest); // When a web request fails
 ```
 
-These exceptions all carry the corresponding object reference (`GameObject`, `Behaviour`, `UnityWebRequest`, and so on), which makes them easy to
-locate.
+These exceptions all carry the corresponding object reference (`GameObject`, `Behaviour`, `UnityWebRequest`, and so on), which makes them easy to locate.
 
 The `GetComponentMethod` enum describes "where the component is taken from", and is used in `ComponentNotGotException`:
 
@@ -1696,15 +1588,13 @@ The `GetComponentMethod` enum describes "where the component is taken from", and
 | `Children`                  | `GetComponentInChildren<T>()`     |
 | `ChildrenIncludingInactive` | `GetComponentInChildren<T>(true)` |
 
-The `When` enum describes "when" (`Always`, `Playing`, `NotPlaying`), and is used by `[GuiDisable]` to control under which circumstances a field is
-greyed out.
+The `When` enum describes "when" (`Always`, `Playing`, `NotPlaying`), and is used by `[GuiDisable]` to control under which circumstances a field is greyed out.
 
 ## Web Requests
 
 ### UnityWebRequestUtility and UnityWebRequestExtensions
 
-`UnityWebRequestUtility` provides a set of task-based methods that replace the callback-style API of `UnityWebRequest`.
-`UnityWebRequestExtensions` is the extension-method version of the same functionality, allowing chained calls.
+`UnityWebRequestUtility` provides a set of task-based methods that replace the callback-style API of `UnityWebRequest`. `UnityWebRequestExtensions` is the extension-method version of the same functionality, allowing chained calls.
 
 ```csharp
 using var unityWebRequest = UnityWebRequest.Get("https://example.com");
@@ -1746,13 +1636,11 @@ UnityWebRequestUtility.ThrowIfNotSuccessStatusCode(unityWebRequest); // The stat
 unityWebRequest.ThrowIfNotSuccessStatusCode();
 ```
 
-Note that methods such as `GetStringAsync` throw `UnityWebRequestException` when the request fails and `OperationCanceledException` when it is
-cancelled; they are safe to call only on the Unity main thread (otherwise they throw `UnityException`).
+Note that methods such as `GetStringAsync` throw `UnityWebRequestException` when the request fails and `OperationCanceledException` when it is cancelled; they are safe to call only on the Unity main thread (otherwise they throw `UnityException`).
 
 ### UnityWebRequestHandler
 
-`UnityWebRequestHandler` is an `HttpMessageHandler` implemented with `UnityWebRequest`, so Unity's networking stack can be plugged directly into
-`System.Net.Http.HttpClient`, gaining the full capabilities of `HttpClient` (`HttpRequestMessage`, `HttpResponseMessage`, interceptors, and so on).
+`UnityWebRequestHandler` is an `HttpMessageHandler` implemented with `UnityWebRequest`, so Unity's networking stack can be plugged directly into `System.Net.Http.HttpClient`, gaining the full capabilities of `HttpClient` (`HttpRequestMessage`, `HttpResponseMessage`, interceptors, and so on).
 
 ```csharp
 // Basic usage
@@ -1772,18 +1660,14 @@ var content = await response.Content.ReadAsStringAsync();
 
 Two of its responsibilities are worth noting:
 
-- If `SendAsync` is not called on the Unity main thread (for example inside `Task.Run`, or when `HttpClient` schedules the request onto the thread
-  pool), it first waits to get back to the main thread before sending the request. This is a limitation of `UnityWebRequest` itself.
-- The `UnityWebRequestException` thrown by `UnityWebRequest` is converted to `HttpRequestException`, to comply with the convention of
-  `HttpMessageHandler`.
+- If `SendAsync` is not called on the Unity main thread (for example inside `Task.Run`, or when `HttpClient` schedules the request onto the thread pool), it first waits to get back to the main thread before sending the request. This is a limitation of `UnityWebRequest` itself.
+- The `UnityWebRequestException` thrown by `UnityWebRequest` is converted to `HttpRequestException`, to comply with the convention of `HttpMessageHandler`.
 
 ## Preference
 
 ### Preference\<TValue\>
 
-`Preference<TValue>` is a wrapper base class over `UnityEngine.PlayerPrefs`: it stores values using the three primitive types supported by
-`UnityEngine.PlayerPrefs` (`int`, `float`, `string`), and then maps them to the type `TValue` actually used by the caller through a pair of
-conversion methods.
+`Preference<TValue>` is a wrapper base class over `UnityEngine.PlayerPrefs`: it stores values using the three primitive types supported by `UnityEngine.PlayerPrefs` (`int`, `float`, `string`), and then maps them to the type `TValue` actually used by the caller through a pair of conversion methods.
 
 Derived classes come in three kinds by primitive type, and their constructors take a `PreferenceConverterPair`:
 
@@ -1826,8 +1710,7 @@ playerName.SetValue("Kevin");
 var name = playerName.GetValue();
 ```
 
-When the user type is not a primitive type, pass in your own conversion methods; `PreferenceConverterPair<TValue, TPreferenceValue>` is the pair of
-"value → primitive value" and "primitive value → value" conversions:
+When the user type is not a primitive type, pass in your own conversion methods; `PreferenceConverterPair<TValue, TPreferenceValue>` is the pair of "value → primitive value" and "primitive value → value" conversions:
 
 ```csharp
 // Using Vector2Int as the user type and storing it as a string
@@ -1853,23 +1736,18 @@ public sealed class Vector2IntPreference : StringPreference<Vector2Int>
 
 ### Wrapping and Overriding Preferences
 
-`WrappedPreference<TValue>` wraps another `Preference<TValue>` in order to attach behavior on top of it; `DefaultValuePreference<TValue>`
-additionally attaches a default value. This package provides two ready-made implementations:
+`WrappedPreference<TValue>` wraps another `Preference<TValue>` in order to attach behavior on top of it; `DefaultValuePreference<TValue>` additionally attaches a default value. This package provides two ready-made implementations:
 
-- `OverridePreference<TValue>`: when the wrapped `GetValue()` throws, it overwrites the original value with `DefaultValue`
-  and then returns it (reading the original value throws, so it has to be overwritten).
-- `OverlyPreference<TValue>`: when the wrapped value does not exist, it forcibly writes `DefaultValue` into the original value and returns it;
-  in all other cases it returns the wrapped value.
+- `OverridePreference<TValue>`: when the wrapped `GetValue()` throws, it overwrites the original value with `DefaultValue` and then returns it (reading the original value throws, so it has to be overwritten).
+- `OverlyPreference<TValue>`: when the wrapped value does not exist, it forcibly writes `DefaultValue` into the original value and returns it; in all other cases it returns the wrapped value.
 
 `PreferenceValueType` is the enum of "the underlying primitive type": `Int32`, `Single`, `String`.
 
-If a value needs to be stored "as is" (without any conversion), `IdentityInt32Preference`, `IdentitySinglePreference`, and
-`IdentityStringPreference` can be used.
+If a value needs to be stored "as is" (without any conversion), `IdentityInt32Preference`, `IdentitySinglePreference`, and `IdentityStringPreference` can be used.
 
 ## Cursor
 
-`CursorInfo` is a set of "cursor texture + hotspot + mode" values; `CursorStack` manages cursors as a stack: `Push`
-sets a new cursor (usually because "the mouse is hovering over some area"), and `Pop` restores the previous one.
+`CursorInfo` is a set of "cursor texture + hotspot + mode" values; `CursorStack` manages cursors as a stack: `Push` sets a new cursor (usually because "the mouse is hovering over some area"), and `Pop` restores the previous one.
 
 ```csharp
 // If a default cursor is set in PlayerSettings, the initial cursor should be told to it after the program starts
@@ -1897,8 +1775,7 @@ In the editor environment, the cursor stack is cleared automatically when play m
 
 ### AuroraColor
 
-`AuroraColor` is a color represented by four `byte`s (RGBA). Through `StructLayout(LayoutKind.Explicit)` it overlaps an `int` and four `byte`s on the
-same 4 bytes of memory, so its layout matches `Color32` and converting between them costs nothing extra.
+`AuroraColor` is a color represented by four `byte`s (RGBA). Through `StructLayout(LayoutKind.Explicit)` it overlaps an `int` and four `byte`s on the same 4 bytes of memory, so its layout matches `Color32` and converting between them costs nothing extra.
 
 ```csharp
 var color = new AuroraColor(255, 0, 0); // Opaque by default
@@ -1990,7 +1867,7 @@ var clickDelayTime = UnityUtility.ClickDelayTime; // The maximum interval betwee
 var timeoutString = UnityUtility.UnityWebRequestTimeoutString; // "Request timeout"
 var vertexCountMax = UnityUtility.VertexCountPerMeshMaxValue; // 65000 - 1
 
-// Removes the redundant parts of an object's name, turning it into a form better suited for logs and the hierarchy window
+// Removes the redundant parts of an object's name, turning it into a form better suited for logs and the Hierarchy window
 UnityUtility.OptimizeName(@object);
 
 // Deselects the specified object if it is exactly the current selection of the event system
@@ -2012,8 +1889,7 @@ await UnityUtility.CaptureScreenshotAsync(@"D:\screenshot.png", cancellationToke
 
 ### SpriteUtility and SpriteRendererUtility
 
-Converting a "normalized coordinate" into the local or world coordinate of a sprite is useful for things like attaching effects and positioning health
-bars.
+Converting a "normalized coordinate" into the local or world coordinate of a sprite is useful for things like attaching effects and positioning health bars.
 
 ```csharp
 var localPosition = SpriteUtility.NormalizedToLocalPosition(sprite, new Vector2(0.5f, 1f)); // The middle of the top edge of the sprite
@@ -2050,8 +1926,7 @@ using (new ProfilerScope("MySection", targetObject))
 
 ### ServerTimeOwner
 
-`ServerTimeOwner` records "server time": the client synchronizes the time once at some moment, and afterwards it can be used to derive the current
-server time.
+`ServerTimeOwner` records "server time": the client synchronizes the time once at some moment, and afterwards it can be used to derive the current server time.
 
 ```csharp
 var serverTimeOwner = new ServerTimeOwner();
@@ -2065,8 +1940,7 @@ var currentTime = serverTimeOwner.CurrentTime; // null when it has not been set
 
 ### Screen Change Notifications
 
-`NotifyScreenSizeChangedScope` and `NotifyScreenOrientationChangedScope` wrap "listening for screen size/orientation changes" as an `IDisposable`
-: the callback runs at the specified player loop phase when the change happens, and the listening stops when it is disposed.
+`NotifyScreenSizeChangedScope` and `NotifyScreenOrientationChangedScope` wrap "listening for screen size/orientation changes" as an `IDisposable`: the callback runs at the specified player loop phase when the change happens, and the listening stops when it is disposed.
 
 ```csharp
 using (var scope = new NotifyScreenSizeChangedScope(
@@ -2089,45 +1963,40 @@ The editor functionality lives in the `Aurora.UnityEditor` assembly, in the `Aur
 
 ### Context Menus
 
-Right-clicking a component header in the hierarchy window or the inspector window brings up a group of conversion menus, which replace one UI
-component with another while preserving as many of the original properties as possible (color, material, the raycast toggle, whether it is maskable,
-and so on) and keeping the component's order on the `GameObject`:
+Right-clicking a component header in the Inspector window brings up a group of conversion menus, which replace one UI component with another while preserving as many of the original properties as possible (color, material, the raycast toggle, whether it is maskable, and so on) and keeping the component's order on the `GameObject`:
 
 - `Button` ⇄ `EnhancedButton`
-- `Image`, `RawImage`, `Clear`, `Block`, `Circle`, `Annulus`, `RoundedRectangle`, `RoundedRectangleBorder`, and `CustomGraphic` can be converted
-  between one another in any combination
+- `Image`, `RawImage`, `Clear`, `Block`, `Circle`, `Annulus`, `RoundedRectangle`, `RoundedRectangleBorder`, and `CustomGraphic` can be converted between one another in any combination
 - `HorizontalLayoutGroup` ⇄ `VerticalLayoutGroup`
 - `Clear` additionally has `Delete Useless Properties`, which removes the meaningless properties on a transparent graphic
 
 ### Aurora Unity Menu
 
-The `Aurora Unity` menu (on the Unity main menu bar) collects small tools useful in daily development. Each entry can be located by its name in
-`UnityEditorUtility.MenuItems`:
+The `Aurora Unity` menu (on the Unity main menu bar) collects small tools useful in daily development. Each entry can be located by its name in `UnityEditorUtility.MenuItems`:
 
-| Menu item                               | Description                                                                                                                          |
-|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `Initialize`                            | Runs the initialization process once again manually                                                                                  |
-| `Allow Unsafe Code`                     | Toggles `PlayerSettings.allowUnsafeCode` (the menu item shows the current checked state)                                             |
-| `Clear Log Entries`                     | Clears the entries in the Console window                                                                                             |
-| `Request Script Compilation`            | Requests a script compilation from the Unity engine                                                                                  |
-| `Layout/Ping Layout Root`               | Pings the layout root node of the selected `RectTransform`                                                                           |
-| `Layout/Mark Layout For Rebuild`        | Marks the selected `RectTransform` as needing a layout rebuild                                                                       |
-| `Layout/Force Rebuild Layout Immediate` | Immediately forces a rebuild of the layout of the selected `RectTransform`                                                           |
-| `Log Graphic Raycast Target`            | Logs the `raycastTarget` value of the selected `Graphic`                                                                             |
-| `Log RectTransform`                     | Logs the key information of the selected `RectTransform` (anchors, pivot, position, size, and so on)                                 |
-| `Optimize Object Name`                  | Normalizes the name of the selected asset/object                                                                                     |
-| `Clipboard/Convert Path to GUID`        | Converts the asset path in the clipboard into a GUID                                                                                 |
-| `Clipboard/Ping Path`                   | Pings the asset path in the clipboard                                                                                                |
-| `Clipboard/Convert GUID to Path`        | Converts the GUID in the clipboard into an asset path                                                                                |
-| `Clipboard/Ping GUID`                   | Pings the asset corresponding to the GUID in the clipboard                                                                           |
-| `Capture Screenshot to Desktop`         | Takes a screenshot and saves it to the desktop                                                                                       |
-| `Open Persistent Data Path`             | Opens `Application.persistentDataPath` in the file manager                                                                           |
+| Menu item                               | Description                                                                                                                                            |
+|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Initialize`                            | Runs the initialization process once again manually                                                                                                    |
+| `Allow Unsafe Code`                     | Toggles `PlayerSettings.allowUnsafeCode` (the menu item shows the current checked state)                                                               |
+| `Clear Log Entries`                     | Clears the entries in the Console window                                                                                                               |
+| `Request Script Compilation`            | Requests a script compilation from the Unity engine                                                                                                    |
+| `Layout/Ping Layout Root`               | Pings the layout root node of the selected `RectTransform`                                                                                             |
+| `Layout/Mark Layout For Rebuild`        | Marks the selected `RectTransform` as needing a layout rebuild                                                                                         |
+| `Layout/Force Rebuild Layout Immediate` | Immediately forces a rebuild of the layout of the selected `RectTransform`                                                                             |
+| `Log Graphic Raycast Target`            | Logs the `raycastTarget` value of the selected `Graphic`                                                                                               |
+| `Log RectTransform`                     | Logs the key information of the selected `RectTransform` (anchors, pivot, position, size, and so on)                                                   |
+| `Optimize Object Name`                  | Normalizes the name of the selected asset/object                                                                                                       |
+| `Clipboard/Convert Path to GUID`        | Converts the asset path in the clipboard into a GUID                                                                                                   |
+| `Clipboard/Ping Path`                   | Pings the asset path in the clipboard                                                                                                                  |
+| `Clipboard/Convert GUID to Path`        | Converts the GUID in the clipboard into an asset path                                                                                                  |
+| `Clipboard/Ping GUID`                   | Pings the asset corresponding to the GUID in the clipboard                                                                                             |
+| `Capture Screenshot to Desktop`         | Takes a screenshot and saves it to the desktop                                                                                                         |
+| `Open Persistent Data Path`             | Opens `Application.persistentDataPath` in the file manager                                                                                             |
 | `Validate View Prefabs`                 | Scans every prefab in the project and finds the ones where "the view is active and enabled" (the view system requires them to be inactive or disabled) |
 
 ### DefineSymbolScope
 
-`DefineSymbolScope` wraps "adding and removing preprocessor symbols in bulk" as an `IDisposable`: only the in-memory symbol list is modified inside
-the scope, and the whole list is written to the build target group once when the scope is left.
+`DefineSymbolScope` wraps "adding and removing preprocessor symbols in bulk" as an `IDisposable`: only the in-memory symbol list is modified inside the scope, and the whole list is written to the build target group once when the scope is left.
 
 ```csharp
 using (var scope = new DefineSymbolScope())
@@ -2142,8 +2011,7 @@ By default it applies to the currently selected build target group; a `BuildTarg
 
 ### ReorderableListHelper
 
-`ReorderableListHelper` provides the constants and helper methods needed when using `UnityEditorInternal.ReorderableList`, to compute element
-height, line spacing, and the footer height of nested lists correctly.
+`ReorderableListHelper` provides the constants and helper methods needed when using `UnityEditorInternal.ReorderableList`, to compute element height, line spacing, and the footer height of nested lists correctly.
 
 ```csharp
 var list = new ReorderableList(serializedObject, serializedProperty);
@@ -2160,8 +2028,7 @@ list.drawElementCallback = (rect, index, isActive, isFocused) =>
 
 ### ReorderableListWithState
 
-`ReorderableListWithState` is a derived class of `ReorderableList` that carries a user-defined state object on top of the original callbacks, avoiding
-a pile of closures just to pass state to the callbacks.
+`ReorderableListWithState` is a derived class of `ReorderableList` that carries a user-defined state object on top of the original callbacks, avoiding a pile of closures just to pass state to the callbacks.
 
 ```csharp
 var list = new ReorderableListWithState(serializedObject, serializedProperty, state: myState);
@@ -2187,12 +2054,9 @@ var consoleWindowType = UnityEditorUtility.EditorWindowTypes.Console; // Also Ga
 
 ### UnityEditorGUIUtility
 
-`UnityEditorGUIUtility` provides IMGUI drawing helpers: `DrawOuterBorder`, `DrawInnerBorder`, and `DrawCellsArea`, which draws a grid-like area in one
-go (used together with `DrawCellsAreaOptions`).
+`UnityEditorGUIUtility` provides IMGUI drawing helpers: `DrawOuterBorder`, `DrawInnerBorder`, and `DrawCellsArea`, which draws a grid-like area in one go (used together with `DrawCellsAreaOptions`).
 
-`DrawCellsAreaOptions` describes how a grid area is drawn: whether row indices go from bottom to top or from top to bottom
-(`CellRowOrigin.Bottom` / `Top`), how the background and the cells are drawn, how the add and delete row/column buttons are drawn, and the styles and
-offsets of the axis labels and index labels.
+`DrawCellsAreaOptions` describes how a grid area is drawn: whether row indices go from bottom to top or from top to bottom (`CellRowOrigin.Bottom` / `Top`), how the background and the cells are drawn, how the add and delete row/column buttons are drawn, and the styles and offsets of the axis labels and index labels.
 
 ```csharp
 var options = new DrawCellsAreaOptions
