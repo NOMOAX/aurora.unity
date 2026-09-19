@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![license](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![version](https://img.shields.io/badge/version-2.0.4-blue)
+![version](https://img.shields.io/badge/version-2.0.5-blue)
 ![lowest Unity version](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 High-performance, low-memory-consumption toolkit for Unity.
@@ -1146,7 +1146,7 @@ using (new View.Scope<MainMenuView>(view))
 
 ### PrefabLessView and MaskView
 
-`PrefabLessView` is the base class of views that "need no prefab and are created directly at runtime". It is created by `PrefabLessViewHandler` (already registered by this package), and it sets `GameObject.layer` to the "UI" layer in `Awake`.
+`PrefabLessView` is the base class of views that "need no prefab and are created directly at runtime". It is created by `PrefabLessViewHandler` (already registered by this package), which sets `GameObject.layer` to the "UI" layer when creating the object.
 
 `MaskView` is a ready-made masking view: a semi-transparent block that fills its parent, which can either close itself on click or execute a piece of logic. Its arguments are passed in through `State`.
 

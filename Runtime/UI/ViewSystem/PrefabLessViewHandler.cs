@@ -29,9 +29,14 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 return Task.FromCanceled<T>(cancellationToken);
             }
-            var gameObject = new GameObject(typeof(T).Name);
+            var gameObject = new GameObject(typeof(T).Name)
+            {
+                layer = UnityEnvironment.UILayer
+            };
             gameObject.SetActive(false);
+            gameObject.transform.SetParent(UnityEnvironment.InactiveContainer, false);
             var t = gameObject.AddComponent<T>();
+            t.enabled = false;
             return Task.FromResult(t);
         }
     }
