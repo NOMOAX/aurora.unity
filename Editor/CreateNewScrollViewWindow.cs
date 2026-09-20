@@ -1,4 +1,5 @@
 using System;
+using Aurora.Pooling;
 using Aurora.Unity;
 using Aurora.Unity.UI;
 using UnityEditor;
@@ -11,7 +12,7 @@ namespace Aurora.UnityEditor
     {
         private const string WindowTitle = "Create New ScrollView";
 
-        private const float WindowWidth = 400;
+        private const float WindowWidth = 330;
 
         private static readonly Vector2 DefaultSize = new(200, 200);
 
@@ -25,7 +26,7 @@ namespace Aurora.UnityEditor
 
         private const float MaxScrollbarThicknessMultiplier = 0.25f;
 
-        private static readonly GUIContent[] SizeSubLabels = { new("X"), new("Y") };
+        private static readonly GUIContent[] SizeLabels = { new("X"), new("Y") };
 
         private static readonly GUIContent[] ScrollbarPositionLabelsForHorizontalScrollView =
         {
@@ -43,11 +44,11 @@ namespace Aurora.UnityEditor
 
         private Vector2 _size = DefaultSize;
 
-        private float _scrollbarThickness = DefaultScrollbarThickness;
+        private bool _isLayoutElement;
 
         private ScrollbarPosition _scrollbarPosition = ScrollbarPosition.RightOrBottom;
 
-        private readonly float[] _sizeValues = new float[2];
+        private float _scrollbarThickness = DefaultScrollbarThickness;
 
         private readonly Func<ScrollbarPosition> _scrollbarPositionGetter;
 
@@ -80,20 +81,23 @@ namespace Aurora.UnityEditor
             {
                 DrawParent(ref _parent);
                 DrawAxis(ref _axis);
-                DrawScrollViewSize(ref _size, _sizeValues);
-                DrawScrollbar(_scrollbarPositionGetter, _scrollbarPositionSetter, _axis);
+                DrawSize(ref _size);
+                DrawIsLayoutElement(ref _isLayoutElement);
+                DrawScrollbarPosition(_scrollbarPositionGetter, _scrollbarPositionSetter, _axis);
                 DrawScrollbarThickness(ref _scrollbarThickness, _scrollbarPosition, _size, _axis);
 
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     using (new EditorGUI.DisabledScope(!IsParentValid(_parent)))
                     {
-                        if (GUILayout.Button("Create and Continue"))
+                        if (GUILayout.Button(EditorGUIUtility.TrTextContent("Create Another")) &&
+                            Event.current.button == 0)
                         {
                             var scrollView = CreateScrollView();
                             Selection.activeGameObject = scrollView.gameObject;
+                            throw new ExitGUIException();
                         }
-                        if (GUILayout.Button("Create"))
+                        if (GUILayout.Button(EditorGUIUtility.TrTextContent("Create")) && Event.current.button == 0)
                         {
                             var scrollView = CreateScrollView();
                             Selection.activeGameObject = scrollView.gameObject;
@@ -106,19 +110,19 @@ namespace Aurora.UnityEditor
                 // Reset the window height
                 if (Event.current.type == EventType.Repaint)
                 {
-                    var marginTop     = verticalScope.rect.y; // top margin
-                    var contentHeight = verticalScope.rect.height;
-                    var windowHeight =
-                        marginTop + contentHeight + marginTop /* bottom margin (likely equal to top margin) */;
-                    var windowSize    = new Vector2(WindowWidth, windowHeight);
-                    minSize = maxSize = windowSize;
+                    minSize = maxSize = new Vector2(WindowWidth, verticalScope.rect.yMax + verticalScope.rect.yMin);
                 }
             }
         }
 
         private static void DrawParent(ref RectTransform parent)
         {
-            parent = (RectTransform)EditorGUILayout.ObjectField("Parent", parent, typeof(RectTransform), true);
+            parent = (RectTransform)EditorGUILayout.ObjectField(
+                EditorGUIUtility.TrTextContent("Parent"),
+                parent,
+                typeof(RectTransform),
+                true
+            );
             if (!IsParentValid(parent))
             {
                 EditorGUILayout.HelpBox("Select a canvas element as parent!", MessageType.Error);
@@ -132,30 +136,41 @@ namespace Aurora.UnityEditor
 
         private static void DrawAxis(ref RectTransform.Axis axis)
         {
-            axis = (RectTransform.Axis)EditorGUILayout.EnumPopup("Axis", axis);
+            axis = (RectTransform.Axis)EditorGUILayout.EnumPopup(EditorGUIUtility.TrTextContent("Axis"), axis);
         }
 
-        private static void DrawScrollViewSize(ref Vector2 size, float[] sizeValues)
+        private static void DrawSize(ref Vector2 size)
         {
-            for (var i = 0; i < 2; i++)
+            var sizeValues = PredefinedPools<float>.ArrayLength2.Get();
+            try
             {
-                sizeValues[i] = size[i];
-            }
-            var rect = EditorGUI.PrefixLabel(EditorGUILayout.GetControlRect(), EditorGUIUtility.TrTextContent("Size"));
-            EditorGUI.MultiFloatField(rect, SizeSubLabels, sizeValues);
-            for (var i = 0; i < 2; i++)
-            {
-                size[i] = sizeValues[i] switch
+                for (var i = 0; i < 2; i++)
                 {
-                    float.NaN              => DefaultSize[i],
-                    < 0                    => 0,
-                    float.PositiveInfinity => float.MaxValue,
-                    _                      => sizeValues[i]
-                };
+                    sizeValues[i] = size[i];
+                }
+                var rect = EditorGUI.PrefixLabel(
+                    EditorGUILayout.GetControlRect(),
+                    EditorGUIUtility.TrTextContent("Size")
+                );
+                EditorGUI.MultiFloatField(rect, SizeLabels, sizeValues);
+                for (var i = 0; i < 2; i++)
+                {
+                    size[i] = sizeValues[i] switch
+                    {
+                        float.NaN              => DefaultSize[i],
+                        < 0                    => 0,
+                        float.PositiveInfinity => float.MaxValue,
+                        _                      => sizeValues[i]
+                    };
+                }
+            }
+            finally
+            {
+                PredefinedPools<float>.ArrayLength2.Return(sizeValues);
             }
         }
 
-        private static void DrawScrollbar(
+        private static void DrawScrollbarPosition(
             Func<ScrollbarPosition>   scrollbarPositionGetter,
             Action<ScrollbarPosition> scrollbarPositionSetter,
             RectTransform.Axis        axis)
@@ -225,7 +240,7 @@ namespace Aurora.UnityEditor
                                              maxScrollbarThickness
                                          );
                 scrollbarThickness = EditorGUILayout.Slider(
-                    "Slider Thickness",
+                    EditorGUIUtility.TrTextContent("Scrollbar Thickness"),
                     scrollbarThickness,
                     minScrollbarThickness,
                     maxScrollbarThickness
@@ -240,12 +255,21 @@ namespace Aurora.UnityEditor
             }
         }
 
+        private static void DrawIsLayoutElement(ref bool layoutElement)
+        {
+            layoutElement = EditorGUILayout.Toggle(
+                EditorGUIUtility.TrTextContent("Is Layout Element", $"As a {nameof(LayoutElement)}."),
+                layoutElement
+            );
+        }
+
         private ScrollView CreateScrollView()
         {
             return CreateScrollView(
                 _parent,
                 _size,
                 _size[(int)_axis] * ContentSizeMultiplier,
+                _isLayoutElement,
                 _scrollbarPosition,
                 _scrollbarThickness,
                 _axis
@@ -256,6 +280,7 @@ namespace Aurora.UnityEditor
             RectTransform      parent,
             Vector2            size,
             float              contentSize,
+            bool               isLayoutElement,
             ScrollbarPosition  scrollbarPosition,
             float              scrollbarThickness,
             RectTransform.Axis axis)
@@ -265,6 +290,7 @@ namespace Aurora.UnityEditor
                 parent,
                 size,
                 contentSize,
+                isLayoutElement,
                 scrollbarPosition,
                 scrollbarThickness,
                 axis
@@ -276,6 +302,7 @@ namespace Aurora.UnityEditor
             RectTransform      parent,
             Vector2            size,
             float              contentSize,
+            bool               isLayoutElement,
             ScrollbarPosition  scrollbarPosition,
             float              scrollbarThickness,
             RectTransform.Axis axis)
@@ -368,6 +395,15 @@ namespace Aurora.UnityEditor
             scrollView.trailingPlaceholder = trailingPlaceholder;
             scrollView.contentLayoutGroup  = contentLayoutGroup;
             scrollView.scrollbar           = scrollbar;
+
+            if (isLayoutElement)
+            {
+                var layoutElement = gameObject.AddComponent<LayoutElement>();
+                layoutElement.minWidth        = size.x;
+                layoutElement.minHeight       = size.y;
+                layoutElement.preferredWidth  = size.x;
+                layoutElement.preferredHeight = size.y;
+            }
 
             return scrollView;
         }
