@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![license](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![version](https://img.shields.io/badge/version-2.1.1-blue)
+![version](https://img.shields.io/badge/version-2.1.2-blue)
 ![lowest Unity version](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 High-performance, low-memory-consumption toolkit for Unity.
@@ -898,9 +898,11 @@ var isTweening = scrollView.Tweening; // Whether a snap animation is playing
 
 ### Creating a ScrollView
 
-Creating a `ScrollView` by hand is very tedious. The `GameObject/UI/Scroll View - Aurora Unity` menu opens the `Create New ScrollView` window, where after choosing the direction, the size, the scrollbar position and thickness, and whether to add a `LayoutElement`, a structurally complete `HorizontalScrollView` / `VerticalScrollView` is generated in one go (including the viewport, the content, and the scrollbar, with all the references wired up).
+Creating a `ScrollView` by hand is very tedious. The `GameObject/UI/Scroll View (Aurora Unity)` menu opens the `Create New ScrollView` window, where after choosing the direction, the size, the scrollbar position and thickness, and whether to add a `LayoutElement`, a structurally complete `HorizontalScrollView` / `VerticalScrollView` is generated in one go (including the viewport, the content, and the scrollbar, with all the references wired up).
 
 The window's `Create Another` button generates one and keeps the window open for the next one; `Create` generates one and closes the window.
+
+On Unity 6000.3.4 and newer the same entry lives under `GameObject/UI (Canvas)/Scroll View (Aurora Unity)`, following the renaming of the built-in UI menu.
 
 ## Layout
 

@@ -11,11 +11,11 @@ namespace Aurora.UnityEditor
         private const int CreateScrollViewPriority = 19950321;
 
 #if UNITY_6000_3_4_OR_NEWER
-        [MenuItem("GameObject/UI (Canvas)/Scroll View - Aurora Unity", priority = CreateScrollViewPriority)]
+        [MenuItem("GameObject/UI (Canvas)/Scroll View (Aurora Unity)", priority = CreateScrollViewPriority)]
 #else
-        [MenuItem("GameObject/UI/Scroll View - Aurora Unity", priority = CreateScrollViewPriority)]
+        [MenuItem("GameObject/UI/Scroll View (Aurora Unity)", priority = CreateScrollViewPriority)]
 #endif
-        public static void CreateScrollView(MenuCommand menuCommand)
+        private static void CreateScrollView(MenuCommand menuCommand)
         {
             CreateNewScrollViewWindow.OpenWindow(menuCommand.context as GameObject);
         }

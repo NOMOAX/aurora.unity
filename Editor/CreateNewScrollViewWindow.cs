@@ -8,11 +8,12 @@ using UnityEngine.UI;
 
 namespace Aurora.UnityEditor
 {
+    [EditorWindowTitle(title = Title)]
     internal sealed class CreateNewScrollViewWindow : EditorWindow
     {
-        private const string WindowTitle = "Create New ScrollView";
+        private const string Title = "Create New " + nameof(ScrollView);
 
-        private const float WindowWidth = 330;
+        private const float Width = 330;
 
         private static readonly Vector2 DefaultSize = new(200, 200);
 
@@ -62,12 +63,8 @@ namespace Aurora.UnityEditor
 
         internal static void OpenWindow(GameObject parentGameObject)
         {
-            var scrollViewCreator = GetWindow<CreateNewScrollViewWindow>(true, WindowTitle);
-            scrollViewCreator._parent = parentGameObject ? parentGameObject.transform as RectTransform : null;
-            var windowHeight = IsParentValid(scrollViewCreator._parent) ? 123 : 163;
-            var windowSize   = new Vector2(WindowWidth, windowHeight);
-            scrollViewCreator.minSize = windowSize;
-            scrollViewCreator.maxSize = windowSize;
+            var self = GetWindow<CreateNewScrollViewWindow>(true);
+            self._parent = parentGameObject ? parentGameObject.transform as RectTransform : null;
         }
 
         private static bool IsParentValid(RectTransform parent)
@@ -110,7 +107,9 @@ namespace Aurora.UnityEditor
                 // Reset the window height
                 if (Event.current.type == EventType.Repaint)
                 {
-                    minSize = maxSize = new Vector2(WindowWidth, verticalScope.rect.yMax + verticalScope.rect.yMin);
+                    var size = new Vector2(Width, verticalScope.rect.yMax + verticalScope.rect.yMin);
+                    minSize = size;
+                    maxSize = size;
                 }
             }
         }

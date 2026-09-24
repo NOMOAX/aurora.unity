@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![许可](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![版本](https://img.shields.io/badge/version-2.1.1-blue)
+![版本](https://img.shields.io/badge/version-2.1.2-blue)
 ![最低 Unity 版本](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 适用于 Unity 的高性能、低内存消耗的工具包。
@@ -895,9 +895,11 @@ var isTweening = scrollView.Tweening; // 是否正在播放吸附动画
 
 ### 创建 ScrollView
 
-手动创建 `ScrollView` 的过程非常繁琐，`GameObject/UI/Scroll View - Aurora Unity` 菜单会打开 `Create New ScrollView` 窗口，让你选好方向、尺寸、滚动条的位置与厚度，以及是否添加 `LayoutElement` 之后，一次性生成结构完整的`HorizontalScrollView` / `VerticalScrollView`（包括视口、内容、滚动条，并且把该接的引用都接好）。
+手动创建 `ScrollView` 的过程非常繁琐，`GameObject/UI/Scroll View (Aurora Unity)` 菜单会打开 `Create New ScrollView` 窗口，让你选好方向、尺寸、滚动条的位置与厚度，以及是否添加 `LayoutElement` 之后，一次性生成结构完整的`HorizontalScrollView` / `VerticalScrollView`（包括视口、内容、滚动条，并且把该接的引用都接好）。
 
 窗口的 `Create Another` 按钮生成一个后保留窗口，方便接着生成下一个；`Create` 按钮生成一个后关闭窗口。
+
+在 Unity 6000.3.4 及更高版本中，该菜单项位于 `GameObject/UI (Canvas)/Scroll View (Aurora Unity)`，跟随 Unity 内置 UI 菜单的重命名。
 
 ## 布局
 
