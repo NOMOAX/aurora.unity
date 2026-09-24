@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![license](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![version](https://img.shields.io/badge/version-2.1.2-blue)
+![version](https://img.shields.io/badge/version-2.1.3-blue)
 ![lowest Unity version](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 High-performance, low-memory-consumption toolkit for Unity.
