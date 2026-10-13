@@ -85,7 +85,7 @@ namespace Aurora.Unity.UI.ViewSystem
                         list.Add(viewHandler);
                     }
                 }
-                TimSort.Sort(list, ReversedViewHandlerComparer);
+                Sorts.StableSort(list, ReversedViewHandlerComparer);
                 return list.Count > 0 ? list[0] : null;
             }
             finally
