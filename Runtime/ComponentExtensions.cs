@@ -15,7 +15,6 @@ namespace Aurora.Unity
         /// <param name="component">The component.</param>
         /// <typeparam name="T">The type of the component to get or add.</typeparam>
         /// <returns>The component that was gotten or added.</returns>
-        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentNullException"><paramref name="component"/> is <see langword="null"/>.</exception>
         public static T GetOrAddComponent<T>(this Component component) where T : Component
         {

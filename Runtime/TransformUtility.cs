@@ -101,7 +101,10 @@ namespace Aurora.Unity
             var length = transforms.Length;
             if (length < 2)
             {
-                throw new ArgumentException(null, nameof(transforms));
+                throw new ArgumentException(
+                    $"The number of elements in {nameof(transforms)} is less than 2.",
+                    nameof(transforms)
+                );
             }
             var firstTransform = transforms[0];
             if (!firstTransform)

@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![license](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![version](https://img.shields.io/badge/version-2.1.4-blue)
+![version](https://img.shields.io/badge/version-3.0.0-blue)
 ![lowest Unity version](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 High-performance, low-memory-consumption toolkit for Unity.
@@ -1058,7 +1058,7 @@ var parent = view.Parent;
 var root = view.Root;
 var isRoot = view.IsRoot;
 var isLeaf = view.IsLeaf;
-var isChild = view.IsChildOf(otherView);
+var isDescendant = view.IsDescendantOf(otherView);
 var isTopmost = view.IsTopmost();
 
 // User data passed along with opening and closing

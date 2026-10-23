@@ -234,7 +234,7 @@ namespace Aurora.Unity.UI
         {
             if (v is float.NaN)
             {
-                throw new ArgumentException(null, nameof(v));
+                throw new ArgumentException($"{nameof(v)} is {nameof(float.NaN)}.", nameof(v));
             }
             v = Mathf.Clamp01(v);
             SetValue(v, false);

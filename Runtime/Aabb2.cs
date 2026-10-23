@@ -123,7 +123,7 @@ namespace Aurora.Unity
             using var enumerator = points.GetEnumerator();
             if (!enumerator.MoveNext())
             {
-                throw new ArgumentException($"{nameof(points)} has 0 elements");
+                throw new ArgumentException($"{nameof(points)} has 0 elements.");
             }
             var firstPoint = enumerator.Current;
             var minX       = firstPoint.x;

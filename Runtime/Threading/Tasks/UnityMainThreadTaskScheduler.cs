@@ -72,7 +72,7 @@ namespace Aurora.Unity.Threading.Tasks
                     return _tasks;
                 }
                 throw new NotSupportedException(
-                    "Getting queued tasks from this task scheduler is not supported off the Unity main thread"
+                    "Getting queued tasks from this task scheduler is not supported off the Unity main thread."
                 );
             }
             finally

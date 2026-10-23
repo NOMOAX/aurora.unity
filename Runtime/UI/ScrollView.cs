@@ -632,6 +632,8 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="results">The collection used to hold the results.</param>
         /// <typeparam name="T">The type of items to get.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The collection is read-only.</exception>
         public void GetActiveItems<T>(ICollection<T> results)
         {
             if (results == null)
@@ -640,7 +642,7 @@ namespace Aurora.Unity.UI
             }
             if (results.IsReadOnly)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Collection is read-only.");
             }
             foreach (var item in _activeItems)
             {

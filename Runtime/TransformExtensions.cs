@@ -30,7 +30,10 @@ namespace Aurora.Unity
             }
             if (!TransformUtility.AreTransformsShareSameParent(transform, sibling))
             {
-                throw new ArgumentException(null, nameof(sibling));
+                throw new ArgumentException(
+                    $"{nameof(transform)} and {nameof(sibling)} are not siblings.",
+                    nameof(sibling)
+                );
             }
             if (transform == sibling)
             {
@@ -69,11 +72,17 @@ namespace Aurora.Unity
             }
             if (!TransformUtility.AreTransformsShareSameParent(transform, sibling))
             {
-                throw new ArgumentException(null, nameof(sibling));
+                throw new ArgumentException(
+                    $"{nameof(transform)} and {nameof(sibling)} are not siblings.",
+                    nameof(sibling)
+                );
             }
             if (transform == sibling)
             {
-                throw new ArgumentException(null, nameof(sibling));
+                throw new ArgumentException(
+                    $"{nameof(transform)} and {nameof(sibling)} are the same instance.",
+                    nameof(sibling)
+                );
             }
             var index        = transform.GetSiblingIndex();
             var siblingIndex = sibling.GetSiblingIndex();
@@ -99,11 +108,17 @@ namespace Aurora.Unity
             }
             if (!TransformUtility.AreTransformsShareSameParent(transform, sibling))
             {
-                throw new ArgumentException(null, nameof(sibling));
+                throw new ArgumentException(
+                    $"{nameof(transform)} and {nameof(sibling)} are not siblings.",
+                    nameof(sibling)
+                );
             }
             if (transform == sibling)
             {
-                throw new ArgumentException(null, nameof(sibling));
+                throw new ArgumentException(
+                    $"{nameof(transform)} and {nameof(sibling)} are the same instance.",
+                    nameof(sibling)
+                );
             }
             var index        = transform.GetSiblingIndex();
             var siblingIndex = sibling.GetSiblingIndex();

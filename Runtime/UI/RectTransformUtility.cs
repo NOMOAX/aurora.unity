@@ -798,7 +798,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x != rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is not equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.anchoredPosition.x;
         }
@@ -818,7 +821,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y != rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is not equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.anchoredPosition.y;
         }
@@ -853,7 +859,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x == rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.offsetMin.x;
         }
@@ -873,7 +882,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x == rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             return -rectTransform.offsetMax.x;
         }
@@ -893,7 +905,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y == rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.offsetMin.y;
         }
@@ -913,7 +928,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y == rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             return -rectTransform.offsetMax.y;
         }
@@ -933,7 +951,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x != rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is not equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.sizeDelta.x;
         }
@@ -953,7 +974,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y != rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is not equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             return rectTransform.sizeDelta.y;
         }
@@ -1172,7 +1196,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x != rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is not equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             var anchoredPosition = rectTransform.anchoredPosition;
             anchoredPosition.x             = value;
@@ -1185,7 +1212,7 @@ namespace Aurora.Unity.UI
         /// <param name="rectTransform">The RectTransform.</param>
         /// <param name="value">The value to set.</param>
         /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> is <see langword="null"/>.</exception>
-        /// <exception cref="ArgumentException">The <see cref="Vector2.x"/> component of <paramref name="rectTransform"/>'s <see cref="RectTransform.anchorMin"/> is not equal to the <see cref="Vector2.x"/> component of its <see cref="RectTransform.anchorMax"/>.</exception>
+        /// <exception cref="ArgumentException">The <see cref="Vector2.y"/> component of <paramref name="rectTransform"/>'s <see cref="RectTransform.anchorMin"/> is not equal to the <see cref="Vector2.y"/> component of its <see cref="RectTransform.anchorMax"/>.</exception>
         public static void SetInspectorPosY(RectTransform rectTransform, float value)
         {
             if (!rectTransform)
@@ -1194,7 +1221,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y != rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is not equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             var anchoredPosition = rectTransform.anchoredPosition;
             anchoredPosition.y             = value;
@@ -1233,7 +1263,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x == rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             var offsetMin = rectTransform.offsetMin;
             offsetMin.x             = value;
@@ -1255,7 +1288,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x == rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             var offsetMax = rectTransform.offsetMax;
             offsetMax.x             = -value;
@@ -1277,7 +1313,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y == rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             var offsetMin = rectTransform.offsetMin;
             offsetMin.y             = value;
@@ -1299,7 +1338,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y == rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             var offsetMax = rectTransform.offsetMax;
             offsetMax.y             = -value;
@@ -1321,7 +1363,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.x != rectTransform.anchorMax.x)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.x is not equal to " + $"{nameof(RectTransform.anchorMax)}.x.",
+                    nameof(rectTransform)
+                );
             }
             var sizeDelta = rectTransform.sizeDelta;
             sizeDelta.x             = value;
@@ -1343,7 +1388,10 @@ namespace Aurora.Unity.UI
             }
             if (rectTransform.anchorMin.y != rectTransform.anchorMax.y)
             {
-                throw new ArgumentException(null, nameof(rectTransform));
+                throw new ArgumentException(
+                    $"{nameof(RectTransform.anchorMin)}.y is not equal to " + $"{nameof(RectTransform.anchorMax)}.y.",
+                    nameof(rectTransform)
+                );
             }
             var sizeDelta = rectTransform.sizeDelta;
             sizeDelta.y             = value;

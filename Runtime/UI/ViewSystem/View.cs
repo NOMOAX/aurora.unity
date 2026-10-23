@@ -57,6 +57,10 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         /// <param name="rectTransform">A RectTransform that will serve as the parent object of the root views under this view container.</param>
         /// <returns>The view container that uses <paramref name="rectTransform"/> as the parent object of its root views.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="rectTransform"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">A view container for <paramref name="rectTransform"/> already exists.</exception>
+        /// <exception cref="GameObjectInactiveException">The game object of <paramref name="rectTransform"/> is inactive.</exception>
+        /// <exception cref="ComponentNotGotException">The game object of <paramref name="rectTransform"/> has no <see cref="Canvas"/> component on itself or on its ancestors.</exception>
         public static ViewContainer AddContainer(RectTransform rectTransform)
         {
             if (!rectTransform)
@@ -66,7 +70,10 @@ namespace Aurora.Unity.UI.ViewSystem
             var index = Containers.FindIndex(ViewContainerHasRectTransformPredicate, rectTransform);
             if (index >= 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(
+                    $"A view container for {nameof(rectTransform)} already exists.",
+                    nameof(rectTransform)
+                );
             }
             var viewContainer = new ViewContainer(rectTransform);
             Containers.Add(viewContainer);
@@ -84,9 +91,13 @@ namespace Aurora.Unity.UI.ViewSystem
         public static void RemoveContainerAt(int index)
         {
             var container = Containers[index];
-            if (container.Views.Count != 0)
+            var viewCount = container.Views.Count;
+            if (viewCount != 0)
             {
-                throw new InvalidOperationException("Cannot remove this view container because it still holds views");
+                throw new InvalidOperationException(
+                    $"Cannot remove this view container because it still holds {viewCount} " +
+                    $"{(viewCount == 1 ? "view" : "views")}. Close them first."
+                );
             }
             Containers.RemoveAt(index);
 #if UNITY_EDITOR
@@ -137,7 +148,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <param name="exclusions">An array containing the views or view types to exclude.</param>
         /// <returns><see langword="true"/> if <paramref name="view"/> is the topmost view; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>, or <paramref name="exclusions"/> contains a <see langword="null"/> element.</exception>
-        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains <paramref name="view"/>, or contains an element that is neither a <see cref="View"/> type nor a <see cref="Type"/> type.</exception>
+        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains <paramref name="view"/>, or contains an element that is neither a <see cref="View"/> nor a <see cref="Type"/>.</exception>
         public static bool IsTopmost(View view, object[] exclusions)
         {
             if (!view)
@@ -166,11 +177,17 @@ namespace Aurora.Unity.UI.ViewSystem
                     switch (exclusion)
                     {
                         case null:
-                            throw new ArgumentNullException(nameof(exclusions));
+                            throw new ArgumentNullException(
+                                nameof(exclusions),
+                                $"{nameof(exclusions)} contains a null element."
+                            );
                         case View excludedView:
                             if (ReferenceEquals(excludedView, view))
                             {
-                                throw new ArgumentException(null, nameof(exclusions));
+                                throw new ArgumentException(
+                                    $"{nameof(exclusions)} contains {nameof(view)}.",
+                                    nameof(exclusions)
+                                );
                             }
                             views.Remove(excludedView);
                             break;
@@ -181,7 +198,10 @@ namespace Aurora.Unity.UI.ViewSystem
                             );
                             break;
                         default:
-                            throw new ArgumentException(null, nameof(exclusions));
+                            throw new ArgumentException(
+                                $"{nameof(exclusions)} contains an element that is neither a {nameof(View)} nor a {nameof(Type)}.",
+                                nameof(exclusions)
+                            );
                     }
                 }
                 return views.Count > 0 && ReferenceEquals(views[0], view);
@@ -207,7 +227,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <param name="exclusions">An array containing the views or view types to exclude.</param>
         /// <returns>The topmost view.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="exclusions"/> contains a <see langword="null"/> element.</exception>
-        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains an element that is neither a <see cref="View"/> type nor a <see cref="Type"/> type.</exception>
+        /// <exception cref="ArgumentException"><paramref name="exclusions"/> contains an element that is neither a <see cref="View"/> nor a <see cref="Type"/>.</exception>
         public static View GetTopmostView(object[] exclusions)
         {
             return exclusions == null || exclusions.Length == 0
@@ -251,7 +271,10 @@ namespace Aurora.Unity.UI.ViewSystem
                     switch (exclusion)
                     {
                         case null:
-                            throw new ArgumentNullException(nameof(exclusions));
+                            throw new ArgumentNullException(
+                                nameof(exclusions),
+                                $"{nameof(exclusions)} contains a null element."
+                            );
                         case View excludedView:
                             views.Remove(excludedView);
                             break;
@@ -259,7 +282,10 @@ namespace Aurora.Unity.UI.ViewSystem
                             views.RemoveAll(ViewIsInstanceOfTypePredicate, excludedViewType);
                             break;
                         default:
-                            throw new ArgumentException(null, nameof(exclusions));
+                            throw new ArgumentException(
+                                $"{nameof(exclusions)} contains an element that is neither a {nameof(View)} nor a {nameof(Type)}.",
+                                nameof(exclusions)
+                            );
                     }
                 }
                 return views.Count > 0 ? views[0] : null;
@@ -409,6 +435,11 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Enumerates all views in the specified enumeration order and stores the views of the specified type into the specified collection.
         /// </summary>
+        /// <param name="order">The enumeration order.</param>
+        /// <param name="results">The collection used to hold the results.</param>
+        /// <typeparam name="T">The type of views to get.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The collection is read-only.</exception>
         public static void GetViews<T>(TreeEnumOrder order, ICollection<T> results) where T : class
         {
             if (results == null)
@@ -417,7 +448,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             if (results.IsReadOnly)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Collection is read-only.");
             }
             InternalGetViews(order, results);
         }
@@ -544,7 +575,7 @@ namespace Aurora.Unity.UI.ViewSystem
             if (handler == null)
             {
                 throw new InvalidOperationException(
-                    $"No view handler found for view type {TypeUtility.GetNicelyFormattedName(typeof(T))}"
+                    $"No view handler found for view type {TypeUtility.GetNicelyFormattedName(typeof(T))}."
                 );
             }
             var view = await handler.CreateInactiveOrDisabledViewAsync<T>(cancellationToken);
@@ -555,6 +586,9 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
         public static async void BeginOpen<T>(ViewContainer container) where T : View
         {
             if (container is null)
@@ -567,6 +601,11 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
         public static async void BeginOpen<T>(ViewContainer container, CancellationToken cancellationToken)
             where T : View
         {
@@ -581,6 +620,10 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
         public static async void BeginOpen<T>(ViewContainer container, object state) where T : View
         {
             if (container is null)
@@ -593,6 +636,12 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
         public static async void BeginOpen<T>(
             ViewContainer     container,
             object            state,
@@ -609,6 +658,9 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
         public static async void BeginOpen<T>(View parent) where T : View
         {
             if (parent is null)
@@ -621,6 +673,11 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
         public static async void BeginOpen<T>(View parent, CancellationToken cancellationToken) where T : View
         {
             if (parent is null)
@@ -634,6 +691,10 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
         public static async void BeginOpen<T>(View parent, object state) where T : View
         {
             if (parent is null)
@@ -646,6 +707,12 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Begins asynchronously opening a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
         public static async void BeginOpen<T>(View parent, object state, CancellationToken cancellationToken)
             where T : View
         {
@@ -660,6 +727,12 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(ViewContainer container) where T : View
         {
             if (container is null)
@@ -672,6 +745,13 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view. The task is canceled if <paramref name="cancellationToken"/> has been canceled.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(ViewContainer container, CancellationToken cancellationToken) where T : View
         {
             if (container is null)
@@ -686,6 +766,13 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(ViewContainer container, object state) where T : View
         {
             if (container is null)
@@ -698,6 +785,14 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a root view.
         /// </summary>
+        /// <param name="container">The container of the root view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view. The task is canceled if <paramref name="cancellationToken"/> has been canceled.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(ViewContainer container, object state, CancellationToken cancellationToken)
             where T : View
         {
@@ -719,14 +814,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view."
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view, but the view must be created inactive and disabled."
                 );
             }
 
@@ -758,6 +853,12 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(View parent) where T : View
         {
             if (parent is null)
@@ -770,6 +871,13 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view. The task is canceled if <paramref name="cancellationToken"/> has been canceled.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(View parent, CancellationToken cancellationToken) where T : View
         {
             if (parent is null)
@@ -784,6 +892,13 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(View parent, object state) where T : View
         {
             if (parent is null)
@@ -796,6 +911,14 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Asynchronously opens a view.
         /// </summary>
+        /// <param name="parent">The parent view of the view to open.</param>
+        /// <param name="state">User-defined data. It is assigned to <see cref="State"/>.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="T">The type of the view to open.</typeparam>
+        /// <returns>A task whose result is the opened view. The task is canceled if <paramref name="cancellationToken"/> has been canceled.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidOperationException">No view handler handles <typeparamref name="T"/>, or the view handler created a <see langword="null"/> view.</exception>
+        /// <exception cref="BehaviourActiveAndEnabledException">The view handler created a view that is active and enabled.</exception>
         public static Task<T> OpenAsync<T>(View parent, object state, CancellationToken cancellationToken)
             where T : View
         {
@@ -817,14 +940,14 @@ namespace Aurora.Unity.UI.ViewSystem
             if (!view)
             {
                 throw new InvalidOperationException(
-                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created a null view."
                 );
             }
             if (view.gameObject.activeSelf && view.enabled)
             {
                 throw new BehaviourActiveAndEnabledException(
                     view,
-                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view"
+                    $"The view handler for view type {TypeUtility.GetNicelyFormattedName(typeof(T))} created an active and enabled view, but the view must be created inactive and disabled."
                 );
             }
 
@@ -890,6 +1013,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// Gets or sets the container.
         /// </summary>
         /// <remarks>Cannot be set to <see langword="null"/>.</remarks>
+        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         public ViewContainer Container
         {
             get => _container;
@@ -933,6 +1057,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Gets or sets the parent view.
         /// </summary>
+        /// <exception cref="ArgumentException"><paramref name="value"/> is this view itself or a descendant of this view.</exception>
         public View Parent
         {
             get => _parent;
@@ -953,11 +1078,17 @@ namespace Aurora.Unity.UI.ViewSystem
                 {
                     if (ReferenceEquals(value, this))
                     {
-                        throw new ArgumentException("Cannot set itself as its own parent view", nameof(value));
+                        throw new ArgumentException(
+                            "Cannot set itself as its own parent view, because that would create a cycle.",
+                            nameof(value)
+                        );
                     }
-                    if (value.InternalIsChildOf(this))
+                    if (value.InternalIsDescendantOf(this))
                     {
-                        throw new ArgumentException("Cannot set a child view as the parent view", nameof(value));
+                        throw new ArgumentException(
+                            "Cannot set a descendant view as the parent view, because that would create a cycle.",
+                            nameof(value)
+                        );
                     }
                     if (_parent is null)
                     {
@@ -1032,27 +1163,27 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Gets a value indicating whether this view is a child view of the specified view.
+        /// Gets a value indicating whether this view is a descendant of the specified view.
         /// </summary>
         /// <param name="view">The specified view.</param>
-        /// <returns><see langword="true"/> if this view is a child view of the specified view; otherwise <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if this view is a descendant of the specified view; otherwise <see langword="false"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="view"/> is <see langword="null"/>.</exception>
-        public bool IsChildOf(View view)
+        public bool IsDescendantOf(View view)
         {
-            if (!view)
+            if (ReferenceEquals(view, null))
             {
                 throw new ArgumentNullException(nameof(view));
             }
-            return InternalIsChildOf(view);
+            return InternalIsDescendantOf(view);
         }
 
-        private bool InternalIsChildOf(Object view)
+        private bool InternalIsDescendantOf(Object view)
         {
             if (ReferenceEquals(view, this))
             {
                 return false;
             }
-            for (var parent = _parent; parent; parent = parent._parent)
+            for (var parent = _parent; !ReferenceEquals(parent, null); parent = parent._parent)
             {
                 if (ReferenceEquals(view, parent))
                 {
@@ -1118,6 +1249,11 @@ namespace Aurora.Unity.UI.ViewSystem
         /// <summary>
         /// Enumerates this view in the specified enumeration order and stores the views of the specified type into the specified collection.
         /// </summary>
+        /// <param name="order">The enumeration order.</param>
+        /// <param name="results">The collection used to hold the results.</param>
+        /// <typeparam name="T">The type of views to get.</typeparam>
+        /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException">The collection is read-only.</exception>
         public void GetViewsFromThis<T>(TreeEnumOrder order, ICollection<T> results)
         {
             if (results == null)
@@ -1126,7 +1262,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             if (results.IsReadOnly)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Collection is read-only.");
             }
             InternalGetViewsFromThis(order, results);
         }
@@ -1205,7 +1341,7 @@ namespace Aurora.Unity.UI.ViewSystem
         }
 
         /// <summary>
-        /// Gets an enumerator that enumerates the direct child views of this <see cref="View"/>.
+        /// Gets an enumerator that enumerates the child views of this <see cref="View"/>.
         /// </summary>
         public IEnumerator<View> GetEnumerator()
         {
@@ -1227,7 +1363,7 @@ namespace Aurora.Unity.UI.ViewSystem
         {
             return order switch
             {
-                TreeEnumOrder.Default        => new DirectChildEnumerator(this),
+                TreeEnumOrder.Default        => new ChildEnumerator(this),
                 TreeEnumOrder.BreadthFirstLr => new LrEnumerator<View>(this, GetChildrenFunc),
                 TreeEnumOrder.BreadthFirstRl => new RlEnumerator<View>(this, GetChildrenFunc),
                 TreeEnumOrder.DepthFirstDlr  => new DlrEnumerator<View>(this, GetChildrenFunc),
@@ -1270,11 +1406,19 @@ namespace Aurora.Unity.UI.ViewSystem
                 var gameObject = rectTransform.gameObject;
                 if (!gameObject.activeSelf)
                 {
-                    throw new GameObjectInactiveException(gameObject);
+                    throw new GameObjectInactiveException(
+                        gameObject,
+                        $"The game object '{gameObject.name}' is inactive."
+                    );
                 }
                 if (!gameObject.GetComponentInParent<Canvas>())
                 {
-                    throw new ComponentNotGotException(gameObject, GetComponentMethod.Parent, typeof(Canvas));
+                    throw new ComponentNotGotException(
+                        gameObject,
+                        GetComponentMethod.Parent,
+                        $"The game object '{gameObject.name}' has no {nameof(Canvas)} component on itself or on its ancestors.",
+                        typeof(Canvas)
+                    );
                 }
                 RectTransform = rectTransform;
             }
@@ -1396,6 +1540,11 @@ namespace Aurora.Unity.UI.ViewSystem
             /// <summary>
             /// Enumerates this container in the specified enumeration order and stores the views of the specified type into the specified collection.
             /// </summary>
+            /// <param name="order">The enumeration order.</param>
+            /// <param name="results">The collection used to hold the results.</param>
+            /// <typeparam name="T">The type of views to get.</typeparam>
+            /// <exception cref="ArgumentNullException"><paramref name="results"/> is <see langword="null"/>.</exception>
+            /// <exception cref="ArgumentException">The collection is read-only.</exception>
             public void GetViewsFromContainer<T>(TreeEnumOrder order, ICollection<T> results) where T : class
             {
                 if (results == null)
@@ -1404,7 +1553,7 @@ namespace Aurora.Unity.UI.ViewSystem
                 }
                 if (results.IsReadOnly)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException("Collection is read-only.");
                 }
                 InternalGetViewsFromContainer(order, results);
             }
@@ -1580,7 +1729,7 @@ namespace Aurora.Unity.UI.ViewSystem
             public T View => _view;
         }
 
-        private struct DirectChildEnumerator : IEnumerator<View>
+        private struct ChildEnumerator : IEnumerator<View>
         {
             private View _view;
 
@@ -1588,7 +1737,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
             private View _current;
 
-            internal DirectChildEnumerator(View view)
+            internal ChildEnumerator(View view)
             {
                 _view    = view;
                 _index   = 0;
@@ -1597,7 +1746,7 @@ namespace Aurora.Unity.UI.ViewSystem
 
             void IDisposable.Dispose()
             {
-                if (!_view)
+                if (ReferenceEquals(_view, null))
                 {
                     return;
                 }
@@ -1607,9 +1756,9 @@ namespace Aurora.Unity.UI.ViewSystem
 
             bool IEnumerator.MoveNext()
             {
-                if (!_view)
+                if (ReferenceEquals(_view, null))
                 {
-                    throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
+                    throw new ObjectDisposedException(typeof(ChildEnumerator).FullName);
                 }
                 if (_index == _view._children.Count)
                 {
@@ -1629,19 +1778,25 @@ namespace Aurora.Unity.UI.ViewSystem
             {
                 get
                 {
-                    if (!_view)
+                    if (ReferenceEquals(_view, null))
                     {
-                        throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
+                        throw new ObjectDisposedException(typeof(ChildEnumerator).FullName);
                     }
-                    return _current ? _current : throw new InvalidOperationException();
+                    if (ReferenceEquals(_current, null))
+                    {
+                        throw new InvalidOperationException(
+                            "Enumeration has either not started or has already finished."
+                        );
+                    }
+                    return _current;
                 }
             }
 
             void IEnumerator.Reset()
             {
-                if (!_view)
+                if (ReferenceEquals(_view, null))
                 {
-                    throw new ObjectDisposedException(typeof(DirectChildEnumerator).FullName);
+                    throw new ObjectDisposedException(typeof(ChildEnumerator).FullName);
                 }
                 _index   = 0;
                 _current = null;

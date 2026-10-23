@@ -659,7 +659,7 @@ namespace Aurora.UnityEditor
             {
                 return;
             }
-            throw new ArgumentException();
+            throw new ArgumentException($"{nameof(symbol)} is not a valid preprocessor symbol.", nameof(symbol));
         }
 
         /// <summary>

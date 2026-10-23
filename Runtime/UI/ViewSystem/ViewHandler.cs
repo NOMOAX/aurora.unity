@@ -24,6 +24,7 @@ namespace Aurora.Unity.UI.ViewSystem
         /// </summary>
         /// <param name="viewHandler">The view handler.</param>
         /// <exception cref="ArgumentNullException"><paramref name="viewHandler"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentException"><see cref="HandledViewType"/> of <paramref name="viewHandler"/> is <see langword="null"/> or is not a view type.</exception>
         public static void Register(ViewHandler viewHandler)
         {
             if (viewHandler is null)
@@ -33,11 +34,11 @@ namespace Aurora.Unity.UI.ViewSystem
             var handledViewType = viewHandler.HandledViewType;
             if (handledViewType == null)
             {
-                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is null");
+                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is null.");
             }
             if (handledViewType != typeof(View) && !handledViewType.IsSubclassOf(typeof(View)))
             {
-                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is not a view type");
+                throw new ArgumentException($"{nameof(viewHandler)}.{nameof(HandledViewType)} is not a view type.");
             }
             ViewHandlers.Add(viewHandler);
         }
@@ -67,7 +68,7 @@ namespace Aurora.Unity.UI.ViewSystem
             }
             if (viewType != typeof(View) && !viewType.IsSubclassOf(typeof(View)))
             {
-                throw new ArgumentException($"{nameof(viewType)} is not a view type", nameof(viewType));
+                throw new ArgumentException($"{nameof(viewType)} is not a view type.", nameof(viewType));
             }
             return InternalGet(viewType);
         }

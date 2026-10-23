@@ -41,8 +41,8 @@ namespace Aurora.Unity
             {
                 throw new ArgumentNullException(nameof(componentType));
             }
-            if (!componentType.IsInterface || componentType != typeof(Component) ||
-                componentType.IsSubclassOf(typeof(Component)))
+            if (!(componentType.IsInterface || componentType == typeof(Component) ||
+                  componentType.IsSubclassOf(typeof(Component))))
             {
                 throw new ArgumentOutOfRangeException(nameof(componentType), componentType, null);
             }
@@ -74,8 +74,8 @@ namespace Aurora.Unity
             {
                 throw new ArgumentNullException(nameof(componentType));
             }
-            if (!componentType.IsInterface || componentType != typeof(Component) ||
-                componentType.IsSubclassOf(typeof(Component)))
+            if (!(componentType.IsInterface || componentType == typeof(Component) ||
+                  componentType.IsSubclassOf(typeof(Component))))
             {
                 throw new ArgumentOutOfRangeException(nameof(componentType), componentType, null);
             }

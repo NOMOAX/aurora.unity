@@ -106,8 +106,8 @@ namespace Aurora.Unity.CompilerServices
             /// Initializes a new instance of the <see cref="Any"/> struct.
             /// </summary>
             /// <param name="playerLoopPhases">Multiple player loop phases.</param>
-            /// <exception cref="playerLoopPhases"><paramref name="playerLoopPhases"/> is <see langword="null"/>.</exception>
-            /// <exception cref="playerLoopPhases">The length of <paramref name="playerLoopPhases"/> is 0.</exception>
+            /// <exception cref="ArgumentNullException"><paramref name="playerLoopPhases"/> is <see langword="null"/>.</exception>
+            /// <exception cref="ArgumentException">The length of <paramref name="playerLoopPhases"/> is 0.</exception>
             public Any(PlayerLoopPhase[] playerLoopPhases)
             {
                 if (playerLoopPhases == null)
@@ -116,7 +116,10 @@ namespace Aurora.Unity.CompilerServices
                 }
                 if (playerLoopPhases.Length == 0)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(
+                        $"{nameof(playerLoopPhases)} must not be empty.",
+                        nameof(playerLoopPhases)
+                    );
                 }
                 _playerLoopPhases  = playerLoopPhases;
                 _cancellationToken = CancellationToken.None;
@@ -135,7 +138,10 @@ namespace Aurora.Unity.CompilerServices
                 }
                 if (playerLoopPhases.Length == 0)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(
+                        $"{nameof(playerLoopPhases)} must not be empty.",
+                        nameof(playerLoopPhases)
+                    );
                 }
                 _playerLoopPhases  = playerLoopPhases;
                 _cancellationToken = cancellationToken;

@@ -1,7 +1,7 @@
 # Aurora Unity
 
 ![许可](https://img.shields.io/github/license/NOMOAX/aurora.unity)
-![版本](https://img.shields.io/badge/version-2.1.4-blue)
+![版本](https://img.shields.io/badge/version-3.0.0-blue)
 ![最低 Unity 版本](https://img.shields.io/badge/Unity-2021.2%2B-blue)
 
 适用于 Unity 的高性能、低内存消耗的工具包。
@@ -1054,7 +1054,7 @@ var parent = view.Parent;
 var root = view.Root;
 var isRoot = view.IsRoot;
 var isLeaf = view.IsLeaf;
-var isChild = view.IsChildOf(otherView);
+var isDescendant = view.IsDescendantOf(otherView);
 var isTopmost = view.IsTopmost();
 
 // 与打开/关闭一起传递的用户数据

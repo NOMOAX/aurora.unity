@@ -81,8 +81,8 @@ namespace Aurora.Unity.UI
         /// Centers the specified child layout element.
         /// </summary>
         /// <param name="child">A child object that is a layout element.</param>
-        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/> .</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a layout element, or is not a child of this rectangular transform.</exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a child of this layout group.</exception>
         public void SetLayoutChildToCenter(RectTransform child)
         {
             SetCenterIndex(GetLayoutChildIndex(child));
@@ -93,8 +93,8 @@ namespace Aurora.Unity.UI
         /// </summary>
         /// <param name="child">A child object that is a layout element.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/> .</exception>
-        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a layout element, or is not a child of this rectangular transform.</exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
+        /// <exception cref="System.ArgumentException"><paramref name="child"/> is not a child of this layout group.</exception>
         public int GetLayoutChildIndex(RectTransform child)
         {
             if (!child)
@@ -104,7 +104,7 @@ namespace Aurora.Unity.UI
             var index = rectChildren.IndexOf(child);
             if (index == -1)
             {
-                throw new ArgumentException(null, nameof(child));
+                throw new ArgumentException($"{nameof(child)} is not a child of this layout group.", nameof(child));
             }
             return index;
         }

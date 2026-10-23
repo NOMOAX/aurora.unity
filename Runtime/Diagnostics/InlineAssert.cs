@@ -16,20 +16,20 @@ namespace Aurora.Unity.Diagnostics
     public static class InlineAssert
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete(nameof(InlineAssert) + "." + nameof(Equals) + " should not be used for Assertions", true)]
+        [Obsolete(nameof(InlineAssert) + "." + nameof(Equals) + " should not be used for Assertions.", true)]
         public new static bool Equals(object obj1, object obj2)
         {
             throw new InvalidOperationException(
-                nameof(InlineAssert) + "." + nameof(Equals) + " should not be used for Assertions"
+                nameof(InlineAssert) + "." + nameof(Equals) + " should not be used for Assertions."
             );
         }
 
-        [Obsolete(nameof(InlineAssert) + "." + nameof(ReferenceEquals) + " should not be used for Assertions", true)]
+        [Obsolete(nameof(InlineAssert) + "." + nameof(ReferenceEquals) + " should not be used for Assertions.", true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public new static bool ReferenceEquals(object obj1, object obj2)
         {
             throw new InvalidOperationException(
-                nameof(InlineAssert) + "." + nameof(ReferenceEquals) + " should not be used for Assertions"
+                nameof(InlineAssert) + "." + nameof(ReferenceEquals) + " should not be used for Assertions."
             );
         }
 

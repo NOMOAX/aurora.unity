@@ -19,7 +19,10 @@ namespace Aurora.Unity
             var count = polygonVertices.Count;
             if (count < 3)
             {
-                throw new ArgumentException(null, nameof(polygonVertices));
+                throw new ArgumentException(
+                    $"The length of {nameof(polygonVertices)} is less than 3, so it cannot form a polygon.",
+                    nameof(polygonVertices)
+                );
             }
             var windingNumber = 0;
             for (var i = 0; i < count - 1; i++)

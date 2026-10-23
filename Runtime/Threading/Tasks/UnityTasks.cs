@@ -72,7 +72,7 @@ namespace Aurora.Unity.Threading.Tasks
             }
             if (playerLoopPhases.Length == 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(playerLoopPhases)} must not be empty.", nameof(playerLoopPhases));
             }
             return InternalWhenAnyPlayerLoopPhase(playerLoopPhases, CancellationToken.None);
         }
@@ -95,7 +95,7 @@ namespace Aurora.Unity.Threading.Tasks
             }
             if (playerLoopPhases.Length == 0)
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"{nameof(playerLoopPhases)} must not be empty.", nameof(playerLoopPhases));
             }
             return InternalWhenAnyPlayerLoopPhase(playerLoopPhases, cancellationToken);
         }

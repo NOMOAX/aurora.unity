@@ -24,8 +24,11 @@ namespace Aurora.Unity
             }
             throw htmlString switch
             {
-                null     => new ArgumentNullException(nameof(htmlString)),
-                not null => new ArgumentException()
+                null => new ArgumentNullException(nameof(htmlString)),
+                not null => new ArgumentException(
+                    $"{nameof(htmlString)} is not a valid HTML color string.",
+                    nameof(htmlString)
+                )
             };
         }
     }

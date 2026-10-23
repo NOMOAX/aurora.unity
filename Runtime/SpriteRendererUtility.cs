@@ -62,7 +62,10 @@ namespace Aurora.Unity
             var sprite = spriteRenderer.sprite;
             if (!sprite)
             {
-                throw new ArgumentException(null, nameof(sprite));
+                throw new ArgumentException(
+                    $"The {nameof(SpriteRenderer.sprite)} of {nameof(spriteRenderer)} is null.",
+                    nameof(spriteRenderer)
+                );
             }
             var localPosition = SpriteUtility.InternalNormalizedToLocalPosition(sprite, normalizedPosition);
             var multiplier    = InternalGetFlipMultiplier(spriteRenderer);

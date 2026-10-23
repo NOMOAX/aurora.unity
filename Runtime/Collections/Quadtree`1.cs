@@ -386,7 +386,7 @@ namespace Aurora.Unity.Collections
                 }
                 if (results.Length < 4)
                 {
-                    throw new ArgumentException("The array length is insufficient", nameof(results));
+                    throw new ArgumentException("The array length is insufficient.", nameof(results));
                 }
                 Array.Copy(_children, 0, results, 0, 4);
             }
@@ -616,7 +616,7 @@ namespace Aurora.Unity.Collections
                 }
                 if (!_elements.Remove(element))
                 {
-                    throw new ArgumentException("This node does not directly hold this element", nameof(element));
+                    throw new ArgumentException("This node does not directly hold this element.", nameof(element));
                 }
                 element.SetOwner(null);
                 OnElementRemoved();
