@@ -254,136 +254,131 @@ namespace Aurora.Unity.PlayerLoop
             {
                 UnityEngine.LowLevel.PlayerLoop.SetPlayerLoop(system);
             }
-        }
 
-        /// <summary>
-        /// Removes the subsystem pair of a plan if it is already present, and inserts it before or after the system at the plan's position. The types of the position are searched starting from the root's sub-system list, so the last type is the anchor subsystem.
-        /// </summary>
-        /// <param name="system">The player loop system to search from.</param>
-        /// <param name="plan">The plan.</param>
-        /// <param name="playerLoopSubsystemUpdateDelegate">The update delegate of the player loop subsystem.</param>
-        /// <param name="continuationSubsystemUpdateDelegate">The update delegate of the continuation subsystem.</param>
-        /// <returns><see langword="true"/> if the player loop has been changed; otherwise, <see langword="false"/>.</returns>
-        private static bool ApplyPlanToPlayerLoop(
-            ref PlayerLoopSystem            system,
-            Plan                            plan,
-            PlayerLoopSystem.UpdateFunction playerLoopSubsystemUpdateDelegate,
-            PlayerLoopSystem.UpdateFunction continuationSubsystemUpdateDelegate)
-        {
-            var subsystemTypes = plan.Position.SubsystemTypes;
-
-            // Walk down to the system whose sub-system list contains the anchor subsystem.
-            ref var anchorParent = ref system;
-            for (var i = 0; i < subsystemTypes.Length - 1; i++)
+            static bool ApplyPlanToPlayerLoop(
+                ref PlayerLoopSystem            system,
+                Plan                            plan,
+                PlayerLoopSystem.UpdateFunction playerLoopSubsystemUpdateDelegate,
+                PlayerLoopSystem.UpdateFunction continuationSubsystemUpdateDelegate)
             {
-                ref var subsystems = ref anchorParent.subSystemList;
-                if (subsystems is null)
+                var subsystemTypes = plan.Position.SubsystemTypes;
+
+                // Walk down to the system whose sub-system list contains the anchor subsystem.
+                ref var anchorParent = ref system;
+                for (var i = 0;
+                     i < subsystemTypes.Length - 1 /* the removal and insertion are only done at the last level */;
+                     i++)
                 {
-                    Log.E(
-                        $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} cannot be reached because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
-                    );
-                    return false;
+                    ref var subsystems = ref anchorParent.subSystemList;
+                    if (subsystems is null)
+                    {
+                        Log.E(
+                            $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} cannot be reached because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
+                        );
+                        return false;
+                    }
+                    var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemTypes[i]);
+                    if (subsystemIndex < 0)
+                    {
+                        Log.E(
+                            $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
+                        );
+                        return false;
+                    }
+                    anchorParent = ref subsystems[subsystemIndex];
                 }
-                var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemTypes[i]);
-                if (subsystemIndex < 0)
+
+                var playerLoopSubsystem = new PlayerLoopSystem
                 {
-                    Log.E(
-                        $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
+                    type           = plan.PlayerLoopSubsystemType,
+                    updateDelegate = playerLoopSubsystemUpdateDelegate
+                };
+                var continuationSubsystem = new PlayerLoopSystem
+                {
+                    type           = plan.ContinuationSubsystemType,
+                    updateDelegate = continuationSubsystemUpdateDelegate
+                };
+
+                // The pair may be left over from a previous initialization; it has to be removed before the anchor is located, because the removal shortens the list and shifts the anchor's index.
+                var removePlayerLoopSubsystem   = RemoveSubsystem(ref anchorParent, plan.PlayerLoopSubsystemType);
+                var removeContinuationSubsystem = RemoveSubsystem(ref anchorParent, plan.ContinuationSubsystemType);
+                var insertPlayerLoopSubsystemAndContinuationSubsystem =
+                    InsertPlayerLoopSubsystemAndContinuationSubsystem(
+                        ref anchorParent,
+                        subsystemTypes[^1],
+                        plan.AfterPosition,
+                        playerLoopSubsystem,
+                        continuationSubsystem
                     );
-                    return false;
+                return removePlayerLoopSubsystem || removeContinuationSubsystem ||
+                       insertPlayerLoopSubsystemAndContinuationSubsystem;
+
+                static bool RemoveSubsystem(ref PlayerLoopSystem category, Type subsystemType)
+                {
+                    ref var subsystems = ref category.subSystemList;
+                    if (subsystems is null)
+                    {
+                        return false;
+                    }
+                    var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemType);
+                    if (subsystemIndex < 0)
+                    {
+                        return false;
+                    }
+                    Remove(ref subsystems, subsystemIndex);
+                    return true;
+
+                    static void Remove<T>(ref T[] array, int index)
+                    {
+                        var newArray = new T[array.Length - 1];
+                        Array.Copy(array, 0,         newArray, 0,     index);
+                        Array.Copy(array, index + 1, newArray, index, array.Length - index - 1);
+                        array = newArray;
+                    }
                 }
-                anchorParent = ref subsystems[subsystemIndex];
+
+                static bool InsertPlayerLoopSubsystemAndContinuationSubsystem(
+                    ref PlayerLoopSystem anchorParent,
+                    Type                 anchorSubsystemType,
+                    bool                 insertAfterPosition,
+                    PlayerLoopSystem     playerLoopSubsystem,
+                    PlayerLoopSystem     continuationSubsystem)
+                {
+                    ref var anchorSiblings = ref anchorParent.subSystemList;
+                    if (anchorSiblings is null)
+                    {
+                        Log.E(
+                            $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} cannot be anchored because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
+                        );
+                        return false;
+                    }
+                    var anchorIndex = anchorSiblings.FindIndex(PlayerLoopSystemHasType, anchorSubsystemType);
+                    if (anchorIndex < 0)
+                    {
+                        Log.E(
+                            $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
+                        );
+                        return false;
+                    }
+                    Insert(
+                        ref anchorSiblings,
+                        playerLoopSubsystem,
+                        continuationSubsystem,
+                        anchorIndex + Convert.ToInt32(insertAfterPosition)
+                    );
+                    return true;
+
+                    static void Insert<T>(ref T[] array, T o1, T o2, int index)
+                    {
+                        var newArray = new T[array.Length + 2];
+                        Array.Copy(array, 0, newArray, 0, index);
+                        newArray[index]     = o1;
+                        newArray[index + 1] = o2;
+                        Array.Copy(array, index, newArray, index + 2, array.Length - index);
+                        array = newArray;
+                    }
+                }
             }
-
-            var playerLoopSubsystem = new PlayerLoopSystem
-            {
-                type           = plan.PlayerLoopSubsystemType,
-                updateDelegate = playerLoopSubsystemUpdateDelegate
-            };
-            var continuationSubsystem = new PlayerLoopSystem
-            {
-                type           = plan.ContinuationSubsystemType,
-                updateDelegate = continuationSubsystemUpdateDelegate
-            };
-
-            // The pair may be left over from a previous initialization; it has to be removed before the anchor is located, because the removal shortens the list and shifts the anchor's index.
-            var removePlayerLoopSubsystem   = RemoveSubsystem(ref anchorParent, plan.PlayerLoopSubsystemType);
-            var removeContinuationSubsystem = RemoveSubsystem(ref anchorParent, plan.ContinuationSubsystemType);
-            var insertPlayerLoopSubsystemAndContinuationSubsystem = InsertPlayerLoopSubsystemAndContinuationSubsystem(
-                ref anchorParent,
-                subsystemTypes[^1],
-                plan.AfterPosition,
-                playerLoopSubsystem,
-                continuationSubsystem
-            );
-            return removePlayerLoopSubsystem || removeContinuationSubsystem ||
-                   insertPlayerLoopSubsystemAndContinuationSubsystem;
-        }
-
-        private static bool InsertPlayerLoopSubsystemAndContinuationSubsystem(
-            ref PlayerLoopSystem anchorParent,
-            Type                 anchorSubsystemType,
-            bool                 insertAfter,
-            PlayerLoopSystem     playerLoopSubsystem,
-            PlayerLoopSystem     continuationSubsystem)
-        {
-            ref var anchorSiblings = ref anchorParent.subSystemList;
-            if (anchorSiblings is null)
-            {
-                Log.E(
-                    $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} cannot be anchored because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
-                );
-                return false;
-            }
-            var anchorIndex = anchorSiblings.FindIndex(PlayerLoopSystemHasType, anchorSubsystemType);
-            if (anchorIndex < 0)
-            {
-                Log.E(
-                    $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
-                );
-                return false;
-            }
-            Insert(
-                ref anchorSiblings,
-                playerLoopSubsystem,
-                continuationSubsystem,
-                anchorIndex + Convert.ToInt32(insertAfter)
-            );
-            return true;
-        }
-
-        private static void Insert(ref PlayerLoopSystem[] array, PlayerLoopSystem o1, PlayerLoopSystem o2, int index)
-        {
-            var newArray = new PlayerLoopSystem[array.Length + 2];
-            Array.Copy(array, 0, newArray, 0, index);
-            newArray[index]     = o1;
-            newArray[index + 1] = o2;
-            Array.Copy(array, index, newArray, index + 2, array.Length - index);
-            array = newArray;
-        }
-
-        private static bool RemoveSubsystem(ref PlayerLoopSystem category, Type subsystemType)
-        {
-            ref var subsystems = ref category.subSystemList;
-            if (subsystems is null)
-            {
-                return false;
-            }
-            var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemType);
-            if (subsystemIndex < 0)
-            {
-                return false;
-            }
-            Remove(ref subsystems, subsystemIndex);
-            return true;
-        }
-
-        private static void Remove(ref PlayerLoopSystem[] array, int index)
-        {
-            var newArray = new PlayerLoopSystem[array.Length - 1];
-            Array.Copy(array, 0,         newArray, 0,     index);
-            Array.Copy(array, index + 1, newArray, index, array.Length - index - 1);
-            array = newArray;
         }
 
         internal readonly struct Position
