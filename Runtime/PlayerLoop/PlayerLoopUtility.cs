@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Aurora.Collections;
+using Aurora.Diagnostics;
 using UnityEngine.Assertions;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
@@ -12,69 +13,58 @@ namespace Aurora.Unity.PlayerLoop
     /// </summary>
     public static class PlayerLoopUtility
     {
+        private const string PlayerLoopRootDescription = "the player loop root";
+
         private static readonly PlayerLoopRunner[] PlayerLoopRunners;
 
         private static readonly ContinuationRunner[] ContinuationRunners;
 
         private static readonly Plan[] Plans =
         {
-            new(
-                typeof(FixedUpdate),
-                typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
-                false,
+            Plan.Before(
+                Position.At(typeof(FixedUpdate), typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate)),
                 typeof(FixedUpdatingForPlayerLoopRunner),
                 typeof(FixedUpdatingForContinuationRunner)
             ),
-            new(
-                typeof(FixedUpdate),
-                typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate),
-                true,
+            Plan.After(
+                Position.At(typeof(FixedUpdate), typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate)),
                 typeof(FixedUpdatedForPlayerLoopRunner),
                 typeof(FixedUpdatedForContinuationRunner)
             ),
-            new(
-                typeof(Update),
-                typeof(Update.ScriptRunBehaviourUpdate),
-                false,
+            Plan.Before(
+                Position.At(typeof(Update), typeof(Update.ScriptRunBehaviourUpdate)),
                 typeof(UpdatingForPlayerLoopRunner),
                 typeof(UpdatingForContinuationRunner)
             ),
-            new(
-                typeof(Update),
-                typeof(Update.ScriptRunBehaviourUpdate),
-                true,
+            Plan.After(
+                Position.At(typeof(Update), typeof(Update.ScriptRunBehaviourUpdate)),
                 typeof(UpdatedForPlayerLoopRunner),
                 typeof(UpdatedForContinuationRunner)
             ),
-            new(
-                typeof(Update),
-                typeof(Update.ScriptRunDelayedDynamicFrameRate),
-                true,
+            Plan.After(
+                Position.At(typeof(Update), typeof(Update.ScriptRunDelayedDynamicFrameRate)),
                 typeof(UpdateYieldedForPlayerLoopRunner),
                 typeof(UpdateYieldedForContinuationRunner)
             ),
-            new(
-                typeof(Update),
-                typeof(Update.ScriptRunDelayedTasks),
-                true,
+            Plan.After(
+                Position.At(typeof(Update), typeof(Update.ScriptRunDelayedTasks)),
                 typeof(UpdatePostedForPlayerLoopRunner),
                 typeof(UpdatePostedForContinuationRunner)
             ),
-            new(
-                typeof(PreLateUpdate),
-                typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
-                false,
+            Plan.Before(
+                Position.At(typeof(PreLateUpdate), typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate)),
                 typeof(LateUpdatingForPlayerLoopRunner),
                 typeof(LateUpdatingForContinuationRunner)
             ),
-            new(
-                typeof(PreLateUpdate),
-                typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate),
-                true,
+            Plan.After(
+                Position.At(typeof(PreLateUpdate), typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate)),
                 typeof(LateUpdatedForPlayerLoopRunner),
                 typeof(LateUpdatedForContinuationRunner)
             )
         };
+
+        private static readonly ParameterizedPredicate<PlayerLoopSystem, Type> PlayerLoopSystemHasType =
+            (playerLoopSystem, type) => playerLoopSystem.type == type;
 
 #if UNITY_EDITOR
         private static bool IsClearing { get; set; }
@@ -251,22 +241,12 @@ namespace Aurora.Unity.PlayerLoop
             var hasChanged = false;
             for (var i = 0; i < EnumUtility<PlayerLoopPhase>.Count; i++)
             {
-                var plan                                = Plans[i];
-                var categoryType                        = plan.CategoryType;
-                var anchorSubsystemType                 = plan.AnchorSubsystemType;
-                var insertAfter                         = plan.InsertAfter;
-                var playerLoopSubsystemType             = plan.PlayerLoopSubsystemType;
                 var playerLoopSubsystemUpdateDelegate   = (PlayerLoopSystem.UpdateFunction)PlayerLoopRunners[i].Run;
-                var continuationSubsystemType           = plan.ContinuationSubsystemType;
                 var continuationSubsystemUpdateDelegate = (PlayerLoopSystem.UpdateFunction)ContinuationRunners[i].Run;
-                hasChanged |= RemoveAddPlayerLoopSubsystemAndContinuationSubsystem(
+                hasChanged |= ApplyPlanToPlayerLoop(
                     ref system,
-                    categoryType,
-                    anchorSubsystemType,
-                    insertAfter,
-                    playerLoopSubsystemType,
+                    Plans[i],
                     playerLoopSubsystemUpdateDelegate,
-                    continuationSubsystemType,
                     continuationSubsystemUpdateDelegate
                 );
             }
@@ -276,33 +256,63 @@ namespace Aurora.Unity.PlayerLoop
             }
         }
 
-        private static bool RemoveAddPlayerLoopSubsystemAndContinuationSubsystem(
+        /// <summary>
+        /// Removes the subsystem pair of a plan if it is already present, and inserts it before or after the system at the plan's position. The types of the position are searched starting from the root's sub-system list, so the last type is the anchor subsystem.
+        /// </summary>
+        /// <param name="system">The player loop system to search from.</param>
+        /// <param name="plan">The plan.</param>
+        /// <param name="playerLoopSubsystemUpdateDelegate">The update delegate of the player loop subsystem.</param>
+        /// <param name="continuationSubsystemUpdateDelegate">The update delegate of the continuation subsystem.</param>
+        /// <returns><see langword="true"/> if the player loop has been changed; otherwise, <see langword="false"/>.</returns>
+        private static bool ApplyPlanToPlayerLoop(
             ref PlayerLoopSystem            system,
-            Type                            categoryType,
-            Type                            anchorSubsystemType,
-            bool                            insertAfter,
-            Type                            playerLoopSubsystemType,
+            Plan                            plan,
             PlayerLoopSystem.UpdateFunction playerLoopSubsystemUpdateDelegate,
-            Type                            continuationSubsystemType,
             PlayerLoopSystem.UpdateFunction continuationSubsystemUpdateDelegate)
         {
-            var removePlayerLoopSubsystem   = RemoveSubsystem(ref system, categoryType, playerLoopSubsystemType);
-            var removeContinuationSubsystem = RemoveSubsystem(ref system, categoryType, continuationSubsystemType);
+            var subsystemTypes = plan.Position.SubsystemTypes;
+
+            // Walk down to the system whose sub-system list contains the anchor subsystem.
+            ref var anchorParent = ref system;
+            for (var i = 0; i < subsystemTypes.Length - 1; i++)
+            {
+                ref var subsystems = ref anchorParent.subSystemList;
+                if (subsystems is null)
+                {
+                    Log.E(
+                        $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} cannot be reached because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
+                    );
+                    return false;
+                }
+                var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, subsystemTypes[i]);
+                if (subsystemIndex < 0)
+                {
+                    Log.E(
+                        $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(subsystemTypes[i])} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
+                    );
+                    return false;
+                }
+                anchorParent = ref subsystems[subsystemIndex];
+            }
+
             var playerLoopSubsystem = new PlayerLoopSystem
             {
-                type           = playerLoopSubsystemType,
+                type           = plan.PlayerLoopSubsystemType,
                 updateDelegate = playerLoopSubsystemUpdateDelegate
             };
             var continuationSubsystem = new PlayerLoopSystem
             {
-                type           = continuationSubsystemType,
+                type           = plan.ContinuationSubsystemType,
                 updateDelegate = continuationSubsystemUpdateDelegate
             };
+
+            // The pair may be left over from a previous initialization; it has to be removed before the anchor is located, because the removal shortens the list and shifts the anchor's index.
+            var removePlayerLoopSubsystem   = RemoveSubsystem(ref anchorParent, plan.PlayerLoopSubsystemType);
+            var removeContinuationSubsystem = RemoveSubsystem(ref anchorParent, plan.ContinuationSubsystemType);
             var insertPlayerLoopSubsystemAndContinuationSubsystem = InsertPlayerLoopSubsystemAndContinuationSubsystem(
-                ref system,
-                categoryType,
-                anchorSubsystemType,
-                insertAfter,
+                ref anchorParent,
+                subsystemTypes[^1],
+                plan.AfterPosition,
                 playerLoopSubsystem,
                 continuationSubsystem
             );
@@ -311,57 +321,33 @@ namespace Aurora.Unity.PlayerLoop
         }
 
         private static bool InsertPlayerLoopSubsystemAndContinuationSubsystem(
-            ref PlayerLoopSystem system,
-            Type                 categoryType,
+            ref PlayerLoopSystem anchorParent,
             Type                 anchorSubsystemType,
             bool                 insertAfter,
             PlayerLoopSystem     playerLoopSubsystem,
             PlayerLoopSystem     continuationSubsystem)
         {
-            ref var categories = ref system.subSystemList;
-            if (categories is null)
+            ref var anchorSiblings = ref anchorParent.subSystemList;
+            if (anchorSiblings is null)
             {
+                Log.E(
+                    $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} cannot be anchored because {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)} has no sub-system list."
+                );
                 return false;
             }
-            var categoryIndex = categories.FindIndex(PlayerLoopSystemHasType, categoryType);
-            if (categoryIndex < 0)
+            var anchorIndex = anchorSiblings.FindIndex(PlayerLoopSystemHasType, anchorSubsystemType);
+            if (anchorIndex < 0)
             {
-                return false;
-            }
-            ref var category = ref categories[categoryIndex];
-            return InsertPlayerLoopSubsystemAndContinuationSubsystem(
-                ref category,
-                anchorSubsystemType,
-                insertAfter,
-                playerLoopSubsystem,
-                continuationSubsystem
-            );
-        }
-
-        private static bool InsertPlayerLoopSubsystemAndContinuationSubsystem(
-            ref PlayerLoopSystem category,
-            Type                 anchorSubsystemType,
-            bool                 insertAfter,
-            PlayerLoopSystem     playerLoopSubsystem,
-            PlayerLoopSystem     continuationSubsystem)
-        {
-            ref var subsystems = ref category.subSystemList;
-            if (subsystems is null)
-            {
-                subsystems = new[] { playerLoopSubsystem, continuationSubsystem };
-                return true;
-            }
-
-            var subsystemIndex = subsystems.FindIndex(PlayerLoopSystemHasType, anchorSubsystemType);
-            if (subsystemIndex < 0)
-            {
+                Log.E(
+                    $"The player loop plan is not applied: {TypeUtility.GetNicelyFormattedName(anchorSubsystemType)} was not found in the sub-system list of {(anchorParent.type is not null ? TypeUtility.GetNicelyFormattedName(anchorParent.type) : PlayerLoopRootDescription)}."
+                );
                 return false;
             }
             Insert(
-                ref subsystems,
+                ref anchorSiblings,
                 playerLoopSubsystem,
                 continuationSubsystem,
-                subsystemIndex + Convert.ToInt32(insertAfter)
+                anchorIndex + Convert.ToInt32(insertAfter)
             );
             return true;
         }
@@ -374,22 +360,6 @@ namespace Aurora.Unity.PlayerLoop
             newArray[index + 1] = o2;
             Array.Copy(array, index, newArray, index + 2, array.Length - index);
             array = newArray;
-        }
-
-        private static bool RemoveSubsystem(ref PlayerLoopSystem system, Type categoryType, Type subsystemType)
-        {
-            ref var categories = ref system.subSystemList;
-            if (categories is null)
-            {
-                return false;
-            }
-            var categoryIndex = categories.FindIndex(PlayerLoopSystemHasType, categoryType);
-            if (categoryIndex < 0)
-            {
-                return false;
-            }
-            ref var category = ref categories[categoryIndex];
-            return RemoveSubsystem(ref category, subsystemType);
         }
 
         private static bool RemoveSubsystem(ref PlayerLoopSystem category, Type subsystemType)
@@ -416,35 +386,66 @@ namespace Aurora.Unity.PlayerLoop
             array = newArray;
         }
 
-        private static bool PlayerLoopSystemHasType(PlayerLoopSystem playerLoopSystem, Type type)
+        internal readonly struct Position
         {
-            return playerLoopSystem.type == type;
+            internal readonly Type[] SubsystemTypes;
+
+            private Position(Type[] subsystemTypes)
+            {
+                SubsystemTypes = subsystemTypes;
+            }
+
+            internal static Position At(Type subsystemType)
+            {
+                return new Position(new[] { subsystemType });
+            }
+
+            internal static Position At(Type subsystemType1, Type subsystemType2)
+            {
+                return new Position(new[] { subsystemType1, subsystemType2 });
+            }
+
+            internal static Position At(Type subsystemType1, Type subsystemType2, Type subsystemType3)
+            {
+                return new Position(new[] { subsystemType1, subsystemType2, subsystemType3 });
+            }
+
+            internal static Position At(params Type[] subsystemTypes)
+            {
+                return new Position(subsystemTypes);
+            }
         }
 
-        private readonly struct Plan
+        internal readonly struct Plan
         {
-            internal readonly Type CategoryType;
+            internal readonly Position Position;
 
-            internal readonly Type AnchorSubsystemType;
-
-            internal readonly bool InsertAfter;
+            internal readonly bool AfterPosition;
 
             internal readonly Type PlayerLoopSubsystemType;
 
             internal readonly Type ContinuationSubsystemType;
 
-            public Plan(
-                Type categoryType,
-                Type anchorSubsystemType,
-                bool insertAfter,
-                Type playerLoopSubsystemType,
-                Type continuationSubsystemType)
+            private Plan(
+                Position position,
+                bool     afterPosition,
+                Type     playerLoopSubsystemType,
+                Type     continuationSubsystemType)
             {
-                CategoryType              = categoryType;
-                AnchorSubsystemType       = anchorSubsystemType;
-                InsertAfter               = insertAfter;
+                Position                  = position;
+                AfterPosition             = afterPosition;
                 PlayerLoopSubsystemType   = playerLoopSubsystemType;
                 ContinuationSubsystemType = continuationSubsystemType;
+            }
+
+            internal static Plan Before(Position position, Type playerLoopSubsystemType, Type continuationSubsystemType)
+            {
+                return new Plan(position, false, playerLoopSubsystemType, continuationSubsystemType);
+            }
+
+            internal static Plan After(Position position, Type playerLoopSubsystemType, Type continuationSubsystemType)
+            {
+                return new Plan(position, true, playerLoopSubsystemType, continuationSubsystemType);
             }
         }
 
